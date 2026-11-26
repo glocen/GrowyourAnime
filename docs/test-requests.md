@@ -2384,6 +2384,19 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
   - **The band's measure, decided:** the band is held to the fight as it's meant to be played, the player stepping out of every tell, not to a lead kept whole. Its target for this keeper, at an on-budget lead, is 60 to 75 s (DESIGN; `docs/balance.md` gives keepers 45 to 75 s by ground, and phases add the tells).
   - **Survival targets, at an on-budget lead (DESIGN, research's tier 2):** stepping out of every tell, the lead ends at about 50 to 70%. Stepping out of none, it ends at about 10 to 35%, the stand-and-trade 30% of `docs/balance.md` less a little for the slams. So dodging is worth about a third of the health bar, and the ordinary swings still matter.
   - **Next (Faber):** first, the test lead's power as a share of ground 1's budget (`tools/balance/` or `Config`). Then the two runs, both with an on-budget lead: every tell stepped out of, and none. Each gives the length and the lead's health at the fall. The levers follow from those: `Health` for the length, and the split between the ordinary swing and the slam for survival.
+- **Faber, 2026-11-26, 22:08, the on-budget runs** (research's 21:43 next):
+  - **The test lead's share:** the level 26 Rook sits at about 11 to 18% of budget (`fighter_attr`, Common Warrior): Health 3,732 against 2,989 bare and 7,495 on budget, Attack 892 against 740 and 1,309, Defence 342 against 293 and 576. It's under budget, not over.
+  - **Why 21:42's run ended at 100%: the base heals.** A lead on its owner's plot takes the home heal (`Fight.HomeRate`, `Combat.Lead.Home`), and that run, and the first two of this round, stood at the base. The runs below are on the test pad, off any plot.
+  - **The runs:** the lead on `fighter_attr(9, 0.7)` (Health 1,852, Defence 152, 3% lifesteal, Regen 4) through a new lever, `FightSheet`, against the lamplighter at level 9 on Normal (13,407 health with phases), `First` 0, cooldown 10.
+    - **Every tell stepped out of:** 6 slams, 1 pool and 2 of 3 sweeps missed (the driver was late on one). The fight ran **71.4 s** (phase 2 at 17.7, phase 3 at 37.4). The lead ended at **84.6%**.
+    - **None stepped out of:** 4 slams, 2 sweeps and 2 pools, all hit. The fight ran **58.4 s** (phase 2 at 18.4, phase 3 at 38.4). The lead ended at **73.6%**.
+  - **Where the damage comes from** (the Hit events on the lead):
+    - Stepping out: 567 taken, of which 363 from swings, 174 from phase 3's Shades, 30 from the one sweep.
+    - Standing: 804 taken, of which 407 from swings, 158 from Shades, 134 from slams (44.7 each, 2.4% of health) and 104 from KeeperLight (29.8 each).
+    - Healed: about 280 and 315, Regen's bursts and lifesteal. Lifesteal counts damage dealt up to 8% of most health a second (`Config.Stats.Lifesteal`).
+  - **Not a bug:** a slam's 44.7 is `Hit.Resolve`'s own figure: the keeper's Attack (3.15 a G, 6.98 at level 9) times 6.53, less 27% for the lead's Defence, plus its Fire.
+  - **The lever, fixed on the way:** `FightSheet` first set the block once, and the save's sync after a hit's XP brought the lead's own block back after three hits. It now goes through `Reblock`, and every run held 1,852 throughout.
+  - **For research, arithmetic, not measured:** the keeper's whole damage ×2, the healing and the lengths unchanged, gives about 54% stepping out and about 30% standing, both inside the targets. The tells are about a third of what standing takes, so the split can lean further toward the slam if stepping out should matter more. Faber reruns both on your numbers.
 
 ## TR70. The break and its reveal, overhauled (research, 2026-11-26, 14:17; overhaul 2 of `docs/production-plan.md`, "The overhaul"; for Faber, with Scintilla's targets)
 

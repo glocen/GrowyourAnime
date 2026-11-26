@@ -18,6 +18,7 @@
 --   NL_Debug:Invoke("FightHealth", who, 0.5)                the player's lead at half its health, to see a heal; 0 downs it
 --   NL_Debug:Invoke("FoeHealth", who, id, 0.5)             a spawned Shade at half its health, to see its card (AR45)
 --   NL_Debug:Invoke("FightHealth", who, 0.05, true)         at most that share: lowered to it, never raised (a take's held fall)
+--   NL_Debug:Invoke("FightSheet", who, { Level = 9, Health = 1852, ... })  the lead fights on that sheet till summoned again
 --   NL_Debug:Invoke("LeadElement", who, "Frost", bare)      the player's lead hits in Frost, the rest its own (AR48's checks);
 --                                                       bare: its Voidkin's own block, no stars, nothing worn; "" for
 --                                                       none, nil for its own again; gone with its next spawn
@@ -297,6 +298,35 @@ local function fightHealth(who: any, share: any, cap: any): any
 	return { Ok = true, Health = lead.Health }
 end
 
+-- Studio's balance runs (TR69 D, research's on-budget measure): the player's lead fights on `sheet`, a Stats.Block's
+-- numbers by key (tools/balance/attributes.py's fighter_attr at a level and share, as the run's script gives them), at
+-- full health, until it's summoned again. Every block it's given meanwhile (the save's sync after a hit's XP) passes
+-- through the sheet (FightService's Reblock), so the run never slips back to its own. A key the block hasn't as a
+-- number is refused, and nothing changes.
+local function fightSheet(who: any, sheet: any): any
+	local player = DebugService.ResolvePlayer(who)
+	local lead = if player then FightService.LeadOf(player) else nil
+	if lead == nil or type(sheet) ~= "table" then
+		return { Ok = false, Error = "BadArgs" }
+	end
+	local was = lead.Block :: any
+	for key, value in sheet do
+		if type(was[key]) ~= "number" or type(value) ~= "number" then
+			return { Ok = false, Error = "BadArgs", Key = key }
+		end
+	end
+	lead.Reblock = function(block: Stats.Block): Stats.Block
+		local made = table.clone(block) :: any
+		for key, value in sheet do
+			made[key] = value
+		end
+		return made
+	end
+	FightService.SetBlock(lead, was)
+	FightService.SetHealthShare(lead, 1)
+	return { Ok = true, Health = lead.Health, Was = was }
+end
+
 local function foeHealth(_who: any, id: any, share: any): any
 	local f = if type(id) == "number" or type(id) == "string" then FightService.All()[tostring(id)] else nil
 	if f == nil or spawned[f] == nil or type(share) ~= "number" or not (share > 0 and share <= 1) then
@@ -339,6 +369,7 @@ function ReplayService.Start()
 	DebugService.Register("LeadElement", leadElement)
 	DebugService.Register("Fighters", fighters)
 	DebugService.Register("FightHealth", fightHealth)
+	DebugService.Register("FightSheet", fightSheet)
 	DebugService.Register("FoeHealth", foeHealth)
 	Players.PlayerRemoving:Connect(stopFor)
 end

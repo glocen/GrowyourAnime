@@ -99,7 +99,7 @@ They stay general: one piece's calls live in its own home, never in a supreme ru
 - **Sound** ("Sonus"), from 2026-11-23: shortlists library sounds or makes our own under rule 2, loads them into the listening panel, and logs them. The director's ear picks every cue. Brief: `docs/briefs/sound.md`.
 - **Gemini** (Gemini 4 Neon, through Google's Antigravity CLI `agy`), from 2026-11-26: an outside voice research consults on design, look and tech, as cold reads of our own captures and as ideas.
   - It runs on the director's subscription's included quota only, with AI credits off, and stops at the 5-hour or weekly limit.
-  - It sees only its own workspace, `build/scratch/quaestor/gemini/`: text and our own captures, never another game's images (rule 3), and of the project's files only `AGENTS.md`, which `agy` loads as its rules from up the folder tree.
+  - It sees only its own workspace, `build/scratch/quaestor/gemini/`: text and our own captures, never another game's images (rule 3). Research places read-only copies there: the design docs it studies, and, for the lean audit, the code, the tools, the docs and the handbook (the director, 2026-11-26). `agy` loads `AGENTS.md` as its rules from up the folder tree. It edits nothing.
   - It makes no asset (rule 2). Its ideas reach the game as proposals through the usual tiers, and its claims are UNVERIFIED until checked.
 - **QA** ("Probator"), when review load calls for it: tests, playtests, one evidence pack per piece. Never game code, and never weakens a test. Brief: `docs/briefs/qa.md`.
 - **Level design** ("Locus"), not open yet: maps from layout to install, in its own workshop place. Its brief is written when it joins, from `handbook/templates/briefs/level-design.md`.

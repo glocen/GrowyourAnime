@@ -17980,3 +17980,10 @@ The rule: `docs/design.md`, "Clips follow the model, rules follow the class" (th
   - The content check comes before the build.
 - **For research, a conflict:** `docs/design.md` line 131 still says reactions are one shared set per rig, which Lyric wears too, and `lyric_clips.py`'s header says the same. The rule at line 54 overrides both.
 - **Status:** made and self-reviewed. Research's pick in pairs is next. Nothing delivered. Meanwhile: Watt's B build, with research's three must-fixes.
+
+### Research's pick, Kirra's and Lyric's reactions (Quaestor, 2026-11-26, 17:32; `kirra/poses_*.png`, `lyric/poses_*.png`, each pair in both orders, from the player's view and the side)
+
+- **Kirra: Hit A, and the A pair.** Hit A both ways: thrown back, her face and the tail open, where B's fold hides her face. In the A pair, the breakfall and the kick-up are light and back up at once, and the kick reads in the air from the player's view. B's slide and its spring sit low by the Shade.
+- **Lyric: Hit A, and the B pair.** Hit A both ways: back on her heels, the stand leaning after her, while B's speakers cross her face. In the B pair, the stand left standing is a mark you see while she's down, and her rise lands on the beat with the speakers home. That's the singer's own, where A's haul up the stand is only a way up.
+- **Must-fix for the build (class: every key):** no part passes through the body or the street, as the audit lists for the picked four. Kirra's Up A has its head under the street at 6 to 8, not yet re-audited. Lyric's Up B has its speakers in her arms at 8 and 25.
+- **design.md, reconciled:** the shared sets are where a reaction starts, and a model they don't fit gets its own. Kirra and Lyric left the robe list. `lyric_clips.py`'s header is Modulo's to match.

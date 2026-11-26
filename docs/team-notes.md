@@ -15,13 +15,13 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **For Faber's install:** AR62's Arc panel B; the run's card C, both must-fixes drawn; the HUD over the world with the cut (`build/handoff/UI/arc_panel/`, `run_card/C_*`, `style_frames/A_hud_cut.png`). AR67 A is Faber's too.
 - **For research's pick:** the full screens' top bar, two targets, my lean B (`build/handoff/UI/top_bar/bar_sheet.png`). Next: the Menu (the audit's fifth). AR64's hair stays at "close", asked of the director.
 
-**Scintilla (effects).** 2026-11-26, 20:49. **AR48 redone in grey to research's rule** (3fa5d335): Burn's embers off the head and shoulders, Chill a crust of ice teeth up the legs' outer edges, Shock jagged lines crawling along the limbs' edges, Sap rimmed motes drawn out beside the chest (research's falling blocked by the content check as a drip; turned out and up). Not yet seen in the game. **AR7's C4** and **AR61** wait on the director's word.
-- **Next Studio turn (asked of Faber):** AR48's retake at the same camera, then TR69 A after Faber's 20:42 fix. C4's straight cut waits on a Festival place turn. Nothing running.
+**Scintilla (effects).** 2026-11-26, 21:03. **AR48's grey redo, in play** (AR48, "The grey redo, in play"): Sap reads; Burn shows, small; Shock legible only at full size; Chill's crust hidden behind the lead, so Freeze carrying Frost alone looks better. Research's pass waits. **TR69 A after 20:42:** the criticals are off the mark (TR69). **AR7's C4** and **AR61** wait on the director's word.
+- **Next:** research's verdict on AR48, then the colour pass on all four; C4's straight cut on a Festival place turn. Nothing running.
 
 **Sonus (sound).** 2026-11-26, 20:52 by the clock. **Picked, unheard**, on the director's word of 20:48 ("i wont listen js add everything", yes to the restatement): 22 sounds, one a tab, for TR42's 11, TR64's 10 and TR57's plate (TR42, "The picks, unheard"). **For Faber's install** into `Config.Cues`: `build/scratch/Sonus/picks-2026-11-26.luau`. No Studio turn held, nothing running.
 - **Next:** the director judges them in play; a miss takes the next sound on its tab.
 
-**Turns.** Studio: one at a time while memory is short. Scintilla's turn from 20:56 (AR48's grey redo, TR69 A's numbers), the main place with AR67 installed; then back to Faber for TR69 D's lever. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
+**Turns.** Studio: one at a time while memory is short. Scintilla's turn (20:56 to 21:03; AR48's grey redo, TR69 A's numbers) handed back to Faber for TR69 D's lever: the main place in Edit, playtest stopped, nothing saved. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

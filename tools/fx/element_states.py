@@ -25,7 +25,7 @@ Hero shapes (one each, with a direction and an acceleration):
   band's teeth snap out from the bottom up.
 - Freeze: a shell snapping up out of the crust and shut in 6 frames, its edge flashing once, held clear. Stand-in: the
   kit's shell in its ribs (the faceted shell waits on its mesh). FreezeBreak: chips flung out and falling.
-- Shock: a jagged line of three short strokes crawling along a limb's outer edge, four steps up or down it, each lit 3
+- Shock: a jagged line of three strokes, inked dark under, crawling along a limb's outer edge, three steps up or down it, each lit 4
   frames with a dark frame between, then a gap; the four limbs out of step, so one or two crawl at any moment. Never on
   the head or the chest.
 - Sap: motes drawn out of the body, each a dark disc with a thin light rim (the rim carries the read), born just
@@ -238,11 +238,12 @@ def freeze_break():
 
 # Shock -----------------------------------------------------------------------------------------------------------
 LIMBS = (("Left Arm", -1, -0.98), ("Right Arm", 1, -0.98), ("Left Leg", -1, -0.6), ("Right Leg", 1, -0.6))  # outer side, lowest foot
-STEPS = 4  # a crawl's steps along the limb
-LIT = 3  # frames a step is lit, then one dark: the flicker
-SPAN = 0.95  # studs of the limb one step's line covers
-EDGE = 0.66  # studs out from the limb's middle: just off its outer face (0.5), the line's inward jags still outside it
-WIDTH = 0.2
+STEPS = 3  # a crawl's steps along the limb
+LIT = 4  # frames a step is lit, then one dark: the flicker
+SPAN = 1.3  # studs of the limb one step's line covers: two thirds of an arm (in play, 0.95 didn't read)
+EDGE = 0.75  # studs out from the limb's middle: off its outer face (0.5), the line's inward jags still outside it
+WIDTH = 0.5  # fx_beam's bright middle is about half its width: 0.3 read as a thin white in a dark scribble
+INK = (0.75, (28, 22, 36))  # the dark line under each stroke, its width and colour: the line reads on the pale floor too
 
 
 def up_to(d):
@@ -261,7 +262,7 @@ def zig(rng, side):
     points = []
     for i in range(4):
         y = SPAN * i / 3 + (rng.uniform(-0.07, 0.07) if 0 < i < 3 else 0)
-        jag = (rng.uniform(0.11, 0.17) if i == 1 else -rng.uniform(0.11, 0.17)) if 0 < i < 3 else 0
+        jag = (rng.uniform(0.2, 0.3) if i == 1 else -rng.uniform(0.2, 0.3)) if 0 < i < 3 else 0
         points.append((side * (EDGE + 0.75 * jag), y, 0.65 * jag * lean))
     return points
 
@@ -322,14 +323,29 @@ def shock():
     for part, side, lowest in LIMBS:
         for k, tracks in enumerate(crawler(side, lowest, rng)):
             tracks["Width"] = [[0, WIDTH]]
-            rows[f"{part.replace(' ', '')}{k + 1}"] = {
+            name = f"{part.replace(' ', '')}{k + 1}"
+            rows[f"{name}Ink"] = {
+                "Kind": "Beam",
+                "Body": part,
+                "Low": f"{name}.Low",
+                "High": f"{name}.High",
+                "Like": name,  # its flicker
+                "Image": "fx_beam",
+                "Grey": "fx_beam",
+                "Color": c3(INK[1]),
+                "Beam": {"FaceCamera": True, "LightEmission": 0, "LightInfluence": 0, "TextureMode": "Stretch", "TextureSpeed": 0,
+                         "Segments": 1, "ZOffset": 0},
+                "Tracks": {"Width": [[0, INK[0]]]},
+                "Why": "the dark line under the stroke, so it reads on the pale floor and sky",
+            }
+            rows[name] = {
                 "Kind": "Beam",
                 "Body": part,
                 "Image": "fx_beam",
                 "Grey": "fx_beam",
                 "Color": c3(STORM[0]),
                 "Beam": {"FaceCamera": True, "LightEmission": 1, "LightInfluence": 0, "TextureMode": "Stretch", "TextureSpeed": 0,
-                         "Segments": 1},
+                         "Segments": 1, "ZOffset": 0.1, "Brightness": 2},
                 "Tracks": tracks,
                 "Why": f"{'the hero: ' if k == 1 else ''}a stroke of a jagged line crawling along the limb's outer edge, lit {LIT} frames a step",
             }

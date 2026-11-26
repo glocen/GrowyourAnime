@@ -5551,6 +5551,9 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
     - a critical's box for placing holds its brush as drawn, not its digits alone (`reach`).
     - After: a critical's digits on the mark in 1 of 1,391 frames, its brush in none. An ordinary number in 59 of 1,386: 29 inside the mark's drop after a target change, the rest touching by about 5 px.
     - Tested: "The hit (TR69 A)" 28 of 28, twice, with two new checks (the mark's reach the same marked or not, a number's foot over it); the numbers' flurry case 38 of 38. "Shades (AR52)" after them: 46 of 48, the Dasher's lunge missing the lead; that case alone 26 of 26, the suite's known order dependence (open).
+  - **Scintilla, 21:03, in play after 20:42** (one Brawler, the combo replayed; `R4_after_2042_in_play.png` in `build/handoff/Fight/checkpoint/`):
+    - Criticals (710, 1,130 and 848) sit beside or just under the mark, with its brush off it, in every frame read.
+    - Ordinary numbers sometimes touch the mark's edge by a few pixels, which matches Faber's count.
 - **Research, 2026-11-26, 20:18, the lever (tier 2: research's number, Faber's code): phase 1's first slam sooner while phased.**
   - **The seed:** `First` while phases are On, 2 s after the Challenge in place of 8. The slam's cooldown stays 12, and the health stays ×1.5. Its slams then land at about 3.5 and 15.5 s from spawn, both before the line at about 16 s. Off, 8 holds.
   - **Why not the other two:** more health lengthens every phase to fix one, and pushes the fight to about 70 s against the band's 75. A larger share for phase 1 is taken from phase 2, which already lands only one or two doubles. The slam is phase 1's idea, so meeting it early teaches it sooner.

@@ -15390,6 +15390,23 @@ The rules now live in `docs/design.md`, "States in a fight", below "No lock". Fa
 - **No side take first:** the player's camera is the judge. A take from the side can show what exists, but never passes a look.
 - **Next:** Burn, Shock and Sap again in grey at the same camera, then the colour pass on all four.
 
+### The grey redo, in play (Scintilla, 2026-11-26, 21:03; for research's pass)
+
+- **What changed** (3fa5d335, then Shock twice in the turn), to research's rule:
+  - **Burn:** few, large embers rising off the head's top and the shoulders' tops.
+  - **Chill (my call):** a crust of ice teeth on the legs' outer edges, a band a third: shin, knee, thigh.
+  - **Shock:** a jagged line of three strokes crawling along each limb's outer edge, with a dark ink under it. At 0.3 wide and 1 stud long it wasn't seen, so the line is now 1.3 studs, the core 0.5 wide and twice as bright.
+  - **Sap:** dark motes with a light rim, born beside the chest, drifting out and a little up. Research's falling was blocked by the content check: a dark drop running down a body reads as a drip, in a still frame too. The motion was turned out and up, and then passed.
+- **The take:** the same camera and driver as 20:31 (`ar48_redo.mkv`; Shock's last change in `ar48_shock3.mkv`). The sheets are in `build/handoff/States/checkpoint/`:
+  - `redo_burn.png`, `redo_chill_freeze.png` and `redo_sap.png`, at 4 frames a second;
+  - `redo_shock.png`, 24 straight frames at full size, because at the other sheets' scale its lines vanish.
+- **My read:**
+  - **Sap reads:** rimmed beads beside the Lamplighter, in the gaps. They clump by the hand, though.
+  - **Burn shows:** white flecks over the head, in most frames. They're still small.
+  - **Shock is legible only at full size:** short white zigzags at the limbs' edges, mostly low (legs, hands). Our own fighter stands in front of those often, and on a phone they'd be gone.
+  - **Chill's crust is barely seen:** the lead hides the Brawler's legs from this camera. Freeze carrying Frost alone looks like the better call, and it's research's to pick.
+- **Status:** implemented, taken, tested in play (logic offline passes). Visually reviewed: my read; research's pass waits. Not director-accepted.
+
 ## AR49. Home's panel: three cards with their own art (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs/decisions.md`, the row): "MAKE IT LOOOK GOOD".

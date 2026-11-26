@@ -419,7 +419,7 @@ function ShadeCases.Cases(given: Given): { any }
 							tostring(lead:GetAttribute("Away")),
 							if avatarFrom then flat(avatarFrom.Position - avatarAt).Magnitude else -1
 						)
-						read.Rows = read.Rows or drew(playing(dasher, "DasherLine"), { "Lane", "Fuse" })
+						read.Rows = read.Rows or drew(playing(dasher, "DasherLine"), { "Lane", "LaneNear", "LaneFar", "Fuse1", "Fuse6" })
 						if read.Half < 0 and now() >= (read.Down + read.Slam) / 2 then
 							local _, fill = SlamController.Line(dasher)
 							read.Half = if fill then fill.Size.Z else 0

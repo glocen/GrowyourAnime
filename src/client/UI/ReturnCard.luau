@@ -28,6 +28,7 @@ local Glass = require(UI.Kit.Glass)
 local Skin = require(UI.Kit.Skin)
 local Count = require(UI.Kit.Count)
 local Portrait = require(UI.Kit.Portrait)
+local Text = require(UI.Kit.Text)
 
 local ReturnCard = {}
 
@@ -89,7 +90,7 @@ local function word(line: Return.Line, view: Profile.View): string
 	if line.Kind == "Battery" then
 		return "stored"
 	elseif line.Kind == "Full" then
-		return `+{Read.Number(line.Count)} Credits`
+		return `+{Read.Number(line.Count)} {plural(line.Count, "Credit", "Credits")}`
 	elseif line.Kind == "Stones" then
 		return `{line.Grade} {plural(line.Count, "stone", "stones")}`
 	elseif line.Kind == "Training" or line.Kind == "Worker" then
@@ -100,6 +101,17 @@ local function word(line: Return.Line, view: Profile.View): string
 		return `{more} {if line.First then "" else "more "}{plural(more, "worker", "workers")}`
 	end
 	return "ready"
+end
+
+-- A fold of every worker (a short phone's) names its most-grown, whose face it wears: "Watt and 2 more" (research,
+-- 2026-11-26). Nil on any other line; the row keeps its count ("3 workers") where the name doesn't fit beside the gain.
+local function named(line: Return.Line, view: Profile.View): string?
+	local owned = if line.Kind == "Workers" and line.First and line.Id then view.Voidkin[line.Id] else nil
+	if owned == nil then
+		return nil
+	end
+	local others = (line.More or 1) - 1
+	return if others > 0 then `{Collection.Name(owned)} and {others} more` else Collection.Name(owned)
 end
 
 -- The line's picture in its well, centred at (cx, cy), `side` high.
@@ -205,7 +217,11 @@ function ReturnCard.Show(card: Profile.ReturnCard, view: Profile.View, on: On, r
 		local wordWide = w - R.Word.Right - gainX
 		local show = format(line)
 		local gain = Glass.Label(row, "Gain", show(line.Count), R.Gain.Size, SYSTEM.Text, gainX, (pitch - R.Gain.Size) / 2 - 1, wordWide, R.Gain.Size + 2, Enum.TextXAlignment.Left, true, 9)
-		Glass.Label(row, "Word", word(line, view), R.Word.Size, SYSTEM.Soft, gainX, (pitch - R.Word.Size) / 2 - 1, wordWide, R.Word.Size + 2, Enum.TextXAlignment.Right, false, 9)
+		local said = Glass.Label(row, "Word", word(line, view), R.Word.Size, SYSTEM.Soft, gainX, (pitch - R.Word.Size) / 2 - 1, wordWide, R.Word.Size + 2, Enum.TextXAlignment.Right, false, 9)
+		local name = named(line, view)
+		if name and Text.Wide(gain, show(line.Count)) + R.Gain.Gap + Text.Wide(said, name) <= wordWide then
+			said.Text = name
+		end
 		local counts = line.Kind == "Battery" or line.Kind == "Stones" or FACES[line.Kind] == true
 		if counts and not again then
 			gain.Text = show(0)

@@ -376,11 +376,16 @@ function SelfTestController.Start()
 	end
 	press.Parent = ReplicatedStorage
 	-- The smallest phone for a capture: NL_ClientLayout:Invoke(true) lays every layer as the cases do (Theme.Smallest at
-	-- the scale's floor, from the window's top left), :Invoke(false) the window again.
+	-- the scale's floor, from the window's top left), :Invoke(Vector2) a phone of that size at its own scale, and
+	-- :Invoke(false) the window again.
 	local layout = Instance.new("BindableFunction")
 	layout.Name = "NL_ClientLayout"
-	layout.OnInvoke = function(smallest: boolean): string
-		if smallest then
+	layout.OnInvoke = function(smallest: boolean | Vector2): string
+		if typeof(smallest) == "Vector2" then
+			-- the scale that phone draws at (Layers' fit on a small screen), not the window's
+			Layers.Force(math.clamp(smallest.Y / Theme.Author.Y, Theme.Scale.Floor, Theme.Scale.CapSmall))
+			Layers.Box(smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+		elseif smallest then
 			Layers.Force(Theme.Scale.Floor)
 			Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
 		else

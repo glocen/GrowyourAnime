@@ -2000,6 +2000,15 @@ function BaseCases.Cases(given: Given): { any }
 					end
 					t.Check("the smallest phone: every other line as it stood, the shard's last", table.concat(kept2, "; ") == table.concat(rest, "; "), shown())
 					t.Check("the smallest phone: the workers' levels all kept", levels == total, `{levels} of {total}: {shown()}`)
+					-- All folded, the line names its most-grown worker, or counts them where the name doesn't fit (research, 2026-11-26)
+					local folded = math.min(#others, #gains)
+					local most = view.Voidkin[others[1]]
+					local foldWord = ""
+					for _, line in ReturnCard.Parts().Lines do
+						foldWord = if line.Kind == "Workers" then line.Word else foldWord
+					end
+					t.Check("the smallest phone: the fold names its most-grown worker, or counts them", folded < 2 or foldWord == `{folded} workers`
+						or (most ~= nil and foldWord == `{Collection.Name(most)} and {folded - 1} more`), foldWord)
 					Layers.Box(nil)
 					Layers.Force(nil)
 					t.Check("back on this window, the whole card again", Helpers.waitFor(t, 1, matches), shown())

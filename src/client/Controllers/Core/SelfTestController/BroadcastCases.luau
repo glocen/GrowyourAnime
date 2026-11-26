@@ -2,9 +2,11 @@
 -- BroadcastCases: the Broadcast's plate and chat line (TR57; BroadcastController; BroadcastService). A line told on the
 -- server shows once in the target card's place at the top centre, in our words with the finder's display name, and
 -- stays in the chat; an open screen holds the next until it closes. The plate's gap is
--- tuned short for the run and put back.
+-- tuned short for the run and put back. On the smallest phone, the longest item's line keeps clear of the lead's card and
+-- the pills, wrapping to two lines there.
 
 local Players = game:GetService("Players")
+local GuiService = game:GetService("GuiService")
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Config = require(Shared.Config.Broadcast)
@@ -13,6 +15,7 @@ local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local BroadcastController = require(script.Parent.Parent.Parent.Main.BroadcastController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Layers = require(UI.Layers)
+local Theme = require(UI.Theme)
 local Screen = require(UI.Kit.Screen)
 local SettingsScreen = require(UI.SettingsScreen)
 local Helpers = require(script.Parent.Helpers)
@@ -33,7 +36,15 @@ function BroadcastCases.Cases(): { any }
 				t.Wait(0.3)
 				local _, fighting = HudController.TargetSpot()
 				t.Check("no fight's card at the top", not fighting)
+				Layers.Force(Theme.Scale.Floor) -- the smallest phone, where the band is narrowest
+				Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+				t.Wait(0.2)
 				local row = Items.List[1]
+				for _, each in Items.List do -- the longest name: the line that wraps on the smallest phone
+					if #each.Name > #row.Name then
+						row = each
+					end
+				end
 				local told = t.Server("BroadcastTell", "Item", row.Id, "Epic", 0) :: any
 				t.Check("told on the server", type(told) == "table" and told.Ok == true, if type(told) == "table" then tostring(told.Error) else "no answer")
 				local an = if string.sub(row.Name, -1) == "s" then "" else "an " -- Gloves, Boots: no article (Rules.Broadcast)
@@ -45,8 +56,17 @@ function BroadcastCases.Cases(): { any }
 				local spot = HudController.TargetSpot()
 				t.Check("in the target card's place, at the top centre", plate ~= nil and plate.Position == spot and plate.AnchorPoint == Vector2.new(0.5, 0), if plate then tostring(plate.Position) else "no plate")
 				local words = if plate then plate:FindFirstChild("Words", true) :: TextLabel? else nil
-				t.Check("its words fit, the rarity lit", words ~= nil and words.TextFits and string.find(words.Text, "<font", 1, true) ~= nil and words.ContentText == want, if words then words.ContentText else "no words")
+				if plate then
+					local pill = (HudController.Parts().Electricity :: GuiObject).Parent :: GuiObject
+					local lead = HudController.Parts().Lead
+					local left, right = plate.AbsolutePosition.X, plate.AbsolutePosition.X + plate.AbsoluteSize.X
+					t.Check("clear of the lead's card and the pills", left >= lead.AbsolutePosition.X + lead.AbsoluteSize.X and right <= pill.AbsolutePosition.X,
+						`{math.floor(left)} to {math.floor(right)}; the lead's card ends {math.floor(lead.AbsolutePosition.X + lead.AbsoluteSize.X)}, the pill starts {math.floor(pill.AbsolutePosition.X)}`)
+				end
+				t.Check("its words fit, the rarity lit", words ~= nil and words.TextFits and string.find(words.Text, "<font", 1, true) ~= nil and string.gsub(words.ContentText, "\n", " ") == want, if words then words.ContentText else "no words")
 				t.Equal("and it stays in the chat", BroadcastController.Chatted(), want)
+				Layers.Box(nil)
+				Layers.Force(nil)
 				t.Check("gone after its seconds", waitFor(t, Config.Plate.Seconds + 1, function(): boolean
 					return BroadcastController.Shown() == nil
 				end))
@@ -69,6 +89,8 @@ function BroadcastCases.Cases(): { any }
 					return BroadcastController.Shown() == nil
 				end)
 				t.Server("Tune", "Broadcast.Plate.Gap", gap)
+				Layers.Box(nil)
+				Layers.Force(nil)
 			end,
 		},
 	}

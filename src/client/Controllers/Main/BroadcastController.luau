@@ -32,7 +32,7 @@ local BroadcastController = {}
 
 local HEIGHT = 34 -- authored: the plate's height
 local PAD = 14 -- the words' room at each end
-local MOST = 460 -- the plate's widest; its words cut with "…" past it
+local MOST = 460 -- the plate's widest, and never past the band between the lead's card and the pills (band)
 local FADE_IN, FADE_OUT = 0.2, 0.3 -- seconds
 local LOOK = 0.25 -- seconds between looks at the queue
 local CHANNEL_WAIT = 10
@@ -89,11 +89,24 @@ local function chat(item: Broadcast.News)
 	end)
 end
 
-local function wide(words: string): number
+local function measure(words: string, across: number): Vector2
 	local ok, size = pcall(function(): Vector2
-		return TextService:GetTextSize(words, Theme.Text.Body, Enum.Font.BuilderSansMedium, Vector2.new(10000, 100))
+		return TextService:GetTextSize(words, Theme.Text.Body, Enum.Font.BuilderSansMedium, Vector2.new(across, 1000))
 	end)
-	return if ok then size.X else #words * Theme.Text.Body * 0.55
+	return if ok then size else Vector2.new(#words * Theme.Text.Body * 0.55, Theme.Text.Body)
+end
+
+-- The band the plate may take, authored: centred where it stands, clear of the lead's card and the pills by a gap each
+-- side (on the smallest phone about the target card's own width, so a long line wraps there rather than cover the
+-- Electricity pill).
+local function band(): number
+	local parts = HudController.Parts()
+	local root = Layers.Get("Hud")
+	local pill = (parts.Electricity :: GuiObject).Parent :: GuiObject
+	local lead = parts.Lead
+	local centre = root.AbsolutePosition.X + root.AbsoluteSize.X / 2
+	local half = math.min(centre - (lead.AbsolutePosition.X + lead.AbsoluteSize.X), pill.AbsolutePosition.X - centre)
+	return math.max(2 * PAD + Theme.Text.Body, 2 * (half / Layers.Scale() - Theme.Size.Gap))
 end
 
 -- The plate, in the target card's place, for Seconds, then gone; the line stays in the chat.
@@ -102,12 +115,27 @@ local function lay(item: Broadcast.News)
 	local light = lightOf(rarity)
 	local plain = Broadcast.Plain(parts)
 	local spot = HudController.TargetSpot()
-	local width = math.min(MOST, math.ceil(wide(plain)) + 2 * PAD)
+	local one = measure(plain, 10000)
+	local width = math.min(MOST, band(), math.ceil(one.X) + 2 * PAD)
+	local laid = parts
+	if math.ceil(one.X) + 2 * PAD > width then
+		-- short of room: the break falls before the lit words, so the rarity and its name stand whole on their own line
+		laid = table.clone(parts)
+		for index, each in laid do
+			if each.Lit and index > 1 then
+				local before = laid[index - 1]
+				laid[index - 1] = { Text = (string.gsub(before.Text, "%s+$", "")) .. "\n", Lit = before.Lit }
+				break
+			end
+		end
+	end
+	local lines = measure(Broadcast.Plain(laid), width - 2 * PAD)
+	local height = HEIGHT + math.max(0, math.ceil(lines.Y - one.Y)) -- a second line when the band is short
 	local group = Instance.new("CanvasGroup")
 	group.Name = "NL_Broadcast"
 	group.AnchorPoint = Vector2.new(0.5, 0)
 	group.Position = spot
-	group.Size = UDim2.fromOffset(width, HEIGHT)
+	group.Size = UDim2.fromOffset(width, height)
 	group.BackgroundTransparency = 1
 	group.GroupTransparency = 1
 	group.ZIndex = 5
@@ -135,9 +163,10 @@ local function lay(item: Broadcast.News)
 	words.FontFace = Theme.Font.Body
 	words.TextSize = Theme.Text.Body
 	words.TextColor3 = Theme.Colour.Text
+	words.TextWrapped = true
 	words.TextTruncate = Enum.TextTruncate.AtEnd
 	words.RichText = true
-	words.Text = Broadcast.Rich(parts, light:ToHex())
+	words.Text = Broadcast.Rich(laid, light:ToHex())
 	words.Parent = back
 	group.Parent = Layers.Get("Hud")
 	plate, shown = group, plain

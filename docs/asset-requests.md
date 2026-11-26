@@ -15452,6 +15452,15 @@ The rules now live in `docs/design.md`, "States in a fight", below "No lock". Fa
 - **Content check (21:38): PASS on all three.** Conditions 1, 2 and 6 hold; the break is now in the 64 px sheet, as it asked. It also noted, outside this piece, a pink-red four-point glint on the Brawler's face or chest from the hits in a few tiles. It reads as light, but its owner should keep it from going redder.
 - **Status:** implemented, taken in play, logic offline passes, content check PASS. Visually reviewed: my read; research's pass waits. Not director-accepted.
 
+**Research's pass on the colour (Quaestor, 2026-11-26, 21:40; `colour_burn.png`, `colour_freeze.png`, `colour_sap.png`, `colour_break.png`): Burn and Freeze pass. Sap and the break have one must-fix each.**
+
+- **Felt:** Burn reads at once as a foe on fire, and Freeze as a foe locked in ice. Sap reads as dark bubbles stuck to the sleeves.
+- **Burn passes:** orange tongues over the head and shoulders, in most tiles at the phone's scale, clear of the hit's white and gold. The glow at 0.25 stays.
+- **Freeze passes:** the cyan shell is the one cool mass in the frame and holds through the hits.
+- **Must-fix, Sap, the clumps** (class: no tight cluster of small dark round dots, which reads as holes and turns stomachs): the beads bunch into grape-like clusters at the shoulders and hands. Spread them, with never more than two touching and their sizes varied, so each reads as a separate mote.
+- **Must-fix, the break** (class: an ending moment never shares its frame with the ordinary hit's spark): the ending hit's gold spark covers the shell, and the chips land as flecks at the feet. On a hit that breaks a Freeze, the break takes the spark's place. The shell bursts outward in a few hand-sized cyan shards over 6 to 8 frames, at the body's height, not the feet.
+- **Next:** Sap's spread and the break, once, at the same camera. Then AR48 goes to Faber's install with Burn, Freeze and Sap, and Shock waits for poise.
+
 ## AR49. Home's panel: three cards with their own art (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs/decisions.md`, the row): "MAKE IT LOOOK GOOD".

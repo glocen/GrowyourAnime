@@ -116,6 +116,10 @@ return {
 			local steps = #rule.Looks
 			local c1 = Fight.Chill(rule, nil, 0, 2, nil, 0)
 			local c2 = Fight.Chill(rule, c1, 0.5, 2, nil, 0)
+			if steps == 0 then -- no looks of its own (research's AR48 pass, 2026-11-26): a chill wears none
+				t.Equal("the game's: no looks, so a chill wears none", Fight.ChillStep(Fight.ChillNow(rule, c2, 0.5), steps), 0)
+				return
+			end
 			t.Equal("the game's: a hit, its first look", Fight.ChillStep(Fight.ChillNow(rule, c1, 0), steps), 1)
 			t.Equal("two, its second", Fight.ChillStep(Fight.ChillNow(rule, c2, 0.5), steps), 2)
 			local back = 0.5 + rule.Delay + (1 / steps) / rule.Drain + 0.05

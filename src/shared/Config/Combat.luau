@@ -123,14 +123,15 @@ return {
 	-- (AR48's waits). Sap: every heal Cut less for Seconds after a Void hit.
 	-- Look: the name of the look a body wears while its state holds (Config.Effects.Lasting; AR48's rows). A chill's
 	-- Looks step with its fill, one a share (Rules.Fight.ChillStep): the first while the fill is in its first third, and so
-	-- on. A freeze's Break plays once at the body's foot when the freeze ends by its time.
+	-- on; none since research's AR48 pass (2026-11-26): a chill keeps its slow and its numbers, and the freeze carries
+	-- Frost's look alone. A freeze's Break plays once at the body's foot when the freeze ends by its time.
 	-- Not: the kinds whose hits leave a state none. At launch a Shade's Void saps nothing, an elite's included: a pack
 	-- fight stays as its Shades were solved, against a lead healing its Regen (research's answer, 2026-11-23, AR48).
 	States = {
 		By = { Fire = "Burn", Frost = "Chill", Storm = "Shock", Void = "Sap" } :: { [string]: string },
 		Not = { Ordinary = { Sap = true }, Elite = { Sap = true } } :: { [string]: { [string]: boolean } },
 		Burn = { Share = 0.5, Seconds = 3, Tick = 0.5, Look = "StateBurn" },
-		Chill = { Hits = 3, Delay = 1.5, Drain = 0.5, Slow = 0.3, Looks = { "StateChill", "StateChill2", "StateChill3" } :: { string } },
+		Chill = { Hits = 3, Delay = 1.5, Drain = 0.5, Slow = 0.3, Looks = {} :: { string } },
 		Freeze = { Seconds = 2, Look = "StateFreeze", Break = "FreezeBreak" },
 		Shock = { Seconds = 3, Look = "StateShock" },
 		Sap = { Seconds = 4, Cut = 0.3, Look = "StateSap" },

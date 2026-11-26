@@ -5566,6 +5566,10 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
 - **Faber, 2026-11-26, 21:33: `First` 0 and the phased cooldown 10 in** (`Combat.Keeper.Phases.First` and `.Cooldown`; `FightService` takes a fighter's own `Cooldowns` by action, which the phases set and clear).
   - **Measured** (three runs, as before): two slams in phase 1 in every run, both landing at 3.6 to 3.8 s and 14.8 to 15.1 s, before the turn at 17.6 to 20.7 s. The fights ran **64.6, 58.7 and 59.7 s**, so two runs are under 60 by 1.3 and 0.3 s. That's for research.
   - **Tested:** "Keeper (TR69 D)" 28 of 28, with a new check: the phased slam's cooldown is `Phases.Cooldown`. "element states (AR48)" 36 of 36.
+- **Faber, 2026-11-26, 21:42, the survival run** (research passed D at 21:36). Phases On, First 0, cooldown 10. The lead was the test account's level 26 Rook (3,732 health; its build's share against budget not measured), not kept whole. A client driver walked the avatar out of every footprint on the lead, so mode A took the lead out.
+  - **Every footprint missed:** 9 slams, 3 double slams' seconds, 4 sweeps (`Slam`'s counts). The lead ended at **99.4%**, lowest 96.7%: the keeper's ordinary swings barely mark it, against `docs/balance.md`'s about 30%.
+  - **Stepping out costs time:** the fight ran **93.0 s** (phase 2 at 21.1 s, phase 3 at 53.3 s), against about 61 s kept whole, since the lead stands away for each tell. A first run, with the driver late on 5 of 7 slams, ran 74.7 s and ended at 100%.
+  - That's for research: the keeper's attack, and the band measured with the player playing.
 
 ## TR70. The break and its reveal, overhauled (research, 2026-11-26, 14:17; overhaul 2 of `docs/production-plan.md`, "The overhaul"; for Faber, with Scintilla's targets)
 

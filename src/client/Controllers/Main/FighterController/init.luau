@@ -152,6 +152,8 @@ local function track(view: View, clip: string): AnimationTrack?
 	if animator == nil then
 		return nil
 	end
+	local swap = Animations.Swap -- a clip played in place of another, a live test (TR66 row 13)
+	clip = if swap.On and swap.Clips[clip] then swap.Clips[clip] else clip
 	local pair = view.Tracks[clip]
 	if pair == nil then
 		local animation = Clips.Animation(clip)

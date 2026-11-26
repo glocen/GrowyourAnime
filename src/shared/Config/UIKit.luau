@@ -159,6 +159,21 @@ local equipment: { [string]: Image } = {
 	JewelYellow5 = { Id = "rbxassetid://137649433097353", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 }
 
+-- The chests' pictures, kept apart and joined below as equipment's are: Images at this size is past the type
+-- checker's reach.
+local chests: { [string]: Image } = {
+	-- AR21's chest pictures (build/handoff/UI/chests/chest_icons.json), uploaded under the group by Faber, 2026-11-16:
+	-- Chest<Tier's word>, laid as a gear picture is, in a chest's plain cell.
+	ChestShade = { Id = "rbxassetid://119242480421974", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	ChestElite = { Id = "rbxassetid://111496914883611", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	ChestKeeper = { Id = "rbxassetid://103671893568028", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	ChestTower = { Id = "rbxassetid://135567021405057", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	-- the three AR21 left out, uploaded under the group by Faber, 2026-11-26: the Emblem Case, the Jewel Pouch, the Forge Crate
+	ChestCase = { Id = "rbxassetid://130804135272812", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	ChestPouch = { Id = "rbxassetid://125194431462332", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	ChestCrate = { Id = "rbxassetid://78027845046436", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+}
+
 local UIKit = {
 	PixelsPerPoint = 4,
 	SliceScale = 0.25,
@@ -937,12 +952,6 @@ local UIKit = {
 		GearTenmon = { Id = "rbxassetid://82288371318013", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 		GearLight = { Id = "rbxassetid://108691577894292", Pixels = Vector2.new(192, 192), Points = Vector2.new(48, 48), Pad = 0 },
 		GearFrameLegendary = { Id = "rbxassetid://77199189229522", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Cut = { 22, 22, 22, 22 }, Pad = 8 },
-		-- AR21's chest pictures (build/handoff/UI/chests/chest_icons.json), uploaded under the group by Faber, 2026-11-16:
-		-- Chest<Tier's word>, laid as a gear picture is, in a chest's plain cell.
-		ChestShade = { Id = "rbxassetid://119242480421974", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
-		ChestElite = { Id = "rbxassetid://111496914883611", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
-		ChestKeeper = { Id = "rbxassetid://103671893568028", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
-		ChestTower = { Id = "rbxassetid://135567021405057", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 		-- AR22's empty-slot marks (build/handoff/UI/slots/slot_marks.json), uploaded under the group by Faber, 2026-11-16:
 		-- white on alpha, tinted by the slot; SlotEmpty<Kind>, a hand's SlotEmpty<Hand><Class>.
 		SlotEmptyAmulet = { Id = "rbxassetid://73468123500622", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
@@ -1097,6 +1106,10 @@ local UIKit = {
 }
 
 for name, image in equipment do
+	UIKit.Images[name] = image
+end
+
+for name, image in chests do
 	UIKit.Images[name] = image
 end
 

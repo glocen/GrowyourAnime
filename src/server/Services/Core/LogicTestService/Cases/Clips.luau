@@ -101,4 +101,15 @@ return {
 			end
 		end,
 	},
+	{
+		Name = "Clips: a clip the live swap plays in place of another (TR66 row 13) is published too, and the switch starts off",
+		Run = function(t: any)
+			local swap = Animations.Swap
+			t.Check("the swap is off by default", swap.On == false, tostring(swap.On))
+			for from, to in swap.Clips do
+				t.Check(`{from} -> {to}: both published`, Animations.Ids[from] ~= nil and Animations.Ids[to] ~= nil)
+				t.Check(`{from} -> {to}: a clip of its own`, from ~= to)
+			end
+		end,
+	},
 }

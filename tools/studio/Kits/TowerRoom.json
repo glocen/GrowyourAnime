@@ -1,8 +1,16 @@
 {
 	"Why": "The Tower room's install (AR56, the Crown; docs/asset-requests.md, AR56): the maps as published under the group (docs/asset-log.md), the meshes as published from Studio (KitAssembly.Publish), which pieces collide and how (the manifest's collision: floor and box as Box, hull as Hull, the body's step ring kept by PreciseConvexDecomposition), and which cast no shadow (the manifest's shadows: the floor's quarters, the drifts, the door of light).",
 	"Meshes": {
-		"CloudDrift": 86710651705959,
-		"CloudDriftB": 116851293985887,
+		"CloudDrift0": 96602580745933,
+		"CloudDrift1": 125475252596576,
+		"CloudDrift2": 103419665858943,
+		"CloudDrift3": 117165952662126,
+		"CloudDrift4": 138112611211635,
+		"CloudDrift5": 132951318678949,
+		"CloudDrift6": 78462397802477,
+		"CloudDrift7": 72180429256347,
+		"CloudDrift8": 99601376795907,
+		"CloudDrift9": 120863189376007,
 		"CrownBlade": 74809437317663,
 		"CrownBladeLow": 106610007729637,
 		"CrownBladeTall": 131685282087615,
@@ -17,8 +25,8 @@
 	"Maps": {
 		"TowerRoom_Floor_Color.png": "rbxassetid://71967123086487",
 		"TowerRoom_Floor_Glow.png": "rbxassetid://135501543679139",
-		"TowerRoom_Kit_Color.png": "rbxassetid://90051398557760",
-		"TowerRoom_Kit_Glow.png": "rbxassetid://114648740534064",
+		"TowerRoom_Kit_Color.png": "rbxassetid://92948184635672",
+		"TowerRoom_Kit_Glow.png": "rbxassetid://94668089120114",
 		"TowerRoom_Sky_Bk.png": "rbxassetid://134487859749660",
 		"TowerRoom_Sky_Dn.png": "rbxassetid://74431207345196",
 		"TowerRoom_Sky_Ft.png": "rbxassetid://111979866191066",
@@ -39,8 +47,16 @@
 	"NoShadow": [
 		"CrownFloor",
 		"CrownFloorM",
-		"CloudDrift",
-		"CloudDriftB",
+		"CloudDrift0",
+		"CloudDrift1",
+		"CloudDrift2",
+		"CloudDrift3",
+		"CloudDrift4",
+		"CloudDrift5",
+		"CloudDrift6",
+		"CloudDrift7",
+		"CloudDrift8",
+		"CloudDrift9",
 		"GateVeil"
 	]
 }

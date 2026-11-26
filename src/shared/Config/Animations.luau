@@ -30,6 +30,9 @@ return {
 	-- The attack clips' snap, a live test beside today's fades (TR69 A, from TR66 row 12): On, every role here fades in
 	-- over In in place of its own (0.06 today). Off by default; NL_Debug:Invoke("Tune", "Animations.Snap.On", true).
 	Snap = { On = false, In = 0.02, Roles = { Combo = true, Swipe = true, Signature = true, Lunge = true } :: { [string]: boolean } },
+	-- A clip played in place of another, a live test beside today's (TR66 row 13: Rook's jab retimed, the same poses and
+	-- markers). Off by default; NL_Debug:Invoke("Tune", "Animations.Swap.On", true), read as each fighter next plays it.
+	Swap = { On = false, Clips = { RookCombo = "RookComboSnap" } :: { [string]: string } },
 	Ids = {
 		-- published under the group, 2026-11-23 (docs/asset-log.md): AR52's two, the first clips up
 		ShadeGuard = 110693664240912,
@@ -40,7 +43,8 @@ return {
 		-- 2026-11-24: AR58's, the Support's
 		ShadeCast = 134130801801922,
 		-- 2026-11-25: every other clip a shipped fighter plays, published under the group (docs/asset-log.md), so they move outside Studio (Cases/Clips)
-		RookCombo = 82256625364904,
+		RookCombo = 109507884509265, -- 2026-11-26: rebaked from Modulo's run beside the snap (TR66 row 13)
+		RookComboSnap = 135404826126237, -- 2026-11-26: the jab retimed, played by Swap (TR66 row 13)
 		RookDown = 76098815267317,
 		RookHaymaker = 138665901194052,
 		RookHit = 75740448301863,

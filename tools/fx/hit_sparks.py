@@ -18,18 +18,18 @@ frame at 60 a second, on the effects' free clock: the hold never stills it.
 Rungs (docs/research/vfx-reference.md, "DESIGN", rule 1): 2 an ordinary hit, 3 a combo's last or the Shade's swing, 4 a
 critical. Rung 7 and up is the signature's own effect, not these. Sizes by rung are the target's: 1, 1.35 and 1.7.
 
-Layers, each offset toward the camera so the struck body never cuts them (handbook/visuals/vfx.md, "Layers"):
-- Back: a soft glow card in the hit's colour behind, frame 0, gone by 6: the flash under the hero.
+Layers, each offset toward the camera (HIT_FRONT, 2.5 studs) so neither body cuts them, the attacker's fist included
+(handbook/visuals/vfx.md, "Layers"):
+- Back: a soft glow in the hit's colour, frame 0, gone by 6 to 9: the white mass under the hero.
 - Star: the hero, the kit's spark sheet as one particle in its three passes (a white line over its colour's fill over
-  its ink twin, a little larger), facing the camera, so it reads from any camera. It snaps open in its first frames and
+  its ink twin, a little smaller and half seen), facing the camera, so it reads from any camera. It snaps open in its first frames and
   breaks outward. The three passes take one fixed rotation, since each emitter would roll its own. Rung 4 lays a second
   star over it, turned a sixteenth and smaller: the critical's denser burst of straight arms (the target's).
 - Lance: the star's long arm, along the blow (the target's "the arm along the blow longest"): one streak particle
-  thrown along it, its ink twin under it, both on the same path, so they never part. With the needles it's what says
-  which way.
+  thrown along it. With the needles it's what says which way.
 - Needles: fx_streak, stretched along their travel, thrown in a cone along the blow, fast then slow (Drag): a frame
   after the star.
-- Ring (rungs 3 and 4): the ring sheet, a breath after; the step from rung 2.
+- Ring (rungs 3 and 4): the ring sheet, a breath after, white and its hue only; the step from rung 2.
 - Light (rung 4): a gold PointLight on the bodies, frame 0 to 12.
 
 Colours: the hit numbers' (UIKit.Numbers): the plain hit's warm white at rungs 2 and 3, the critical's gold at 4; white
@@ -53,6 +53,8 @@ DARK = (28, 23, 38)  # FxKit.Sheet.Dark
 DARK_TRANSPARENCY = 0.15  # FxKit.Sheet.DarkTransparency
 LAYER = 0.05  # FxKit.Sheet.Layer, studs of ZOffset between passes
 FRONT = 0.5  # studs of ZOffset toward the camera, so the struck body never cuts the star
+HIT_FRONT = 2.5  # the hit sparks' own: the attacker's fist stands between the camera and the contact, and at FRONT it hid
+# the bloom and half the star (AR61's next take, 2026-11-26). ZOffset draws nearer without changing the screen size.
 WARM = (255, 244, 220)
 
 PLAIN = (248, 241, 223)  # UIKit.Numbers.Plain, #F8F1DF: an ordinary hit
@@ -109,9 +111,11 @@ def sheet_rows(prefix, sheet, life, size, break_at, rotation, why):
     return rows
 
 
-def star_passes(prefix, sheet, life, size, hue, rotation, why, z=0.0, frame=0):
-    """The hit sparks' finish: a kit sheet as one particle in its three passes, facing the camera, on `frame`: a white
-    line over the hue's fill over its ink twin, a little larger. One rotation for all three, so they lie as one."""
+def star_passes(prefix, sheet, life, size, hue, rotation, why, z=0.0, frame=0, ink=True):
+    """The hit sparks' finish: a kit sheet as one particle in its passes, facing the camera, on `frame`: a white line over
+    the hue's fill, over its ink twin when `ink`. The ink sits inside the light (a tenth smaller, half seen), a shade
+    under the arms on the pale deck: larger, it showed past them as dark spikes and a dark hoop (AR61's next take).
+    One rotation for all, so they lie as one."""
     common = {
         "Lifetime": [life, life],
         "Speed": [0, 0],
@@ -121,12 +125,14 @@ def star_passes(prefix, sheet, life, size, hue, rotation, why, z=0.0, frame=0):
         "LightInfluence": 0,
     }
     passes = {
-        "Line": ({"Size": size, "Color": c3(WHITE), "LightEmission": 1, "ZOffset": FRONT + z + LAYER}, f"fx_{sheet}_line"),
+        "Line": ({"Size": size, "Color": c3(WHITE), "LightEmission": 1, "ZOffset": HIT_FRONT + z + LAYER}, f"fx_{sheet}_line"),
         "Fill": ({"Size": size, "Color": [[0, c3(hue)], [0.4, c3(hue)], [1, c3(dim(hue, 0.6))]], "LightEmission": 0.8,
-                  "ZOffset": FRONT + z}, f"fx_{sheet}_fill"),
-        "Dark": ({"Size": scaled(size, 1.12), "Color": c3(INK), "LightEmission": 0, "Transparency": [[0, 0.2], [0.6, 0.3], [1, 1]],
-                  "ZOffset": FRONT + z - LAYER}, f"fx_{sheet}_dark"),
+                  "ZOffset": HIT_FRONT + z}, f"fx_{sheet}_fill"),
+        "Dark": ({"Size": scaled(size, 0.9), "Color": c3(INK), "LightEmission": 0, "Transparency": [[0, 0.5], [0.6, 0.6], [1, 1]],
+                  "ZOffset": HIT_FRONT + z - LAYER}, f"fx_{sheet}_dark"),
     }
+    if not ink:
+        del passes["Dark"]
     rows = {}
     for name, (own, image) in passes.items():
         rows[f"{prefix}{name}"] = {
@@ -141,8 +147,8 @@ def star_passes(prefix, sheet, life, size, hue, rotation, why, z=0.0, frame=0):
 
 
 def lance(rung, hue):
-    """The star's long arm along the blow: one streak thrown along it, fast then slow, and its ink twin on the same path
-    (no spread, one speed, one life: the two never part)."""
+    """The star's long arm along the blow: one streak thrown along it, fast then slow. Its ink twin is gone: it drew a
+    dark spike past the light one (AR61's next take, 2026-11-26)."""
     k = SIZE[rung]
     # Drawn about 2 studs a size long (Size x 2^-Squash), from the contact along the blow: a particle is centred on its
     # place, so it starts half its length ahead. Centred on the contact, half of it ran back over the attacker
@@ -166,17 +172,9 @@ def lance(rung, hue):
             "Kind": "Emitter", "Image": "fx_streak",
             "Emitter": {**common, "Size": size, "Squash": [[0, -0.8], [1, -1.2]],
                         "Transparency": [[0, 0], [0.5, 0.05], [1, 1]], "Color": [[0, c3(WHITE)], [0.3, c3(hue)], [1, c3(hue)]],
-                        "LightEmission": 1, "ZOffset": FRONT + 6 * LAYER},
+                        "LightEmission": 1, "ZOffset": HIT_FRONT + 6 * LAYER},
             "Emit": [[0, 1]], "Tracks": {"At": [[0, ahead]]},
             "Why": "the star's long arm, along the blow: snapped out on the hit and running on, fast then slow",
-        },
-        "LanceInk": {
-            "Kind": "Emitter", "Image": "fx_streak",
-            "Emitter": {**common, "Size": scaled(size, 1.15), "Squash": [[0, -0.4], [1, -0.8]],
-                        "Transparency": [[0, 0.25], [0.5, 0.3], [1, 1]], "Color": c3(INK), "LightEmission": 0,
-                        "ZOffset": FRONT - 2 * LAYER},
-            "Emit": [[0, 1]], "Tracks": {"At": [[0, ahead]]},
-            "Why": "the long arm's ink twin, on its path",
         },
     }
 
@@ -222,7 +220,7 @@ def back(size, frames, hue):
             "Color": c3(hue),
             "LightEmission": 1,
             "LightInfluence": 0,
-            "ZOffset": FRONT - 5 * LAYER,
+            "ZOffset": HIT_FRONT - 5 * LAYER,
         },
         "Emit": [[0, 1]],
         "Tracks": {"At": [[0, v3(0, 0, 0)]]},
@@ -259,27 +257,27 @@ def build():
         **star_passes("Star", "spark", 0.2, star_size(2), PLAIN, 0,
                      "the hero: the spark sheet snapping open on the struck side and breaking outward, a quick flick"),
         **lance(2, PLAIN),
-        "Needles": needles(5, [26, 38], [0.12, 0.2], 50, 0.9, 1, colour=PLAIN, z=4 * LAYER),
+        "Needles": needles(5, [26, 38], [0.12, 0.2], 50, 0.9, 1, colour=PLAIN, z=HIT_FRONT - FRONT + 4 * LAYER),
     }
     rung3 = {
         "Back": back(3.2, 8, PLAIN),
         **star_passes("Star", "spark", 0.24, star_size(3), PLAIN, 0,
                      "the hero: the spark sheet, a third wider and a few frames longer than an ordinary hit's"),
         **lance(3, PLAIN),
-        "Needles": needles(8, [32, 46], [0.14, 0.22], 55, 1.15, 1, colour=PLAIN, z=4 * LAYER),
+        "Needles": needles(8, [32, 46], [0.14, 0.22], 55, 1.15, 1, colour=PLAIN, z=HIT_FRONT - FRONT + 4 * LAYER),
         **star_passes("Ring", "ring", 0.3, [[0, 1.6], [1, 5.0]], PLAIN, 0,
-                     "the step from rung 2: the ring sheet a breath after the star, swelling past it", z=-3 * LAYER, frame=2),
+                     "the step from rung 2: the ring sheet a breath after the star, swelling past it", z=-3 * LAYER, frame=2, ink=False),
     }
     rung4 = {
         "Back": back(4.0, 9, GOLD),
         **star_passes("Star", "spark", 0.28, star_size(4), GOLD, 0,
                      "the hero: the spark sheet in the critical's gold, the widest"),
         **star_passes("Star2", "spark", 0.24, scaled(star_size(4), 0.72), GOLD, 22.5,
-                     "a second star over it, turned a sixteenth: the critical's denser burst of straight arms", z=2 * LAYER),
+                     "a second star over it, turned a sixteenth: the critical's denser burst of straight arms", z=2 * LAYER, ink=False),
         **lance(4, GOLD),
-        "Needles": needles(12, [36, 52], [0.16, 0.26], 60, 1.3, 1, colour=GOLD, z=4 * LAYER),
+        "Needles": needles(12, [36, 52], [0.16, 0.26], 60, 1.3, 1, colour=GOLD, z=HIT_FRONT - FRONT + 4 * LAYER),
         **star_passes("Ring", "ring", 0.32, [[0, 2.0], [1, 6.0]], GOLD, 0,
-                     "the ring sheet a breath after, swelling past the star", z=-3 * LAYER, frame=2),
+                     "the ring sheet a breath after, swelling past the star", z=-3 * LAYER, frame=2, ink=False),
         "Light": light(7, 3, 12),
     }
     return {

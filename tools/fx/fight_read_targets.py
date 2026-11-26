@@ -4,6 +4,9 @@ street stage at the player's camera (the Festival place at night, a Brawler 26 s
 build/handoff/Fight/stage/stage_street.json), beside today's grey blocks. Scintilla's.
 
     py tools/fx/fight_read_targets.py [stage.json] [out_dir] [R1_cut,R2_collar,...]
+    py tools/fx/fight_read_targets.py --pictures [out_dir]   (default: build/handoff/Fight/pictures)
+    The build of research's pick (R4 and G1, 2026-11-26, 19:06): their strokes as white pictures with straight alpha,
+    tinted in the game: see pictures().
 
 Feel lines:
 - The ring: the player sees at a glance which foe their Voidkin is on, and it's quieter than every hit. It sits under
@@ -264,7 +267,87 @@ def crop(img, box):
     return img[max(0, y):y + h, max(0, x):x + w]
 
 
+# --- the build's pictures (R4 and G1, research's pick) ---------------------------------------------------------------
+PICTURES = ROOT / "build" / "handoff" / "Fight" / "pictures"
+SOFT = 0.6  # a stroke's soft share, as Frame.streak draws it
+# R4's chevron in studs, its apex at the origin, its wings up and out; the picture's middle sits MARK_CENTRE over the apex.
+MARK = {"Wing": (0.5, 0.46), "Ink": 0.2, "Light": 0.14, "Core": 0.045, "Side": 1.4, "Pixels": 256}
+MARK_CENTRE = MARK["Wing"][1] / 2
+# G1's star at size 1 (its Size track grows it to 1.5 at the peak): arms up, down and to each side, the colour's widths
+# at the root tapering to Tip; the core's at Core of them. Its two glows as the target's: radius, falloff.
+STAR = {"Arms": (((0, 1), 1.25, 0.16), ((0, -1), 1.0, 0.16), ((-1, 0), 0.8, 0.12), ((1, 0), 0.8, 0.12)),
+        "Tip": 0.02 / 1.5, "Core": 0.4, "CoreTip": 0.01 / 1.5, "Side": 2.8, "Pixels": 512,
+        "Glow": (0.35, 2.0), "CoreGlow": (0.12, 3.0)}
+
+
+def grid(side: float, pixels: int):
+    """Studs across (u, right) and up (v) at each pixel's middle: row 0 is the picture's top."""
+    step = side / pixels
+    axis = -side / 2 + (np.arange(pixels) + 0.5) * step
+    u, v = np.meshgrid(axis, axis[::-1])
+    return u, v, step
+
+
+def stroke(u, v, a, b, width_a, width_b, step):
+    """Frame.streak's tapered stroke in studs, as coverage 0 to 1."""
+    a, b = np.asarray(a, float), np.asarray(b, float)
+    d = b - a
+    t = np.clip(((u - a[0]) * d[0] + (v - a[1]) * d[1]) / max(float(d @ d), 1e-9), 0, 1)
+    dist = np.hypot(u - (a[0] + t * d[0]), v - (a[1] + t * d[1]))
+    wid = (width_a + (width_b - width_a) * t) / 2
+    return np.clip(1 - (dist - wid * (1 - SOFT)) / np.maximum(wid * SOFT * 2, 0.6 * step), 0, 1) ** 2
+
+
+def union(*alphas):
+    out = np.zeros_like(alphas[0])
+    for a in alphas:
+        out = 1 - (1 - out) * (1 - np.clip(a, 0, 1))
+    return out
+
+
+def pictures(out=PICTURES):
+    """R4's mark as three passes (ink, light, core) and G1's star as two (light, core), each white with straight alpha
+    for the game to tint: the ink in INK, the light in the foe's type colour, the core white. Each pass is the target's
+    own strokes at their own gain (the light added at 1.3 for R4 and 1.6 for G1, the core at 1.4 and 2.4), so its alpha
+    is that gain's coverage; the chevron's two strokes meet at the apex by union, never added twice.
+    The mark: its picture's middle stands MARK_CENTRE studs over the apex, MARK["Side"] studs a side. The star: its
+    middle at the mask's eye line, STAR["Side"] studs a side at size 1."""
+    out.mkdir(parents=True, exist_ok=True)
+    u, v, step = grid(MARK["Side"], MARK["Pixels"])
+    v = v + MARK_CENTRE  # the apex at the origin, the picture's middle MARK_CENTRE over it
+    wx, wy = MARK["Wing"]
+
+    def chevron(width):
+        return union(*[stroke(u, v, w, (0, 0), width, width, step) for w in ((-wx, wy), (wx, wy))])
+
+    passes = {
+        "fight_mark_ink": chevron(MARK["Ink"]),
+        "fight_mark_light": np.clip(1.3 * chevron(MARK["Light"]), 0, 1),
+        "fight_mark_core": np.clip(1.4 * chevron(MARK["Core"]), 0, 1),
+    }
+    u, v, step = grid(STAR["Side"], STAR["Pixels"])
+    r = np.hypot(u, v)
+
+    def glow(radius, falloff):
+        return np.exp(-(r / radius) ** falloff)
+
+    arms = [stroke(u, v, (0, 0), np.array(d) * n, w, STAR["Tip"], step) for d, n, w in STAR["Arms"]]
+    cores = [stroke(u, v, (0, 0), np.array(d) * n, w * STAR["Core"], STAR["CoreTip"], step) for d, n, w in STAR["Arms"]]
+    passes["fight_glint_light"] = union(1.6 * union(*arms), 0.9 * glow(*STAR["Glow"]))
+    passes["fight_glint_core"] = union(2.4 * union(*cores), 2.5 * glow(*STAR["CoreGlow"]))
+    from ward_targets import write_rgba
+    for name, alpha in passes.items():
+        edge = max(float(alpha[0].max()), float(alpha[-1].max()), float(alpha[:, 0].max()), float(alpha[:, -1].max()))
+        assert edge < 0.01, f"{name} reaches its edge ({edge:.3f})"
+        write_rgba(alpha, out / f"{name}.png")
+        print(name, f"coverage {float((alpha > 0.02).mean()):.3f}")
+    return passes
+
+
 def main(argv):
+    if argv[:1] == ["--pictures"]:
+        pictures(Path(argv[1]) if len(argv) > 1 else PICTURES)
+        return
     st = Street(Path(argv[0]) if argv else STAGE)
     out = Path(argv[1]) if len(argv) > 1 else OUT
     only = argv[2].split(",") if len(argv) > 2 else None

@@ -1,0 +1,151 @@
+{
+  "Schema": "rows/1",
+  "Effect": "ShadeGlint",
+  "Why": "TR69 A's glint, G1 (research's pick, 2026-11-26, 19:06): a four-point star at a Shade's mask's eye line as its ordinary swing starts, the swing's read, so the strike can be read and Called. Played on the swing's first frame with the Shade's scale, its foot at its mask's eye line a little in front of its face, facing as the mask does (Faber's hook). The star stays where it began: whether a Shade moving through its tell leaves it behind is for the check in play. The star snaps out in 2 frames to 1.5 times, holds to 4, and draws back in to its centre by 18 (Combat.Glint.Seconds, 0.3 s), never moving or stretching down. Its light is the Shade's type's colour, its core white over it, never tinted: light round the mask, never a tint on the face (the content check, 2026-11-26).",
+  "Area": 1,
+  "Grey": false,
+  "Rows": {
+    "Star": {
+      "Kind": "Card",
+      "Image": "fight_glint_light",
+      "Color": {
+        "Color3": [
+          234,
+          75,
+          79
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ],
+        "Size": [
+          [
+            0,
+            1.68,
+            "Cubic Out"
+          ],
+          [
+            2,
+            4.2
+          ],
+          [
+            4,
+            4.2,
+            "Linear"
+          ],
+          [
+            18,
+            2.1
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            1,
+            "Cubic Out"
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            4,
+            0,
+            "Quad In"
+          ],
+          [
+            11,
+            0.35,
+            "Linear"
+          ],
+          [
+            18,
+            1
+          ]
+        ]
+      },
+      "Why": "the star's light, its arms and its glow, in the Shade's type's colour (the Brawler's red until the player is given its type: Rows' Tint)"
+    },
+    "Core": {
+      "Kind": "Card",
+      "Image": "fight_glint_core",
+      "Color": {
+        "Color3": [
+          255,
+          255,
+          255
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                -0.04
+              ]
+            }
+          ]
+        ],
+        "Size": [
+          [
+            0,
+            1.68,
+            "Cubic Out"
+          ],
+          [
+            2,
+            4.2
+          ],
+          [
+            4,
+            4.2,
+            "Linear"
+          ],
+          [
+            18,
+            2.1
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            1,
+            "Cubic Out"
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            4,
+            0,
+            "Quad In"
+          ],
+          [
+            11,
+            0.35,
+            "Linear"
+          ],
+          [
+            18,
+            1
+          ]
+        ]
+      },
+      "Why": "the star's white core and its hot middle, a hair nearer the camera than its light so it's drawn over it"
+    }
+  }
+}

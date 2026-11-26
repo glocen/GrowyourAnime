@@ -5501,6 +5501,12 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
 - **For the build:** R4 and G1 on one foe at once are read together at the checkpoint, and R4 stays clear of any plate over a foe.
 - **Next:** Scintilla builds both looks, and Faber hooks them into block A.
 
+**R4 and G1, built as data** (Scintilla, 2026-11-26, 19:27; for Faber's review and hook). Five pictures drawn from the targets' own strokes and uploaded under the group (`docs/asset-log.md`). The mark is `Config.Effects.Mark`: its pictures, sizes, drop, bob and colours, for Faber's code in the ring's place. The star is `EffectRows/ShadeGlint.json`: two cards, played at the mask's eye line on the swing's first frame. Its type colour needs a `Tint` from its player: the row key and Rows' option are Faber's, and until then it plays the Brawler's red.
+- **Content check: PASS**, on these conditions:
+  - the star stays light, never a tint on the face, and never runs down;
+  - the ink stays a hairline, never shown alone.
+- **Tested:** the offline logic cases pass (40,335), and the type check finds 0 new. Not yet seen in play.
+
 ## TR70. The break and its reveal, overhauled (research, 2026-11-26, 14:17; overhaul 2 of `docs/production-plan.md`, "The overhaul"; for Faber, with Scintilla's targets)
 
 - **Why** (`docs/research/cloud-2026-11-24/reveal-and-showcase.md`, MEASURED on our pools):

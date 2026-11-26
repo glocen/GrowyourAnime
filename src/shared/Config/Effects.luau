@@ -22,6 +22,8 @@
 --   Body     a point of the action's body it rides instead (an attachment by that name, else a part).
 --   From     the beat of the effect's action its keys count from; none: the effect's marker.
 --   Ground   set down to the effect's foot, upright, facing as the effect does. Hold: its place kept from its first frame.
+--   Tint     its colour is the one its player is given (FighterController/Rows' Options.Tint: a foe's type's), in place
+--            of its Color; none given, its Color (TR69 A's G1, ShadeGlint).
 --   Turn     Vector3, degrees: turned about up, then about its own X, then its own Z.
 --   Tracks   At (Vector3: on a row, in its unit space; else studs), Scale (Vector3, the mesh's unit size times it; a
 --            number for all three), Spin (degrees round up, negative clockwise from above), Tilt (Vector3, degrees),
@@ -60,6 +62,7 @@ export type Row = {
 	Body: string?,
 	Ground: boolean?,
 	Hold: boolean?,
+	Tint: boolean?,
 	Turn: Vector3?,
 	Beam: { [string]: any }?,
 	Trail: { Back: number, Beyond: number }?,
@@ -425,6 +428,33 @@ local Effects = {
 		Flare = { Size = 2.4, Colour = Color3.fromRGB(255, 160, 60), Grow = 0.06, Fade = 0.3, Brightness = 6, Range = 10 },
 	},
 
+	-- TR69 A's mark, R4 (research's pick, 2026-11-26, 19:06: docs/test-requests.md, TR69, "Research's pick"), in place of
+	-- the ring at its feet, which the bodies hide from the player's camera: a small cut chevron over the head of the
+	-- player's lead's target, in the target's type's colour (Config.Hud.Card.Types), quieter than every hit. Three
+	-- passes of one drawing (Pictures, below; tools/fx/fight_read_targets.py --pictures), each a card facing the camera,
+	-- Side studs a side, its middle Centre studs over the chevron's apex: the ink laid under in InkColor at
+	-- InkTransparency, a hairline never alone; the light in the type's colour; the core white, never tinted; each a hair
+	-- nearer the camera than the one under it (Nearer studs). The apex hangs Lift studs over the target's top (its mask's
+	-- top on a Shade). A new target's mark drops in from Drop.From studs higher over Drop.Frames on a Back Out of
+	-- overshoot Drop.Over (back_out(t) = 1 + (Over + 1)(t - 1)^3 + Over (t - 1)^2: the lock-on's snap), fading in over
+	-- Fade frames; from Bob.After frames it bobs Bob.Studs up and down once each Bob.Seconds (alive, never busy). The
+	-- target's scale sizes it all. Gone at once when the target is down or walking home, as the ring was. It stays clear
+	-- of any plate over the foe (research's condition). Frames at 60 a second.
+	Mark = {
+		Ink = "fight_mark_ink",
+		Light = "fight_mark_light",
+		Core = "fight_mark_core",
+		Side = 1.4,
+		Centre = 0.23,
+		Lift = 0.55,
+		Nearer = 0.02,
+		InkColor = Color3.fromRGB(26, 16, 32),
+		InkTransparency = 0.4,
+		Drop = { From = 1, Frames = 6, Over = 1.4 },
+		Fade = 4,
+		Bob = { Studs = 0.08, Seconds = 1, After = 8 },
+	},
+
 	-- The effects' own pictures, by name, for rows that use one outside the kit: the group's uploads (docs/asset-log.md),
 	-- "" until uploaded, which a block-in in grey doesn't need.
 	Pictures = {
@@ -444,6 +474,14 @@ local Effects = {
 		-- and added warm over, never the deep alone or past its light, and the line added warm white.
 		keeper_ring_field = "rbxassetid://72314583030396",
 		keeper_ring_line = "rbxassetid://129310421154504",
+		-- TR69 A's mark (Mark, above) and the glint's star (ShadeGlint), white, tinted in the game: the mark's ink #1A1020,
+		-- its light and the star's in the foe's type's colour, the cores white (tools/fx/fight_read_targets.py --pictures;
+		-- the content check of 2026-11-26).
+		fight_mark_ink = "rbxassetid://79519858190353",
+		fight_mark_light = "rbxassetid://114476480961865",
+		fight_mark_core = "rbxassetid://112380963852248",
+		fight_glint_light = "rbxassetid://103104123211223",
+		fight_glint_core = "rbxassetid://135371519314738",
 	} :: { [string]: string },
 
 	-- The effects as rows (the header), and those in a rows file (Config.EffectRows), merged below. Tuned live:

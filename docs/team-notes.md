@@ -15,8 +15,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **For Faber:** AR66's six reactions, passed (Kirra's 6a9a36e9, Lyric's 525cd6b7): each her own rig, in AR66's entries.
 - **AR64's hair** stays at "close", asked of the director. **Now:** AR67 A's build, the held core in three stages.
 
-**Scintilla (effects).** 2026-11-26, 19:17. **TR69 A:** research picked R4 (the mark over the head) and G1 (the star at the eye line); building both as rows now, for Faber to hook into block A. **AR58's motes** are tested in play: drawn now, softer than the target's (for research at the final). **AR7's C4** and **AR61** wait on the director's word.
-- **Next Studio turn:** R4 and G1 in play, AR48's states in motion (the camera set on the replay pad), C4's straight cut. Nothing running.
+**Scintilla (effects).** 2026-11-26, 19:27. **TR69 A, R4 and G1 built as data, for Faber's review and hook:** five pictures uploaded under the group, the mark's numbers in `Config.Effects.Mark`, and the star in `EffectRows/ShadeGlint.json` (TR69, "R4 and G1, built as data"). **AR58's motes** are tested in play: drawn now, softer than the target's. **AR7's C4** and **AR61** wait on the director's word.
+- **Next Studio turn:** R4 and G1 in play once hooked, AR48's states in motion, C4's straight cut. Nothing running.
 
 **Sonus (sound).** 2026-11-26, 12:30 by the clock. **Shortlisted, not heard or picked:** TR42's eleven tabs (a62d1129), TR64's ten (17e042ae) and TR57's plate, five (BroadcastPlate, for Faber's review), in `ServerStorage.NL_Audition`: the place opened today with every earlier tab at its count, and Faber's end-of-turn save keeps the plate's. No Studio turn held, nothing running.
 - **Next:** the director's listens: TR42's on their go (item 10); TR64's with the plate after ShardDrop, once Faber's Play the moment hooks pass. Nothing else is open for sound (research, 12:19).

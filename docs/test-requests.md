@@ -5505,3 +5505,50 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
 - Today's stage stays beside it until the pick.
 
 **Not in this piece:** the Voidkin's own line and epithet (they need the director's ear first, given the "corny" rejections); the Index; a column of light from the Breaker in the world; the cut-in; new sounds (TR64's ear first); pity and banners.
+
+## TR71. How the game talks, overhauled: one conductor, endings that point on, refusals that say the fix (research, 2026-11-26; overhaul 3 of `docs/production-plan.md`, "The overhaul"; for Faber, after TR69's block A)
+
+- **Why** (`docs/research/cloud-2026-11-24/orchestration.md`, OBSERVED):
+  - seven pieces announce events, each on its own, with no queue, no priority and no fight gating. `Theme.Time.Fight` gates only the hit cues;
+  - gold means eight things and red five;
+  - about twenty wordings of a refusal;
+  - the big moments are silent while an ordinary hit has a cue.
+- **Feel line:** in a fight you only see the fight; the moment it ends, what you got lands in order, one line at a time, beside the counter it feeds, and every ending tells you the one thing to do next.
+
+**A. The conductor,** about 1.5 days, as `orchestration.md`, section 5:
+- **One door.** Every system calls `Conductor.Say(kind, payload)`. Toast, the level plate, the quiet note, the dare line and the drop's plate go through it, and nothing shows a notice on its own.
+  - Each kind's band, lane, merge key, cue and words live in one config.
+  - The ordering is pure Luau, with logic cases: same frame, merge, fight gating, defer, drop.
+- **The bands** are 5a's seven, from Still to Event. A higher band adds a channel the lower never uses.
+- **Lanes:** the lead's news under the lead card; rewards and refusals under the counters they feed; the centre only for band 4 and up.
+- **In a fight** (inside `Theme.Time.Fight` of the last hit):
+  - at most one item per lane;
+  - a band 3 item not about the fight is an icon chip with no words, and its line plays when the fight ends.
+- **Merge:** the same kind and the same thing inside 1.0 s count up in one line.
+- **Order:** higher band first, then about the fight, then rarity, then arrival, 0.25 s apart.
+- **Never covered:** nothing draws over a reveal, the travel card or the run's card.
+- **Dropped:** a band 1 or 2 item waiting over 4 s, since its counter already shows it. Band 3 and up are never dropped.
+
+**B. One refusal.** One helper and one table of reasons, grey, with the control's shake. Each reason says the fix with its number:
+- "Need 1,200 more Credits";
+- "Upgrade the base first".
+- No raw codes, and no "can't". TR68's words go into that table.
+
+**C. Every ending points on.** One Next line, with its press, on:
+- the run's card (win and fall);
+- the keeper's fall;
+- a Tower run's end;
+- a new Voidkin's plate (Lead or Work, TR70);
+- the return card.
+The line names the one thing nearest to done, for example "Your shard is ready: Open", read from the state the server already holds. Research writes the table of lines with the block.
+
+**D. The return card, the whole screen** (the director, 2026-11-24, 21:13: "it need to be the whole screen"; TR53's card):
+- what the base made while you were away, in one Collect;
+- its Next line;
+- its look from the picked style frame (AR62).
+
+**After the style frame's tokens land:** the semantic sheet (`orchestration.md`, 5b). Every meaning gets one colour, one shape and one word, taken from the picked frame's tokens, plus one Rarity table. Research writes it into `docs/ui.md`.
+
+**Sound:** TR64's cues, by the director's ear. The conductor plays one cue per event, and the higher band wins inside 80 ms.
+
+**Not in this piece:** experience notifications (the director's word first); the rarity notes' pitch set (Sonus and the director).

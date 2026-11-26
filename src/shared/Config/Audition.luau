@@ -63,12 +63,17 @@ return {
 		-- whole, its rise kept (a chime, a charge), or cut to its top (KeeperFall and LeadHurt, impacts on their frame). The
 		-- moment's hook (Faber's) says when it starts. Round 1, the first session's:
 		{ Name = "LevelUp", Label = "Level up", Max = 1.0, Beat = true, Tonal = true, Words = { "level up", "power up chime", "achievement chime", "magic chime", "rising chime" } },
-		-- one note, pitched by grade in the game (A C D E), so it's found and heard at its own pitch
-		{ Name = "ShardDrop", Label = "Shard drop", Max = 0.6, Beat = true, Tonal = true, Words = { "crystal ding", "glass chime", "bell ding", "chime single", "sparkle ding" } },
-		{ Name = "KeeperFall", Label = "Keeper's fall", Max = 2.0, Beat = false, Words = { "boss defeated", "victory impact", "gong hit", "big impact", "shatter" } },
+		-- one note, pitched by grade in the game (A C D E), so it's found and heard at its own pitch. 1.0 s, not TR64's 0.6:
+		-- the finder's event runs until the ring is 45 dB down, so at 0.6 "crystal ding" and "sparkle ding" kept none and the
+		-- tab 4 by title on 2026-11-26 (the Healer's cast showed the same)
+		{ Name = "ShardDrop", Label = "Shard drop", Max = 1.0, Beat = true, Tonal = true, Words = { "crystal ding", "glass chime", "bell ding", "chime single", "sparkle ding" } },
+		-- research's five kept 4 by title on 2026-11-26 (the rest splashes, a pack's numbered files, other works), so three
+		-- shatter words of the glass family
+		{ Name = "KeeperFall", Label = "Keeper's fall", Max = 2.0, Beat = false, Words = { "boss defeated", "victory impact", "gong hit", "big impact", "shatter", "crystal shatter", "magic shatter", "anime shatter" } },
 		{ Name = "LeadDown", Label = "Lead down", Max = 1.5, Beat = true, Words = { "defeat", "power down", "fail", "lose", "shutdown" } },
 		-- Round 2 (Record heard right after GoalDone; LeadHurt last, an impact that repeats):
-		{ Name = "GoalDone", Label = "Goal done", Max = 0.8, Beat = true, Tonal = true, Words = { "quest complete", "achievement", "success chime", "task complete", "bell chime" } },
+		-- no "achievement": on 2026-11-26 it found Steam's, Xbox's and consoles' sounds, and the tab kept 3 by title
+		{ Name = "GoalDone", Label = "Goal done", Max = 0.8, Beat = true, Tonal = true, Words = { "quest complete", "goal complete", "mission complete", "objective complete", "success chime", "task complete", "bell chime" } },
 		{ Name = "Record", Label = "New record", Max = 1.0, Beat = true, Tonal = true, Words = { "new record", "achievement unlocked", "victory chime", "success" } },
 		{ Name = "Reinforced", Label = "Reinforced", Max = 0.8, Beat = true, Tonal = true, Words = { "upgrade", "enchant", "forge success", "power up chime" } },
 		{ Name = "ReinforceFailed", Label = "Reinforce failed", Max = 0.6, Beat = true, Words = { "fail", "error low", "crack", "negative" } },

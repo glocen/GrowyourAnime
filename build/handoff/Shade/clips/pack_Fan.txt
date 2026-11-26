@@ -1,0 +1,17 @@
+[audit] Shade_Fan.json (export, 166 poses)
+  Legs cross            0.006 studs at 0.0 (the legs)
+  Arm through body      0.025 studs at 0.9333 (Left Arm into Left Leg)
+  Leg out of hip        0.041 studs at 1.5667 (Left Leg)
+  Weapon through body   0.000 studs
+  Under the floor       0.000 studs at 0.7667 (Right Leg)
+  Pop                   1.947x at 1.0667 (Torso turns 6.4 deg in one frame)
+  Seam                  0.000 deg
+  Limb flip             9.289 deg at 1.0667 (Left Leg turns about its own length in one frame)
+  Wrist flip            0.000 deg
+  Salute held           0.000 s
+  Neck offset           0.000 studs at 1.2667 (the head off its neck)
+  Nod                  27.367 deg at 1.8667 (the head against the torso)
+  Beat                  1.319x at 2.5 (Right Leg turns 14.3 deg in one frame, on the marker Close; the clip's own beat, for information)
+  Shoulder cap          0.158 studs at 1.65 (Left Arm; inherent to R6, for information)
+  Eyes                 -82.0 to +11.0 deg (at 1.0833 and 0.1; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
+AUDIT PASS

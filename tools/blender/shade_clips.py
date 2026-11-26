@@ -8,7 +8,8 @@ blender.exe -b --factory-startup --python tools/blender/shade_clips.py -- <out_d
 - audit: the export without the review packs.
 - With no clip named, the nine (Shade.clips.json). The elites' own (ELITES: GuardElite, LungeElite) are a set apart:
   name them to key them, and an export of both writes Shade_Elite.clips.json. The Support's own (SUPPORT: Cast) is a
-  third set, with Shade_Support.clips.json.
+  third set, with Shade_Support.clips.json. The elites' moves (MOVES: Overhead, Fan; TR69 B) are a fourth, with
+  Shade_Moves.clips.json.
 - spacing: an elite's clip beside the one it's made from, at the same frames (name both: Guard GuardElite).
 
 Needs shade_model.py's output (shade_model.blend, Shade.recipe.json and the maps) in MODEL. The keying is
@@ -396,14 +397,15 @@ def guard_elite(t):
     t.key(164, T=HUB["T"], RA=DOWN_R, LA=DOWN_L, H=HUB["H"], crouch=0.0)
 
 
-def lunge_elite(t):
+def lunge_elite(t, hold=0):
     """The elite's Lunge (AR57): the same line in the same time, from lower. It lifts a hair first, then drops behind
     its mask all at once, sinks past where it will wait and comes back up to it: the crouch of something heavy. It
     waits lower and further back than the Dasher. It lands deeper, the coat piling onto its knees, and when it's
     picked up the coat comes first and the mask and the sleeves hang behind.
 
     The Lunge's own markers and length, so AR52's seeds hold: `Line` at 0.27 s, `Lunge` at 1.0 s, `Land` 0.25 s
-    after, `Close` 0.8 s after that, 2.3 s in all."""
+    after, `Close` 0.8 s after that, 2.3 s in all. `hold` frames more with its back open push `Close` and the rest later
+    (the fan's: fan below)."""
     loose = {"Right Leg": None, "Left Leg": None}
     t.key(0)
     t.key(6, "lifts a hair", ease="in", T=(-5, 0, 0, 0, 0, -0.06), RA=(-14, 0, 12), LA=(-16, 0, -10), H=(-6, 0, 0))
@@ -426,12 +428,62 @@ def lunge_elite(t):
           RA=(58, 0, 8), LA=(64, 0, -8), H=(-14, 6, 8), crouch=0.44)
     t.key(98, "its back open", ease="sine", T=(52, -5, 2, 0, 0, 0.24), RA=("hang", (0.5, 0.25), (0, 0, 6)), LA=("hang", (0.5, 0.3), (0, 0, -6)),
           H=(26, 4, 8), crouch=0.56)
-    t.key(112, ease="in", T=(54, -5, 2, 0, 0, 0.24), H=(28, 4, 9), crouch=0.6)
-    t.mark(123, "Close")
-    t.key(123, "the coat first", ease="sine", T=(15, -8, 0, 0, 0, 0.05), RA=("hang", (0.08, -0.1), (0, 0, 6)), LA=("hang", (0.08, 0.05), (0, 0, -6)),
+    if hold:   # out of breath: it heaves once, half up and back down, and stays open
+        t.key(112, ease="sine", T=(54, -5, 2, 0, 0, 0.24), H=(28, 4, 9), crouch=0.6)
+        t.key(112 + hold // 2, "out of breath", ease="sine", T=(49, -5, 2, 0, 0, 0.24), H=(22, 4, 8), crouch=0.52)
+    t.key(112 + hold, ease="in", T=(54, -5, 2, 0, 0, 0.24), H=(28, 4, 9), crouch=0.6)
+    t.mark(123 + hold, "Close")
+    t.key(123 + hold, "the coat first", ease="sine", T=(15, -8, 0, 0, 0, 0.05), RA=("hang", (0.08, -0.1), (0, 0, 6)), LA=("hang", (0.08, 0.05), (0, 0, -6)),
           H=(10, 10, 10), crouch=0.14, feet=HUB["feet"])
-    t.key(131, "the mask after", T=(3, -3, 0), H=(-13, 6, 6), crouch=0.02)
-    t.key(138, T=HUB["T"], RA=DOWN_R, LA=DOWN_L, H=HUB["H"], crouch=0.0)
+    t.key(131 + hold, "the mask after", T=(3, -3, 0), H=(-13, 6, 6), crouch=0.02)
+    t.key(138 + hold, T=HUB["T"], RA=DOWN_R, LA=DOWN_L, H=HUB["H"], crouch=0.0)
+
+
+def overhead(t):
+    """The Brawler elite's overhead (TR69 B; research's feel line): it gathers both fists high over its mask, through the
+    halo's 1.2 s close, and drives them down on the strike. The sleeves go up together in front of it and meet over
+    the mask, cuff to cuff: with the coat drawn up straight under them it is one tall shape, the mask at its middle, the
+    cuffs inside the halo as it closes (Scintilla's ring, 4.5 studs across at the strike, never crosses them). It climbs
+    slowly through the close, draws back a hair at the end, and the whole height comes down at once: the mask first,
+    the coat folding after it, the cuffs last, slammed onto the footprint 3.4 studs ahead. Then it stays folded over
+    its cuffs, spent, and is picked up mask first.
+
+    The action's own beats: `Wind` at 0 (the footprint laid and the ring started), `Strike` at 1.2 s; 2.7 s in all,
+    1.5 s of it spent."""
+    def up(x, rise, fwd=-0.2, lift=0.7, inward=0.22, back=0.12):
+        """A cuff over the mask: right of the middle, its height from the floor, a hair behind the mask's face, so the
+        sleeves rise past its sides and never across it. An R6 sleeve raised from its shoulder ends level with the
+        mask's top, so it slides `lift` studs up off the shoulder and a little in (its foot stays inside the coat's
+        top): the cuffs meet over the mask, and the climb is the slide."""
+        side = 1 if x > 0 else -1
+        return ("reach", (x, fwd, rise), (-170, 0, 0), (-side * inward, lift, back))
+
+    t.mark(0, "Wind")
+    t.key(0, ease="in")
+    t.key(7, "it sinks to gather", ease="in", T=(14, 0, 0, 0, 0, 0.08), RA=(-34, 0, 16), LA=(-34, 0, -16), H=(8, 0, 0), crouch=0.16)
+    t.key(20, "gathered high", ease="out", T=(-6, 0, 0, 0, 0, -0.06), RA=up(0.68, 6.2, -0.45, 0.72, inward=-0.1, back=0.4), LA=up(-0.68, 6.2, -0.45, 0.72, inward=-0.1, back=0.4), H=(2, 0, 0),
+          crouch=0.0, feet={"Right Leg": (0.6, 0.12), "Left Leg": (-0.6, -0.08)})
+    t.key(40, "tall", ease="sine", T=(-6, 0, 0, 0, 0, -0.1), RA=up(0.64, 6.35, -0.45, 0.8, inward=0.05, back=0.38), LA=up(-0.64, 6.35, -0.45, 0.8, inward=0.05, back=0.38), H=(2, 0, 0))
+    t.key(62, "still climbing", ease="sine", T=(-8, 0, 0, 0, 0, -0.13), RA=up(0.6, 6.5, -0.45, 0.9, inward=0.06, back=0.36), LA=up(-0.6, 6.5, -0.45, 0.9, inward=0.06, back=0.36), H=(1, 0, 0))
+    t.key(67, "drawn back", ease="in", T=(-11, 0, 0, 0, 0, -0.2), RA=up(0.58, 6.55, -0.55, 0.96, inward=0.06, back=0.36), LA=up(-0.58, 6.55, -0.55, 0.96, inward=0.06, back=0.36), H=(-2, 0, 0))
+    t.key(70, ease="lin", T=(30, 0, 0, 0, 0, 0.2), RA=(-120, 0, -3), LA=(-120, 0, 3), H=(26, 0, 0), crouch=0.24)  # the mask leads it down
+    t.key(72, "the cuffs land", T=(52, 0, 0, 0, 0, 0.32), RA=(-50, 0, 1), LA=(-50, 0, -1), H=(18, 0, 0), crouch=0.56,
+          feet={"Right Leg": (0.75, -0.2), "Left Leg": (-0.75, -0.3)})
+    t.mark(72, "Strike")
+    t.key(78, "the coat piles on", ease="sine", T=(58, 0, 0, 0, 0, 0.34), RA=(-46, 0, 1), LA=(-46, 0, -1), H=(24, 0, 0), crouch=0.6)
+    t.key(100, "spent", ease="sine", T=(55, 0, 2, 0, 0, 0.32), RA=(-46, 0, 1), LA=(-46, 0, -1), H=(30, 2, 4), crouch=0.57)
+    t.key(124, ease="sine", T=(52, 0, 1, 0, 0, 0.3), H=(27, 2, 3), crouch=0.52)   # a heave
+    t.key(134, "the mask comes up first", ease="sine", T=(48, 0, 0, 0, 0, 0.28), H=(-4, 6, 4), crouch=0.5)
+    t.key(148, "the coat after", ease="sine", T=(12, -6, 0, 0, 0, 0.06), RA=("hang", (0.12, 0.1), (0, 0, 6)),
+          LA=("hang", (0.12, 0.05), (0, 0, -6)), H=(-12, 10, 8), crouch=0.12, feet=HUB["feet"])
+    t.key(162, T=HUB["T"], RA=DOWN_R, LA=DOWN_L, H=HUB["H"], crouch=0.0)
+
+
+def fan(t):
+    """The Dasher elite's fan (TR69 B): the elite's lunge, its three lanes the effect's (Scintilla's F1), and 1.5 s out of
+    breath after the landing in place of the lunge's 0.8 s: the same keys, 27 frames more with its back open, so the
+    body stays spent to the action's end. `Close` moves with it, to 2.5 s; 2.75 s in all."""
+    lunge_elite(t, hold=27)
 
 
 def cast(t):
@@ -518,12 +570,16 @@ CLIPS = {"Idle": (idle, "Brawler", False), "Walk": (walk, "Brawler", False), "At
 ELITES = {"GuardElite": (guard_elite, "Guard", False), "LungeElite": (lunge_elite, "Dasher", False)}
 # The Support's own (AR58), a third set for the same reason.
 SUPPORT = {"Cast": (cast, "Support", False)}
-SETS = ((CLIPS, "Shade.clips.json"), (ELITES, "Shade_Elite.clips.json"), (SUPPORT, "Shade_Support.clips.json"))
+# The elites' moves (TR69 B), a fourth set: the actions ShadeOverhead and DasherFan play ShadeOverhead and ShadeFan.
+MOVES = {"Overhead": (overhead, "Brawler", False), "Fan": (fan, "Dasher", False)}
+SETS = ((CLIPS, "Shade.clips.json"), (ELITES, "Shade_Elite.clips.json"), (SUPPORT, "Shade_Support.clips.json"),
+        (MOVES, "Shade_Moves.clips.json"))
 # A clip's Play and Stop fades, in seconds: the game's own where it has them (Shared.Config.Animations.Fades, which
 # Author.SaveBaked checks these against). Guard's and Lunge's are proposed here: the game doesn't play them yet.
 FADES = {"Idle": (0.2, 0.2), "Walk": (0.15, 0.15), "Attack": (0.06, 0.15), "AttackLeft": (0.06, 0.15), "Guard": (0.08, 0.15),
          "Lunge": (0.06, 0.15), "Hit": (0.03, 0.1), "HitLeft": (0.03, 0.1), "Burst": (0.03, 0.05),
-         "GuardElite": (0.08, 0.15), "LungeElite": (0.06, 0.15), "Cast": (0.1, 0.15)}
+         "GuardElite": (0.08, 0.15), "LungeElite": (0.06, 0.15), "Cast": (0.1, 0.15), "Overhead": (0.08, 0.2),
+         "Fan": (0.06, 0.15)}
 
 
 # --- outputs --------------------------------------------------------------------------------------------------------

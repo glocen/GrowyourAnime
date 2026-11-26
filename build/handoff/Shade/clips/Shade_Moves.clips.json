@@ -1,0 +1,57 @@
+{
+  "Fps": 60,
+  "Clips": {
+    "Overhead": {
+      "File": "Shade_Overhead.json",
+      "Name": "ShadeOverhead",
+      "Fades": [
+        0.08,
+        0.2
+      ],
+      "Frames": 163,
+      "Seconds": 2.7,
+      "Loop": false,
+      "Markers": [
+        [
+          0,
+          "Wind"
+        ],
+        [
+          72,
+          "Strike"
+        ]
+      ],
+      "ShownIn": "Brawler"
+    },
+    "Fan": {
+      "File": "Shade_Fan.json",
+      "Name": "ShadeFan",
+      "Fades": [
+        0.06,
+        0.15
+      ],
+      "Frames": 166,
+      "Seconds": 2.75,
+      "Loop": false,
+      "Markers": [
+        [
+          16,
+          "Line"
+        ],
+        [
+          60,
+          "Lunge"
+        ],
+        [
+          75,
+          "Land"
+        ],
+        [
+          150,
+          "Close"
+        ]
+      ],
+      "ShownIn": "Dasher"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+[audit] Shade_Overhead.json (export, 163 poses)
+  Legs cross            0.006 studs at 0.0 (the legs)
+  Arm through body      0.044 studs at 0.65 (Right Arm into Head)
+  Leg out of hip        0.003 studs at 1.0667 (Right Leg)
+  Weapon through body   0.000 studs
+  Under the floor       0.000 studs at 2.6 (Left Leg)
+  Pop                   2.723x at 1.1667 (Head turns 19.7 deg in one frame)
+  Seam                  0.000 deg
+  Limb flip             6.361 deg at 1.1667 (Right Arm turns about its own length in one frame)
+  Wrist flip            0.000 deg
+  Salute held           0.000 s
+  Neck offset           0.000 studs at 0.2833 (the head off its neck)
+  Nod                  29.860 deg at 1.6667 (the head against the torso)
+  Beat                  1.409x at 1.2167 (Right Leg turns 4.0 deg in one frame, on the marker Strike; the clip's own beat, for information)
+  Shoulder cap          0.138 studs at 0.1167 (Right Arm; inherent to R6, for information)
+  Eyes                 -84.9 to +13.0 deg (at 1.6667 and 1.1167; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
+AUDIT PASS

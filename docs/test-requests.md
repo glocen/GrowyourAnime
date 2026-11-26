@@ -5560,3 +5560,16 @@ The line names the one thing nearest to done, read from the state the server alr
 **Sound:** TR64's cues, by the director's ear. The conductor plays one cue per event, and the higher band wins inside 80 ms.
 
 **Not in this piece:** experience notifications (the director's word first); the rarity notes' pitch set (Sonus and the director).
+
+## TR72. Design against code: what the design promises and the code doesn't do (research, 2026-11-26, 14:25; for Faber, after TR69's block A)
+
+- **From:** `docs/research/cloud-2026-11-24/systems-map.md`, section 6, re-checked at HEAD today. Rows 2, 5 and 7 are now built. Research fixed the design where it was stale: the status line, the shop's stones, Drum Court's kept win, and the Tower's week. These remain, each with a logic case:
+
+| # | The rule (`docs/design.md`) | Today | Ask |
+|---|---|---|---|
+| 1 | "A worker made lead swaps places" (Roles), new today | the bay is left empty, the old lead goes home idle (`Rules/Collection.luau`, 110-126) | the old lead takes the bay, unless it's healing |
+| 2 | "Salvaging an item keeps what was put in it", new today | emblems, jewels and Reinforce go with it (`Rules/Chests.luau`, 588-605) | emblems and jewels to the bag first; the confirm names the Reinforce level lost |
+| 3 | a lead far below the account's best levels faster (Roles; `docs/balance.md`, "Catch-up") | no catch-up anywhere (`Rules/Drops.luau`, 129) | the balance's catch-up, as written there |
+| 4 | Training earns a third of what Lantern Row earns | `KillsPerHour = 450` against 136 to 204 counted on the stages (`Config/Growth.luau`) | set it from TR69 block B's timed run: a clean run's kills over its seconds |
+
+- **Waits, named so nobody forgets:** Rook's evolution ("One at launch", Voidkin, "Evolution"; no code), after the three overhauls. Auto-salvage's stones come with the Forge (`Config/Chests.luau`, 107). The three shard grades, luck and voltage are as `launch-design.md`, section 2, left them.

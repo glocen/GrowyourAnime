@@ -2,7 +2,7 @@
 
 The systems of Grow your Anime, as they stand. Research's design of 2026-11-11, from the director's production package (`docs/archive/package-v13/`) and the director's words (`docs/decisions.md`). Where this page and the package differ, this page is the design and `docs/decisions.md`, "What changed from the package", says why.
 
-**Status:** designed on paper. Nothing here is built. The numbers are in `docs/balance.md` and `tools/balance/seeds.json`, never here.
+**Status:** the design, most of it built. Each piece's request entry says what's built and tested. The numbers are in `docs/balance.md` and `tools/balance/seeds.json`, never here.
 
 Marks: **[D]** the director's: their own words, or a choice the package records as theirs. Everything unmarked is research's design, open to change at its blockout.
 
@@ -69,6 +69,7 @@ Break a shard, meet a Voidkin. Lead with one, fight through a ground, win shards
 - **Evolution.** One at launch, Rook's, to prove the idea: the same character further along, with a changed look and a stronger signature. More follow only if the first is worth its cost.
   - **Open, for when evolution is built** [D, 2026-11-14, night: "evolution isnt for now ... just let remember about this"]: how stars carry through an evolution. Research's take for then: the evolved form is the same entry in the collection, so it keeps its stars, and copies of either form feed them.
 - **Roles.** A Voidkin is the lead, a worker, the champion, or resting. One role at a time. Each role earns its own experience: a worker by the kWh it makes [D, 2026-11-24; its seed, `docs/balance.md`], and a lead far below the account's best levels faster (`docs/balance.md`, "Catch-up").
+- **A worker made lead swaps places** [research, 2026-11-26, tier 2; TR72]. The old lead takes the worker's bay, so no bay is left empty by a swap. A lead that's healing goes home to heal instead, and the bay waits empty.
 
 ## Combat
 
@@ -245,6 +246,7 @@ One number for how strong the lead is with its preset, made to be watched rising
 | Dawn | rarer still | the last ground and the Tower |
 
 - **The convenience:** chests that fall near the avatar fly to it. Identical unopened chests stack ("Lantern Row Common × 37"). **Open all** opens a stack in one server step and shows one summary sorted by rarity, rare items lit; an Epic or better gets a short reveal of its own.
+- **Salvaging an item keeps what was put in it** [research, 2026-11-26, tier 2; TR72]. Its emblems and jewels go to the bag first. Its Reinforce level is lost, and the confirm says so with the number ("Its +7 is lost"). A worn item is refused, as today.
 - **Auto-salvage** is a setting: items under a rarity the player picks turn into forge stones and Credits as they're opened, but never an item that would raise the Combat Power of the player's best Voidkin of its class (for a piece any class wears, of any class's best). A class the player owns no Voidkin of protects nothing.
 - **The bag has a cap** and says so before it fills.
 - **Safe by construction:** each open is one transaction with an id, so a repeat is a no-op and nothing is half-granted; every item is written in the save step that removes its chest; bulk opens go in chunks. Every number: `src/shared/Config/Chests.luau`.
@@ -289,6 +291,7 @@ Its entrance stands behind each base [D], and the fight is in a room of its own 
 - **Rewards** by floor won: Credits rising with the floor, a chest chance rising with it, and a first-time bonus past the record. Fast floors pay nothing: they're the free ride to where it gets hard. One exception: floor 5's chest is sure the first time the account wins it, fast or not. Floors 1 to 5 are always Rook, Pip, Kirra, Lyric and Watt; the draw starts at floor 6 (branch `claude/design-review-rules`, a7cbd28, 2026-11-18). The Tower's chest has its own rarity row, so it gives Rare and better while Lantern Row is the only ground (`docs/balance.md`, "The Tower"). Each is written to the run's ledger on the server when its floor is won, and granted once when the run ends; a run's id makes a repeated claim a no-op.
 - **Interruptions:** leaving the ring, going home, a disconnect or a shutdown end the run at its last floor won, and nothing won is lost. The results open once at the next join. A run never resumes.
 - **The order** [D, 2026-11-19]: the room is built after the main game's open pieces. Until then the grey Tower, its platforms included, runs as it is. Its look is drawn ahead by Modulo [D, 2026-11-23, by 20:01: AR56]; the build keeps this order.
+- **The week** [the builder's, TR46; written here 2026-11-26]: past the five opening floors, the enemies come from the week, the same on every server, so the week's board is one race. The board holds each account's best floor this week. The week's first place goes out on the Broadcast ("Being seen").
 - **Not at launch** [D]: milestone bosses, cash-outs, branches, extra currencies.
 
 ## The world, in grey
@@ -311,7 +314,7 @@ Research's layout for TR2, 2026-11-12. The builder installs it in grey; how it l
   - **A pack belongs to everyone.** Every player whose lead hit one of its Shades gets that Shade's drop in full, as at the elite. Nobody walks past a fight they can't join, and nobody steals a kill. A pack comes back a set time after its last Shade falls (Config). That wait is also what limits how much faster a group earns than a player alone.
   - **The elite** stands in a square at the street's middle, 4 s across (64 studs), so anyone near can join (design, "The Festival of Battles").
   - **At the far end, the keeper's gate,** and behind it **the Lamplighter's ring** (80 studs across). Every player gets their own fight; how is the builder's call.
-  - **Beyond the ring:** Drum Court's gate, shut, in view, and saying it opens in an update [D, 2026-11-23, 15:06]. The first session's last beat points at what launches, not at this gate (`docs/north-star.md`). Beside it, the **shortcut home**, opened by the first win: in grey, a pad that sets the player down at their own plot.
+  - **Beyond the ring:** Drum Court's gate, shut, in view, and saying it opens in an update [D, 2026-11-23, 15:06]. A Lamplighter win is kept in the save, so the gate opens for that player the day Drum Court ships. The first session's last beat points at what launches, not at this gate (`docs/north-star.md`). Beside it, the **shortcut home**, opened by the first win: in grey, a pad that sets the player down at their own plot.
 - **The Festival Door** [D, 2026-11-12: "a door or something at the base to teleport to zones easily"]: a door on every plot that takes the player to the gate of any ground they've opened, with its twin at each gate to come home. It says where it leads [D, 2026-11-16, 00:43: "the portal need to be known it for festival of battle"]: from across the plot by the festival's light and lanterns, up close by its name on the plate over its ring, "Festival of Battles", and from afar by its sign with the ground's name. Once there are two grounds, its choice names each. So a plot can grow and stand apart without lengthening the trip to a fight, and the walk to the first Shade stops setting the plots' size. The Strip keeps what's worth walking to: the Shop, the Clash Grounds, the Calamity, and the other bases. Built with TR2's verdict and its numbers.
 - **Arrival:** the player's spawn is on their own plot, facing the Breaker and the three shards ("The first session").
 - **What the world marks** for code to read (the names and the contract are the builder's, `docs/engineering-plan.md`): each plot and its spawn, the Breaker, each bay, the battery, the festival gate, each pack's spawn, the elite's, the keeper's gate, the ring, the shortcut and its landing, the shut gate.
@@ -421,7 +424,7 @@ Research's layout for TR2, 2026-11-12. The builder installs it in grey; how it l
 | Credits | fights, overflow electricity, copies past seven stars, the Clash | the Void Shop, Reinforce, the base's and machines' upgrades |
 | Electricity | workers | breaking shards, infusion, the Condenser, the Training machine |
 | Research Points | first clears, Tower floors, the daily track, the Calamity | the Research Lab |
-| Forge stones, three grades | enemies by ground, keepers, the Tower, the Condenser, the shop | Reinforce |
+| Forge stones, three grades | enemies by ground, keepers, the Tower, the Condenser; the shop after launch (D6) | Reinforce |
 
 **The bag** [D, 2026-11-12: "we will need a inventory systems"] holds everything owned that isn't a Voidkin: items, chests, emblems, jewels, stones, shards. One screen with tabs by kind, sort and filter, a lock on anything precious, and a count of its space. Items that would raise Combat Power carry the up arrow (Combat Power, above).
 

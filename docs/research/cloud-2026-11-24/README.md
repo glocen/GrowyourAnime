@@ -55,7 +55,7 @@ Re-checked on this branch after its study reported it: the Upgrade press, the li
 | `docs/roblox-rules.md` says the paid-random-items page "says nothing on an outcome that gives nothing". | line 29 | Add the 2026-05-26 clarification | done, 2026-11-26 (line 29 and its source [30]) |
 | The Blender clip tools read `src/shared/Config/Camera.luau`, which doesn't exist. | `tools/blender/r6anim.py:1004` | Read `Config/Hud.luau`'s camera, or pass it in | Modulo |
 | A favourite doesn't sort first, though the rule's comment says it does. | `src/client/UI/Read.luau` | Sort it | done here, 40a48c8 |
-| Research Points, jewels' sockets, the Tower's weekly board: fields with no source, sink or reward. | `systems-map.md`, section 6 | One truth pass over `docs/design.md` | research |
+| Research Points, jewels' sockets, the Tower's weekly board: fields with no source, sink or reward. | `systems-map.md`, section 6 | One truth pass over `docs/design.md` | done, 2026-11-26 (TR72) |
 
 ## Action sheets
 

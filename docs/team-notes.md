@@ -16,14 +16,16 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **AR64's hair: rejected twice more, the study paused by the director** ("you will finish this trainning later", 00:49). Shag was "horrendous", a spiked build "still very very bad js learn do study". The study so far and what's left: `docs/research/hair-read.md`, "What the full-size pictures show". Nothing uploaded. AR59 Rook and AR62's frames wait on the hair.
 - **Now:** waiting on the director's word for what comes before the hair study resumes. Queued behind it: AR62's style frames, AR55's return as a whole screen, TR56's three chest pictures; Pip (AR63), Lyric and Watt wait for the frame's pick.
 
-**Scintilla (effects).** 2026-11-26, 00:01. **Now: AR58's next look and AR61's quarter are in, for research** (`build/handoff/Support/checkpoint/next.txt`, `build/handoff/Hits/checkpoint/quarter.txt`). Two misses I found are changed in the rows and not yet seen: the mend's flash moved inside the chest, drawn toward the camera; the star's bloom is a particle and its lance starts at the contact.
-- **Next:** AR52's shield and line targets, offline; in my next Studio turn, the mend's flash, the star's two fixes and its dark take at night. Rows waiting on Faber's hooks: AR61, AR52's shield and line, AR7.
-- **For Faber:** a particle picture's first use in a session draws nothing (`Rows.Warm` draws no particle), and a one-particle row rounds to 0 below Effects level 0.5 (AR58's entry).
+**Scintilla (effects).** 2026-11-26, 01:22. **Now: AR7's and AR48's look, offline, while AR52's targets wait on research's pick.**
+  - AR52: the targets are on the game's own frames (`build/handoff/Shade/targets/`, 98d5fb60), and Faber's four review findings are fixed (d2cf510e).
+  - AR58: the first mend draws in a fresh session (`warm_*`).
+  - AR61: by day and at night, two misses: the bloom hidden by the fist, and the ink past the light. Both are changed (9de83fa9), and their take waits on my turn after Sonus.
+- **For research:** AR52's pick in pairs, AR58's close, AR61's take (one message, 01:22).
 
 **Sonus (sound).** 2026-11-24, stopped at the director's word of 21:25. **Now: the M1s per class and the five signatures, one finished sound each.** The words for all eleven tabs are set (TR42, "The M1's sound per class"); nothing shortlisted yet.
 - **Blocked:** my Studio calls wait on the hooks (item 10); then a 15-minute finder run, then the director's listen.
 
-**Turns.** Studio: one at a time while memory is short. The main place is open, Sonus's turn (2026-11-25, from 23:16: the finder's re-run in Edit; Scintilla's ended at 23:16, Edit, nothing running, not saved); Scintilla after Sonus (about 15 minutes: AR61's frame in the dark yard); and the Festival's place is closed. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
+**Turns.** Studio: one at a time while memory is short. The main place is open, Faber's turn (2026-11-26, from 01:03, about 40 minutes: the captures from the player's camera. Scintilla's ended at 01:03, Edit, nothing running, not saved; the bays and NL_Audition as Sonus left them, the Healer cast's list unsaved); Sonus after Faber (about 35 minutes, Edit only: TR64's ten shortlists); Scintilla after Sonus (about 20 minutes: AR61's star taken again, by day and at night); and the Festival's place is closed. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

@@ -15923,7 +15923,7 @@ Written by `tools/fx/shade_tells.py`, from the kit's uploaded meshes and images 
   - `GuardGlance`, on each glance: a small glint where the blow meets the paper, and five needles skating back off it toward the attacker. A glance, never a hit's size.
   - `GuardBreak`, on the break: a ring out from the shield's middle, the paper's puff a breath after, a light for 8 frames, and six paper chips flung out across it and on along the blow, turning, gone by 20 frames.
 - **The Dasher.** Feel line: a Dasher folds behind its mask and a blade of light cuts open along the street to your fighter, filling toward you like a fuse; then the Dasher is down it in a streak, and a slash bursts where it lands.
-  - `DasherLine`, DasherLunge's own effect, every row riding the root and held where it first shows, so the line stays on the stone along the aim fixed at `Line`. **Hero:** the lane, the shell flattened to a blade 12 studs long and 1.1 wide, pointed at both ends like the mask, cut open across in 4 frames on `Line`. **The fuse:** a brighter, narrower blade inside it, growing from the Dasher's feet to the line's end on `Land`: the time left to move. Both close over 6 frames after `Land`. A streak trails the root from `Lunge`, and on `Land` the crescent sheet slashes across the run with needles on along it.
+  - `DasherLine`, DasherLunge's own effect, every row riding the root and held where it first shows, so the line stays on the stone along the aim fixed at `Line`. **Hero:** the lane drawn as what the hit takes: within 2 studs of the 14-stud line from the feet, a plate with a round end at each side (Faber's review, 2026-11-26: nobody is hit off it), cut open across in 4 frames on `Line`. `World`, so an elite's lane is the same size. **The fuse:** six pieces of a brighter, narrower blade inside it, lit in turn from the feet to the end on `Land`: the time left to move. Both close over 6 frames after `Land`. A streak trails the root from `Lunge`, and on `Land` the crescent sheet slashes across the run with needles on along it.
 - **Levers named:** anticipation (the shield's snap before `Raise`, the fuse), a tell that counts down (the fuse), punctuation (the click ring, the slash), deflection read where it lands (the glance), the break as a release (chips, puff, light). The hitstop and the camera stay Faber's.
 - **Where they are:** `GuardGlance` and `GuardBreak` are in `src/shared/Config/EffectRows/`, played by nothing yet. `GuardShield` and `DasherLine` wait in `build/handoff/Shade/fx/`: an action's own effect is taken only once its action names it (the rows' logic case refuses it before), so they go in with Faber's hook.
 - **The hook asked of Faber** (code, the builder's):
@@ -15934,6 +15934,12 @@ Written by `tools/fx/shade_tells.py`, from the kit's uploaded meshes and images 
 - **The content check, 2026-11-24, on the spec: PASS**, with conditions. (1) The hook anchors the glance and the break on the shield, about 1.5 studs before the Guard, never at its root or chest. (2) The colour pass gets its own check: nothing red to maroon; the chips stay paper or light, never dark, glossy or liquid. (3) The glint stays under about 2 studs, with no light or screen-wide row on a glance; the light's share is measured on a take with several glances a second, and over the limit the glint holds lit rather than re-flashing. (4) Taken: the Dasher's landing needles start at the slash, in front of the body. **For Faber, seen by the check:** in `stretch2_guards_zoom.png` at 2.21 s a large pale yellow disc covers about a quarter of the frame over your fighter. It isn't these rows (nothing of mine is in the game), so it's a stand-in's or another effect's; worth a look that it can't stack when several Guards raise at once.
 - **Checks:** the content check on the spec, before the build; offline logic after the take (2402 passed, 0 failed, 11:27); the blockout in motion from the player's camera at the smallest phone, by day and night, beside the stand-ins; research's verdict.
 - **Status, 2026-11-24, 11:28:** implemented as data, not shown in the game. Tested: offline logic only. Visually reviewed: no. Director-accepted: no. **For Faber's review:** `tools/fx/shade_tells.py`, the four rows files, and `hit_sparks.py`'s `needles` (it now takes a direction; the hit sparks are unchanged, byte for byte).
+- **Faber's review, its four findings fixed (Scintilla, 2026-11-26, d2cf510e):** the fuse held in six pieces, the lane drawn to the hit's capsule, `World` on DasherLine, and one angle for each sheet's three passes. Faber's hooks play all four in the fight (26530cb0).
+- **The targets, on the game's own frames (Scintilla, 2026-11-26, 01:21):** `build/handoff/Shade/targets/`, on the stages in `build/handoff/Shade/stage/`.
+  - **The stages:** lossless takes by day with the lead pinned at AR61's spot, each with its backdrop and masks of the lead, the Shade and the HUD. The Guard is seen from the quarter's camera, the Dasher from behind the lead and from its side.
+  - **The Guard:** G1 pane, G2 ward and G3 wall, each with a peak, a strip and a break. From this camera Rook's fist covers most of the shield. G2's round rim reads around it; G3 hides behind it.
+  - **The Dasher:** D1 lane and D2 chevrons on both views. On the slate deck, the lane's amber fill reads peach, and the colour pass checks it against the no-red rule.
+  - **Status:** implemented as targets. Visually reviewed by me only. Not yet picked: research's pick in pairs.
 
 ## AR53. Goals' look, basic at launch: the dare's line, today's three, the Mask Ledger's page (Modulo, after AR52's clips)
 
@@ -17085,6 +17091,10 @@ Paint-overs on one frame of the game, in `build/handoff/Support/targets/`, each 
   - **2, 3 and 4 pass:** the beam is mint with a white thread. The caster holds a lit mint ball. At the strip's size the veil reads as a mint column with its crown and hoop.
   - **1's technique passes where it draws:** `next_mend_close.png`, its second row, carries A's peak: the white star, the mint mass and the shell round the body.
   - **1 closes on the next take, in play:** the first mend of a session draws its star and glow (after `Rows.Warm`), and from the front camera the flash stands clear of the body. Nothing else is open.
+- **That take, in a fresh session (Scintilla, 2026-11-26, 00:50):** `checkpoint/warm_first_vs_second.png` (nine frames from each landing: the first mend on top, the second below) and `warm_close_first_second.png`, at 60 fps from the three-quarter camera.
+  - The first mend draws its star and its glow in front of the body, as the second does.
+  - Rook stands partly over it on screen, since the client draws the lead off its server spot. The mend's read holds.
+  - **Status:** implemented. Tested in play. Visually reviewed by me only: 1 passes in my read, for research's look. Not director-accepted.
 
 ## AR59. Rook, redesigned to the anime bar (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
@@ -17482,6 +17492,12 @@ Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit firs
     - **The lance:** it was centred on the contact and ran about 11 studs at rung 4, half of it back over the attacker. It now starts at the contact and runs along the blow.
   - **The dark yard:** the yard reads pale by day (`quarter_yard_by_day.png`), so that take goes at night in the place's cycle.
 - **Status:** implemented. Tested: the rows case, 7,110 passed. Visually reviewed by me only. Not director-accepted. **For Faber's review:** the three rows files and `tools/fx/hit_sparks.py`.
+- **The next take, by day and at night (Scintilla, 2026-11-26, 01:00):** Rook pinned where the targets have him (the client had drawn him 1.8 studs off his server spot). `checkpoint/next_star_{day,night}_{strip,rungs}_vs_target.png` and `next_star_r3_close.png` (target, day, night at rung 3).
+  - **Two misses on the main read:**
+    - **The white mass at the peak is still missing.** The bloom draws, but Rook's fist stands between the camera and the contact and hid it. Every layer now draws 2.5 studs nearer the camera (`HIT_FRONT`), so the flash lies over the fist as in the target. This is the same technique, its depth fixed.
+    - **The ink showed past the light** as dark spikes at rung 4 and a dark hoop at the ring. The star's ink now sits inside its arms; the lance's, the second star's and the ring's are gone.
+  - **Faber's hook in the fight** (26530cb0), seen live at night: the star on each landed hit, gold on criticals (`build/captures/ar61/star_live_night.mkv`).
+  - **Status, 9de83fa9:** implemented, the rows taken. Tested: the logic cases (7,701). The changed rows aren't seen in Studio yet: the take waits on my next turn, and it's the bloom's last try before the options go to the director. Visually reviewed by me only. Not director-accepted. **For Faber's review:** the three rows files and `tools/fx/hit_sparks.py`.
 
 ## AR62. The screens' redo: their colours, their light and their art (research's audit, then Modulo's directions, then Faber, a screen at a time)
 

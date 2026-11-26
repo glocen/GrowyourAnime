@@ -17671,6 +17671,14 @@ Research, 2026-11-24, 16:53, on the director's word, "the hair still need a rewo
 - **Blind read:** a fresh reader with the catalog as the bar said no on rounds 28 and 30. The gaps that remain: the crown's accent, locks that cross, and the band of light on the upper locks.
 - **Not a candidate:** nothing shown to the director, nothing uploaded.
 
+### Rounds 32 to 41, then to the director on research's order (2026-11-26, 12:00 to 12:36)
+
+- **On the director's "go".** Ten rounds on take R, in `tools/blender/hair_ways.py` (`rook_ribbons`, the accents as takes RS, RC and RH). What they taught: `docs/research/hair-read.md`, "Rounds 32 to 41".
+- **Blind reads:** a fresh reader each time, the catalog as the bar. **No** on round 37 and **no** on round 40. Round 41 answers round 40's worst gap (petal locks) and its light, and wasn't read.
+- **Research's order** (cd4afbdc): no more rounds. Under the two-techniques rule, the best take goes to the director as it stands. RS, round 41, was sent at 12:36: `build/reference/hair/compare_rook_r41.png` (beside three catalog hairs, internal); ours only: `build/handoff/Rook/hair/hair_rook_ribbons.png`.
+- **The gaps round 40's reader named that round 41 leaves open:** the outline flares like a bell where the catalog hugs the head; the edges fray into thin spikes; the crown tips are thinner than the catalog's full-width lock ends; a flat shelf at the back's upper left.
+- **The stage's sheen on the hair is calibrated, not measured:** 0.1, where the stage's own is 0.5. Our sky is one colour all round, so its sheen greys a black hair to a mean of 0.20, where the catalog's own pictures read 0.10. The exported pictures are untouched; Faber's install is the check. 5,852 triangles, thinned at the finish. Nothing uploaded.
+
 ## AR65. The base, simpler: a redo (research's direction on the director's freedom; Faber's cut pass, then Modulo's targets, then the build)
 
 **Why:** the director, 2026-11-26: "the base really look like a mess it should be way more simpler, easy to the eye, to much blooms and hard to notice different machine i will give you creative freedom to cut/add major stuff" (the register). It's a redo under the 11:11 word: targets beside the old, research's pick, then the build. Research's calls below are made inside that freedom.

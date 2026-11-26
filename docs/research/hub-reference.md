@@ -32,6 +32,16 @@
 
 These lessons are about structure only. No layout, prop, shape or palette of theirs is taken.
 
+## A second reader, cold (Gemini 4 Neon, 2026-11-26, 21:41)
+
+Gemini was given the same frame with no word of ours, and asked whether it reads as shipped or prototype (`build/scratch/quaestor/gemini/transcripts/2026-11-26_base-cold-read.md`). Its verdict was "an early prototype", for the reasons above. What it added (OBSERVED in our frame unless marked):
+
+- **The HUD collides:** Roblox's player list sits over our power pill at the top right, and the eye toggle floats mid-left, docked to nothing. Bugs, not looks.
+- **Sightlines:** the Void Breaker hides the bays behind it, and the Festival gate is cut by the frame's right edge.
+- **The loop is invisible:** nothing shows power going from the bays to the Generator. DESIGN: a visible link would show the base's whole idea at a glance.
+- **Biggest lift for least work, in its view:** one lighting and post-processing pass (an angled late-afternoon sun, a cool ambient, atmosphere, bloom, colour correction). Its values are UNVERIFIED and are tried against today's settings, never pasted in.
+- **Discarded:** its "festival roofs" (the festival look stays in Lantern Row).
+
 ## Not answered yet
 
 - **A hub in daylight.** Anime Crusaders' lobby is at night, and ours is in day. The next evidence is two or three more shipped games' hubs at the player's camera on the PC, captured as Anime Crusaders' were. Candidates: Anime Vanguards' lobby, and one bright, daytime hub.

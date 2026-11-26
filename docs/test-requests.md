@@ -5087,6 +5087,8 @@ Research, 2026-11-24, from the cloud. Launch-design's items 6 and 10. The design
 - **Cases, one a rule:** each event's reach; a bought, failed or typed thing never told; the throttle falling to this server; a bundle every 5 s at most; the queue holding behind a card, a ring, a reveal and a screen; a stale line chat-only; a repeated id shown once; the message under 1 kB at its fullest; a first shown once per rarity per account.
 - **Checks:** the content check passed the words on 2026-11-24, after one change ("found {voidkin} in a shard", not "broke open"), and a case keeps the line to our words, ids and the display name, since `DisplaySystemMessage` isn't filtered; a take with two Studio test servers, if Studio can run them, else two players in one; research's verdict in motion.
 - **Order:** after TR56 and the open pieces.
+- **Research's verdict on the block, 2026-11-26, 01:35,** from `build/captures/tr57/` at 568×320: it passes as a block. The plate says who found what in two lines, with the rarity lit, in the target card's place, and keeps to the band between the lead's card and the pills (Faber's fix, 25510ee0). The chat draws the colour tag.
+  - **Must-fix (contrast; class: every rarity word on a dark panel):** the Common grey is dim on the chat's panel. The chat takes the bag's lifted rarity words (#B9BDC6 for Common; Faber's tier 1 of 2026-11-25), from the same table.
 
 ## TR58. The boards on the Strip (research's request, tier 2, for Faber; Modulo the boards)
 
@@ -5103,6 +5105,10 @@ Research, 2026-11-24, from the cloud. Launch-design's item 7, the north star's "
 - **Cases:** a post only raises; the post throttle; the top ten and the own-rank line from a made-up page; a name never stored, only an id.
 - **Checks:** the content check on the boards' titles; a world-report line for their place; research's verdict from the player's camera walking the crossing.
 - **Order:** after TR57.
+- **Research's verdict on the block, 2026-11-26, 01:35,** from `build/captures/tr58/` (the window's take; the phone's shows only sky, so it's retaken): the feel line doesn't read. A row is about 9 px on a window and 4 px on a phone at 26 studs.
+  - **Must-fix (the main read; class: every board's face):** each face holds the top three and the viewer's own row, at about three times today's size. The viewer's row is lit and shows its rank first ("9 · glocen · 7,173"); a viewer in the top three is lit where they stand, and the fourth row shows the fourth. That's Faber's options 1 and 2 together, and it replaces "top ten each". The boards stay where they are: nearer the path would only double the size and crowd the crossing. The full list waits for a tap, with TR33.
+  - **Must-fix (placement):** from the path, a pole stands in front of the Tower board's title. One of the two moves.
+  - **Retake:** on the smallest phone, from the path's nearest point, walking the crossing.
 
 ## TR59. The welcome week and codes (research's request, tier 2, for Faber)
 
@@ -5118,6 +5124,10 @@ Research, 2026-11-24, from the cloud. Launch-design's item 8. The design: `docs/
 - **Cases:** each day's gift; a missed day waiting; a repeated claim paying once; Lyric owned and not; a code taken twice, ended, wrong, the sixth wrong try in a minute; no gift of Credits or of anything the store sells.
 - **Checks:** the content check passed the lines on 2026-11-24. No code is ever put behind a like, a favourite, a group join or a follow until that has been checked against Roblox's rules (the director's, with where codes are posted). Research's verdict on Home's row.
 - **Order:** after TR56, whose case, pouch and crate it grants.
+- **Research's verdict on the blocks, 2026-11-26, 01:35,** from `build/captures/tr59/` at 568×320: the week's row reads (today lit, day 1 taken, Lyric's face at day 7), and the codes card works. Three must-fixes:
+  - **The taken day (class: every taken tile):** the check stands over the item's words ("Fo✓ Crate"). A taken day shows the check alone on a dimmed tile, and its words go.
+  - **The list over the return card (class: a panel over the card):** while the Today list is open, the return card waits hidden, and it comes back when the list closes.
+  - **The codes card (class: colour and size):** the card shrinks to its content (the field, Take and the footnote), with no empty middle. The field takes the kit's neutral glass, not violet: the director has called the game too purple six times. AR62's style frame restyles it later.
 
 ## TR60. The capture after a reveal (research's request, tier 1 for the capture, tier 2 for its tile; for Faber)
 

@@ -52,6 +52,11 @@ function NoticeCases.Cases(): { any }
 				if holder == nil then
 					return
 				end
+				-- A notice an earlier case raised leaves first, or its frames would count as this one's.
+				local motion = LOOK.Motion
+				t.Check("no notice still up from before", waitFor(t, motion.In + motion.Hold + math.max(motion.Out, motion.Fade) + 1, function(): boolean
+					return not holder.Visible
+				end))
 				-- Watched every frame from the level's arrival.
 				local scale = Layers.Scale()
 				local first, flashed, knocked, sheened, biggest, squashed = nil :: number?, 0, 0, false, 0, math.huge
@@ -118,7 +123,7 @@ function NoticeCases.Cases(): { any }
 					local corner = signature.AbsolutePosition.Y + signature.AbsoluteSize.Y + ((press.Press.Ring + press.Press.Line) / press.Page + LOOK.Below) * scale
 					t.Check("at the card's left edge", math.abs(holder.AbsolutePosition.X - card.AbsolutePosition.X) < 1,
 						string.format("%.1f, the card's %.1f", holder.AbsolutePosition.X, card.AbsolutePosition.X))
-					t.Check("under the lead's corner, Below its press's ring", math.abs(holder.AbsolutePosition.Y - corner) < 1,
+					t.Check("under the lead's corner, Below its press's ring", math.abs(holder.AbsolutePosition.Y - corner) < 1 + scale, -- whole points
 						string.format("%.1f, want %.1f", holder.AbsolutePosition.Y, corner))
 					local wide = math.ceil(LOOK.Base + math.max(Text.Wide(name, name.Text), Text.Wide(line, line.Text)))
 					t.Check("as wide as its words ask, Base and the wider", math.abs(holder.AbsoluteSize.X / scale - wide) < 0.5 and LevelNotice.Wide() == wide,

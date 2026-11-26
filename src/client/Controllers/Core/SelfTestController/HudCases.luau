@@ -180,8 +180,10 @@ function HudCases.Cases(given: Given): { any }
 				local credits, power = (parts.Credits :: GuiObject).Parent :: GuiObject, (parts.Electricity :: GuiObject).Parent :: GuiObject
 				local dock = parts.Dock :: GuiObject
 				t.Wait(0.3)
-				HudController.FightFor(12)
-				t.Check("in a fight, both pills and the dock step out", waitFor(t, 1, function(): boolean
+				HudController.FightFor(20)
+				-- A reward an earlier case banked may still be peeking: it runs out, then the fight holds them out.
+				local peekLongest = HudConfig.FightHides.Flight + HudConfig.Motion.Count.Seconds + HudConfig.FightHides.Hold
+				t.Check("in a fight, both pills and the dock step out", waitFor(t, peekLongest + 1, function(): boolean
 					return not credits.Visible and not power.Visible and not dock.Visible and not parts.Chip.Visible
 				end), `credits {credits.Visible}, power {power.Visible}, dock {dock.Visible}`)
 				t.Check("credits banked mid-fight", t.Server("DataCredits", 5).Ok == true)

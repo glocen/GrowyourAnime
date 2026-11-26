@@ -331,7 +331,7 @@ local function eyeButton(): TextButton
 		Text = "",
 		Bare = true,
 		Size = UDim2.fromOffset(tapArea(), tapArea()),
-		AnchorPoint = Vector2.new(0.5, 0.5),
+		AnchorPoint = Vector2.new(0, 0), -- its tap area from the card's right edge, so it never lies over the card
 		Parent = Layers.Get("Hud"),
 		OnPress = function()
 			SpectateController.Set(not SpectateController.On())
@@ -343,7 +343,7 @@ local function eyeButton(): TextButton
 	local size = Slate.Pt(look.Size)
 	local disc = Slate.Plate(skin, "Disc", Vector2.new(size, size), "Plain", size / 2)
 	disc.AnchorPoint = Vector2.new(0.5, 0.5)
-	disc.Position = UDim2.fromScale(0.5, 0.5)
+	disc.Position = UDim2.fromOffset(Slate.Pt(look.Gap) + size / 2, Slate.Pt(look.Down) + size / 2) -- B's place, in its area
 	local glyph = Slate.Pt(look.Icon)
 	local open = Instance.new("Frame")
 	open.Name = "On"
@@ -547,7 +547,11 @@ local function placeCorner()
 	corner = { Press = press }
 	local eyeSize = Slate.Pt(c.Eye.Size)
 	eye.Size = UDim2.fromOffset(tapArea(), tapArea())
-	eye.Position = UDim2.fromOffset(x + w + Slate.Pt(c.Eye.Gap) + eyeSize / 2, y + Slate.Pt(c.Eye.Down) + eyeSize / 2)
+	eye.Position = UDim2.fromOffset(x + w, y)
+	local disc = Skin.Of(eye):FindFirstChild("Disc") :: Frame?
+	if disc then
+		disc.Position = UDim2.fromOffset(Slate.Pt(c.Eye.Gap) + eyeSize / 2, Slate.Pt(c.Eye.Down) + eyeSize / 2)
+	end
 	auto.Size = UDim2.fromOffset(math.max(Slate.Pt(c.Auto.Size.X), tapArea()), tapArea())
 	placeEye()
 	-- The level-up's notice under the corner's row, at the card's left edge (AR12, take B; TR41 (c)), stopping a gap short

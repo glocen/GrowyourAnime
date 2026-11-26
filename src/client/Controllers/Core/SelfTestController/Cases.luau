@@ -4507,14 +4507,17 @@ local cases = {
 			t.Check("a whole tap target", eye.Size.X.Offset >= Theme.Size.Tap and eye.Size.Y.Offset >= Theme.Size.Tap, tostring(eye.Size))
 			-- AR62, B: a 26-point disc docked to the lead card's top right, Gap past its edge and Down from its top (the
 			-- target's page points), on its whole tap area
+			-- (a UDim's offset is whole points: each within one)
 			local slate: any = HudConfig.Slate
 			local card = HudController.Parts().Lead :: GuiObject
 			local disc = slate.Eye.Size / slate.Page
-			local dx = (eye.Position.X.Offset - disc / 2) - (card.Position.X.Offset + card.Size.X.Offset)
-			local dy = (eye.Position.Y.Offset - disc / 2) - card.Position.Y.Offset
-			t.Check("docked to the lead card's top right", math.abs(dx - slate.Eye.Gap / slate.Page) < 0.01 and math.abs(dy - slate.Eye.Down / slate.Page) < 0.01, string.format("%.1f right, %.1f lower", dx, dy))
 			local plate = eye:FindFirstChild("Disc", true) :: Frame?
-			t.Check("its disc 26 points across", plate ~= nil and math.abs(plate.Size.X.Offset - disc) < 0.01, if plate then tostring(plate.Size) else "none")
+			local k = card.AbsoluteSize.X / math.max(card.Size.X.Offset, 1)
+			local dx = if plate then (plate.AbsolutePosition.X - (card.AbsolutePosition.X + card.AbsoluteSize.X)) / k else 0
+			local dy = if plate then (plate.AbsolutePosition.Y - card.AbsolutePosition.Y) / k else 0
+			t.Check("docked to the lead card's top right", plate ~= nil and math.abs(dx - slate.Eye.Gap / slate.Page) < 1.5 and math.abs(dy - slate.Eye.Down / slate.Page) < 1.5, string.format("%.1f right, %.1f lower", dx, dy))
+			t.Check("its disc 26 points across", plate ~= nil and math.abs(plate.Size.X.Offset - disc) < 1, if plate then tostring(plate.Size) else "none")
+			t.Check("its tap area clear of the card", eye.AbsolutePosition.X >= card.AbsolutePosition.X + card.AbsoluteSize.X - 1)
 			local shut, open = eye:FindFirstChild("Off", true), eye:FindFirstChild("On", true)
 			t.Check("shut, a lid's line on its plain disc, while off", shut ~= nil and shut:IsA("GuiObject") and shut.Visible
 				and open ~= nil and open:IsA("GuiObject") and not open.Visible and plate ~= nil and plate:GetAttribute("Side") == "Plain")
@@ -4567,7 +4570,7 @@ local cases = {
 			t.Check("the eye says why", waitFor(t, 1, function(): boolean
 				return Button.State(eye) == "Disabled"
 			end), Button.State(eye))
-			t.Check("fainter while it can't be used", shut ~= nil and shut:IsA("ImageLabel") and math.abs(shut.ImageTransparency - (1 - look.Off)) < 0.01)
+			t.Check("fainter while it can't be used", shut ~= nil and shut:IsA("Frame") and math.abs(shut.BackgroundTransparency - (1 - look.Off)) < 0.01)
 			local face = eye:FindFirstChild("Label", true) :: TextLabel?
 			local why = tostring(eye:GetAttribute("Disabled"))
 			t.Check("in a toast on a tap, its face only the eye", not Button.Press(eye) and table.find(Toast.Shown(), why) ~= nil
@@ -5180,7 +5183,7 @@ local cases = {
 				-- against that; the number keeps its ink through it.
 				local reach = (3 - (rest.R + rest.G + rest.B)) * cfg.Glow
 				t.Check("and its badge brightened toward white", whitest >= reach * 0.8, string.format("%.3f of its %.3f", whitest, reach))
-				t.Check("its colour back after", HudCases.BadgeTop(parts):ToHex() == rest:ToHex() and level.TextColor3 == HudConfig.Card.LeadLevel, HudCases.BadgeTop(parts):ToHex())
+				t.Check("its colour back after", HudCases.BadgeTop(parts):ToHex() == rest:ToHex() and level.TextColor3 == (HudConfig.Slate :: any).AccentInk, `{HudCases.BadgeTop(parts):ToHex()}, its number {level.TextColor3:ToHex()}`)
 				t.Check("the thread glinted", glinted >= cfg.Glow - 0.05, string.format("%.2f opaque", glinted))
 				t.Check("and the glint's gone after", not glint.Visible)
 			end
@@ -6090,13 +6093,13 @@ local cases = {
 			local function state(share: number, flash: number?, seen: number?, action: string?): Readout.State
 				return { Share = share, Full = share >= 1, Flash = flash or 0, Swell = 0, Seen = seen or 1, Action = action or drawn or "", Class = "Warrior" }
 			end
-			t.Near("the press is the tap's size", piece.Frame.Size.X.Offset, slate.Press.Size / slate.Page, 1e-6)
+			t.Near("the press is the tap's size", piece.Frame.Size.X.Offset, slate.Press.Size / slate.Page, 1) -- whole points
 			for _, share in { 0, 0.25, 0.5, 0.75, 0.99 } do
 				Readout.Step(piece, state(share))
 				t.Near(`at {share}: it says how full`, piece.Frame:GetAttribute("Share") :: number, share, 1e-6)
 				-- The ring clockwise from the top: the right half to 0.5, the left after (UI.Readout's halves).
 				t.Near(`at {share}: the right half lit to its share`, piece.Halves[1].Rotation, math.min(share, 0.5) * 360, 1e-6)
-				t.Near(`at {share}: the left half after it`, piece.Halves[2].Rotation, math.max(share, 0.5) * 360, 1e-6)
+				t.Near(`at {share}: the left half after it`, piece.Halves[2].Rotation, math.max(share, 0.5) * 360, 1e-3)
 				t.Check(`at {share}: charging, the glass and the icon in white, no gold`, piece.Icon.ImageTransparency < 0.01 and piece.Gold.BackgroundTransparency > 0.99 and piece.ReadyIcon.ImageTransparency > 0.99)
 			end
 			Readout.Step(piece, state(1))

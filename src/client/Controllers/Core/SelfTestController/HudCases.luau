@@ -677,7 +677,7 @@ function HudCases.Cases(given: Given): { any }
 				before = shakes()
 				Button.Press(base)
 				t.Check("a tap says it's in a fight, and shakes", waitFor(t, REPLICATE, function(): boolean
-					return said("In a fight") and shakes() > before
+					return said("Not during a fight") and shakes() > before
 				end))
 				-- A hit in the charge cancels it, and nothing is spent.
 				t.Server("HomeReady")

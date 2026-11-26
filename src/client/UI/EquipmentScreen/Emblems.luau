@@ -129,7 +129,7 @@ function EmblemsPage.Build(context: Look.Context): Look.Page
 			return answer.Ok == true
 		end
 		if answer.Ok ~= true then
-			context.On.Say(Look.Refused(answer))
+			context.On.Say(Look.Refused(answer), true)
 			paint(context.Latest())
 			return false
 		end
@@ -154,7 +154,7 @@ function EmblemsPage.Build(context: Look.Context): Look.Page
 			return answer.Ok == true
 		end
 		if answer.Ok ~= true then
-			context.On.Say(Look.Refused(answer))
+			context.On.Say(Look.Refused(answer), true)
 			paint(context.Latest())
 			return false
 		end

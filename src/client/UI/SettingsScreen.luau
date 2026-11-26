@@ -25,6 +25,7 @@ local HudConfig = require(Shared.Config.Hud)
 local UIKit = require(Shared.Config.UIKit)
 local Settings = require(Shared.Rules.Settings)
 local Codes = require(Shared.Rules.Codes)
+local Refusal = require(Shared.Rules.Refusal)
 local WelcomeConfig = require(Shared.Config.Welcome)
 
 local UI = script.Parent
@@ -41,7 +42,7 @@ SettingsScreen.Name = "Settings"
 
 export type On = {
 	Act: (name: string, args: any) -> { [string]: any },
-	Say: (words: string) -> (),
+	Say: (words: string, refused: boolean?) -> (), -- a toast; grey when it's a refusal (TR71 B)
 }
 
 local S = HudConfig.Settings
@@ -156,7 +157,7 @@ local function save(row: Row)
 	task.spawn(function()
 		local answer = given.Act("Settings", { Name = row.Name, Value = value })
 		if answer.Ok ~= true then
-			given.Say("Not saved. Try again.")
+			given.Say(Refusal.Words("Settings", "Unsaved"), true)
 			SettingsController.Keep(row.Name, SettingsController.Level(row.Name))
 		end
 	end)
@@ -348,7 +349,7 @@ local function switchMade(parent: Frame, k: number, name: string): Frame
 			dressSwitch(press, if answer.Ok == true then not now elseif after then Settings.On(after, name) else now)
 		end
 		if answer.Ok ~= true then
-			handle.Say("Can't change it now")
+			handle.Say(Refusal.Words("Settings", "Unsaved"), true)
 		end
 		return answer.Ok == true
 	end

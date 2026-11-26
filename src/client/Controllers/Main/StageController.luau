@@ -30,6 +30,7 @@ local HudConfig = require(Shared.Config.Hud)
 local UIKit = require(Shared.Config.UIKit)
 
 local UI = script.Parent.Parent.Parent.UI
+local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
 local Toast = require(UI.Kit.Toast)
 local Glass = require(UI.Kit.Glass)
@@ -98,8 +99,8 @@ local on: StageScreen.On = {
 		local ok, answer = pcall(Net.Client.Invoke, "Home")
 		return if ok and type(answer) == "table" then answer else { Ok = false }
 	end,
-	Say = function(words: string)
-		Toast.Show(words)
+	Say = function(words: string, refused: boolean?)
+		Toast.Show(words, if refused then Theme.Colour.TextDim else nil) -- a refusal in grey (TR71 B)
 	end,
 	Lead = function(): (boolean, number?)
 		local lead = HudController.Lead()

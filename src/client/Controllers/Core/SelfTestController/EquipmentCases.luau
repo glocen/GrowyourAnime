@@ -95,7 +95,7 @@ local function open(t: any, page: string, id: string): boolean
 	if profile == nil then
 		return false
 	end
-	EquipmentScreen.Open(page, profile, { Act = ProfileController.Act, Say = function(_: string) end })
+	EquipmentScreen.Open(page, profile, { Act = ProfileController.Act, Say = function(_: string, _refused: boolean?) end })
 	t.Wait(MOTION.WorkStart + MOTION.WorkTime + 0.1)
 	return Screen.Current() == EquipmentScreen.Name and EquipmentScreen.Choose(id)
 end

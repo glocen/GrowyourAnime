@@ -46,6 +46,7 @@ local Panel = require(UI.Kit.Panel)
 local Text = require(UI.Kit.Text)
 local Skin = require(UI.Kit.Skin)
 local Row = require(UI.Kit.Row)
+local Refuse = require(UI.Kit.Refuse)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
 local RevealStage = require(UI.Reveal)
@@ -117,32 +118,6 @@ local DOOR_PLATE = 12 -- its plate over that, near, and until its pieces are in:
 -- against "Intelligence · Mage · Fire" at 178, the longest line before the types took their colours' names (TR36),
 -- and "Chamber 2 · 1 min 59 s" at 164.
 local SCREEN = Vector2.new(660, 320)
-
--- What a refusal says to the player, by its code (Rules.Base, Rules.Collection).
-local REASON: { [string]: string } = {
-	Chosen = "The first shard is already chosen",
-	NoShard = "You have none of that shard",
-	Empty = "Nothing there",
-	Leading = "Your lead can't work a bay",
-	Working = "Take it out of its bay first",
-	Named = "That shard holds one Voidkin",
-	Infused = "That shard already has its voltage",
-	Short = "Not enough charge in the battery",
-	Brief = "Saves less than a minute",
-	Closed = "The Power screen isn't open yet",
-	Over = "Over 100%. Lower one share.",
-	Moved = "That shard changed. Try again.",
-	BadArgs = "That can't be done",
-	Unknown = "That can't be done",
-	Stale = "Already done",
-	Cap = "That's the top level for now",
-	Ceiling = "Upgrade the base first",
-	NoAnswer = "That didn't go through. Try again.",
-	Asleep = `The Stone Condenser turns on at base level {CondenserConfig.Wakes}`,
-	Busy = "The Condenser is busy",
-	Stones = "Not enough stones",
-	Low = `The Stone Condenser turns Mid into High from its level {CondenserConfig.Converts.Mid.FromLevel}`,
-}
 
 -- A machine's plate (AR65 must-fix 2; Config.Hud.Plates.Machine): its name, its accent (a key of Machine.Accent, or none:
 -- the words' ivory), and the Piece names of the laid parts it stands over (a pattern).
@@ -231,14 +206,11 @@ local function opens(index: number): string
 	return if level then `Opens at base level {level}` else "Opens with more Voidkin"
 end
 
-local function act(name: string, args: any?): { [string]: any }
+-- An Act, and a refusal's words in grey (Config.Refusals' Base; TR71 B), `fields` filling its number: "Need 4 more stones".
+local function act(name: string, args: any?, fields: { [string]: any }?): { [string]: any }
 	local answer = ProfileController.Act(name, args)
 	if answer.Ok ~= true then
-		local said = REASON[tostring(answer.Error)]
-		if said == nil then
-			warn(`[BaseController] {name}: an unnamed refusal, {tostring(answer.Error)}`) -- the output names it; a player never reads a code
-		end
-		Toast.Show(said or "That didn't go through. Try again.", Theme.Colour.TextDim)
+		Refuse.Show("Base", answer, fields, `BaseController {name}`)
 	end
 	return answer
 end
@@ -920,7 +892,7 @@ local function bayRows(list: ScrollingFrame, view: Profile.View, now: Read.Base)
 				Detail = `Lv {owned.Level} · {Read.Kw(hand.Kw)}{gain}`,
 				Action = "Station",
 				Primary = true,
-				Disabled = if hand.Where == "Here" then "Here" elseif hand.Where == "Lead" then "Leading" else nil,
+				Disabled = if hand.Where == "Here" then "In this bay" elseif hand.Where == "Lead" then "Leading" else nil,
 				OnPress = function()
 					if act("SetWorker", { Bay = picking, Voidkin = owned.Id }).Ok == true then
 						pickingBay = nil
@@ -1060,7 +1032,12 @@ end
 
 -- The convert panel's prompt, pressed (TR37): the convert the card offers begins, or `from`'s. For tests too.
 function BaseController.Convert(from: string?): { [string]: any }
-	local answer = act("Convert", { From = from or convertFrom })
+	local grade = from or convertFrom
+	local recipe = if grade then CondenserConfig.Converts[grade] else nil
+	local view = ProfileController.Get()
+	local held = if view and grade and view.Bag.Stones then view.Bag.Stones[grade] or 0 else nil
+	local need = if recipe and held then math.max(recipe.Take - held, 0) else nil
+	local answer = act("Convert", { From = grade }, { Need = if need and need > 0 then need else nil, Grade = grade })
 	local c = CondenserConfig.Converts[tostring(answer.From)]
 	if answer.Ok == true and c then
 		Toast.Show(`Converting {c.Take} {c.From} into {c.Give} {c.To}`)

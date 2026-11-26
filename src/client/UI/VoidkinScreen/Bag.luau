@@ -40,6 +40,7 @@ local ChestRows = require(Shared.Definitions.Chests)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Rules = require(Shared.Rules.Bag)
 local Chests = require(Shared.Rules.Chests)
+local Refusal = require(Shared.Rules.Refusal)
 local Emblems = require(Shared.Rules.Emblems)
 local Jewels = require(Shared.Rules.Jewels)
 local Rarity = require(Shared.Definitions.Rarity)
@@ -56,6 +57,7 @@ local Read = require(UI.Read)
 local Text = require(UI.Kit.Text)
 local Button = require(UI.Kit.Button)
 local Toast = require(UI.Kit.Toast)
+local Refuse = require(UI.Kit.Refuse)
 local Skin = require(UI.Kit.Skin)
 local ShardTag = require(UI.ShardTag)
 local Seam = require(script.Parent.Seam)
@@ -108,22 +110,10 @@ local function chestPicture(name: string?): string?
 	return if name and UIKit.Images[name] then name else nil
 end
 local NUMBER_ROW = 22 -- the card's Combat Power line
--- The full bag's way out (the follow-up's item 6): what frees a slot, said wherever a full bag stops an open.
-local FREE_A_SLOT = "Bag full. Salvage an item to free a slot."
-local CHEST_SAID: { [string]: string } = { NotEnough = "Not that many held", BagFull = `The bag is full: {FREE_A_SLOT}`, Unknown = "Not now" }
-local SALVAGE_SAID: { [string]: string } = {
-	NotOwned = "It isn't in the bag",
-	Worn = "Take it off first",
-	Unknown = "Not now",
-}
+-- The full bag's way out (the follow-up's item 6): what frees a slot, said wherever a full bag stops an open, in the
+-- one table's words (Config.Refusals' Chests).
+local FREE_A_SLOT = Refusal.Words("Chests", "BagFull")
 local ARMED = 3 -- s the salvage's second tap is waited for
-local EQUIP_SAID: { [string]: string } = {
-	NotOwned = "It isn't in the bag",
-	WrongSlot = "Wrong slot",
-	WrongClass = "Another class's weapon",
-	Unknown = "Not now",
-	InCombat = "Not during a fight",
-}
 
 local kind = "All"
 local sort = "Rarity"
@@ -135,15 +125,13 @@ local slots: Frame? = nil -- the doll's fourteen slots, drawn again on each choi
 local room: Frame? = nil -- the card's room, over the doll, clipping its slide
 local card: Frame? = nil
 
-local function said(map: { [string]: string }, what: string, answer: { [string]: any }): boolean
+-- An answer: true when it went through; a refusal says its fix in grey, in `system`'s words (Config.Refusals; TR71 B),
+-- and `what` names the press in the output only.
+local function said(system: string, what: string, answer: { [string]: any }): boolean
 	if answer.Ok == true then
 		return true
 	end
-	local word = map[tostring(answer.Error)]
-	if word == nil then
-		warn(`[VoidkinScreen.Bag] {what}: an unnamed refusal, {tostring(answer.Error)}`)
-	end
-	Toast.Show(`{what}: {word or "Not now"}`, Theme.Colour.TextDim)
+	Refuse.Show(system, answer, nil, `VoidkinScreen.Bag {what}`)
 	return false
 end
 
@@ -759,7 +747,7 @@ local function itemCard(context: Context, at: Layout, id: string)
 		Palette = Seam.Palette,
 		OnPress = function(): boolean
 			local args = { Preset = owned.Preset, Slot = info.Worn or info.Slot, Class = if Gear.IsHand(info.Worn or info.Slot) then class else nil, Item = if info.Worn then "" else id }
-			local ok = said(EQUIP_SAID, if info.Worn then "Can't take it off" else "Can't equip it", context.Act("Equip", args))
+			local ok = said("Equip", if info.Worn then "Take off" else "Equip", context.Act("Equip", args))
 			if ok then
 				close() -- the doll shows again, its Combat Power counting to its new number
 			end
@@ -799,7 +787,7 @@ local function itemCard(context: Context, at: Layout, id: string)
 			end
 			armedAt = 0
 			local answer = context.Act("SalvageItem", { Item = id })
-			if not said(SALVAGE_SAID, "Can't salvage it", answer) then
+			if not said("Salvage", "Salvage", answer) then
 				Button.Set(salvage, { Text = "Salvage", Selected = false, Note = false })
 				return false
 			end
@@ -919,12 +907,12 @@ local function chestCard(context: Context, at: Layout, id: string)
 		label({ Name = "Room", Size = Theme.Text.Caption, Colour = P.Faint, Box = UDim2.fromOffset(wide, C.Row), Parent = odds }, `Room for {Hud.Digits(info.Room)} in the bag`).LayoutOrder = #info.Odds + 1
 	else
 		-- a full bag says how to free a slot (the follow-up's item 6), two lines where the room's one stood
-		label({ Name = "Room", Size = Theme.Text.Caption, Colour = P.Down, Box = UDim2.fromOffset(wide, C.Row * 2), Parent = odds, Wrap = true }, `The bag is full: {FREE_A_SLOT}`).LayoutOrder = #info.Odds + 1
+		label({ Name = "Room", Size = Theme.Text.Caption, Colour = P.Down, Box = UDim2.fromOffset(wide, C.Row * 2), Parent = odds, Wrap = true }, FREE_A_SLOT).LayoutOrder = #info.Odds + 1
 	end
 	local action = touch()
 	local function open(count: number): boolean
 		local answer = context.Act("OpenChests", { Chest = id, Count = count })
-		if not said(CHEST_SAID, "Can't open it", answer) then
+		if not said("Chests", "Open", answer) then
 			return false
 		end
 		local kept = if type(answer.Items) == "table" then #answer.Items else 0
@@ -1108,7 +1096,7 @@ function Bag.Build(context: Context): (() -> boolean)?
 			local at_ = table.find(steps, below) or 1
 			local nextOne = steps[at_ % #steps + 1]
 			local answer = context.Act("SetSalvage", { Below = nextOne })
-			if said(CHEST_SAID, "Can't set it", answer) then
+			if said("Chests", "Auto-salvage", answer) then
 				Toast.Show(if nextOne == "" then "Auto-salvage off" else `{nextOne} and under turn into Credits, unless they'd raise {Sheet.Said.Power}`, Theme.Colour.Text)
 			end
 		end)

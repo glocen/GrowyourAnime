@@ -16,7 +16,7 @@ local TravelConfig = require(Shared.Config.Travel)
 
 local UI = script.Parent.Parent.Parent.UI
 local TravelCard = require(UI.TravelCard)
-local Toast = require(UI.Kit.Toast)
+local Refuse = require(UI.Kit.Refuse)
 
 local TravelController = {}
 
@@ -84,7 +84,7 @@ function TravelController.Start()
 		elseif state == "Failed" then
 			lift(card)
 			card = nil
-			Toast.Show("The trip didn't go through. Try again.")
+			Refuse.Words("Travel", "Failed")
 		elseif state == "Back" then
 			lift(card)
 			card = nil

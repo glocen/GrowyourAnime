@@ -36,6 +36,7 @@ local ContentProvider = game:GetService("ContentProvider")
 local Shared = game:GetService("ReplicatedStorage").Shared
 local UIKit = require(Shared.Config.UIKit)
 local HudConfig = require(Shared.Config.Hud)
+local Refusal = require(Shared.Rules.Refusal)
 local Theme = require(script.Parent.Theme)
 local Skin = require(script.Parent.Kit.Skin)
 local Text = require(script.Parent.Kit.Text)
@@ -518,7 +519,7 @@ function Dock.Paint(dock: Dock)
 				tile.ShakeAt = nil
 				tile.Shift = 0
 			else
-				tile.Shift = HudConfig.Dock.Shake * math.sin(2 * math.pi * 3 * u) * (1 - u)
+				tile.Shift = Refusal.Shift(u, HudConfig.Dock.Shake)
 			end
 			place(tile)
 		end

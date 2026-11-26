@@ -24,6 +24,7 @@ local Profile = require(Shared.Data.Profile)
 local Items = require(Shared.Definitions.Items)
 local Stats = require(Shared.Rules.Stats)
 local Sheet = require(Shared.Rules.Sheet)
+local Refusal = require(Shared.Rules.Refusal)
 local HudConfig = require(Shared.Config.Hud)
 local UIKit = require(Shared.Config.UIKit)
 
@@ -52,7 +53,7 @@ Look.Big = 17 -- a level's
 -- A page's handles, and what the screen hands it.
 export type On = {
 	Act: (name: string, args: any?) -> { [string]: any }, -- ProfileController.Act
-	Say: (words: string) -> (), -- a toast
+	Say: (words: string, refused: boolean?) -> (), -- a toast; grey when it's a refusal (TR71 B)
 }
 export type Context = {
 	Group: CanvasGroup, -- the work: the block's points
@@ -203,20 +204,13 @@ function Look.Lines(stat: string): { string }
 	return lines
 end
 
--- What a refusal says.
-local SAID: { [string]: string } = {
-	InCombat = "Not during a fight",
-	Capped = "Already at max",
-	Poor = "Not enough Credits",
-	NoStones = "Not enough stones",
-	NoneLeft = "None of that emblem left",
-	Empty = "That socket is empty",
-	NotEnough = "Combining takes 3 of one stat and rarity",
-	Top = "Already Legendary",
-}
-function Look.Refused(answer: { [string]: any }): string
-	local error = answer.Error
-	return if type(error) == "string" and SAID[error] then SAID[error] else "Not now"
+-- What a refusal says: the one table's words (Config.Refusals' Gear; TR71 B), `fields` filling the number it needs.
+function Look.Refused(answer: { [string]: any }, fields: { [string]: any }?): string
+	local code = Refusal.Code(answer)
+	if not Refusal.Has("Gear", code) then
+		warn(`[EquipmentScreen] an unnamed refusal, {tostring(code)}`) -- the output names it; a player never reads a code
+	end
+	return Refusal.Of("Gear", answer, fields)
 end
 
 -- Eases (seam.json, motion.easing).

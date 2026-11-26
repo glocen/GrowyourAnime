@@ -322,6 +322,9 @@ return {
 		-- A press: the face squeezes to Squeeze within In of the touch, held at least Least, and comes back over Out with a
 		-- small overshoot (Back: the ease's strength; 0 is none). It replaces the pixel's sink.
 		Press = { Squeeze = 0.92, In = 0.05, Least = 0.08, Out = 0.14, Back = 2.4 },
+		-- A refused press (TR71 B; Rules.Refusal.Shift): a button's face and label shake Shake points either way over Shook
+		-- seconds, three times, dying away, the dock's own (Dock.Shake, Shook). Its words say the fix, in grey.
+		Refuse = { Shake = 4, Shook = 0.25 },
 		-- Hover (TR20; UI.Kit.Hover), seeds, UNVERIFIED: a pointer over a pressable thing, or a pad's selection, eases it
 		-- in over In seconds and out over Out. A tile or a panel lifts Lift points, its colours White of the way toward
 		-- white, its halo (or its edge, toward its accent) at Halo; a card scales to Card and its rarity rim lifts, Rim

@@ -11,6 +11,7 @@
 
 local Shared = script.Parent.Parent
 local Config = require(Shared.Config.Welcome)
+local Refusals = require(Shared.Config.Refusals)
 local Profile = require(Shared.Data.Profile)
 local Welcome = require(Shared.Rules.Welcome)
 
@@ -21,13 +22,8 @@ Codes.Used = "Used" -- this account took it before
 Codes.Ended = "Ended" -- its time is over
 Codes.Wait = "Wait" -- five wrong tries inside a minute: a minute's wait
 
--- The lines a redeem says (the content check passed them, 2026-11-24).
-Codes.Words = {
-	Unknown = "That isn't a code",
-	Ended = "That code has ended",
-	Used = "Already used on this account",
-	Wait = "Try again in a minute",
-} :: { [string]: string }
+-- The lines a redeem says (the content check passed them, 2026-11-24): the one table's (Config.Refusals' Codes; TR71 B).
+Codes.Words = (Refusals.Lines.Codes :: any) :: { [string]: string }
 
 export type Gate = { Wrong: { number }, Until: number }
 

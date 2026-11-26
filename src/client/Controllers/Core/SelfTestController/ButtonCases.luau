@@ -10,6 +10,8 @@ local HudConfig = require(Shared.Config.Hud)
 local UIKit = require(Shared.Config.UIKit)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Button = require(UI.Kit.Button)
+local Refuse = require(UI.Kit.Refuse)
+local Toast = require(UI.Kit.Toast)
 local Screen = require(UI.Kit.Screen)
 local Layers = require(UI.Layers)
 local Theme = require(UI.Theme)
@@ -282,6 +284,50 @@ function ButtonCases.Cases(): { any }
 				end
 				t.Check(`every one of {#names} slabs is opaque`, clear == 0 and #names > 1, `{clear} see-through`)
 				Screen.Close()
+			end,
+		},
+		{
+			Name = "Kit: a refused press shakes its face and label side to side and comes to rest, the words in grey (TR71 B)",
+			Run = function(t: any)
+				local refuse = HudConfig.Motion.Refuse
+				local wide = 160
+				local failed = Button.new({ Name = "SelfTestRefused", Text = "Buy", Primary = true, Size = UDim2.fromOffset(wide, 52), Parent = Layers.Get("Hud"), OnPress = function(): boolean?
+					return false
+				end })
+				local scale = failed:FindFirstChildWhichIsA("UIScale", true)
+				local piece = if scale and scale.Parent and scale.Parent:IsA("GuiObject") then scale.Parent else nil
+				t.Check("its face has a squeeze, so the shake has a piece to move", piece ~= nil)
+				local rest = if piece then piece.Position else UDim2.new()
+				local shakes = tonumber(failed:GetAttribute("Shakes")) or 0
+				Button.Press(failed)
+				local most = 0
+				local began = os.clock()
+				while os.clock() - began < refuse.Shook * 0.8 do
+					most = math.max(most, math.abs(Button.Shift(failed)))
+					t.Wait(0.01)
+				end
+				t.Check("a false answer shakes it", (tonumber(failed:GetAttribute("Shakes")) or 0) == shakes + 1)
+				t.Check("it swings, never past its points", most > refuse.Shake * 0.3 and most <= refuse.Shake + 1e-6, string.format("%.2f of %.2f", most, refuse.Shake))
+				t.Check("and comes to rest where it stood", waitFor(t, 1, function(): boolean
+					return Button.Shift(failed) == 0 and piece ~= nil and piece.Position == rest
+				end), if piece then tostring(piece.Position) else "no piece")
+				-- A press while it's disabled: the face says its fix, and the press shakes.
+				local off = Button.new({ Name = "SelfTestOff", Text = "Upgrade", Primary = true, Size = UDim2.fromOffset(wide, 52), Parent = Layers.Get("Hud"), OnPress = function() end })
+				Button.Set(off, { Disabled = "Need 1,200 more" })
+				local before = tonumber(off:GetAttribute("Shakes")) or 0
+				t.Check("a disabled press does nothing", Button.Press(off) == false)
+				t.Check("but shakes", (tonumber(off:GetAttribute("Shakes")) or 0) == before + 1)
+				t.Check("and comes to rest", waitFor(t, 1, function(): boolean
+					return Button.Shift(off) == 0
+				end))
+				-- The words: the one table's, on a toast.
+				local said = Refuse.Show("Shop", { Ok = false, Error = "Poor" }, { Need = 1200 }, "SelfTest")
+				t.Equal("a refusal says the fix with its number", said, "Need 1,200 more Credits")
+				t.Check("on a toast", table.find(Toast.Shown(), said) ~= nil)
+				local unknown = Refuse.Show("Shop", { Ok = false, Error = "SelfTestNoSuchCode" }, nil, "SelfTest (an expected warning)")
+				t.Equal("a code with no line says the fallback, never itself", unknown, "That didn't go through. Try again.")
+				failed:Destroy()
+				off:Destroy()
 			end,
 		},
 	}

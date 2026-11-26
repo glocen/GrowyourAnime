@@ -228,7 +228,7 @@ function StageCases.Cases(): { any }
 				Layers.Force(Theme.Scale.Floor)
 				Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
 				local ok, problem = pcall(StageScreen.Results, { Ground = GROUND, Difficulty = "Normal", Stage = 2, Count = #(Stages.Of(GROUND) :: { any }), Won = false, Checkpoint = 2, Lead = "Kirra" },
-					{ Begin = stub, Home = stub, Say = function(_: string) end, Lead = function(): (boolean, number?)
+					{ Begin = stub, Home = stub, Say = function(_: string, _refused: boolean?) end, Lead = function(): (boolean, number?)
 						return false, workspace:GetServerTimeNow() + 75
 					end, Another = function() end })
 				t.Wait(1.2)
@@ -586,7 +586,7 @@ function StageCases.Cases(): { any }
 					Home = function(): { [string]: any }
 						return { Ok = false }
 					end,
-					Say = function(_: string) end,
+					Say = function(_: string, _refused: boolean?) end,
 					Lead = function(): (boolean, number?)
 						return true, nil
 					end,
@@ -688,7 +688,7 @@ function StageCases.Cases(): { any }
 							return { Ok = false }
 						end
 						StageScreen.Results({ Ground = GROUND, Difficulty = "Normal", Stage = 3, Count = count, Won = true, Seconds = 185, Best = 185, Checkpoint = 4, Credits = 240, Shards = 2, Chests = 1 },
-							{ Begin = stub, Home = stub, Say = function(_: string) end, Lead = function(): (boolean, number?)
+							{ Begin = stub, Home = stub, Say = function(_: string, _refused: boolean?) end, Lead = function(): (boolean, number?)
 								return true, nil
 							end, Another = function() end })
 						t.Check("the run's card", Screen.Current() == StageScreen.Name)

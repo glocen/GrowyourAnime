@@ -23,7 +23,7 @@ local UI = script.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
 local Text = require(UI.Kit.Text)
-local Toast = require(UI.Kit.Toast)
+local Refuse = require(UI.Kit.Refuse)
 local Screen = require(UI.Kit.Screen)
 local ShopScreen = require(UI.ShopScreen)
 local ReturnCard = require(UI.ReturnCard)
@@ -90,7 +90,7 @@ function ShopController.Open(): boolean
 	end
 	local got = fetch()
 	if got == nil then
-		Toast.Show(ShopScreen.Refused.Closed, Theme.Colour.TextDim)
+		Refuse.Words("Shop", "Closed")
 		return false
 	end
 	ShopScreen.Open(view, got, on)

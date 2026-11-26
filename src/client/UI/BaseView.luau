@@ -26,6 +26,7 @@ local Shared = game:GetService("ReplicatedStorage").Shared
 local Profile = require(Shared.Data.Profile)
 local BaseViewConfig = require(Shared.Config.BaseView)
 local HudConfig = require(Shared.Config.Hud)
+local CondenserConfig = require(Shared.Config.Condenser)
 local BaseLevels = require(Shared.Rules.BaseLevels)
 local Power = require(Shared.Rules.Power)
 local Signal = require(Shared.Util.Signal)
@@ -36,7 +37,7 @@ local World = require(script.Parent.World)
 local Panel = require(script.Parent.Kit.Panel)
 local Text = require(script.Parent.Kit.Text)
 local Button = require(script.Parent.Kit.Button)
-local Toast = require(script.Parent.Kit.Toast)
+local Refuse = require(script.Parent.Kit.Refuse)
 
 export type Options = {
 	Plot: BasePart, -- the plot's floor
@@ -75,16 +76,6 @@ local DOES: { [string]: string } = {
 	Training = "Trains one Voidkin. Its rate is fixed.",
 	Bay = "A Voidkin works here and makes power.",
 }
--- A refusal the server gave after the press was open: someone else's tap got there first, or the view was behind.
-local REFUSED: { [string]: string } = {
-	Short = "Not enough Credits",
-	Stale = "Already bought",
-	Cap = "That's the top level for now",
-	Ceiling = "Upgrade the base first",
-	Asleep = "Not open yet",
-	NoAnswer = "That didn't go through. Try again.",
-}
-
 local state: State? = nil
 local closing = false
 
@@ -275,7 +266,7 @@ local function why(ask: BaseLevels.Ask, view: Profile.View): string?
 	elseif offer.Why == BaseLevels.AtCeiling then
 		return `Base level {(view.Base.Level or 1) + 1} first`
 	elseif offer.Why == BaseLevels.Asleep then
-		return "Not awake yet"
+		return `Base level {CondenserConfig.Wakes} first`
 	end
 	return "Top level"
 end
@@ -373,7 +364,10 @@ local function buy(now: State, spot: string): boolean
 		return answer.Ok == true -- the view closed while the server answered
 	end
 	if answer.Ok ~= true then
-		Toast.Show(REFUSED[tostring(answer.Error)] or "That didn't go through. Try again.", Theme.Colour.TextDim)
+		-- someone else's tap got there first, or the view was behind: the one table's words (Config.Refusals' Levels)
+		local after = now.Options.View()
+		local short = if ask.Offer.Price and after then ask.Offer.Price - after.Currency.Credits else nil
+		Refuse.Show("Levels", answer, { Need = if short and short > 0 then short else nil }, `BaseView {spot}`)
 	end
 	read(now)
 	return answer.Ok == true

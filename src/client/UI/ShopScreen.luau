@@ -39,6 +39,7 @@ local Panel = require(UI.Kit.Panel)
 local Screen = require(UI.Kit.Screen)
 local Skin = require(UI.Kit.Skin)
 local Toast = require(UI.Kit.Toast)
+local Refuse = require(UI.Kit.Refuse)
 local Seam = require(UI.VoidkinScreen.Seam)
 
 local ShopScreen = {}
@@ -63,16 +64,6 @@ local P = {
 	Bad = UIKit.Bad,
 	Rarity = HudConfig.Bag.Rarity,
 	Rim = HudConfig.Bag.Rim,
-}
--- A refusal's words, by the server's code (Rules.Shop; ShopService's "Closed"; ProfileController's "NoAnswer").
-local REFUSED: { [string]: string } = {
-	[Shop.Gone] = "A new stock just came in",
-	[Shop.Limit] = "None left for you this stock",
-	[Shop.Poor] = "Not enough Credits",
-	[Shop.BagFull] = "Bag full. Salvage an item to free a slot.",
-	[Shop.Unknown] = "That isn't on the shelf now",
-	Closed = "The Shop is closed for a moment",
-	NoAnswer = "That didn't go through. Try again.",
 }
 
 local lastView: Profile.View? = nil
@@ -233,10 +224,8 @@ local function buyLine(panel: Frame, view: Profile.View, shelf: Shop.Shelf, line
 			local answer = on.Buy(line.Name, shelf.Stock)
 			if answer.Ok ~= true then
 				local code = tostring(answer.Error)
-				if REFUSED[code] == nil then
-					warn(`[ShopScreen] an unnamed refusal: {code}`)
-				end
-				Toast.Show(REFUSED[code] or "Can't buy that now", Theme.Colour.TextDim)
+				-- its words from the one table (Config.Refusals' Shop; TR71 B), the Credits it needs filled
+				Refuse.Show("Shop", answer, { Need = if short > 0 then short else nil }, "ShopScreen Buy")
 				if code == Shop.Gone then
 					on.Refresh()
 				end
@@ -580,6 +569,5 @@ function ShopScreen.Find(name: string): Instance?
 end
 
 ShopScreen.Name = NAME
-ShopScreen.Refused = REFUSED
 
 return ShopScreen

@@ -75,6 +75,7 @@ local BossBar = require(UI.BossBar)
 local ReturnCard = require(UI.ReturnCard)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
+local Refuse = require(UI.Kit.Refuse)
 local Pop = require(UI.Kit.Pop)
 local Fly = require(UI.Kit.Fly)
 local Count = require(UI.Kit.Count)
@@ -742,7 +743,7 @@ local function goHome(): ...any
 	end
 	if ok and type(answer) == "table" and answer.Ok == false then
 		if type(answer.Says) == "string" then
-			Toast.Show(answer.Says)
+			Toast.Show(answer.Says, Theme.Colour.TextDim) -- a refusal in grey (TR71 B)
 		end
 		Dock.Shake(dockUi, "Base")
 	end
@@ -754,7 +755,7 @@ local function jumped(landed: boolean, says: string?)
 	charging, chargeSeen = nil, false
 	if not landed then
 		if type(says) == "string" then
-			Toast.Show(says)
+			Toast.Show(says, Theme.Colour.TextDim) -- a refusal in grey (TR71 B)
 		end
 		Dock.Shake(dockUi, "Base")
 		return
@@ -800,8 +801,8 @@ local function equipmentScreen(page: string)
 	if view == nil then
 		return
 	end
-	EquipmentScreen.Open(page, view, { Act = ProfileController.Act, Say = function(words: string)
-		Toast.Show(words)
+	EquipmentScreen.Open(page, view, { Act = ProfileController.Act, Say = function(words: string, refused: boolean?)
+		Toast.Show(words, if refused then Theme.Colour.TextDim else nil) -- a refusal in grey (TR71 B)
 	end })
 end
 
@@ -1080,7 +1081,7 @@ local returnOn: ReturnCard.On = {
 	Act = function(name: string, args: any?): { [string]: any }
 		local answer = ProfileController.Act(name, args)
 		if answer.Ok ~= true and answer.Error ~= Return.NoCard then
-			Toast.Show("That didn't go through. Try again.", Theme.Colour.TextDim)
+			Refuse.Show("Return", answer, nil, `ReturnCard {name}`)
 		end
 		return answer
 	end,
@@ -1741,8 +1742,8 @@ function HudController.Start()
 			equipmentScreen(EquipmentScreen.Last())
 		end,
 		Settings = function()
-			SettingsScreen.Open({ Act = ProfileController.Act, Say = function(words: string)
-				Toast.Show(words)
+			SettingsScreen.Open({ Act = ProfileController.Act, Say = function(words: string, refused: boolean?)
+				Toast.Show(words, if refused then Theme.Colour.TextDim else nil) -- a refusal in grey (TR71 B)
 			end })
 		end,
 	}, lead.Frame)

@@ -30,6 +30,7 @@ local TweenService = game:GetService("TweenService")
 local Shared = ReplicatedStorage.Shared
 local Profile = require(Shared.Data.Profile)
 local Stages = require(Shared.Rules.Stages)
+local Refusal = require(Shared.Rules.Refusal)
 local Stats = require(Shared.Rules.Stats)
 local Grounds = require(Shared.Definitions.Grounds)
 local Enemies = require(Shared.Definitions.Enemies)
@@ -56,7 +57,7 @@ StageScreen.Name = "Stages"
 export type On = {
 	Begin: (ground: string, difficulty: string) -> { [string]: any }, -- Net Stage: the run, at its checkpoint
 	Home: () -> { [string]: any }, -- Net Home
-	Say: (words: string) -> (), -- a toast
+	Say: (words: string, refused: boolean?) -> (), -- a toast; grey when it's a refusal (TR71 B)
 	-- whether someone leads now, standing; else the server time the fallen lead is whole, when it's healing at home
 	Lead: () -> (boolean, number?),
 	Another: () -> (), -- the picker of who's ready to lead
@@ -104,18 +105,14 @@ local function keeperName(ground: string): string
 	return string.upper(string.sub(name, 1, 1)) .. string.sub(name, 2)
 end
 
--- What a shut stretch or difficulty waits for, in the player's words.
+-- What a shut stretch or difficulty waits for, in the player's words: the one table's (Config.Refusals' Stages; TR71 B).
 local function why(ground: string, needs: string?, waits: number?): string?
 	if needs == nil then
 		return nil
-	elseif needs == Stages.Before then
-		return `Clear Stretch {waits} first`
-	elseif needs == Stages.Keeper then
-		return `Beat the {keeperName(ground)} on Normal`
-	elseif needs == Stages.Ground then
-		return "Not open yet"
+	elseif not Refusal.Has("Stages", needs) then
+		return "Not here"
 	end
-	return "Not here"
+	return Refusal.Words("Stages", needs, { Stage = waits, Keeper = keeperName(ground) })
 end
 
 local function begin(on: On, ground: string, which: string): boolean
@@ -125,9 +122,8 @@ local function begin(on: On, ground: string, which: string): boolean
 		return true
 	end
 	-- Every refusal says something: a press that answers nothing reads as a broken one (the Play panel's too).
-	local says = why(ground, answer.Needs, answer.Waits)
-		or (if answer.Error == "NoLead" then "Your lead is down" elseif answer.Error == "InTry" then "Not during a challenge" else nil)
-	on.Say(says or "That didn't go through. Try again.")
+	local says = why(ground, answer.Needs, answer.Waits) or Refusal.Of("Stages", answer)
+	on.Say(says, true)
 	return false
 end
 
@@ -1094,7 +1090,7 @@ function StageScreen.Results(results: { [string]: any }, on: On)
 			return true
 		end
 		if type(answer.Says) == "string" and answer.Says ~= "" then
-			on.Say(answer.Says)
+			on.Say(answer.Says, true)
 		end
 		return false
 	end

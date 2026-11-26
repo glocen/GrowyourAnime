@@ -633,7 +633,17 @@ function ReinforcePage.Build(context: Look.Context): Look.Page
 			return answer.Ok == true
 		end
 		if answer.Ok ~= true then
-			context.On.Say(Look.Refused(answer))
+			-- the Credits or stones it still needs, from the bag as it stands now
+			local now = factsOf(context.Latest())
+			local fields: { [string]: any }? = nil
+			if now then
+				local _, need, have = stateOf(now)
+				if need then
+					local short = if answer.Error == "Poor" then need.Credits - now.Credits else need.Stones - have
+					fields = { Grade = need.Grade, Need = if short > 0 then short else nil }
+				end
+			end
+			context.On.Say(Look.Refused(answer, fields), true)
 			finish()
 			return false
 		end

@@ -937,7 +937,7 @@ return function(given: Given): { any }
 					Button.Press(base)
 					t.Check("a tap mid-fight says so", waitFor(t, REPLICATE, function(): boolean
 						for _, shown in Toast.Shown() do
-							if string.find(shown, "In a fight", 1, true) then
+							if string.find(shown, "Not during a fight", 1, true) then
 								return true
 							end
 						end

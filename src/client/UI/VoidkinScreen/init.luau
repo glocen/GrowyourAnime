@@ -56,6 +56,7 @@ local Layers = require(UI.Layers)
 local Read = require(UI.Read)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
+local Refuse = require(UI.Kit.Refuse)
 local Button = require(UI.Kit.Button)
 local Text = require(UI.Kit.Text)
 local Glass = require(UI.Kit.Glass)
@@ -101,20 +102,6 @@ local WALLET = { Icon = 30, Digit = 0.62, Every = 0.5 } -- a chip's icon room, a
 
 local player = Players.LocalPlayer
 
--- What a refused change says (TR12, Rules.Carry; Rules.Base; Rules.Collection).
-local REFUSED: { [string]: string } = {
-	InCombat = "Not during a fight",
-	Healing = "Still healing at base",
-	Leading = "Your lead can't work a bay",
-	Working = "Working in a bay. Take it out first.",
-	NotEnough = "Not enough copies",
-	MaxStars = "All seven stars",
-	Filtered = "That name can't be used",
-	BadName = "That name can't be used",
-	TooLong = `At most {VoidkinConfig.Nickname.Max} characters`,
-	FilterFailed = "Names can't be checked right now",
-}
-
 local chosen: string? = nil
 local page = "Bag"
 local railShown: string? = nil -- the page the rail lit at the last build, so a switch grows from it
@@ -135,13 +122,11 @@ local taps: { [Instance]: () -> () } = {} -- for tests: what a tap does; emptied
 local shownPower: { [string]: number } = {} -- the Combat Power last shown for each Voidkin, so a rise counts up from it
 local rebuild: () -> ()
 
+-- A change's answer: true when it went through; a refusal says its fix in grey (Config.Refusals' Voidkin; TR71 B), and
+-- `what` names the press in the output only.
 local function refused(what: string, answer: { [string]: any }): boolean
 	if answer.Ok ~= true then
-		local said = REFUSED[tostring(answer.Error)]
-		if said == nil then
-			warn(`[VoidkinScreen] {what}: an unnamed refusal, {tostring(answer.Error)}`) -- the output names it; a player never reads a code
-		end
-		Toast.Show(`{what}: {said or "Not now"}`, Theme.Colour.TextDim)
+		Refuse.Show("Voidkin", answer, nil, `VoidkinScreen {what}`)
 		return false
 	end
 	return true
@@ -394,7 +379,7 @@ local function nameLine(over: Frame, x: number, wide: number, owned: Profile.Own
 			draft = box.Text
 		end)
 		local function save(): boolean
-			if refused("Can't name it", on.Act("SetNickname", { Voidkin = owned.Id, Name = box.Text })) then
+			if refused("Name", on.Act("SetNickname", { Voidkin = owned.Id, Name = box.Text })) then
 				editing, draft = false, nil
 				rebuild()
 				return true
@@ -468,7 +453,7 @@ local function actions(parent: Frame, view: Profile.View, owned: Profile.OwnedVo
 		if leading then
 			return nil -- it leads already: nothing to ask
 		end
-		return refused("Can't lead", on.Act("SetLead", { Voidkin = owned.Id }))
+		return refused("Lead", on.Act("SetLead", { Voidkin = owned.Id }))
 	end)
 	local worn = "" -- the face it wears: laid again only when its state moves
 	local function leadState()
@@ -497,9 +482,9 @@ local function actions(parent: Frame, view: Profile.View, owned: Profile.OwnedVo
 	local why, bay = Hud.WorkReason(at, view.Base.Bays)
 	local work = press("Work", each + gap, function(): boolean
 		if working then
-			return refused("Can't recall it", on.Act("SetWorker", { Bay = tonumber(working), Voidkin = "" }))
+			return refused("Recall", on.Act("SetWorker", { Bay = tonumber(working), Voidkin = "" }))
 		end
-		return refused("Can't station it", on.Act("SetWorker", { Bay = bay, Voidkin = owned.Id }))
+		return refused("Station", on.Act("SetWorker", { Bay = bay, Voidkin = owned.Id }))
 	end)
 	local words = if working then "Recall" else "Station"
 	if working then
@@ -876,7 +861,7 @@ local function overview(scroll: ScrollingFrame, view: Profile.View, owned: Profi
 						if owned.Preset == index then
 							return false
 						end
-						return refused("Can't switch", on.Act("UsePreset", { Voidkin = owned.Id, Preset = index }))
+						return refused("Preset", on.Act("UsePreset", { Voidkin = owned.Id, Preset = index }))
 					end,
 				})
 				Glass.Dress(press, if owned.Preset == index then "Lit" else "Quiet", `Preset {index}`, nil, { Palette = Seam.Kit })
@@ -977,7 +962,7 @@ local function starsTab(scroll: ScrollingFrame, view: Profile.View, owned: Profi
 			LayoutOrder = 4,
 			Parent = scroll,
 			OnPress = function(): boolean
-				return refused("Can't take it", on.Act("SpendCopies", { Voidkin = owned.Id }))
+				return refused("Stars", on.Act("SpendCopies", { Voidkin = owned.Id }))
 			end,
 		})
 		local short = cost - owned.Copies
@@ -1133,10 +1118,10 @@ local function marks(band: Frame, owned: Profile.OwnedVoidkin, on: On, save: (()
 		end
 	end
 	mark("Favourite", owned.Favourite, function(): boolean
-		return refused("Can't mark it", on.Act("SetMark", { Voidkin = owned.Id, Mark = "Favourite", On = not owned.Favourite }))
+		return refused("Favourite", on.Act("SetMark", { Voidkin = owned.Id, Mark = "Favourite", On = not owned.Favourite }))
 	end)
 	mark("Lock", owned.Locked, function(): boolean
-		return refused("Can't lock it", on.Act("SetMark", { Voidkin = owned.Id, Mark = "Locked", On = not owned.Locked }))
+		return refused("Lock", on.Act("SetMark", { Voidkin = owned.Id, Mark = "Locked", On = not owned.Locked }))
 	end)
 	mark("Rename", false, function()
 		editing, draft = true, nil
@@ -1586,7 +1571,6 @@ function VoidkinScreen.Measure(): { Height: number, Stage: number, Power: number
 end
 
 VoidkinScreen.Name = NAME
-VoidkinScreen.Refused = REFUSED
 VoidkinScreen.Pages = PAGES
 VoidkinScreen.Soon = SOON
 VoidkinScreen.Said = SAID

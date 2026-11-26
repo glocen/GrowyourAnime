@@ -349,7 +349,7 @@ function GoalCases.Cases(): { any }
 				local stub = function(): { [string]: any }
 					return { Ok = false }
 				end
-				local on = { Begin = stub, Home = stub, Say = function(_: string) end, Lead = function(): (boolean, number?)
+				local on = { Begin = stub, Home = stub, Say = function(_: string, _refused: boolean?) end, Lead = function(): (boolean, number?)
 					return true, nil
 				end, Another = function() end }
 				local dares = { Kept = { 1, 2, 3, 4 }, Grade = "Low", Count = 4 }

@@ -21,7 +21,7 @@ local PlaceRole = require(Shared.Util.PlaceRole)
 
 local UI = script.Parent.Parent.Parent.UI
 local Screen = require(UI.Kit.Screen)
-local Toast = require(UI.Kit.Toast)
+local Refuse = require(UI.Kit.Refuse)
 local ModeScreen = require(UI.ModeScreen)
 local StageScreen = require(UI.StageScreen)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
@@ -32,13 +32,6 @@ local ModeController = {}
 
 local LOOK = HudConfig.Modes
 
--- Why "Go to the Tower" was refused, in plain words (TowerService.Go).
-local GO_REFUSED: { [string]: string } = {
-	NoRing = "The Tower isn't in reach here",
-	InRun = "You're in the Tower already",
-	InCombat = "Not while you're fighting",
-	Nowhere = "The Tower isn't in reach here",
-}
 
 local function cards(view: Profile.View): { Modes.Card }
 	return Modes.Cards(view, WorldConfig.Row.Ground, PlaceRole.Is("Main"))
@@ -52,8 +45,8 @@ local on: ModeScreen.On = {
 	Ring = function(): boolean
 		local answer = Net.Client.Invoke("TowerGo")
 		if type(answer) ~= "table" or answer.Ok ~= true then
-			local why = if type(answer) == "table" then answer.Error else nil
-			Toast.Show(GO_REFUSED[why] or GO_REFUSED.NoRing)
+			-- why, in the one table's words (Config.Refusals' Tower; TR71 B); no answer at all reads as out of reach
+			Refuse.Show("Tower", if type(answer) == "table" then answer else { Ok = false, Error = "NoRing" }, nil, "ModeController TowerGo")
 			return false
 		end
 		Screen.Close()

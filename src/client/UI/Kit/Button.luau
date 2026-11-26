@@ -25,6 +25,10 @@
 --   Button.Touch(button, down)                       a finger going down on it or coming off, for tests
 --   Button.State(button)                             the state it shows
 --   Button.Haptic(button)                            a touch's tick under the thumb; true when it ticked, for tests
+--   Button.Shake(button)                             a refused press's shake (TR71 B): its face and label swing side to
+--                                                    side and come to rest (Config.Hud.Motion.Refuse, Rules.Refusal.Shift).
+--                                                    A failed answer shakes it, and so does a press while it's disabled
+--   Button.Shift(button)                             the shake's offset now, in authored pixels, for tests
 
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
@@ -33,6 +37,7 @@ local Shared = game:GetService("ReplicatedStorage").Shared
 local UIKit = require(Shared.Config.UIKit)
 local HudConfig = require(Shared.Config.Hud)
 local Hud = require(Shared.Rules.Hud)
+local Refusal = require(Shared.Rules.Refusal)
 local Theme = require(script.Parent.Parent.Theme)
 local Text = require(script.Parent.Text)
 local Skin = require(script.Parent.Skin)
@@ -104,6 +109,8 @@ type State = {
 	Grow: number, -- its owner's scale at rest (Button.Grow: a card under the pointer, TR20); a press's squeeze beats it
 	Flash: string?, -- "Succeeded" or "Failed", for a moment after the server's answer
 	FlashUntil: number,
+	ShakeAt: number?, -- a refused press's moment, while its shake runs (TR71 B)
+	Shifted: number, -- the shake's offset on the face and label now, in authored pixels
 	OnPress: () -> ...any,
 }
 
@@ -345,8 +352,10 @@ local function paint(button: TextButton, state: State)
 		local chevron = state.Chevron :: ImageLabel
 		chevron.ImageColor3 = if disabled then faint elseif set then light else F.Text
 	end
-	label.Position = UDim2.new(0.5, if now == "Succeeded" then 12 elseif marked then state.Inset + MAKE.Mark.Shift else state.Inset, 0.5, over + sink)
-	state.Skin.Position = UDim2.new(0.5, 0, 0.5, sink)
+	-- a refused press's shake rides on both (Button.Shake): a repaint mid-shake keeps it, so the face comes to rest where it stood
+	local shifted = state.Shifted
+	label.Position = UDim2.new(0.5, shifted + (if now == "Succeeded" then 12 elseif marked then state.Inset + MAKE.Mark.Shift else state.Inset), 0.5, over + sink)
+	state.Skin.Position = UDim2.new(0.5, shifted, 0.5, sink)
 	state.Mark.Visible = marked
 	if marked then
 		state.Mark.ImageColor3 = F.Marked or light
@@ -460,10 +469,30 @@ function Button.Squeeze(button: TextButton): number
 	return if state and state.Scales[1] then state.Scales[1].Scale else 1
 end
 
+local shaking: { [TextButton]: true } = {}
+
+function Button.Shake(button: TextButton)
+	local state = states[button]
+	if state == nil then
+		return
+	end
+	state.ShakeAt = os.clock()
+	shaking[button] = true
+	button:SetAttribute("Shakes", (tonumber(button:GetAttribute("Shakes")) or 0) + 1)
+end
+
+function Button.Shift(button: TextButton): number
+	local state = states[button]
+	return if state then state.Shifted else 0
+end
+
 function Button.Press(button: TextButton): boolean
 	local state = states[button]
-	if state and state.Disabled and not state.Pending and state.Text == "" then
-		Toast.Show(state.Disabled) -- an icon's button says why on a tap (docs/ui.md, rule 4)
+	if state and state.Disabled and not state.Pending then
+		Button.Shake(button) -- a refused press shakes, and its face (or a toast, for an icon) says the fix (TR71 B)
+		if state.Text == "" then
+			Toast.Show(state.Disabled, Theme.Colour.TextDim) -- an icon's button says why on a tap (docs/ui.md, rule 4)
+		end
 	end
 	if state == nil or state.Disabled or state.Pending then
 		return false
@@ -485,6 +514,9 @@ function Button.Press(button: TextButton): boolean
 		-- Only the server's answer flashes: a press that answers nothing goes back to rest.
 		if ok and type(answer) == "boolean" then
 			state.Flash = if answer then "Succeeded" else "Failed"
+			if not answer then
+				Button.Shake(button)
+			end
 			state.FlashUntil = os.clock() + Button.FlashSeconds
 			task.delay(Button.FlashSeconds, function()
 				if os.clock() >= state.FlashUntil - 1e-3 and state.Flash then
@@ -686,6 +718,8 @@ function Button.new(props: Props): TextButton
 		Grow = 1,
 		Flash = nil,
 		FlashUntil = 0,
+		ShakeAt = nil,
+		Shifted = 0,
 		OnPress = props.OnPress,
 	}
 	states[button] = state
@@ -693,6 +727,7 @@ function Button.new(props: Props): TextButton
 		states[button] = nil
 		waiting[button] = nil
 		squeezing[button] = nil
+		shaking[button] = nil
 	end)
 	button.InputBegan:Connect(function(input: InputObject)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -773,6 +808,32 @@ end
 -- The running light and the dots, while a button waits; the squeeze, while a touch's runs.
 RunService.RenderStepped:Connect(function()
 	local t = os.clock()
+	if next(shaking) ~= nil then
+		local refuse = HudConfig.Motion.Refuse
+		for button in shaking do
+			local state = states[button]
+			if state == nil or button.Parent == nil or state.ShakeAt == nil then
+				shaking[button] = nil
+				continue
+			end
+			local u = if refuse.Shook > 0 then (t - state.ShakeAt) / refuse.Shook else 1
+			local shift = if u >= 1 then 0 else Refusal.Shift(u, refuse.Shake)
+			local delta = shift - state.Shifted
+			if delta ~= 0 then
+				for _, scale in state.Scales do -- the face and the label, by what it moved since: the paint adds Shifted too
+					local piece = scale.Parent
+					if piece and piece:IsA("GuiObject") then
+						piece.Position += UDim2.fromOffset(delta, 0)
+					end
+				end
+			end
+			state.Shifted = shift
+			if u >= 1 then
+				state.ShakeAt = nil
+				shaking[button] = nil
+			end
+		end
+	end
 	if next(squeezing) ~= nil then
 		local press = HudConfig.Motion.Press
 		for button in squeezing do

@@ -5301,6 +5301,39 @@ The script is `tools/ui/hud_icons.py`. The press takes any art through `hud_fini
   2. Drawn detail at the HUD's own weight: cel shadow shapes with a hard edge, one highlight per armour plate, and an outline at the stroked type's weight. Every icon's line matches the type.
 - **The rest of the set** (the eye, Auto, the skull, the gem, the sword) follows I1's way, in the same finish. Then each launch Voidkin's signature emblem.
 
+### Modulo: I1's finish and the rest of the set (2026-11-27, 00:56; started 00:49)
+
+On the pick above. Files are in `build/handoff/UI/hud_overhaul/icons/set/`:
+- `today_close.png` beside `set_close.png`, at 3x;
+- `set_zoom_x3.png`: today's marks above the painted ones, enlarged;
+- `icons_press.png`, `set_states.png`, and the frame at 1920 and on the smallest phone.
+
+The script is `tools/ui/hud_icons.py`. `hud_finish.PAINTED` swaps the set in place, the way `ART` swaps the press.
+
+- **Must-fix 1, seated:**
+  - The fist casts a hard shadow, down and right on the gold, at 42% of a dark amber.
+  - Each plate's foot carries the gold's bounce as a rim.
+  - The light behind sits up and left, so the light and its shadow agree.
+- **Must-fix 2, the HUD's weight:**
+  - Each plate is lit by a ramp, then cut by a hard cel shadow shape: the plate less its lit oval, so the edge follows the form.
+  - One highlight per plate. The hatching and the second speculars are gone.
+  - Ink: the fist's outline is 2.3 points outside, between the names' 1.7 and the cooling count's 3.6. The small icons carry 1.6 points.
+- **The set, the same way:**
+  - **The gem:** brilliant-cut, with a lit table and the pavilion's right facet in shade.
+  - **The sword:** its ridge parts a lit edge from a shaded one, with a gilt guard cut the same way.
+  - **The eye:** an anime eye. The upper lid is inked heavy and casts its shadow on the white, and the iris is dark above and lit below.
+  - **Auto:** the band is lit to the upper left with a hard step into shade, and the head is cut in two facets; gold when on, steel grey when off.
+  - **The skull:** bone, with mean sockets. A coral rim at its jaw read as flesh and was taken off.
+- **Gates:**
+  - In the squint at 64 px tall, the press still reads first.
+  - At the smallest phone, the press reads as a steel fist on gold, and each small icon keeps its silhouette.
+  - Every state holds: ready, firing, cooling under its count, the keyboard's R, Auto on and Auto off.
+- **For Faber:**
+  - one image per icon. The press takes three (ready, firing, cooling), or one with the drain as an ImageColor and transparency.
+  - The flat marks stay in the dev build until the verdict.
+- **Content check:** PASS (fresh eyes, rules 2 to 4): the skull is plain bone, a cartoon foe sign; the gem's cut reads as a gem, never a drop. Before upload, the per-icon transparent images go through it again, full size and at 64 px on a dark ground.
+- **Next:** research's verdict. Then each launch Voidkin's signature emblem in I1's way (Kirra, Pip, Watt, Lyric). The base targets follow when memory frees.
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

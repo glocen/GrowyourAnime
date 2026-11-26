@@ -1,21 +1,23 @@
-"""AR62's icons, the signature press's art, painted, as targets (research's ask, 2026-11-27, after 00:33: painted icons in our
-style, the signature press first, two directions in pairs, beside F2's press at three times and at phone size).
+"""AR62's icons, the signature press's art, painted (research's ask, 2026-11-27, after 00:33: painted icons in our style, the
+signature press first, beside F2's press at three times and at phone size).
 
-Two directions over F2's press, Rook's first (Haymaker: the ram lit, one straight punch, a shockwave along the ground):
-    I1, the emblem: the signature's own object, whole, painted, on the gold disc with a light behind it;
-    I2, the scene: the disc filled edge to edge with the signature's moment, the object driving at you.
-The object is Rook's armoured fist toward us, painted piece by piece: metal ramps lit from above with the disc's
-gold bounced at the foot (cool shade, warm bounce), hard cel shades on each piece's far side and a curl's underside,
-a heavy ink outline round the whole, thin ink between pieces and hatched in the shade, a specular on each knuckle, a
-rivet on each plate, the orange band at the wrist. A first try as boxes modelled in three dimensions read as a screen,
-not a punch, and was dropped. It is drawn as SVG, so the game takes it as one image per state.
+Research picked I1, the emblem (dd4142b7): Rook's armoured fist whole on the gold disc, a light behind it. I2, the scene,
+was dropped at phone size, its burst and shockwave kept for the press's firing motion. This is I1's finish, with the
+pick's two must-fixes:
+    1. the fist seated in the press: its shadow cast on the gold, and the gold's warm light bounced onto its lower edges;
+    2. drawn at the HUD's weight: a hard-edged cel shadow shape on each plate following its form, one highlight per plate,
+       and an outline as heavy as the stroked type's (about 2.3 points outside, the cooling count's 3.6 and the names' 1.7
+       either side of it).
+Each plate is one piece in its own frame: a light-to-slate ramp, the shadow shape (the plate less its lit oval), the
+gold's bounce as a rim along its foot, one highlight, a thin ink line. The rivets and the knuckle caps' lines are the
+only small detail. A first try as boxes modelled in three dimensions read as a screen, not a punch, and was dropped. It
+is drawn as SVG, so the game takes it as one image per state.
 
     py tools/ui/hud_icons.py <out_dir> <fight plate>
 
-Writes icons_press.png (today's flat mark, I1 and I2: ready, firing and cooling, at three times), I1_fight_small.png and
-I2_fight_small.png (F2's frame on the smallest phone) and I1_fight.png and I2_fight.png (1920 wide).
+Writes icons_press.png (today's flat mark and I1: ready, firing and cooling, at three times), I1_fight.png (1920 wide)
+and I1_fight_small.png (F2's frame on the smallest phone).
 """
-import math
 import sys
 from pathlib import Path
 
@@ -24,12 +26,16 @@ import style_frames as sf  # noqa: E402
 import hud_finish as hf  # noqa: E402
 
 INK = "#151A26"
-# painted metal, lit from above: a bright top, the slate, a dark band, the disc's gold bounced back at the foot (the surface
-# study's hue shift: the shade cool, the bounce warm)
-METAL = ("#FFFFFF", "#C3CEDF", "#6F7E98", "#465169", "#C9AD7A")
-METAL_DARK = ("#DCE3EE", "#93A1B8", "#56627A", "#3A4458", "#A68C5E")
+# painted metal, lit from the upper left: a bright top to the slate (the surface study's hue shift: the shade cool, the
+# bounce warm)
+METAL = ("#F6F9FD", "#C2CDDE", "#8796AF")
+METAL_DARK = ("#D8E0EC", "#99A7BE", "#68778F")
+SHADE, SHADE_OP = "#18203A", 0.5       # the cel shadow laid over the metal
+BOUNCE, BOUNCE_OP = "#FFB43A", 0.85    # the disc's gold thrown back onto a plate's foot
+CAST, CAST_OP = "#7A3A02", 0.42        # the fist's shadow on the gold, down and right of it
 CAP = ("#FFFFFF", "#FFF4C4", "#FFC94A")     # a knuckle's striking face, lit on the Haymaker
-BAND = ("#FFE0A0", "#FFB43C", "#C55A16", "#8A3410", "#E99A4A")
+BAND = ("#FFE0A0", "#FFB43C", "#C55A16")
+OUTLINE, LINE = 2.3, 1.0               # page points: the ink outside the whole, the ink between plates
 
 # Rook's armoured fist toward us, in a 100 box: the wrist's cuff behind at the lower right with the orange band, the back of
 # the hand, four finger plates with their knuckle caps, the thumb across them (AR1's gauntlet, as a fist)
@@ -37,6 +43,16 @@ CUFF = (52, 72, 40, 26, 7, -28)          # x, y, w, h, radius, turn
 PALM = (13, 38, 72, 46, 15)
 FINGERS = [(68, 27, 16, 31, 7.5), (52, 20, 18, 36, 8.0), (34, 16, 19, 40, 8.5), (15, 21, 19, 38, 8.5)]   # little to index
 THUMB = (9, 55, 52, 19, 9.5, -6)
+# per kind, as shares of the plate: its lit oval (centre x, y, radius x, y), how deep the gold's bounce reaches at its
+# foot, and its one highlight (x, y, w, h); the palm, mostly under the fingers and the thumb, keeps no highlight
+FORM = {"finger": ((0.3, 0.34, 0.37, 0.52), 0.2, (0.17, 0.1, 0.17, 0.3)),
+        "palm": ((0.34, 0.3, 0.44, 0.52), 0.18, None),
+        "thumb": ((0.4, 0.26, 0.46, 0.4), 0.36, (0.13, 0.14, 0.44, 0.2)),
+        "cuff": ((0.42, 0.34, 0.44, 0.46), 0.22, (0.46, 0.14, 0.34, 0.15))}
+
+
+def rect(x, y, w, h, r, extra=""):
+    return f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{r}"{extra}/>'
 
 
 class Fist:
@@ -45,151 +61,228 @@ class Fist:
     def __init__(self, P, x, y, size, o=1.0, hot=False):
         self.P, self.x, self.y, self.k, self.o, self.hot = P, x, y, size / 100, o, hot
 
-    def shapes(self):
-        """Each piece: (its svg element, open for its paint), its ramp, its kind."""
-        cx, cy, cw, ch, cr, ct = CUFF
-        px, py, pw, ph, pr = PALM
-        tx, ty, tw, th, tr, tt = THUMB
-        out = [(f'<rect x="{cx}" y="{cy}" width="{cw}" height="{ch}" rx="{cr}" '
-                f'transform="rotate({ct} {cx + cw / 2} {cy + ch / 2})"', METAL_DARK, "cuff"),
-               (f'<rect x="{px}" y="{py}" width="{pw}" height="{ph}" rx="{pr}"', METAL, "palm")]
-        out += [(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{r}"', METAL, "finger")
-                for x, y, w, h, r in FINGERS]
-        out.append((f'<rect x="{tx}" y="{ty}" width="{tw}" height="{th}" rx="{tr}" '
-                    f'transform="rotate({tt} {tx + tw / 2} {ty + th / 2})"', METAL, "thumb"))
+    @staticmethod
+    def plates():
+        """Each plate, back to front: its kind, x, y, w, h, radius, turn and ramp."""
+        out = [("cuff", *CUFF, METAL_DARK), ("palm", *PALM, 0, METAL)]
+        out += [("finger", *f, 0, METAL) for f in FINGERS]
+        out.append(("thumb", *THUMB, METAL))
         return out
+
+    def plate(self, kind, x, y, w, h, r, ramp, u):
+        """One plate in its own frame: the ramp, the shadow shape, the bounce at its foot, its highlight, its ink."""
+        P = self.P
+        (ex, ey, erx, ery), bounce, hi = FORM[kind]
+        cid, fid = P.uid("c"), P.uid("c")
+        P.defs.append(f'<clipPath id="{cid}">{rect(x, y, w, h, r)}</clipPath>')
+        P.defs.append(f'<clipPath id="{fid}"><rect x="{x - 2}" y="{y + h * (1 - bounce)}" width="{w + 4}" '
+                      f'height="{h * bounce + 2}"/></clipPath>')
+        P.add(rect(x, y, w, h, r, f' fill="{P.lin(ramp)}"'))
+        P.add(f'<g clip-path="url(#{cid})">')
+        if kind == "cuff":      # the orange band round the wrist, under the shadow like the metal
+            P.add(f'<rect x="{x + w * 0.18}" y="{y}" width="{w * 0.2}" height="{h}" fill="{P.lin(BAND)}" stroke="{INK}" '
+                  f'stroke-width="{LINE * u:.2f}"/>')
+        cx, cy, rx, ry = x + w * ex, y + h * ey, w * erx, h * ery
+        P.add(f'<path d="M{x - 2},{y - 2} h{w + 4} v{h + 4} h{-(w + 4)} Z M{cx - rx:.2f},{cy:.2f} '
+              f'a{rx:.2f},{ry:.2f} 0 1 0 {2 * rx:.2f},0 a{rx:.2f},{ry:.2f} 0 1 0 {-2 * rx:.2f},0 Z" fill="{SHADE}" '
+              f'fill-opacity="{SHADE_OP}" fill-rule="evenodd"/>')
+        P.add(f'<g clip-path="url(#{fid})">'
+              + rect(x, y, w, h, r, f' fill="none" stroke="{BOUNCE}" stroke-opacity="{BOUNCE_OP}" '
+                                    f'stroke-width="{min(w, h) * 0.2:.2f}"') + "</g>")
+        if self.hot and kind == "finger":   # the knuckle's striking face burns white-gold
+            P.add(rect(x, y, w, h * 0.36, r, f' fill="{P.lin(CAP)}" stroke="{INK}" stroke-width="{LINE * u:.2f}"'))
+        if hi:
+            hx, hy, hw, hh = hi
+            P.add(rect(x + w * hx, y + h * hy, w * hw, h * hh, min(w * hw, h * hh) / 2, ' fill="#FFFFFF" fill-opacity="0.92"'))
+        P.add("</g>")
+        P.add(rect(x, y, w, h, r, f' fill="none" stroke="{INK}" stroke-width="{LINE * u:.2f}"'))
 
     def draw(self):
         P, k, o = self.P, self.k, self.o
-        u = 1 / k                                # one page point in the box's units
+        u = o / k                                # one page point in the box's units, at this fist's weight
         P.add(f'<g transform="translate({self.x:.2f},{self.y:.2f}) scale({k:.4f})">')
-        sh = self.shapes()
-        P.add(f'<g fill="{INK}" stroke="{INK}" stroke-width="{3.2 * o * u:.2f}" stroke-linejoin="round">'
-              + "".join(e + "/>" for e, _, _ in sh) + "</g>")
-        side, foot = P.uid("s"), P.uid("s")   # hard cel shades: the far (right) side, and a curl's underside
-        P.defs.append(f'<linearGradient id="{side}" x1="0" y1="0" x2="1" y2="0"><stop offset="0.6" stop-color="#0B1020" '
-                      f'stop-opacity="0"/><stop offset="0.605" stop-color="#0B1020" stop-opacity="0.4"/>'
-                      f'<stop offset="1" stop-color="#0B1020" stop-opacity="0.52"/></linearGradient>')
-        P.defs.append(f'<linearGradient id="{foot}" x1="0" y1="0" x2="0" y2="1"><stop offset="0.74" stop-color="#0B1020" '
-                      f'stop-opacity="0"/><stop offset="0.745" stop-color="#0B1020" stop-opacity="0.34"/>'
-                      f'<stop offset="1" stop-color="#0B1020" stop-opacity="0.44"/></linearGradient>')
-        for e, stops, kind in sh:
-            P.add(f'{e} fill="{P.lin(stops)}" stroke="{INK}" stroke-width="{0.75 * o * u:.2f}"/>')
-            if kind == "cuff":      # the orange band round the wrist
-                cx, cy, cw, ch, cr, ct = CUFF
-                P.add(f'<rect x="{cx + cw * 0.18}" y="{cy}" width="{cw * 0.2}" height="{ch}" fill="{P.lin(BAND)}" '
-                      f'stroke="{INK}" stroke-width="{0.75 * o * u:.2f}" transform="rotate({ct} {cx + cw / 2} {cy + ch / 2})"/>')
-            P.add(f'{e} fill="url(#{side})"/>')
-            if kind in ("finger", "thumb"):
-                P.add(f'{e} fill="url(#{foot})"/>')
-        if self.hot:   # the knuckles' striking faces burn white-gold, the metal below them as it was
-            for x, y, w, h, r in FINGERS:
-                P.add(f'<rect x="{x}" y="{y}" width="{w}" height="{h * 0.36}" rx="{r}" fill="{P.lin(CAP)}" stroke="{INK}" '
-                      f'stroke-width="{0.6 * o * u:.2f}"/>')
-        for x, y, w, h, r in FINGERS:   # each knuckle: its cap's line, the specular, the gold bounce on its right, a rivet
-            cap = y + h * 0.34
-            P.add(f'<path d="M{x + 1.5},{cap} Q{x + w / 2},{cap + 2.6} {x + w - 1.5},{cap}" fill="none" stroke="{INK}" '
-                  f'stroke-opacity="0.7" stroke-width="{0.55 * o * u:.2f}" stroke-linecap="round"/>')
-            P.add(f'<path d="M{x + 2},{cap + 1.4} Q{x + w / 2},{cap + 4} {x + w - 2},{cap + 1.4}" fill="none" stroke="#FFFFFF" '
-                  f'stroke-opacity="0.35" stroke-width="{0.45 * o * u:.2f}" stroke-linecap="round"/>')
-            P.add(f'<rect x="{x + w * 0.2}" y="{y + 3}" width="{w * 0.17}" height="{h * 0.24}" rx="{w * 0.085}" '
-                  f'fill="#FFFFFF" fill-opacity="0.78"/>')
-            P.add(f'<rect x="{x + w * 0.22}" y="{y + h * 0.45}" width="{w * 0.1}" height="{h * 0.22}" rx="{w * 0.05}" '
-                  f'fill="#FFFFFF" fill-opacity="0.3"/>')
-            P.add(f'<path d="M{x + w - 1.6},{y + r} V{y + h - r}" stroke="#FFD27A" stroke-opacity="0.85" '
-                  f'stroke-width="{0.7 * o * u:.2f}" stroke-linecap="round"/>')
-            for j in range(2):      # ink detail in the shade, as a hand would hatch it
-                hx = x + w * (0.72 + 0.1 * j)
-                P.add(f'<path d="M{hx:.2f},{y + h * 0.78:.2f} l{-w * 0.06:.2f},{h * 0.12:.2f}" stroke="{INK}" '
-                      f'stroke-opacity="0.65" stroke-width="{0.5 * o * u:.2f}" stroke-linecap="round"/>')
-            rx, ry = x + w * 0.62, y + h * 0.58
-            P.add(f'<circle cx="{rx}" cy="{ry}" r="2.1" fill="{INK}"/><circle cx="{rx}" cy="{ry}" r="1.45" fill="#56617A"/>'
+        silhouette = []
+        for kind, x, y, w, h, r, t, ramp in self.plates():
+            turn = f' transform="rotate({t} {x + w / 2} {y + h / 2})"' if t else ""
+            silhouette.append(rect(x, y, w, h, r, turn))
+        dx, dy = 2.6 * u, 3.2 * u               # the cast, down and right of the light
+        P.add(f'<g transform="translate({dx:.2f},{dy:.2f})" opacity="{CAST_OP}" fill="{CAST}" stroke="{CAST}" '
+              f'stroke-width="{2 * OUTLINE * u:.2f}" stroke-linejoin="round">{"".join(silhouette)}</g>')
+        P.add(f'<g fill="{INK}" stroke="{INK}" stroke-width="{2 * OUTLINE * u:.2f}" stroke-linejoin="round">'
+              + "".join(silhouette) + "</g>")
+        for kind, x, y, w, h, r, t, ramp in self.plates():
+            P.add(f'<g transform="rotate({t} {x + w / 2} {y + h / 2})">' if t else "<g>")
+            self.plate(kind, x, y, w, h, r, ramp, u)
+            P.add("</g>")
+        for x, y, w, h, r in FINGERS:   # each knuckle: its cap's line and one rivet
+            cap = y + h * 0.36
+            P.add(f'<path d="M{x + 1.5},{cap:.2f} Q{x + w / 2},{cap + 2.6:.2f} {x + w - 1.5},{cap:.2f}" fill="none" '
+                  f'stroke="{INK}" stroke-width="{LINE * u:.2f}" stroke-linecap="round"/>')
+            rx, ry = x + w * 0.6, y + h * 0.6
+            P.add(f'<circle cx="{rx}" cy="{ry}" r="2.2" fill="{INK}"/><circle cx="{rx}" cy="{ry}" r="1.4" fill="#6A7690"/>'
                   f'<circle cx="{rx - 0.45}" cy="{ry - 0.45}" r="0.55" fill="#F2F6FC"/>')
-        tx, ty, tw, th, tr, tt = THUMB      # the thumb's nail end and its light
-        P.add(f'<g transform="rotate({tt} {tx + tw / 2} {ty + th / 2})">'
-              f'<path d="M{tx + tw - 13},{ty + 3} V{ty + th - 3}" stroke="{INK}" stroke-opacity="0.65" '
-              f'stroke-width="{0.55 * o * u:.2f}" stroke-linecap="round"/>'
-              f'<rect x="{tx + 6}" y="{ty + 2.6}" width="{tw * 0.5}" height="{th * 0.16}" rx="{th * 0.08}" fill="#FFFFFF" '
-              f'fill-opacity="0.7"/></g>')
         if self.hot:   # and bloom
             P.add('<g fill="#FFF3C0" fill-opacity="0.7" filter="url(#glow)">'
-                  + "".join(f'<rect x="{x}" y="{y}" width="{w}" height="{h * 0.36}" rx="{r}"/>' for x, y, w, h, r in FINGERS)
-                  + "</g>")
+                  + "".join(rect(x, y, w, h * 0.36, r) for x, y, w, h, r in FINGERS) + "</g>")
         P.add("</g>")
         return self
 
 
-def dim(P, state):
-    """Cooling: the art drained and dimmed under its count (the state grammar: what can't be pressed loses its colour)."""
+def emblem(P, cx, cy, ri, state):
+    """I1: the fist whole on the gold, a light behind it up and left; on the press, its knuckles lit. Cooling drains it
+    and dims it under its count (the state grammar: what can't be pressed loses its colour)."""
     if state == "cooling":
         if "drain" not in "".join(P.defs):
             P.defs.append('<filter id="drain"><feColorMatrix type="saturate" values="0.15"/></filter>')
         P.add('<g filter="url(#drain)" opacity="0.5">')
-        return True
-    P.add("<g>")
-    return False
-
-
-def emblem(P, cx, cy, ri, state):
-    """I1: the fist whole on the gold with a light behind it; on the press, its knuckles lit."""
-    dim(P, state)
-    P.add(f'<circle cx="{cx}" cy="{cy}" r="{ri * 0.78:.2f}" fill="#FFF6D6" fill-opacity="0.75" filter="url(#glow)"/>')
-    size = ri * 1.66
-    Fist(P, cx - size * 0.5, cy - size * 0.52, size, o=0.95, hot=state == "firing").draw()
+    else:
+        P.add("<g>")
+    P.add(f'<circle cx="{cx - ri * 0.08:.2f}" cy="{cy - ri * 0.1:.2f}" r="{ri * 0.7:.2f}" fill="#FFF6D6" fill-opacity="0.7" '
+          f'filter="url(#glow)"/>')
+    size = ri * 1.74
+    Fist(P, cx - size * 0.52, cy - size * 0.54, size, o=1.0, hot=state == "firing").draw()
     P.add("</g>")
 
 
-def scene(P, cx, cy, ri, state):
-    """I2: the disc filled with the moment: a burst behind, lines rushing out, the ground's shockwave, the fist lit."""
+# ---- the rest of the set, the same grammar at the cards' size (research, dd4142b7: the eye, Auto, the skull, the gem and the
+# sword). Each is drawn in a 24 box: its outline at the names' weight, a ramp, a hard cel shadow shape, one highlight. ------
+SMALL_OUT = 1.6          # page points of ink outside each small icon: the names' stroke shows 1.7
+BONE = ("#FFFDF6", "#F1EADB", "#D6C9AE")
+STEEL = ("#F7FAFE", "#CBD6E5", "#9DADC5")
+GILT = ("#FFF1B0", "#FFC845", "#D58A12")
+DULL = ("#E6EBF2", "#B3BECD", "#8592A6")
+
+
+def edge(P, d, u, w=SMALL_OUT, extra=""):
+    """The ink outside a form: its path stroked under everything at `w` page points."""
+    P.add(f'<path d="{d}" fill="{INK}" stroke="{INK}" stroke-width="{2 * w * u:.2f}" stroke-linejoin="round" '
+          f'stroke-linecap="round"{extra}/>')
+
+
+def form(P, d, ramp, lit, foot=None):
+    """A form: its ramp, then the cel shadow, the form less its lit oval (cx, cy, rx, ry); `foot` is (hue, from y, width), a
+    rim of the ground's light along its foot."""
     cid = P.uid("c")
-    P.defs.append(f'<clipPath id="{cid}"><circle cx="{cx}" cy="{cy}" r="{ri:.2f}"/></clipPath>')
-    dim(P, state)
-    P.add(f'<g clip-path="url(#{cid})">')
-    rg = P.uid("r")
-    P.defs.append(f'<radialGradient id="{rg}" cx="0.42" cy="0.5" r="0.62"><stop offset="0" stop-color="#FFF8DC"/>'
-                  f'<stop offset="0.38" stop-color="#FFC94A"/><stop offset="1" stop-color="#E26A1A"/></radialGradient>')
-    P.add(f'<circle cx="{cx}" cy="{cy}" r="{ri:.2f}" fill="url(#{rg})"/>')
-    fx, fy = cx - ri * 0.05, cy - ri * 0.2         # the burst's heart: the knuckles
-    for i in range(22):                         # lines rushing out from it
-        a = math.tau * i / 22 + 0.11
-        w = 0.05 if i % 2 else 0.028
-        r0, r1 = ri * (0.55 if i % 2 else 0.7), ri * 1.5
-        pts = [(fx + r0 * math.cos(a), fy + r0 * math.sin(a)), (fx + r1 * math.cos(a - w), fy + r1 * math.sin(a - w)),
-               (fx + r1 * math.cos(a + w), fy + r1 * math.sin(a + w))]
-        P.add(f'<polygon points="{" ".join(f"{x:.2f},{y:.2f}" for x, y in pts)}" fill="#FFFFFF" '
-              f'fill-opacity="{0.55 if i % 2 else 0.35}"/>')
-    star = []                                   # the burst: a white star behind the fist
-    for i in range(20):
-        a = math.tau * i / 20 - math.pi / 2
-        r = ri * (0.78 if i % 2 == 0 else 0.5) * (1.08 if i % 4 == 0 else 1.0)
-        star.append((fx + r * math.cos(a), fy + r * math.sin(a)))
-    pts = " ".join(f"{x:.2f},{y:.2f}" for x, y in star)
-    P.add(f'<polygon points="{pts}" fill="{INK}" stroke="{INK}" stroke-width="1.8" stroke-linejoin="round"/>')
-    P.add(f'<polygon points="{pts}" fill="{P.lin(("#FFFFFF", "#FFF1B8"))}"/>')
-    sy = cy + ri * 0.62                         # the shockwave along the ground: two front arcs, the near one heavier
-    for rx, ry, w in ((ri * 1.05, ri * 0.24, 2.6), (ri * 0.72, ri * 0.15, 1.5)):
-        arc = f"M{fx - rx:.2f},{sy:.2f} A{rx:.2f} {ry:.2f} 0 0 0 {fx + rx:.2f},{sy:.2f}"
-        P.add(f'<path d="{arc}" fill="none" stroke="{INK}" stroke-width="{w + 1.7:.2f}" stroke-linecap="round"/>')
-        P.add(f'<path d="{arc}" fill="none" stroke="{P.lin(("#FFFFFF", "#FFE8A6"))}" stroke-width="{w:.2f}" '
-              f'stroke-linecap="round"/>')
-    for i, (a, d, s) in enumerate(((200, 0.82, 2.2), (235, 0.9, 1.6), (320, 0.86, 2.0), (345, 0.74, 1.4), (160, 0.7, 1.5))):
-        x, y = fx + ri * d * math.cos(math.radians(a)), fy + ri * d * math.sin(math.radians(a))
-        chip = [(x - s, y - s * 0.4), (x + s * 0.3, y - s), (x + s, y + s * 0.2), (x - s * 0.2, y + s * 0.9)]
-        P.add(f'<polygon points="{" ".join(f"{u:.2f},{v:.2f}" for u, v in chip)}" fill="#3A4258" stroke="{INK}" '
-              f'stroke-width="0.7" stroke-linejoin="round"/>')
-    size = ri * 1.68
-    Fist(P, cx - size * 0.5, cy - size * 0.6, size, o=1.0, hot=True).draw()
-    P.add("</g></g>")
-    P.add(f'<circle cx="{cx}" cy="{cy}" r="{ri - 0.3:.2f}" fill="none" stroke="{INK}" stroke-opacity="0.55" stroke-width="0.8"/>')
+    P.defs.append(f'<clipPath id="{cid}"><path d="{d}"/></clipPath>')
+    P.add(f'<path d="{d}" fill="{P.lin(ramp)}"/>')
+    cx, cy, rx, ry = lit
+    P.add(f'<g clip-path="url(#{cid})"><path d="M-4,-4 H28 V28 H-4 Z M{cx - rx},{cy} a{rx},{ry} 0 1 0 {2 * rx},0 '
+          f'a{rx},{ry} 0 1 0 {-2 * rx},0 Z" fill="{SHADE}" fill-opacity="{SHADE_OP}" fill-rule="evenodd"/>')
+    if foot:
+        hue, y0, w = foot
+        bid = P.uid("c")
+        P.defs.append(f'<clipPath id="{bid}"><rect x="-4" y="{y0}" width="32" height="{28 - y0}"/></clipPath>')
+        P.add(f'<g clip-path="url(#{bid})"><path d="{d}" fill="none" stroke="{hue}" stroke-width="{w}"/></g>')
+    P.add("</g>")
 
 
-DIRECTIONS = {"I1": ("I1, the emblem", emblem), "I2": ("I2, the scene", scene)}
+def shine(P, x, y, w, h, turn=0):
+    """The one highlight."""
+    t = f' transform="rotate({turn} {x + w / 2} {y + h / 2})"' if turn else ""
+    P.add(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{min(w, h) / 2}" fill="#FFFFFF" fill-opacity="0.95"{t}/>')
+
+
+def small(paint):
+    """Places a 24-box painter at (x, y), `size` across."""
+    def place(P, x, y, size, hue=None):
+        k = size / 24
+        P.add(f'<g transform="translate({x:.2f},{y:.2f}) scale({k:.4f})">')
+        paint(P, 1 / k, hue)
+        P.add("</g>")
+    return place
+
+
+@small
+def skull(P, u, hue):
+    """The foe's mark: a bone skull lit from the upper left, its sockets set a little mean."""
+    body = ('M12 2.2 C6.4 2.2 3.2 6.1 3.2 10.5 C3.2 13.5 4.8 15.6 6.8 16.7 V20.8 H17.2 V16.7 C19.2 15.6 20.8 13.5 20.8 10.5 '
+            'C20.8 6.1 17.6 2.2 12 2.2 Z')
+    edge(P, body, u)
+    form(P, body, BONE, (10.2, 8.6, 8.4, 8.2))   # no rim of the card's coral: on bone it reads as flesh
+    P.add(f'<path d="M5.6 10.2 Q8.4 8.4 11 10.8 Q10.4 14 7.8 13.9 Q5.4 13.6 5.6 10.2 Z" fill="{INK}"/>'
+          f'<path d="M18.4 10.2 Q15.6 8.4 13 10.8 Q13.6 14 16.2 13.9 Q18.6 13.6 18.4 10.2 Z" fill="{INK}"/>'
+          f'<path d="M12 14.4 L13.2 16.5 H10.8 Z" fill="{INK}"/>'
+          f'<path d="M9.8 18.2 V20.8 M14.2 18.2 V20.8" stroke="{INK}" stroke-width="{1.0 * u:.2f}"/>')
+    shine(P, 6.0, 4.6, 3.6, 1.7, -32)
+
+
+@small
+def eye(P, u, hue):
+    """Spectate: an anime eye, the upper lid inked heavy and casting its shadow on the white, the iris dark above and lit
+    below."""
+    almond = "M1.4 12 Q12 2.8 22.6 12 Q12 21.2 1.4 12 Z"
+    edge(P, almond, u)
+    cid = P.uid("c")
+    P.defs.append(f'<clipPath id="{cid}"><path d="{almond}"/></clipPath>')
+    P.add(f'<path d="{almond}" fill="{P.lin(("#FFFFFF", "#EEF2F8", "#C9D3E2"))}"/>')
+    P.add(f'<g clip-path="url(#{cid})">'
+          f'<circle cx="12" cy="12.2" r="5.2" fill="{INK}"/>'
+          f'<circle cx="12" cy="12.2" r="4.5" fill="{P.lin(("#0C2348", "#1D5BA8", "#7AC8FF"))}"/>'
+          f'<circle cx="12" cy="12.4" r="2.1" fill="#070C16"/>'
+          f'<path d="M-2 -2 H26 V9.4 Q12 5.6 -2 11.2 Z" fill="{SHADE}" fill-opacity="{SHADE_OP}"/></g>')
+    P.add(f'<path d="M1.4 12 Q12 2.8 22.6 12" fill="none" stroke="{INK}" stroke-width="{1.6 * u:.2f}" '
+          f'stroke-linecap="round"/>')
+    shine(P, 13.4, 8.6, 2.4, 2.4)
+
+
+@small
+def auto(P, u, hue):
+    """Auto: a ring turning on itself, gold when on and steel grey when off; the band lit at the upper left, its lower
+    right in hard shade, the head cut in two facets."""
+    ramp = DULL if hue == "#AEB9C9" else GILT     # hud_finish.auto: off greys it
+    arc = "M19 12 A7 7 0 1 1 15.6 6"
+    head = "M14 2.4 L19.9 5.6 L14.5 9.5 Z"
+    P.add(f'<path d="{arc}" fill="none" stroke="{INK}" stroke-width="{2.8 + 2 * SMALL_OUT * u:.2f}" '
+          f'stroke-linecap="round"/>')
+    edge(P, head, u)
+    g = P.uid("g")       # the band's light: lit to the upper left, a hard step into shade to the lower right
+    P.defs.append(f'<linearGradient id="{g}" gradientUnits="userSpaceOnUse" x1="5" y1="5" x2="19" y2="19">'
+                  f'<stop offset="0" stop-color="{ramp[0]}"/><stop offset="0.5" stop-color="{ramp[1]}"/>'
+                  f'<stop offset="0.5" stop-color="{ramp[2]}"/><stop offset="1" stop-color="{ramp[2]}"/></linearGradient>')
+    P.add(f'<path d="{arc}" fill="none" stroke="url(#{g})" stroke-width="2.8" stroke-linecap="round"/>')
+    P.add(f'<path d="{head}" fill="{ramp[1]}"/><path d="M14.25 5.95 L19.9 5.6 L14.5 9.5 Z" fill="{ramp[2]}"/>')
+    P.add('<path d="M5.4 10.2 A7 7 0 0 1 8.6 6.1" fill="none" stroke="#FFFFFF" stroke-opacity="0.95" '
+          'stroke-width="1.1" stroke-linecap="round"/>')
+
+
+@small
+def gem(P, u, hue):
+    """The type's gem, cut: a lit table, the crown's two facets, the pavilion lit left and in shade right."""
+    c, d, light = hue
+    whole = "M7 3 H17 L21.5 8.6 L12 22 L2.5 8.6 Z"
+    edge(P, whole, u)
+    for pts, fill in (("7,3 17,3 15,8.6 9,8.6", light), ("2.5,8.6 7,3 9,8.6", light), ("17,3 21.5,8.6 15,8.6", c),
+                      ("2.5,8.6 9,8.6 12,22", c), ("9,8.6 15,8.6 12,22", c), ("15,8.6 21.5,8.6 12,22", d)):
+        P.add(f'<polygon points="{pts}" fill="{fill}"/>')
+    P.add(f'<polygon points="9,8.6 15,8.6 12,22" fill="#FFFFFF" fill-opacity="0.16"/>'
+          f'<path d="M2.5 8.6 H21.5 M9 8.6 L12 22 L15 8.6" fill="none" stroke="{d}" stroke-width="0.7"/>')
+    shine(P, 8.4, 4.2, 4.6, 1.6, -8)
+
+
+@small
+def sword(P, u, hue):
+    """The class, a Warrior's blade: its ridge parting a lit edge from a shaded one, a gilt guard cut the same way, a
+    wrapped grip and a gilt pommel."""
+    blade = "M17.5 2 L22 2 L22 6.5 L10.5 18 L6 13.5 Z"
+    guard = "M4 12 L12 20 L10 22 L2 14 Z"
+    edge(P, blade, u)
+    edge(P, guard, u)
+    P.add(f'<path d="M5.2 18.8 L2.6 21.4" stroke="{INK}" stroke-width="{2.9 + 2 * SMALL_OUT * u:.2f}" stroke-linecap="round"/>')
+    P.add(f'<path d="{blade}" fill="{P.lin(STEEL)}"/><path d="M22 2 L22 6.5 L10.5 18 L8.25 15.75 Z" fill="#7F8FAA"/>')
+    P.add(f'<path d="{guard}" fill="{GILT[1]}"/><path d="M8 16 L12 20 L10 22 L6 18 Z" fill="{GILT[2]}"/>')
+    P.add('<path d="M5.2 18.8 L2.6 21.4" stroke="#6B4320" stroke-width="2.9" stroke-linecap="round"/>'
+          '<path d="M4.6 19.4 L3.2 20.8" stroke="#A8743E" stroke-width="0.9" stroke-linecap="round"/>')
+    P.add(f'<path d="M22 2 L8.25 15.75" stroke="{INK}" stroke-opacity="0.5" stroke-width="{0.6 * u:.2f}"/>')
+    P.add('<path d="M19.4 3.1 L11.6 10.9" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round"/>')
+
+
+PAINTED = {"eye": eye, "auto": auto, "skull": skull, "gem": gem, "sword": sword}   # the kinds the press and cards draw
 
 
 def press_sheet(T, plate):
-    """Rows: today's flat mark, I1, I2; columns: ready, firing, cooling; each cell the press over the same ground."""
+    """Rows: today's flat mark, I1; columns: ready, firing, cooling; each cell the press over the same ground."""
     cw, ch, gap, side, top = 128, 104, 6, 92, 20
-    rows = [("today's flat mark", None)] + list(DIRECTIONS.values())
+    rows = [("today's flat mark", None), ("I1, the emblem", emblem)]
     cols = ["ready", "firing", "cooling"]
     P = hf.Page(T)
     uri = Path(plate).resolve().as_uri()
@@ -221,14 +314,20 @@ def main():
     css = hf.faces()
     svg, sw, sh = press_sheet(T, plate)
     sf.shoot(sf.html(svg, css, sw, sh), out / "icons_press.png", sw, sh, scale=3)
-    for key, (name, art) in DIRECTIONS.items():
-        hf.ART = art
+    for name, art, kit in (("today", None, None), ("set", emblem, PAINTED)):
+        hf.ART, hf.PAINTED = art, kit
         svg = hf.fight(T, plate)
-        sf.shoot(sf.html(svg, css, hf.W, hf.H), out / f"{key}_fight.png", hf.W, hf.H, scale=hf.SCALE)
-        sf.shoot(sf.html(svg, css, hf.W, hf.H, zoom=568 / hf.W), out / f"{key}_fight_small.png", 568,
-                 round(hf.H * 568 / hf.W), scale=1)
+        close = svg.replace(f'viewBox="0 0 {hf.W} {hf.H}"', 'viewBox="0 36 560 176"').replace(
+            f'width="{hf.W}" height="{hf.H}"', 'width="560" height="176"', 1)
+        sf.shoot(sf.html(close, css, 560, 176), out / f"{name}_close.png", 560, 176, scale=3)
+        if name == "set":
+            sf.shoot(sf.html(svg, css, hf.W, hf.H), out / "set_fight.png", hf.W, hf.H, scale=hf.SCALE)
+            sf.shoot(sf.html(svg, css, hf.W, hf.H, zoom=568 / hf.W), out / "set_fight_small.png", 568,
+                     round(hf.H * 568 / hf.W), scale=1)
+            svg, sw, sh = hf.states(T, plate)
+            sf.shoot(sf.html(svg, css, sw, sh), out / "set_states.png", sw, sh, scale=3)
         print("drew", name)
-    hf.ART = None
+    hf.ART = hf.PAINTED = None
 
 
 if __name__ == "__main__":

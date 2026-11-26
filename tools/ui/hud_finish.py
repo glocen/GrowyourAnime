@@ -63,6 +63,7 @@ TAKES = {
 
 CARD = (12, 50, 206, 58)
 ART = None          # the signature's art: None draws the flat mark; else art(P, cx, cy, inner radius, state) (hud_icons.py)
+PAINTED = None      # the painted set: None draws the flat marks; else {kind: paint(P, x, y, size, hue)} (hud_icons.py)
 FOE = (318, 50, 216, 50)
 SIG = (47, 160, 33)          # the signature's centre and radius: 66 across, the TAP height
 AUTO = (96, 147, 66, 26)
@@ -188,6 +189,9 @@ class Page:
 
     # ---- icons in the style: an ink outline, the hue, a cel shadow, a lit facet, a specular point ---------------------
     def icon(self, kind, x, y, size, hue=None, ink="#14161C", o=0.75):
+        if PAINTED and kind in PAINTED:
+            PAINTED[kind](self, x, y, size, hue)
+            return
         k = size / 24
         sw = 2 * o / k      # the outline's stroke, drawn under its fill: `o` points showing outside
         out = f' stroke="{ink}" stroke-width="{sw:.2f}" stroke-linejoin="round" paint-order="stroke"'

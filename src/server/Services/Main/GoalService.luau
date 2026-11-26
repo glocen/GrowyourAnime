@@ -248,6 +248,9 @@ function GoalService.Start()
 		end
 	end)
 	FightService.Unmarked:Connect(function(_f: FightService.Fighter, mark: FightService.Mark, struck: { FightService.Fighter }?)
+		if mark.Kind ~= nil and mark.Kind ~= "Second" then
+			return -- the keeper's pools and sweep (TR69 D) are neither a slam nor a Dasher's line; its second slam is a slam
+		end
 		for _, lead in struck or {} do
 			if lead.Side == "Lead" and lead.Owner then
 				step(lead.Owner, if mark.Length ~= nil then "LineHit" else "SlamHit")

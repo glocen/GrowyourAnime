@@ -31,6 +31,11 @@
 --   SlamController.Cracks(fighter) -> { BoxHandleAdornment }?   an Open foe's cracked ring, for tests
 --   SlamController.Edge() -> Frame?                 the Finisher's flash at the screen's edges while it shows, for tests
 --   SlamController.Press() -> { [string]: any }     a Recall as a press asks it, the server's answer
+-- TR69 D, the keeper's hazards (Net "Hazard"; KeeperPhaseService), in grey on the footprint's own marks: a pool's or a
+-- second slam's ring and disc where it lands, gone on its Slam; a sweep's sector outlined on the ground through its
+-- tell, its line lying along the sector's first side and filling out to its end, then turning across the sector over
+-- its Turn (Rules.Keeper.Sweep), gone at the end of it.
+--   SlamController.Hazards() -> { Drawing }   the hazards drawn now (Kind, Holder, Ring, Disc, Line, At, Down, Slam), for tests
 
 local ContextActionService = game:GetService("ContextActionService")
 local Players = game:GetService("Players")
@@ -43,6 +48,7 @@ local Combat = require(Shared.Config.Combat)
 local EffectsConfig = require(Shared.Config.Effects)
 local MarkRule = require(Shared.Rules.Mark)
 local Hands = require(Shared.Rules.Hands)
+local Keeper = require(Shared.Rules.Keeper)
 local Actions = require(Shared.Definitions.Actions)
 local Effects = require(script.Parent.FighterController.Effects)
 local Rows = require(script.Parent.FighterController.Rows)
@@ -107,6 +113,27 @@ local ownLead: Model? = nil
 local function now(): number
 	return workspace:GetServerTimeNow()
 end
+
+-- A keeper's hazard drawn (TR69 D): a ring and disc (a pool, a second slam), or a sweep's rim and turning line.
+type Hazard = {
+	Owner: Instance,
+	Kind: string,
+	Holder: BasePart,
+	Ring: CylinderHandleAdornment?,
+	Disc: CylinderHandleAdornment?,
+	Rim: BasePart?,
+	Line: BoxHandleAdornment?,
+	Base: Vector3,
+	Radius: number,
+	Length: number,
+	From: number,
+	Arc: number,
+	Turn: number,
+	Down: number,
+	Slam: number,
+}
+local hazardsDrawn: { Hazard } = {}
+local SWEEP_DASH = 2 -- studs of the sector's rim each dash stands for
 
 local function fighters(): Instance?
 	return workspace:FindFirstChild("Fighters")
@@ -182,23 +209,12 @@ local function drawLine(model: Model, at: Vector3, to: Vector3, half: number, do
 	drawn[model] = { Holder = holder, Edges = edges, Fill = fill, Length = length, Slam = slam, Down = down, Radius = half }
 end
 
-local function draw(model: Model)
-	erase(model)
-	local at, radius, down, slam = model:GetAttribute("MarkAt"), model:GetAttribute("MarkRadius"), model:GetAttribute("MarkDown"), model:GetAttribute("MarkSlam")
-	if typeof(at) ~= "Vector3" or type(radius) ~= "number" or type(down) ~= "number" or type(slam) ~= "number" then
-		return
-	end
-	local to = model:GetAttribute("MarkTo")
-	if typeof(to) == "Vector3" then
-		if standsIn("DasherLunge") then
-			drawLine(model, at :: Vector3, to :: Vector3, radius :: number, down :: number, slam :: number)
-		end
-		return
-	end
+-- A ring and its growing disc flat on the ground under `at` (the keeper's footprint's look, Config.Combat.Keeper.Mark).
+local function ringAt(at: Vector3, radius: number): (BasePart, CylinderHandleAdornment, CylinderHandleAdornment)
 	local look = Combat.Keeper.Mark
-	local y = groundUnder(at :: Vector3)
+	local y = groundUnder(at)
 	-- a cylinder adornment's axis is its CFrame's look: turned to stand up, it lies flat on the ground
-	local holder = holderAt(CFrame.new((at :: Vector3).X, y + RING_UP, (at :: Vector3).Z) * CFrame.Angles(math.rad(90), 0, 0))
+	local holder = holderAt(CFrame.new(at.X, y + RING_UP, at.Z) * CFrame.Angles(math.rad(90), 0, 0))
 	local function adorn(name: string, transparency: number): CylinderHandleAdornment
 		local a = Instance.new("CylinderHandleAdornment")
 		a.Name = name
@@ -212,12 +228,133 @@ local function draw(model: Model)
 		return a
 	end
 	local ring = adorn("Ring", 0.05)
-	ring.Radius = radius :: number
-	ring.InnerRadius = math.max(0, (radius :: number) - look.Edge)
+	ring.Radius = radius
+	ring.InnerRadius = math.max(0, radius - look.Edge)
 	local disc = adorn("Disc", look.Fill)
 	disc.Radius = 0.01
+	return holder, ring, disc
+end
+
+local function draw(model: Model)
+	erase(model)
+	local at, radius, down, slam = model:GetAttribute("MarkAt"), model:GetAttribute("MarkRadius"), model:GetAttribute("MarkDown"), model:GetAttribute("MarkSlam")
+	if typeof(at) ~= "Vector3" or type(radius) ~= "number" or type(down) ~= "number" or type(slam) ~= "number" then
+		return
+	end
+	local to = model:GetAttribute("MarkTo")
+	if typeof(to) == "Vector3" then
+		if standsIn("DasherLunge") then
+			drawLine(model, at :: Vector3, to :: Vector3, radius :: number, down :: number, slam :: number)
+		end
+		return
+	end
+	local holder, ring, disc = ringAt(at :: Vector3, radius :: number)
 	holder.Parent = workspace
 	drawn[model] = { Holder = holder, Ring = ring, Disc = disc, Length = 0, Slam = slam :: number, Down = down :: number, Radius = radius :: number }
+end
+
+-- A keeper's hazard put down (TR69 D; FightService.Hazard's payload): a pool's or a second slam's ring, or a sweep's rim
+-- and its line, drawn until its Slam (a sweep's, until its line has turned).
+local function hazardOn(payload: any)
+	if type(payload) ~= "table" or typeof(payload.A) ~= "Instance" or typeof(payload.At) ~= "Vector3" then
+		return
+	end
+	local at: Vector3 = payload.At
+	local radius, down, slam = tonumber(payload.Radius), tonumber(payload.Down), tonumber(payload.Slam)
+	if radius == nil or down == nil or slam == nil then
+		return
+	end
+	local kind = tostring(payload.Kind or "")
+	local from, arc, length, turn = tonumber(payload.From), tonumber(payload.Arc), tonumber(payload.Length), tonumber(payload.Turn)
+	if kind == "Sweep" and from and arc and length and turn then
+		local base = Vector3.new(at.X, groundUnder(at) + RING_UP, at.Z)
+		local edge = Combat.Keeper.Mark.Edge
+		local rim = holderAt(CFrame.new(base))
+		local function dash(name: string, middle: Vector3, along: Vector3, long: number)
+			local a = Instance.new("BoxHandleAdornment")
+			a.Name = name
+			a.Adornee = rim
+			a.Size = Vector3.new(edge, RING_THICK, long)
+			a.CFrame = CFrame.lookAt(middle, middle + along)
+			a.Color3 = Color3.new(1, 1, 1)
+			a.Transparency = 0.05
+			a.AlwaysOnTop = false
+			a.ZIndex = 1
+			a.Parent = rim
+		end
+		-- its two sides, and its far edge in dashes
+		for index, a in { from, from + arc } do
+			local way = Vector3.new(math.cos(a), 0, math.sin(a))
+			dash(`Side{index}`, way * length / 2, way, length)
+		end
+		local count = math.max(2, math.ceil(length * arc / SWEEP_DASH))
+		for index = 1, count do
+			local a = from + arc * (index - 0.5) / count
+			dash(`Rim{index}`, Vector3.new(math.cos(a), 0, math.sin(a)) * length, Vector3.new(-math.sin(a), 0, math.cos(a)), length * arc / count * 0.6)
+		end
+		local first = Vector3.new(math.cos(from), 0, math.sin(from))
+		local holder = holderAt(CFrame.lookAt(base, base + first))
+		local line = Instance.new("BoxHandleAdornment")
+		line.Name = "Line"
+		line.Adornee = holder
+		line.Size = Vector3.new(radius * 2, RING_THICK, 0.01)
+		line.CFrame = CFrame.new(0, 0, -0.005)
+		line.Color3 = Color3.new(1, 1, 1)
+		line.Transparency = Combat.Keeper.Mark.Fill
+		line.AlwaysOnTop = false
+		line.ZIndex = 1
+		line.Parent = holder
+		rim.Parent = workspace
+		holder.Parent = workspace
+		table.insert(hazardsDrawn, {
+			Owner = payload.A, Kind = kind, Holder = holder, Rim = rim, Line = line, Base = base, Radius = radius,
+			Length = length, From = from, Arc = arc, Turn = turn, Down = down, Slam = slam,
+		})
+		return
+	end
+	local holder, ring, disc = ringAt(at, radius)
+	holder.Parent = workspace
+	table.insert(hazardsDrawn, {
+		Owner = payload.A, Kind = kind, Holder = holder, Ring = ring, Disc = disc, Base = at, Radius = radius,
+		Length = 0, From = 0, Arc = 0, Turn = 0, Down = down, Slam = slam,
+	})
+end
+
+local function hazardOff(index: number)
+	local h = table.remove(hazardsDrawn, index)
+	if h then
+		h.Holder:Destroy()
+		if h.Rim then
+			h.Rim:Destroy()
+		end
+	end
+end
+
+local function stepHazards(t: number)
+	for index = #hazardsDrawn, 1, -1 do
+		local h = hazardsDrawn[index]
+		if h.Owner.Parent == nil or t >= h.Slam + h.Turn then
+			hazardOff(index)
+			continue
+		end
+		local share = MarkRule.Fill(t, h.Down, h.Slam)
+		local disc, line = h.Disc, h.Line
+		if disc then
+			disc.Radius = math.max(0.01, h.Radius * share)
+		elseif line then
+			if t < h.Slam then
+				local long = math.max(0.01, h.Length * share)
+				line.Size = Vector3.new(h.Radius * 2, RING_THICK, long)
+				line.CFrame = CFrame.new(0, 0, -long / 2)
+			else
+				local a = h.From + (Keeper.Sweep(t - h.Slam, h.Turn, h.Arc, false) or h.Arc)
+				line.Size = Vector3.new(h.Radius * 2, RING_THICK, h.Length)
+				line.CFrame = CFrame.new(0, 0, -h.Length / 2)
+				line.Transparency = 0.05
+				h.Holder.CFrame = CFrame.lookAt(h.Base, h.Base + Vector3.new(math.cos(a), 0, math.sin(a)))
+			end
+		end
+	end
 end
 
 local function paneOff(model: Model)
@@ -577,6 +714,7 @@ local function stepMarks()
 		end
 	end
 	stepCracks(t)
+	stepHazards(t)
 end
 
 -- B's Recall: what a press asks the server.
@@ -731,6 +869,25 @@ function SlamController.Edge(): Frame?
 	return edge
 end
 
+export type Drawing = {
+	Kind: string,
+	Holder: BasePart,
+	Ring: CylinderHandleAdornment?,
+	Disc: CylinderHandleAdornment?,
+	Line: BoxHandleAdornment?,
+	At: Vector3,
+	Down: number,
+	Slam: number,
+}
+
+function SlamController.Hazards(): { Drawing }
+	local out: { Drawing } = {}
+	for _, h in hazardsDrawn do
+		table.insert(out, { Kind = h.Kind, Holder = h.Holder, Ring = h.Ring, Disc = h.Disc, Line = h.Line, At = h.Base, Down = h.Down, Slam = h.Slam })
+	end
+	return out
+end
+
 function SlamController.Start()
 	local function hook(folder: Instance)
 		for _, model in folder:GetChildren() do
@@ -760,6 +917,7 @@ function SlamController.Start()
 			edgeFlash()
 		end
 	end)
+	Net.Client.On("Hazard", hazardOn)
 	Net.Client.On("Heal", function(heal: any)
 		local healer, healed = if type(heal) == "table" then heal.A else nil, if type(heal) == "table" then heal.T else nil
 		if typeof(healer) == "Instance" and healer:GetAttribute("Action") == "SupportCast" and typeof(healed) == "Instance" and healed:IsA("Model") then

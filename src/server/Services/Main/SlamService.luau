@@ -10,6 +10,10 @@
 -- * A Dasher's line (AR52) is a footprint too: the same switch and the same way out, its outside the line's, and its
 --   lunges counted apart, under "Lunge A" (or B, or Off). B's Recall shows only in a keeper's try, so on the Row a line
 --   under B is left by walking alone until the director's pick says otherwise.
+-- * The keeper's hazards (TR69 D; KeeperPhaseService: its pools, its double slam's second, its sweep) are footprints too,
+--   each watched on its own, so several may be down on one lead: only for a lead under it at its Plant, and A breaks the
+--   lead off only while it's still under it, held until its Slam (a sweep's, until its line has turned). Counted under
+--   their kind ("Pool A", "Second A", "Sweep A").
 -- The player's attribute RecallReady (server time) says when their next Recall is ready, for the button's cooldown.
 -- * TR69 C, the press (Config.Combat.Hands, Off by default; Rules.Hands): on, the Recall is Call, in every fight but the
 --   Tower's (the lead has a target, or a blow landed within Hands.Linger), whatever the mode. A Call in a marked strike's
@@ -52,9 +56,10 @@ local SlamService = {
 type Watch = {
 	Mark: FightService.Mark,
 	Keeper: FightService.Fighter,
+	Lead: FightService.Fighter,
 	Player: Player,
 	Mode: MarkRule.Mode, -- the switch as the footprint went down: the slam is counted under it
-	Key: string, -- what it's counted under: its mode, a lunge's after "Lunge " (AR52)
+	Key: string, -- what it's counted under: its mode, a lunge's after "Lunge " (AR52), a hazard's after its kind (TR69 D)
 	FromX: number, -- where the avatar stood at the Plant
 	FromZ: number,
 	Moved: number, -- the farthest it has stood from there since
@@ -62,7 +67,7 @@ type Watch = {
 	Broke: boolean, -- A: its lead broken off already
 }
 
-local watches: { [FightService.Fighter]: Watch } = {} -- by lead
+local watches: { [FightService.Mark]: Watch } = {} -- by footprint: a lead may be under several (TR69 D)
 local counts: MarkRule.Counts = {}
 local recalled: { [Player]: number } = {} -- each player's last Recall, server time
 
@@ -82,12 +87,17 @@ local function marked(keeper: FightService.Fighter, mark: FightService.Mark)
 	if lead == nil or player == nil or avatar == nil then
 		return
 	end
-	watches[lead] = {
+	local p = lead.Root.Position
+	if mark.Kind and not MarkRule.Covers(mark, p.X, p.Z) then
+		return -- a hazard put down where the lead isn't asks nothing of it
+	end
+	watches[mark] = {
 		Mark = mark,
 		Keeper = keeper,
+		Lead = lead,
 		Player = player,
 		Mode = mode(),
-		Key = if mark.Length then `Lunge {mode()}` else mode(),
+		Key = if mark.Kind then `{mark.Kind} {mode()}` elseif mark.Length then `Lunge {mode()}` else mode(),
 		FromX = avatar.Position.X,
 		FromZ = avatar.Position.Z,
 		Moved = 0,
@@ -98,13 +108,12 @@ end
 
 -- Taken up: on its hit, each watched lead's slam counted; ended first, nothing.
 local function unmarked(_keeper: FightService.Fighter, mark: FightService.Mark, struck: { FightService.Fighter }?)
-	for lead, watch in watches do
-		if watch.Mark ~= mark then
-			continue
-		end
-		watches[lead] = nil
+	local watch = watches[mark]
+	if watch then
+		watches[mark] = nil
+		local lead = watch.Lead
 		if struck == nil then
-			continue
+			return
 		end
 		local hit = table.find(struck, lead) ~= nil
 		local kind = if hit then nil else MarkRule.Purpose(watch.Moved, watch.Recalled, Combat.Keeper.Out.Moved)
@@ -123,20 +132,22 @@ end
 -- Every frame a footprint is down: how far each avatar has gone from its Plant, and A's break-off.
 local function step()
 	local out = Combat.Keeper.Out
-	for lead, watch in watches do
+	for mark, watch in watches do
 		local avatar = Parts.Root(watch.Player.Character)
-		if avatar == nil or watch.Keeper.Mark ~= watch.Mark then
+		if avatar == nil or mark.Up or (mark.Kind == nil and watch.Keeper.Mark ~= mark) then
 			continue
 		end
+		local lead = watch.Lead
 		local p = avatar.Position
 		local dx, dz = p.X - watch.FromX, p.Z - watch.FromZ
 		local moved = math.sqrt(dx * dx + dz * dz)
 		watch.Moved = math.max(watch.Moved, moved)
 		if watch.Mode == "A" and not watch.Broke and mode() == "A" then
-			local mark = watch.Mark
 			local outside = not MarkRule.Covers(mark, p.X, p.Z)
-			if MarkRule.Follows(moved, outside, out.Moved) then
-				watch.Broke = FightService.Away(lead, Combat.Lead.CatchUpSpeed, mark.Slam)
+			local l = lead.Root.Position
+			local under = mark.Kind == nil or MarkRule.Covers(mark, l.X, l.Z)
+			if under and MarkRule.Follows(moved, outside, out.Moved) then
+				watch.Broke = FightService.Away(lead, Combat.Lead.CatchUpSpeed, mark.Slam + (mark.Turn or 0))
 			end
 		end
 	end
@@ -172,9 +183,10 @@ function SlamService.Recall(player: Player): { [string]: any }
 	recalled[player] = at
 	player:SetAttribute("RecallReady", at + recall.Cooldown)
 	FightService.Note(player, "Calls", 1)
-	local watch = watches[lead]
-	if watch then
-		watch.Recalled = true
+	for _, watch in watches do
+		if watch.Lead == lead then
+			watch.Recalled = true
+		end
 	end
 	return { Ok = true, Ready = at + recall.Cooldown }
 end
@@ -244,9 +256,9 @@ function SlamService.Start()
 	end)
 	Players.PlayerRemoving:Connect(function(player: Player)
 		recalled[player] = nil
-		for lead, watch in watches do
+		for mark, watch in watches do
 			if watch.Player == player then
-				watches[lead] = nil
+				watches[mark] = nil
 			end
 		end
 	end)

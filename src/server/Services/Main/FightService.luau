@@ -47,6 +47,7 @@ local Markers = require(Shared.World.Markers)
 local Passive = require(Shared.Rules.Passive)
 local MarkRule = require(Shared.Rules.Mark)
 local Hands = require(Shared.Rules.Hands)
+local Keeper = require(Shared.Rules.Keeper)
 local PlaceRole = require(Shared.Util.PlaceRole)
 local SupportRule = require(Shared.Rules.Support)
 local DataService = require(script.Parent.Parent.Core.DataService)
@@ -56,7 +57,9 @@ export type State = "Idle" | "Flinch" | "Stun" | "Down" | "Reset" | "Home"
 
 -- A marked strike's footprint (TR44): its flat centre and its root's height when put down, its radius, when it went down
 -- and when its hit lands (server time), and the fighter it was aimed at. A line (AR52, the Dasher's) starts at the centre
--- and runs Length along the unit (DirX, DirZ), Radius either side (Rules.Mark.Covers).
+-- and runs Length along the unit (DirX, DirZ), Radius either side (Rules.Mark.Covers). A hazard (FightService.Hazard, TR69
+-- D) has a Kind: "Pool" and "Second" are rings; "Sweep" is that line turned about (X, Z) from From over Arc (radians), its
+-- turn beginning on the Slam and lasting Turn seconds. Up once it's taken up.
 export type Mark = {
 	X: number,
 	Z: number,
@@ -68,6 +71,11 @@ export type Mark = {
 	Length: number?,
 	DirX: number?,
 	DirZ: number?,
+	Kind: string?,
+	From: number?,
+	Arc: number?,
+	Turn: number?,
+	Up: boolean?,
 }
 -- A lead broken off for its place by its avatar (FightService.Away): at Speed, held until Until, or else Hold seconds
 -- once it arrives (at most Most seconds on the way); Since, when it broke off.
@@ -128,6 +136,15 @@ export type Fighter = {
 	Shield: { Share: number, Until: number }?, -- the share less damage it takes until then (Actions.Hit.Shield)
 	Guard: { Keep: number, Until: number }?, -- a Guard's raised shield (AR52; Actions.Hit.Guard; Rules.Fight.Guarded)
 	OpenUntil: number?, -- Open after a slip until then: a lead's signature on it is a Finisher (TR69 C; Rules.Hands)
+	-- The keeper's phases (TR69 D; KeeperPhaseService, Rules.Keeper): the least health a hit or a burn takes it to; until
+	-- HeldUntil it neither thinks nor acts, and nothing lands on it; until HarderUntil each hit on it lands Harder times;
+	-- Rates, an action's own rate (by Id), with a chill's; Aimed, a hazard of its own that holds its aim (the sweep's).
+	Floor: number?,
+	HeldUntil: number?,
+	HarderUntil: number?,
+	Harder: number?,
+	Rates: { [string]: number }?,
+	Aimed: Mark?,
 	StunLock: number, -- no stun stops it again before this (Rules.Fight.Stun)
 	-- The element states (Config.Combat.States): a burn still to pay, a chill, and when a shock and a sap end.
 	Burn: Fight.Burn?,
@@ -388,6 +405,7 @@ local function takeUp(f: Fighter, struck: { Fighter }?)
 		return
 	end
 	f.Mark = nil
+	mark.Up = true
 	f.Model:SetAttribute("MarkSlam", nil)
 	f.Model:SetAttribute("MarkTo", nil)
 	f.Model:SetAttribute("MarkAt", nil)
@@ -419,7 +437,7 @@ local function start(f: Fighter, action: Actions.Action, at: number)
 	f.ActionAt = at
 	f.Checked = -1
 	-- a chill slows the whole action, from its start (Config.Combat.States.Chill)
-	local rate = chillRate(f, at)
+	local rate = chillRate(f, at) * (if f.Rates then f.Rates[action.Id] or 1 else 1) -- a keeper's phase 3 tell (TR69 D)
 	if rate ~= f.ActionRate then
 		f.ActionRate = rate
 		f.Model:SetAttribute("ActionRate", if rate ~= 1 then rate else nil)
@@ -1112,6 +1130,9 @@ end
 -- target's passive may take less (Rook's Second Wind); the attacker's may add to it in its element (Pip's Kindle), shown in
 -- the element's number, or crit its first hit to land on the target (Kirra's First Strike).
 local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: string, hit: Actions.Hit, at: number, line: Vector3)
+	if target.HeldUntil and at < target.HeldUntil then
+		return -- a keeper's turn (TR69 D): untouchable while it plays
+	end
 	local rolls = { Dodge = rng:NextNumber(), Critical = rng:NextNumber(), Block = rng:NextNumber() }
 	local own = passiveOf(f)
 	local guard = passiveOf(target)
@@ -1162,7 +1183,16 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 		local landsNow, burn = Fight.Burn(Combat.States.Burn, target.Burn, result.Elemental, at)
 		dealt, target.Burn = result.Total - result.Elemental + landsNow, burn
 	end
+	if target.Harder and target.HarderUntil and at < target.HarderUntil then
+		dealt *= target.Harder -- a keeper's window (TR69 D): the lantern stuck in the street
+	end
 	local left, fell = Fight.Damage(target.Health, dealt)
+	if target.Floor then
+		-- its phase's line (TR69 D; Rules.Keeper.Clamp): held there until the phase's turn has played
+		local held
+		left, held = Keeper.Clamp(left, target.Floor)
+		fell = fell and not held
+	end
 	local removed = target.Health - left
 	setHealth(target, left)
 	-- the fights' read-out (TR69 C): a blow keeps it up; the health a lead lost
@@ -1496,7 +1526,7 @@ end
 -- Whether a fighter's aim is held: while its footprint is down (TR44), and a lunge down its line (AR52) from its Aim beat
 -- to its action's end, so a Dasher lies with its back open to whom it passed.
 local function aimHeld(f: Fighter, at: number): boolean
-	if f.Mark ~= nil then
+	if f.Mark ~= nil or (f.Aimed ~= nil and not f.Aimed.Up) then
 		return true
 	end
 	local action = f.Action
@@ -1877,6 +1907,9 @@ local function thinkShade(f: Fighter, at: number)
 	if f.State ~= "Flinch" and forced(f, at) then
 		return
 	end
+	if f.HeldUntil and at < f.HeldUntil then
+		return -- a keeper's turn (TR69 D): it stands where it is, facing as it was
+	end
 	local fromHome = flat(f.Root.Position - home.Position).Magnitude
 	if f.State == "Reset" then
 		if fromHome < 2 then
@@ -2080,6 +2113,11 @@ local function stepBurn(f: Fighter, at: number): boolean
 		return false
 	end
 	local left, fell = Fight.Damage(f.Health, paid)
+	if f.Floor then
+		local held
+		left, held = Keeper.Clamp(left, f.Floor) -- a keeper's phase line holds a burn too (TR69 D)
+		fell = fell and not held
+	end
 	setHealth(f, left)
 	if fell then
 		fall(f, at)
@@ -2087,8 +2125,77 @@ local function stepBurn(f: Fighter, at: number): boolean
 	return fell
 end
 
+-- The hazards down (TR69 D; FightService.Hazard): footprints a fighter put down outside its actions' own, each landing its
+-- action's beat on every enemy it covers on its Slam (a ring), or on each it passes over as it turns (a sweep), once.
+type Hazard = { Owner: Fighter, Mark: Mark, Action: Actions.Action, Beat: string, Struck: { Fighter }, Turned: number }
+local hazards: { Hazard } = {}
+
+local function hazardUp(h: Hazard, struck: { Fighter }?)
+	local f, mark = h.Owner, h.Mark
+	mark.Up = true
+	if f.Aimed == mark then
+		f.Aimed = nil
+	end
+	FightService.Unmarked:Fire(f, mark, struck)
+end
+
+local function stepHazards(at: number)
+	for index = #hazards, 1, -1 do
+		local h = hazards[index]
+		local f, mark = h.Owner, h.Mark
+		if fighters[f.Id] ~= f or f.State == "Down" then
+			table.remove(hazards, index)
+			hazardUp(h, nil)
+			continue
+		end
+		if at < mark.Slam then
+			continue
+		end
+		local hit = h.Action.Hits[h.Beat]
+		local centre = Vector3.new(mark.X, mark.Y, mark.Z)
+		local function strikeOn(other: Fighter)
+			table.insert(h.Struck, other)
+			local away = flat(other.Root.Position - centre)
+			land(f, h.Action, other, h.Beat, hit, at, if away.Magnitude > 0.05 then away else flat(other.Root.Position - f.Root.Position))
+		end
+		local turn = mark.Turn
+		if mark.Kind == "Sweep" and turn and mark.From and mark.Arc and mark.Length then
+			-- the line turns from From over Arc in Turn seconds: whoever it passed over since the last step is struck
+			local t = math.min(at - mark.Slam, turn)
+			local was = Keeper.Sweep(h.Turned, turn, mark.Arc, false) or 0
+			local now_ = Keeper.Sweep(t, turn, mark.Arc, false) or mark.Arc
+			for _, other in fighters do
+				local p = other.Root.Position
+				if against(f, other) and standing(other) and table.find(h.Struck, other) == nil
+					and MarkRule.Swept(mark.X, mark.Z, mark.From + was, mark.From + now_, mark.Length, mark.Radius, p.X, p.Z) then
+					strikeOn(other)
+				end
+			end
+			h.Turned = t
+			if t >= turn then
+				table.remove(hazards, index)
+				hazardUp(h, h.Struck)
+			end
+		else
+			local under: { Fighter } = {}
+			for _, other in fighters do
+				local p = other.Root.Position
+				if against(f, other) and standing(other) and MarkRule.Covers(mark, p.X, p.Z) then
+					table.insert(under, other)
+				end
+			end
+			for _, other in under do
+				strikeOn(other)
+			end
+			table.remove(hazards, index)
+			hazardUp(h, h.Struck)
+		end
+	end
+end
+
 local function step()
 	local at = now()
+	stepHazards(at)
 	for _, f in fighters do
 		if f.State == "Down" then
 			if f.Side == "Lead" and Carry.Fallen("Down", at - (f.StateUntil - Combat.Lead.Leave), false, Combat.Lead.Leave, false) == "Home" then
@@ -2455,6 +2562,85 @@ function FightService.Open(attacker: Fighter, lead: Fighter)
 		end
 		lead.Model:SetAttribute("Slipped", at)
 	end
+end
+
+-- A hazard of `f`'s put down (TR69 D; KeeperPhaseService): `mark` lands `action`'s `beat` hit on its Slam (Rules.Mark
+-- covers it), or as its line turns when it's a "Sweep" (its aim held meanwhile). Every client draws it (Net "Hazard"), and
+-- it's heard as a footprint (Marked, then Unmarked with what it took). False when `f` isn't fighting or the row has no hit.
+function FightService.Hazard(f: Fighter, mark: Mark, action: string, beat: string): boolean
+	local row = Actions.ById[action]
+	if fighters[f.Id] ~= f or not standing(f) or row == nil or row.Hits[beat] == nil then
+		return false
+	end
+	local h: Hazard = { Owner = f, Mark = mark, Action = row, Beat = beat, Struck = {}, Turned = 0 }
+	table.insert(hazards, h)
+	if mark.Kind == "Sweep" then
+		f.Aimed = mark
+	end
+	Net.Server.FireAll("Hazard", {
+		A = f.Model,
+		Kind = mark.Kind,
+		At = Vector3.new(mark.X, mark.Y, mark.Z),
+		Radius = mark.Radius,
+		Down = mark.Down,
+		Slam = mark.Slam,
+		Length = mark.Length,
+		From = mark.From,
+		Arc = mark.Arc,
+		Turn = mark.Turn,
+	})
+	FightService.Marked:Fire(f, mark)
+	return true
+end
+
+-- A keeper's turn (TR69 D): `f` stops what it's doing and stands, untouchable, until `untilAt`; with `stun`, staggered
+-- (its Stun) the first `stun` seconds of it.
+function FightService.Hold(f: Fighter, untilAt: number, stun: number?)
+	if fighters[f.Id] ~= f or not standing(f) then
+		return
+	end
+	local at = now()
+	f.HeldUntil = untilAt
+	f.Model:SetAttribute("HeldUntil", untilAt)
+	endAction(f, at)
+	stop(f)
+	if stun and stun > 0 then
+		f.Model:SetAttribute("StunLook", nil)
+		setState(f, "Stun", at + stun)
+	end
+end
+
+-- A keeper's window (TR69 D): Open `seconds` (TR69 C's state: its cracked ring, a lead's signature on it a Finisher with
+-- hands on), staggered as long, and each hit on it landing `harder` times meanwhile.
+function FightService.Window(f: Fighter, seconds: number, harder: number)
+	if fighters[f.Id] ~= f or not standing(f) then
+		return
+	end
+	local at = now()
+	f.OpenUntil = at + seconds
+	f.Model:SetAttribute("OpenUntil", f.OpenUntil)
+	f.HarderUntil, f.Harder = at + seconds, harder
+	f.Model:SetAttribute("HarderUntil", f.HarderUntil)
+	f.StunLock = at + seconds + Combat.Stun.Lock
+	f.Model:SetAttribute("StunLook", nil)
+	setState(f, "Stun", at + seconds)
+	endAction(f, at)
+	stop(f)
+end
+
+-- `f` starts `action` now, facing its target, as a keeper's phase asks it (TR69 D: its sweep): false when it's down,
+-- stunned, held, or busy in another.
+function FightService.Act(f: Fighter, action: string): boolean
+	local row = Actions.ById[action]
+	local at = now()
+	if row == nil or fighters[f.Id] ~= f or not standing(f) or f.State == "Stun" or busy(f, at) or (f.HeldUntil ~= nil and at < f.HeldUntil) then
+		return false
+	end
+	if f.Target then
+		face(f, f.Target.Root.Position)
+	end
+	start(f, row, at)
+	return true
 end
 
 -- A wave stepping out (TR69 B; PackService): `pack`'s Shades go for `lead` as if it had hit them, until the pack resets.

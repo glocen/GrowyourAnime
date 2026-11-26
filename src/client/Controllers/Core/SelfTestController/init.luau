@@ -92,6 +92,7 @@ local function run(filter: string?): string
 	local StageCases = require(script.StageCases)
 	local HardLooksCases = require(script.HardLooksCases)
 	local SlamCases = require(script.SlamCases)
+	local KeeperCases = require(script.KeeperCases)
 	local ShopCases = require(script.ShopCases)
 	local FunnelCases = require(script.FunnelCases)
 	local GearCases = require(script.GearCases)
@@ -242,6 +243,8 @@ local function run(filter: string?): string
 	table.move(hard, 1, #hard, #cases + 1, cases)
 	local slams = SlamCases.Cases() -- the keeper's marked slam (TR44), apart for the same reason
 	table.move(slams, 1, #slams, #cases + 1, cases)
+	local keepers = KeeperCases.Cases() -- the keeper's three phases (TR69 D), apart for the same reason
+	table.move(keepers, 1, #keepers, #cases + 1, cases)
 	local shop = ShopCases.Cases() -- the Void Shop's screen and counter (AR38), apart for the same reason
 	table.move(shop, 1, #shop, #cases + 1, cases)
 	local funnel = FunnelCases.Cases() -- the first session measured (TR32), apart for the same reason

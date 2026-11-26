@@ -548,6 +548,42 @@ local rows: { Action } = {
 		},
 		Signed = nil,
 	},
+	{
+		-- The Lamplighter's sweep, phase 3's (TR69 D, a grey block; Config.Combat.Keeper.Phases.Sweep): it holds its lantern
+		-- out on its pole through the Tell, then turns it across the front of it, a line its footprint, on Sweep. Started by
+		-- KeeperPhaseService, never chosen; the line's hits are its (each lead it passes over, once: Rules.Mark.Swept), on
+		-- KeeperLight's Sweep row. Its block clip is the swing's, whose strike meets the Sweep beat (0.8 against 0.9).
+		Id = "KeeperSweep",
+		Clip = "LamplighterSwing",
+		Length = 2.5,
+		CancelFrom = 2.5,
+		Cooldown = 0,
+		Beats = { Wind = 0, Sweep = 0.9, Recover = 2.5 },
+		Hits = {},
+		Range = 11,
+		Heavy = false,
+		State = nil,
+		Levers = { "anticipation (the lantern held out through the tell)", "the line's turn, read on the ground", "the window after it" },
+		Signed = nil,
+	},
+	{
+		-- The Lamplighter's light on the ground (TR69 D): the hits its pools and its sweep land, by KeeperPhaseService at their
+		-- footprints' Slam (FightService.Hazard). No clip, never in a kit, never started: a row for its hits alone.
+		Id = "KeeperLight",
+		Length = 1,
+		CancelFrom = 1,
+		Cooldown = 0,
+		Beats = { Pool = 0.5, Sweep = 0.5 }, -- after a heavy cue's lead (Config.Sounds), though nothing plays it on a clock
+		Hits = {
+			Pool = { Coefficient = ENEMY_PER_SECOND * 1.5, Heavy = false, Reach = 4, Push = 1.5, Rung = 4 },
+			Sweep = { Coefficient = ENEMY_PER_SECOND * 2, Heavy = true, Reach = 11, Push = 2.5, Rung = 6 },
+		},
+		Range = 4,
+		Heavy = true,
+		State = nil,
+		Levers = { "the pool's light climbing out of the street on its hit", "hitstop (rung 4, 6 for the sweep)" },
+		Signed = nil,
+	},
 }
 
 local Actions = {}

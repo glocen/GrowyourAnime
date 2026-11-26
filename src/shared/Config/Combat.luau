@@ -269,6 +269,36 @@ return {
 			Moved = 2,
 			Recall = { Speed = 40, Most = 1.2, Hold = 1, Cooldown = 4 },
 		},
+		-- The Lamplighter in three phases (TR69 D, a grey block; grounds-and-encounters.md, section C's table; research's
+		-- seeds, tuned by playing; KeeperPhaseService, Rules.Keeper). Off by default until its fight is measured, as B's
+		-- waves were: NL_Debug:Invoke("Tune", "Combat.Keeper.Phases.On", true), read as a try starts.
+		--   From: the health shares where phases 2 and 3 begin. A hit stops at a line until that phase's turn has played.
+		--   Window, phase 1's: after a slam that lands, the lantern sticks in the street Seconds: the keeper stands Open
+		--     (TR69 C's state: staggered, its cracked ring) and every hit on it lands Harder times.
+		--   Mid, at From[1]: Seconds untouchable while it lights its Posts round the ring's middle, Radius out, one by one.
+		--   Pools, phase 2's: every Every seconds the posts drop pools of light Radius wide in order, Gap apart, each told
+		--     Tell before it lands (Actions' KeeperPool). The first round Start seconds into the phase.
+		--   Double, phase 2's slam: a second footprint where the avatar stands, landing After its first, told Tell; the
+		--     keeper stands Open Window after it.
+		--   False, at From[2]: it kneels Kneel seconds, its posts go dark Dark seconds, then light again in Relit. Untouchable.
+		--   Sweep, phase 3's (Actions' KeeperSweep): its lantern on its pole turns a line Length long, Half either side,
+		--     Arc degrees over Seconds after a Tell, every Every seconds from Start into the phase; Open Window after it.
+		--   Adds, phase 3's start: Count of Def answer its stamp, once, Out studs from it toward the ring's rim.
+		--   Slam, phase 3's: the signature's tell (Plant to Slam) shortened to Tell seconds.
+		Phases = {
+			On = false,
+			From = { 0.7, 0.35 },
+			Window = { Seconds = 1.5, Harder = 1.25 },
+			Mid = { Seconds = 2, Posts = 6, Radius = 12 },
+			Pools = { Radius = 4, Gap = 1, Tell = 1.2, Every = 10, Start = 2 },
+			Double = { After = 0.9, Tell = 1.2, Window = 2 },
+			False = { Kneel = 1, Dark = 1 },
+			Sweep = { Tell = 0.9, Seconds = 1.6, Arc = 120, Length = 11, Half = 1.5, Every = 9, Start = 4, Window = 2 },
+			Adds = { Def = "brawler", Count = 2, Out = 8 },
+			Slam = { Tell = 1.2 },
+			-- The posts' grey looks: dark, lit, and relit after the false ending
+			Look = { Size = Vector3.new(1, 7, 1), Dark = Color3.fromRGB(90, 92, 98), Lit = Color3.fromRGB(245, 240, 225), Relit = Color3.fromRGB(176, 132, 255) },
+		},
 	},
 
 	-- AR52's two Shades (docs/asset-requests.md, AR52; docs/roster.md, "Enemies: Shades"), research's seeds, tuned in play.

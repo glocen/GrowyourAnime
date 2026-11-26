@@ -17665,6 +17665,11 @@ Every line players read, about 1,100 collected from `src/` by a read-only search
     2. The Voidkin is the brightest, most finished thing: Equipment's gold ground comes down in saturation and value, so the gold lives in the sword.
     3. One ivory focal point: the dock's selected tab shows by an ivory hairline, and a full ivory fill stays the one press.
     4. Corners: `docs/ui.md`, rule 3, and the accepted sheet chamfer a panel's corners, and A rounds them. Home with chamfered panels goes beside the rounded one, and research picks the pair.
+  - **The must-fixes, drawn** (Modulo, 2026-11-26, 14:23; `tools/ui/style_frames.py`, A's files in `build/handoff/UI/style_frames/`):
+    1. Today's card sits on the panel's graphite (`#30333B` to `#202227`), with the shard as its picture.
+    2. Equipment's ground is a dim bronze (`#80684A` to `#38322B`), so the gold lives in the sword. Rook's card is the lightest thing.
+    3. The dock's selected tab is raised graphite with a 1.6 ivory hairline. The full ivory fill stays the press.
+    4. For research's pick in the pair: `A_home_cut.png` and `A_small_cut.png` (the shard cut, top-left and bottom-right, as `ui_sheet.png`) beside `A_home.png` and `A_small.png`. The cut is a pass over the page (`CHAMFER=1`). Pills, bars and small tags keep their round ends.
   - **Then:** Faber writes the tokens into `Theme.luau`, and the lint (TR63) checks the health bar's white on red. The director sees A beside B on return and can overrule. `docs/research/examples.md` gets the frame on the director's word.
 
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)

@@ -15,6 +15,8 @@ The fonts are Roblox's own, read from build/scratch/modulo/fonts (gitignored: co
 uploaded). Rook comes from tools/blender/frame_rook.py.
 """
 import math
+import os
+import re
 import struct
 import subprocess
 import sys
@@ -54,7 +56,9 @@ TAKES = {
         press=dict(fill="#F3EEE4", fill2="#DCD5C6", ink="#1B1C20", stroke=None),
         hues=[("#FFC83D", "Power"), ("#B784FF", "alive, for sale"), ("#E8505B", "health")],
         credits="#F3EEE4", health=("#F06A6E", "#C93C48"), xp="#F3EEE4",
-        stage=("#ECE5D6", "#B8B0A0"), equip=("#FFD86E", "#B9791C"), today=("#3A3350", "#26222F"),
+        # Today on the panel's own graphite (violet only on what's alive or for sale); Equipment on a dim brass, so its
+        # gold lives in the sword and Rook stays the brightest thing (research's must-fixes 1 and 2, 2026-11-26)
+        stage=("#ECE5D6", "#B8B0A0"), equip=("#80684A", "#38322B"), today=("#30333B", "#202227"),
         dim=0.55, blur=7,
         material="Matte graphite: a soft top-down gradient, a thin rim, a hairline of light along the top edge. Pictures sit on "
                  "their own lit grounds inside it.",
@@ -227,8 +231,31 @@ class Page:
 
     def svg(self, w=W, h=H, grey=False):
         style = ' style="filter:grayscale(1)"' if grey else ""
-        return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}"{style}>'
-                f'<defs>{"".join(self.defs)}</defs>{"".join(self.parts)}</svg>')
+        out = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}"{style}>'
+               f'<defs>{"".join(self.defs)}</defs>{"".join(self.parts)}</svg>')
+        return shard_cut(out) if CHAMFER else out
+
+
+CHAMFER = os.environ.get("CHAMFER") == "1"
+
+
+def shard_cut(svg):
+    """docs/ui.md, rule 3, and the accepted ui_sheet.png: a panel's top-left and bottom-right corners cut on the diagonal,
+    the other two square. Every rounded panel, card, clip and rim takes the same cut; pills, bars and small marks keep
+    their round ends."""
+    def cut(m):
+        a = dict(re.findall(r'(\w[\w-]*)="([^"]*)"', m.group(1)))
+        try:
+            x, y, w, h, r = (float(a.get(k, 0)) for k in ("x", "y", "width", "height", "rx"))
+        except ValueError:
+            return m.group(0)
+        if r < 6 or min(w, h) < 30 or r >= min(w, h) / 2 - 0.5:
+            return m.group(0)
+        c = r * 0.9
+        rest = " ".join(f'{k}="{v}"' for k, v in a.items() if k not in ("x", "y", "width", "height", "rx"))
+        d = f"M{x + c:.1f},{y:.1f} H{x + w:.1f} V{y + h - c:.1f} L{x + w - c:.1f},{y + h:.1f} H{x:.1f} V{y + c:.1f} Z"
+        return f'<path d="{d}" {rest}/>'
+    return re.sub(r"<rect ([^>]*?)/>", cut, svg)
 
 
 # ---- the world behind -------------------------------------------------------------------------------------------------
@@ -319,9 +346,9 @@ def dock(P, active="home"):
         on = kind == active
         y = 396 if not on else 390
         h = 64 if not on else 70
-        if on:
-            P.plate(x - 4, y, 76, h, r=T["panel"]["r"] - 2, fill="url(#gPress)", stroke=T["panel"]["stroke"], sw=T["panel"]["sw"])
-            P.glyph(kind, x + 20, y + 19, 32, T["press"]["ink"] if T["key"] != "C" else "#FFFFFF")
+        if on:   # raised and lifted, with an ivory hairline: a full ivory fill is the press's alone (research, 2026-11-26)
+            P.plate(x - 4, y, 76, h, r=T["panel"]["r"] - 2, fill=T["raised"], stroke=T["ink"], sw=1.6)
+            P.glyph(kind, x + 20, y + 19, 32, T["ink"])
         else:
             P.plate(x, y, 68, h, r=T["panel"]["r"] - 2)
             P.glyph(kind, x + 18, y + 16, 32, T["ink"])
@@ -512,6 +539,10 @@ def main():
     faces = font_faces(TAKES)
     for k in keys:
         T = TAKES[k]
+        if CHAMFER:   # the shard-cut Home beside the rounded one, for research's pick in the pair (AR62's must-fix 4)
+            shoot(html(frame(T, k), faces), out / f"{k}_home_cut.png", W, H)
+            shoot(html(frame(T, k), faces, zoom=568 / W), out / f"{k}_small_cut.png", 568, 320, scale=1)
+            continue
         shoot(html(frame(T, k), faces), out / f"{k}_home.png", W, H)
         shoot(html(frame(T, k, home_open=False), faces), out / f"{k}_hud.png", W, H)
         shoot(html(frame(T, k, grey=True), faces), out / f"{k}_grey.png", W, H)

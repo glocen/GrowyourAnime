@@ -16,9 +16,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **AR56's cloud targets, round 2, for research's pick** (the AR56 entry's last part; the sheet is in `build/scratch/modulo/ar56/clouds/out/`). Fresh eyes: in the fight's frame A and B look the same, and neither shows the drop. This is the second round, so the idea is reconsidered, not patched. Content check PASS. Nothing uploaded.
 - **AR65's kit** is with Faber for the install. **AR64's hair** stays at "close", asked of the director. **Next:** "Clips follow the model".
 
-**Scintilla (effects).** 2026-11-26, 15:27. AR52's ward was taken in a real fight for its final. It reads; the glance's cream glints clash, and I proposed recolouring them (AR52's entry). Waiting on research's verdict. AR7's C4 missed its main read in the game (a faint swirl on pale stone): the technique changes to a painted band. TR70 B: today's reveal, the figure mattes and the world frame are captured.
-- **Next:** TR70 B's targets on the real mattes, for research's pick in pairs; then C4's painted band, offline, with its take on my next Studio turn.
-- **For Faber's review:** AR52's ward, break and must-fix, AR7's C4 (their entries).
+**Scintilla (effects).** 2026-11-26, 16:27. AR52's ward: research's final is in, the glance and break recoloured to the ward's own (667294ad); one retake left, a real fight on Lantern Row's street with the squint. TR70 B's targets are ready for research's pick in pairs (R1 burst, R2 rift, R3 the hue's field; C1 the copy's Flash; TR70's entry).
+- **Next:** C4's painted band, offline; then on my next Studio turn, AR52's Lantern Row retake and C4's take.
+- **For Faber's review:** AR52's ward, break and recolour, AR7's C4 (their entries).
 
 **Sonus (sound).** 2026-11-26, 12:30 by the clock. **Shortlisted, not heard or picked:** TR42's eleven tabs (a62d1129), TR64's ten (17e042ae) and TR57's plate, five (BroadcastPlate, for Faber's review), in `ServerStorage.NL_Audition`: the place opened today with every earlier tab at its count, and Faber's end-of-turn save keeps the plate's. No Studio turn held, nothing running.
 - **Next:** the director's listens: TR42's on their go (item 10); TR64's with the plate after ShardDrop, once Faber's Play the moment hooks pass. Nothing else is open for sound (research, 12:19).

@@ -5514,6 +5514,17 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
 - **The hue:** the rarity's, held to the burst. Violet only where the void itself shows (`docs/research/examples.md`, "too purple").
 - Research picks in pairs. The build starts only after the pick.
 - Today's stage stays beside it until the pick.
+- **The targets, for the pick** (Scintilla, 2026-11-26, 16:27). They're drawn on the game's own figures: LyricReveal and RookReveal mattes from a full-screen ViewportFrame lit as `Config.Reveal.Lit`, over the Breaker's world. Each is beside today's stage at the same times, at the phone's 2.16:1 (`tools/fx/reveal_capture.lua`, `reveal_frames.py`, `reveal_targets.py`). The sheets are in `build/handoff/Reveal/new_stage/sheets/`, the peaks and strips in `.../targets/`.
+  - **For a new Rare (Lyric)**, three directions, each with its peak beside today's (`R*_pairs.png`) and the lives in one sheet (`life_Lyric_new_Rare.png`):
+    - **R1, the shard burst:** cut-crystal rays in the hue from behind the chest on graphite, and a ring broken by shard cuts at the feet.
+    - **R2, the rift:** the split held open as a tall tear behind the figure, a narrow fan of facets, and speed lines in the void.
+    - **R3, the hue's field:** the void breaks into a bright field of the rarity's colour with white rays, a light frame rather than a black one.
+    - In all three, the void closes over the world as an iris onto the shard, the only violet is the shard and the motes, the figure stands at 66% of the height, and the name and plate are today's lines where they sit.
+  - **For a copy of a Common (Rook)**, one target, C1, the Flash. A card rises over the world with the portrait, its name and "2 of 4 copies". On the tick at 0.3 s, the third pip fills with a white flash and the count turns to 3, and the card closes by itself at 1.3 s (`C1_pairs.png`, `life_Rook_copy_Common.png`).
+  - **Not in the targets:**
+    - the shard is a stand-in for today's own;
+    - the CoreGui top bar is under the void, where in the game it stays on top;
+    - today's frames are at Studio's 1.8:1.
 
 **Not in this piece:** the Voidkin's own line and epithet (they need the director's ear first, given the "corny" rejections); the Index; a column of light from the Breaker in the world; the cut-in; new sounds (TR64's ear first); pity and banners.
 

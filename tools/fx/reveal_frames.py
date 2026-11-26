@@ -46,7 +46,9 @@ def markers(take):
 
 
 def runs(step, found, take):
-    """Each step's longest run in this take (at least 10 frames), kept where it beats the one already found."""
+    """Each step's longest run in this take (at least 10 frames), for the steps no earlier take holds: the first take
+    that has a step keeps it, so a stray reading of the corner in a later take (a stage's colours there) can't."""
+    own = {}
     n = len(step)
     i = 0
     while i < n:
@@ -54,9 +56,11 @@ def runs(step, found, take):
         while j < n and step[j] == step[i]:
             j += 1
         s = step[i]
-        if s >= 1 and j - i >= 10 and (s not in found or j - i > found[s][2] - found[s][1]):
-            found[s] = (take, i, j)
+        if s >= 1 and j - i >= 10 and (s not in own or j - i > own[s][2] - own[s][1]):
+            own[s] = (take, i, j)
         i = j
+    for s, run in own.items():
+        found.setdefault(s, run)
 
 
 def grab(take, frames, folder, tag):

@@ -1,0 +1,6 @@
+TR70 B, a new Rare (Lyric), its life from the tap at 0.15, 0.35, 0.75, 0.87, 0.95, 1.10, 1.60, 2.40 s:
+row 1  today's stage (Studio's viewport, 1.8:1, its CoreGui top bar on)
+row 2  R1, the shard burst
+row 3  R2, the rift
+row 4  R3, the hue's field
+The targets are at the phone's 2.16:1 (844 x 390 points). The figure is the game's own (LyricReveal, its matte from a ViewportFrame lit as Config.Reveal.Lit). The shard is a stand-in for today's own; the name and plate are today's lines where they sit (TR70 A's are Faber's).

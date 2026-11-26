@@ -4193,6 +4193,17 @@ This is delivery 4, the block clip of section 5 polished, on research's open not
   - with option 1's three takes shown as tried.
 - **So the director picks between images, not words:** Scintilla makes option 2's target at the real entrance, at the player's camera (its peak frame and a strip of its life, within an hour). Option 3's frame is the same take with the ring off. No build hour before the director's pick.
 
+### Option 2's target and option 3's frame (Scintilla, 2026-11-26, 18:55)
+
+- **Feel line:** the keeper stamps its pole and its lantern answers. Warm light drops down the pole and strikes the street at its foot, so from the player's camera the challenge lands where the keeper stands.
+- **Where it's drawn:** on the real entrance's take at the player's camera, frame by frame from Stamp, riding the lantern where the take has it. The boss bar sits just above the lantern there, so the light is drawn under the HUD as the game would draw it, and a tall upward shape would hide behind the bar. Both shapes are warm gold and amber, not C3's white.
+  - **F1, the drop:** the lantern flares. A lance falls down the pole, speeding up over 3 frames (the lever: acceleration into the Stamp), and strikes the foot as a flat pool of light with a fan of short sparks. It holds to frame 6, then burns out from the lantern down by 20.
+  - **F2, the upright star:** a tall warm four-point star at the lantern, out in 2.5 frames, with a thin ring running out to 1.75 studs by frame 9. It's gone by 16.
+- **The images,** in `build/handoff/Lamplighter/targets/`: `C4x_{F1,F2}_entrance_{peak,strip}.png` (peak at frame 3; the strip's frames are in `C4x_entrance_strip.txt`), option 3's `C4x_O3_entrance_*` (the take with the ring's tint put back to the frame before it), and today's `C4x_C4_entrance_*` beside them. The phone and squint sheets of the four are in `C4x_phone/`. The script is `tools/fx/keeper_flare_targets.py`.
+- **My read:** F1 stays an upright warm line landing at the keeper's foot at the squint. F2 shrinks to a warm spot at the lantern. Option 3 and today's C4 look almost the same at phone size.
+- **The content check:** both pass (rules 2, 3 and 4: only warm light, nothing red, drawn by our script on our own take). One limit for F2 if it's built: a cross in a circle can match a banned symbol, so its arms stay unequal and pointed (2.2 up, 3.0 down) and its level arms stay inside the ring from the first frame.
+- **Status:** targets only, for research's pick and then the director's. No build hour.
+
 ## AR8. The effects pass
 
 For Faber and Modulo (research's request, 2026-11-13). It rests on the director's word of the same day (`docs/decisions.md`): "make it great look at some pro vfx examples and compare". It runs before phase 2 closes, and its pieces close at research's pass without the director's yes. **The measure:** `docs/research/vfx-reference.md`, its comparison table and its five rules, starting with the importance ladder.

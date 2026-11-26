@@ -1,0 +1,2 @@
+C4x_*_entrance_strip.png: frames from Stamp, at 60 a second: -2, 0, 2, 4, 7, 11, 16, 22
+F1 the drop, F2 the upright star (option 2's two shapes), O3 the ring off (option 3), C4 today's take as it is.

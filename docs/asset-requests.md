@@ -18184,6 +18184,27 @@ The rule: `docs/design.md`, "Clips follow the model, rules follow the class" (th
 - **The class, corrected:** it covers the held keys, the anticipations and the set, where a still pose must read. It doesn't cover the strikes: a point driven at a Shade ahead of the lead is end-on from a camera behind the lead in any clip. The strikes read by their travel and their contact outside the Shade, so the thrust, the guard and the sweep's contact stay as B's. B's thrust doesn't change.
 - **What the sheets can't show:** how the strikes read in play. They're first seen in TR69 F's captures (Frame 45 against Beside 90), where staging the Shade to the lead's side is the lever that turns a thrust across the view.
 
+### Modulo's build of Kirra's Hit A, Down A and Up A (2026-11-26, 19:16; started 19:04)
+
+- **Where:** `tools/blender/kirra_clips.py`, `hit()`, `down()` and `up()`, ported from the targets.
+  - They replace the tail layers: the open set's loader, `tail_layer`, and TailHit, TailDown and TailUp are gone.
+  - Exported to `build/handoff/Kirra/clips/` as `Kirra_Hit.json`, `Kirra_Down.json` and `Kirra_Up.json`, each with its `pack_`, `arcs_` and `bare_` sheets.
+  - `Kirra.clips.json` lists Hit, Down and Up in place of the three layers. The other five clips in the handoff are untouched.
+- **The open set's lengths and marker:** Hit 19 frames, Down 67 with Land at 34, Up 55, starting where the Down lies. Her blades stay sheathed, and the tail is keyed with the body.
+- **Research's must-fix, no part through the body or the street:** checked by `r6parity`'s audit and a probe of each part's lowest point.
+  - **Hit 7:** the legs crossed by 0.12. The twist now eases from −22° to −15°.
+  - **Down 1:** the left arm went 0.06 into the torso. It's now flung out first, in a breakdown at 2.
+  - **Down's lying left arm** was 0.16 under the street. It now rests on it.
+  - **Up 6 to 8:** the head was under the street. It's now above it throughout, with the rock-back lifted at 5 and 10.
+  - **Up 12 and 13:** the right arm went under the street and into the torso. The arms now sweep out along the street to her sides, then up.
+  - **Closest now:** 0.04 into the torso and 0.017 under the street. The audit passes on all eight of her clips.
+- **Beside A, from the game's camera:** `build/scratch/modulo/ar66/kstrips/beside_{Hit,Down,Up}.png`, with A above the build. The poses fall on the same frames. Only the fixes differ.
+- **For Faber's install (Faber's code):**
+  - Kirra gets her own rig: `Rig = "Kirra"` in her definition, and `Rigs.Kirra = { Idle = "KirraIdle", Hit = "KirraHit", Down = "KirraDown", Up = "KirraUp" }`.
+  - `Layers.kirra` and the three tail clips' ids and fades go.
+  - Upload `KirraHit`, `KirraDown` and `KirraUp`.
+- **Status:** made and self-reviewed (the audit, the probe, and the build beside A). Content check before upload: PASS. No effect, the blades sheathed, the kick-up compact, the names free. Delivered to the handoff for research's verdict, then Faber's install. Not accepted.
+
 ## AR67. The Generator's new model, and any machine that needs one (Modulo's targets, research's pick, then Faber's install)
 
 Research, 2026-11-26, 17:47, on the director's word of about 17:46 (the register): "we can change the whole model of any machine that need it and dont need to stick with what i said abt the generator turning ... just make it the best it can be".

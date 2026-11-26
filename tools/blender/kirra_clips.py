@@ -6,8 +6,7 @@ blender.exe -b --factory-startup --python tools/blender/kirra_clips.py -- <out_d
   Work from her front too), and kirra_blocking.png, every clip's key poses from the player's camera, a row a clip.
 - export: Kirra_<Clip>.json for the builder (r6anim.export, with its audit) and Kirra.clips.json; and for the review,
   a clip's pack (pack_<Clip>.png and .txt: its beats, on the bare rig, at 64 px, and its numbers), its arcs
-  (arcs_<Clip>.png, one dot a frame) and the bare rig stepped through (bare_<Clip>.png; not for the tail layers,
-  whose body is the open set's).
+  (arcs_<Clip>.png, one dot a frame) and the bare rig stepped through (bare_<Clip>.png).
 - audit: the export's audit alone.
 
 Needs kirra_model.py's output (kirra_model.blend and Kirra.recipe.json) in MODEL. The keying is rook_clips.py's: every
@@ -52,7 +51,6 @@ FPS = rc.FPS
 ROOT = Path(__file__).resolve().parents[2]
 # her model: the first make (kirra_model.py), or another the same way jointed, as KIRRA_MODEL names it (kirra_make.py)
 MODEL = Path(os.environ.get("KIRRA_MODEL") or ROOT / "build" / "scratch" / "modulo" / "kirra" / "model")
-OPEN_SET = ROOT / "build" / "handoff" / "Rook" / "clips"  # the open reactions (Rook's), which play on her body as they are
 GAME, SIDE, FRONT, QUARTER = rc.GAME, (90.0, 6.0), rc.FRONT, (48.0, 8.0)  # azimuth from the stage's front, elevation
 W = rc.W
 UP = Vector((0, 1, 0))
@@ -176,7 +174,7 @@ class Take(rc.Take):
     def __init__(self, rig, feet, ctl, name, start, rest):
         super().__init__(rig, feet, name, start)
         self.state = {k: (dict(v) if isinstance(v, dict) else v) for k, v in HUB.items()}
-        self.ctl, self.rest, self.layer, self.fresh = ctl, rest, None, True
+        self.ctl, self.rest, self.fresh = ctl, rest, True
         self.root_at, self.heading = (0.0, 0.0), 0.0
         self.props = {"R": [0.0, (0.0, 0.0, 0.0)], "L": [0.0, (0.0, 0.0, 0.0)], "tail": dict(TAIL)}
         self.stand_ins = []
@@ -862,37 +860,79 @@ def work(t):
     t.stand_ins.append(("post", post))
 
 
-def tail_layer(name, frames, beats, keys):
-    """A tail-only layer over the open set's clip `name` (research's call, option b): the open set plays on her body
-    as it is; this keys her eight scarf joints over its frames, every other joint at weight 0."""
-    def keyed(t):
-        t.layer = name
-        t.end = frames - 1
-        for f, label in beats:
-            t.beat(f, label)
-        for f, ease, changes in keys:
-            t.tail(f, ease, **changes)
-    return keyed
+# Her own reactions (AR66, research's pick of 2026-11-26, 17:32: Hit A, and the A pair), in place of the open set's,
+# which leaned on Rook's ram. Each keeps the open set's length and marker: Hit 19 frames, Down 67 with Land at 34, Up
+# 55, and the Up starts where the Down lies. Her blades stay sheathed; the tail is keyed with the body.
+LOOSE = {"Right Leg": None, "Left Leg": None}  # off the floor: the feet go where the legs put them
+def hit(t):
+    """The blow lands high and she's light: her head and shoulders snap back and round, her arms fly loose, and the
+    scarf goes on forward over her shoulder. Her feet never move, and she's back on it before the scarf is."""
+    t.key(0, "stance", ease="out")
+    t.key(3, "struck", ease="out", T=(-16, -18, 0), crouch=0.04, H=(-28, 18, 10), RA=(46, 0, 58), LA=(30, 0, -64))
+    t.key(7, ease="sine", T=(-12, -15, 0), H=(-14, 16, 6), RA=(30, 0, 46), LA=(14, 0, -50))   # the legs uncrossed
+    t.key(12, "back on it", ease="sine", T=(18, -6, 0), crouch=0.2, look=EYES, H=(0, 0, 0), RA=(20, 0, 14), LA=(-28, 0, -10))
+    t.key(18, "settled", T=HUB["T"], crouch=HUB["crouch"], RA=HUB["RA"], LA=HUB["LA"])
+    t.tail(0, phase=0.0)
+    t.tail(4, "sine", aim=0.55, curl=0.5, dir=(-0.5, 0.6, 0.6), ripple=14.0, swing=8.0, fall=0.4, phase=0.7)
+    t.tail(18, None, aim=0.0, curl=0.0, ripple=TAIL["ripple"], swing=TAIL["swing"], fall=0.0, phase=1.5)
+    t.stand_ins.append(("shade", SHADE))
 
 
-TAIL_HIT = tail_layer("Hit", 19, ((0, "struck"), (5, "it whips"), (18, "back")), (
-    (0, "out", {"phase": 0.0}),
-    (5, "sine", {"aim": 0.45, "curl": 0.6, "dir": (-0.7, 0.35, 0.6), "ripple": 14.0, "swing": 8.0, "phase": 1.0}),
-    (18, None, {"aim": 0.0, "ripple": TAIL["ripple"], "swing": TAIL["swing"], "phase": 1.6})))
-TAIL_DOWN = tail_layer("Down", 67, ((0, "struck down"), (20, "going over"), (34, "lands"), (66, "lying")), (
-    (0, "sine", {"phase": 0.0}),
-    (20, "in", {"aim": 0.5, "curl": 0.8, "dir": (-0.3, -0.5, 0.8), "ripple": 10.0, "phase": 1.4}),
-    (34, "out", {"aim": 0.9, "curl": 1.4, "flat": 0.0, "dir": (-0.25, -1.0, -0.3), "phase": 2.0}),
-    (50, "sine", {"aim": 1.0, "ripple": 2.0, "swing": 9.0, "phase": 2.7}),  # it lies in a loose S, not a ruler
-    (66, None, {"ripple": 0.0, "swing": 9.0, "phase": 2.8})))
-TAIL_UP = tail_layer("Up", 55, ((0, "lying"), (24, "rising"), (54, "up")), (
-    (0, "sine", {"aim": 1.0, "curl": 0.0, "flat": 0.0, "dir": (-0.25, -1.0, -0.3), "ripple": 0.0, "swing": 9.0, "phase": 0.8}),
-    (12, "sine", {"curl": 1.6, "ripple": 3.0, "swing": 6.0, "phase": 1.1}),
-    (48, "back", {"aim": 0.0, "flat": 90.0, "ripple": TAIL["ripple"], "swing": TAIL["swing"], "phase": 1.6}),
-    (54, None, {"curl": 0.0, "phase": 1.8})))
+
+LYING = dict(T=(-88, -4, 0, 0, 0, -1.6), feet=LOOSE, RL=(2, 0, 8), LL=(20, 0, -8), crouch=0.0, lift=0.12, H=(24, 16, 0),
+               RA=(8, 0, 80), LA=(28, 0, -34))
+
+
+
+def down(t):
+    """The blow takes her feet. She goes over light, turns in the air and slaps the street with her arm as she comes
+    down on her side, rolls flat, and the scarf comes down over her last."""
+    t.key(0, ease="out")
+    t.arm(2, "sine", LA=(6, 0, -34))   # her left arm flung out first, clear of her side as she turns
+    t.key(5, "the blow", ease="in", T=(-22, -20, 3), crouch=0.04, H=(-30, 12, 6), RA=(50, 0, 60), LA=(36, 0, -64))
+    t.key(16, "off her feet", T=(-48, -40, 18, 0, 0, -1.0), feet=LOOSE, RL=(40, 0, 6), LL=(18, 0, -6), lift=0.9, H=(-20, 14, 0),
+          RA=(120, 0, 50), LA=(80, 0, -60))
+    t.key(26, "turning over", ease="in", T=(-72, -56, 40, 0, 0, -1.5), RL=(30, 0, 10), LL=(18, 0, -4), lift=0.6, H=(-6, 24, 0),
+          RA=(140, 0, 70), LA=(40, 0, -40))
+    t.key(34, "lands", ease="out", T=(-80, -12, 16, 0, 0, -1.7), RL=(10, 0, 10), LL=(30, 0, -6), lift=0.0, H=(4, 20, 0),
+          RA=(8, 0, 80), LA=(52, 0, -30))
+    t.mark(34, "Land")
+    t.key(40, ease="sine", T=(-82, -8, 10, 0, 0, -1.6), lift=0.12, H=(-4, 18, 0))
+    t.key(52, "lying", ease="sine", **LYING)
+    t.key(66, ease="hold", **LYING)
+    t.tail(0, phase=0.0)
+    t.tail(16, "in", aim=0.55, curl=0.6, dir=(0.0, 0.8, 0.35), ripple=12.0, fall=0.5, phase=1.0)
+    t.tail(34, "out", aim=0.8, curl=1.0, flat=0.0, dir=(-0.6, -0.5, -0.4), fall=0.0, phase=1.8)
+    t.tail(48, "sine", aim=1.0, ripple=2.0, swing=9.0, dir=(-0.4, -1.0, -0.3), phase=2.4)
+    t.tail(66, None, ripple=0.0, swing=9.0, phase=2.6)
+    t.stand_ins.append(("shade", SHADE))
+
+
+
+def up(t):
+    """She rocks back onto her shoulders with her hands flat on the street by her hips, both legs come over, and she
+    kicks out of it onto her feet low and ready, already facing it."""
+    t.key(0, **LYING)
+    t.key(5, T=(-94, -5, 0, 0, 0, -1.5), RL=(60, 0, 6), LL=(70, 0, -6), lift=0.74, RA=(0, 0, 14), LA=(0, 0, -14))
+    t.key(10, "rocked back", T=(-98, -6, 0, 0, 0, -1.4), RL=(118, 0, 4), LL=(112, 0, -4), lift=0.72, H=(20, 0, 0),
+          RA=(0, 0, 10), LA=(0, 0, -10))
+    t.arm(12, "sine", RA=(20, 0, 70), LA=(20, 0, -70))   # the arms sweep out along the street to her sides, then up
+    t.key(16, "the kick", ease="sine", T=(-40, -10, 0, 0, 0, -1.1), RL=(30, 0, 6), LL=(20, 0, -6), lift=1.1, H=(-10, 0, 0),
+          RA=(120, 0, 52), LA=(120, 0, -52))
+    t.key(22, "on her feet", ease="out", T=(34, -12, 0), feet={"Right Leg": (0.7, 0.3), "Left Leg": (-0.7, -0.5)},
+          crouch=0.22, lift=0.0, look=EYES, H=(0, 0, 0), RA=(60, 0, 30), LA=(30, 0, -30))
+    t.key(36, ease="sine", T=(18, -10, 0), crouch=0.24, RA=(20, 0, 14), LA=(-24, 0, -10))
+    t.key(54, "up", T=HUB["T"], feet=HUB["feet"], crouch=HUB["crouch"], RA=HUB["RA"], LA=HUB["LA"])
+    t.tail(0, aim=1.0, curl=0.0, flat=0.0, dir=(-0.4, -1.0, -0.3), ripple=0.0, swing=9.0, phase=0.6)
+    t.tail(10, "sine", aim=0.5, curl=0.8, dir=(0.0, -0.4, 1.0), ripple=4.0, fall=0.6, phase=0.9)
+    t.tail(18, "out", aim=0.6, curl=1.2, flat=60.0, dir=(-0.3, 0.3, 1.0), ripple=12.0, fall=0.5, phase=1.3)
+    t.tail(40, "back", aim=0.0, curl=0.0, flat=90.0, ripple=TAIL["ripple"], swing=TAIL["swing"], fall=0.0, phase=1.9)
+    t.tail(54, None, phase=2.2)
+    t.stand_ins.append(("shade", SHADE))
+
 
 CLIPS = {"Idle": idle, "Combo": combo, "ScarfStep": scarf_step, "Reveal": reveal, "Work": work,
-         "TailHit": TAIL_HIT, "TailDown": TAIL_DOWN, "TailUp": TAIL_UP}
+         "Hit": hit, "Down": down, "Up": up}
 # Each clip's cameras: where they look (a stage place), how far off, and the pose sheet's rows (the first is the
 # blocking's). The tail is ten studs, so every view stands further off than Pip's.
 VIEWS = {"Idle": ((-1.6, -1.2, 3.0), 19.0, ("game", "side", "front")),
@@ -900,20 +940,10 @@ VIEWS = {"Idle": ((-1.6, -1.2, 3.0), 19.0, ("game", "side", "front")),
          "ScarfStep": ((2.8, 4.0, 2.6), 30.0, ("game", "side")),
          "Reveal": ((-1.2, -0.6, 3.4), 19.0, ("front", "side", "game")),
          "Work": ((0.3, 3.0, 2.6), 19.0, ("front", "game", "side")),
-         "TailHit": ((-1.6, -1.2, 3.0), 19.0, ("game", "side")),
-         "TailDown": ((-0.8, -2.4, 1.6), 19.0, ("game", "side")),
-         "TailUp": ((-0.8, -2.4, 1.6), 19.0, ("game", "side"))}
+         "Hit": ((-0.6, -0.3, 2.6), 17.0, ("game", "side")),
+         "Down": ((-0.2, -1.2, 1.2), 19.0, ("game", "side")),
+         "Up": ((-0.2, -1.2, 1.2), 19.0, ("game", "side"))}
 VIEW_ANGLES = {"game": GAME, "side": SIDE, "front": FRONT}
-
-
-def load_open_set(rig, take):
-    """Keys the open set's body (Rook's clip, the six parts) on her rig over the take's frames."""
-    clip = json.loads((OPEN_SET / f"Rook_{take.layer}.json").read_text())
-    for f, pose in enumerate(clip["Frames"]):
-        r6.key_matrices(rig, take.start + f, {part: r6.to_blender(r6.cframe(pose["Poses"][part])) for part in r6rig.PARTS})
-    if len(clip["Frames"]) != take.end + 1:
-        raise SystemExit(f"{take.name}: the open set's {take.layer} has {len(clip['Frames'])} frames, the layer {take.end + 1}")
-    take.markers = [(m["T"], m["Name"]) for m in clip["Markers"]]
 
 
 # --- outputs --------------------------------------------------------------------------------------------------------
@@ -1030,8 +1060,7 @@ def report(name, take, n, checks):
                        for side in SIDES if min(v for v, _ in n["blade_near"][side].values()) < 9.0)
     if blades:
         blades += f"\n  (a blade at home reads {n['sheathed']:.2f} against the head's box, which is wider than her hair)"
-    return (f"{name}: {take.end + 1} frames, {take.end / FPS:.2f} s{' (a loop)' if take.loop else ''}"
-            f"{', over the open set ' + take.layer if take.layer else ''}\n"
+    return (f"{name}: {take.end + 1} frames, {take.end / FPS:.2f} s{' (a loop)' if take.loop else ''}\n"
             f"  the tail's line at its lowest over the floor: {n['low'][0]:.2f} at {n['low'][1]}; its widest bend at a "
             f"joint: {n['bend'][0]:.0f} degrees (joint {n['bend'][2]}, at {n['bend'][1]})\n"
             f"  the tail's nearest her body past its first stud (studs): {near(n['tail_near'])}\n"
@@ -1048,7 +1077,7 @@ def main():
     args = sys.argv[sys.argv.index("--") + 2:]
     mode = args[0] if args and args[0] in ("poses", "export", "audit") else "poses"
     wanted = [a for a in args if a in CLIPS] or list(CLIPS)
-    scene, rig, costume, undress, feet, ctl, motors, rest, extra = build()
+    scene, rig, costume, undress, feet, ctl, motors, rest, _ = build()
     takes = {}
     for i, name in enumerate(CLIPS):
         if name in wanted:
@@ -1056,12 +1085,9 @@ def main():
             CLIPS[name](take)
             for line in take.warned:
                 print("  " + line)
-    keyed = [t for t in takes.values() if not t.layer]
+    keyed = list(takes.values())
     rc.ground(rig, feet, keyed)
     rc.lift(rig, ctl["lift"], keyed)
-    for take in takes.values():
-        if take.layer:
-            load_open_set(rig, take)
     numbers = props(rig, ctl, motors, rest, list(takes.values()))
     stand_ins(list(takes.values()))
     cams = cameras(scene, list(takes.values()))
@@ -1071,28 +1097,20 @@ def main():
         print(notes, end="")
         facts[name] = {"File": f"Kirra_{name}.json", "Frames": take.end + 1, "Seconds": round(take.end / FPS, 3), "Loop": take.loop,
                        "Markers": [[round(t * FPS), label] for t, label in take.markers]}
-        if take.layer:
-            facts[name]["Over"] = f"the open set's {take.layer}"
         if mode == "poses":
             pose_sheet(scene, cams, take, out)
             continue
-        joints = rig.extra_joints
-        if take.layer:  # the eight scarf joints alone, every body part at weight 0
-            rig.extra_joints = lambda: [(on, j) for on, j in extra if j in SCARF]
         heard = io.StringIO()  # the export audits itself aloud: the pack's notes keep what it said
         with contextlib.redirect_stdout(heard):
             # the Name is the game's: Author.SaveBaked reads Anim_Kirra<Clip> and checks the clip is named the same
             r6.export(rig, out / f"Kirra_{name}.json", "Kirra", f"Kirra{name}", take.start, take.start + take.end,
-                      markers=take.markers, source="tools/blender/kirra_clips.py", extra={"Loop": take.loop},
-                      legs=0.0 if take.layer else 1.0, weights={p: 0.0 for p in r6rig.PARTS} if take.layer else None)
-        rig.extra_joints = joints
+                      markers=take.markers, source="tools/blender/kirra_clips.py", extra={"Loop": take.loop})
         print(heard.getvalue(), end="")
         if mode == "audit":
             continue
         drawn = [side for side in SIDES if min(v for v, _ in numbers[name]["blade_near"][side].values()) < 9.0]
         arc_sheet(scene, rig, cams, take, rest, drawn, out)
-        if not take.layer:
-            bare_sheet(scene, rig, take, undress, out)
+        bare_sheet(scene, rig, take, undress, out)
         view = cams[name, VIEWS[name][2][0]]
         strip = [take.start + round(i * take.end / 11) for i in range(12)]
         r6.review_pack(scene, rig, out / f"pack_{name}", [(take.start + f, f"{name} {f}: {label}") for f, label in take.beats],

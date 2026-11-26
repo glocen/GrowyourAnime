@@ -88,16 +88,15 @@
         ]
       ]
     },
-    "TailHit": {
-      "File": "Kirra_TailHit.json",
+    "Hit": {
+      "File": "Kirra_Hit.json",
       "Frames": 19,
       "Seconds": 0.3,
       "Loop": false,
-      "Markers": [],
-      "Over": "the open set's Hit"
+      "Markers": []
     },
-    "TailDown": {
-      "File": "Kirra_TailDown.json",
+    "Down": {
+      "File": "Kirra_Down.json",
       "Frames": 67,
       "Seconds": 1.1,
       "Loop": false,
@@ -106,16 +105,14 @@
           34,
           "Land"
         ]
-      ],
-      "Over": "the open set's Down"
+      ]
     },
-    "TailUp": {
-      "File": "Kirra_TailUp.json",
+    "Up": {
+      "File": "Kirra_Up.json",
       "Frames": 55,
       "Seconds": 0.9,
       "Loop": false,
-      "Markers": [],
-      "Over": "the open set's Up"
+      "Markers": []
     }
   }
 }

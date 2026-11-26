@@ -55,6 +55,7 @@ local REMOTES: { [string]: Spec } = {
 	-- The Void Shop (ShopService, AR38).
 	Shop = { Kind = "Function", RatePerSecond = 2 }, -- client -> server: () -> { Ok, Shelf?, Left?, Error? }: the standing stock's shelf and its seconds left
 	-- The fight in the camera's view (FightService, TR24's fixes 2 and 3).
+	TapMove = { Kind = "Function", RatePerSecond = 6 }, -- client -> server: (spot: Vector3) -> { Ok, Error?, At?, Ready? }: the lead to the floor tapped in a fight (TR69's block; FightService.TapMove)
 	Recall = { Kind = "Function", RatePerSecond = 4 }, -- client -> server: () -> { Ok, Error?, Ready? }: the lead dashes to the avatar, or why not (TR44's B)
 	View = { Kind = "Unreliable", RatePerSecond = 8 }, -- client -> server: (bearing) degrees, where the camera looks, flat: atan2(Z, X)
 	-- The signature on a tap (FightService, TR52's block).

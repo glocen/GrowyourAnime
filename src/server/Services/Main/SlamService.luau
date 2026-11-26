@@ -15,6 +15,10 @@
 --   lead off only while it's still under it, held until its Slam (a sweep's, until its line has turned). Counted under
 --   their kind ("Pool A", "Second A", "Sweep A").
 -- The player's attribute RecallReady (server time) says when their next Recall is ready, for the button's cooldown.
+-- * Tap to move (TR69's trial block; Config.Combat.TapMove, FightService.TapMove): Net "TapMove" (a floor tapped in a
+--   fight, TapMoveController) sends the lead there. While it's On, A's break-off is off: walking no longer takes the
+--   lead out of a footprint, and a tap-move in a tell counts as a miss on purpose, as a Recall does. TapMoveReady
+--   (server time) says when the next counts.
 -- * TR69 C, the press (Config.Combat.Hands, Off by default; Rules.Hands): on, the Recall is Call, in every fight but the
 --   Tower's (the lead has a target, or a blow landed within Hands.Linger), whatever the mode. A Call in a marked strike's
 --   tell that the strike then misses is a slip: FightService.Open stands the attacker Open. Each Call and each miss, on
@@ -26,6 +30,8 @@
 --   NL_Debug:Invoke("Slam", nil, "Now")     the player's keeper's slam ready now (a test's)
 --   NL_Debug:Invoke("Slam", nil, "Ready")   every foe on the player's lead with a signature, its signature ready now
 --                                            (AR52's cases: a Guard's raise, a Dasher's lunge)
+--   NL_Debug:Invoke("TapMove", nil, spot)   the player's lead tap-moved to `spot` (a Vector3), as the remote: its answer
+--   NL_Debug:Invoke("TapMove", nil, "Ready") its recovery over now (a test's)
 --   NL_Debug:Invoke("Hands")                the switch, and the player's fights' read-out (TR69 C)
 --   NL_Debug:Invoke("Hands", nil, true)     the switch on (or false: off) for every side (a Tune)
 --   NL_Debug:Invoke("Hands", nil, "Open")   every foe on the player's lead Open now, as a slip leaves it (a test's)
@@ -64,6 +70,7 @@ type Watch = {
 	FromZ: number,
 	Moved: number, -- the farthest it has stood from there since
 	Recalled: boolean,
+	Tapped: boolean, -- its lead tap-moved during the tell (Config.Combat.TapMove)
 	Broke: boolean, -- A: its lead broken off already
 }
 
@@ -105,6 +112,7 @@ local function marked(keeper: FightService.Fighter, mark: FightService.Mark)
 		FromZ = avatar.Position.Z,
 		Moved = 0,
 		Recalled = false,
+		Tapped = false,
 		Broke = false,
 	}
 end
@@ -119,7 +127,7 @@ local function unmarked(_keeper: FightService.Fighter, mark: FightService.Mark, 
 			return
 		end
 		local hit = table.find(struck, lead) ~= nil
-		local kind = if hit then nil else MarkRule.Purpose(watch.Moved, watch.Recalled, Combat.Keeper.Out.Moved)
+		local kind = if hit then nil else MarkRule.Purpose(watch.Moved, watch.Recalled or watch.Tapped, Combat.Keeper.Out.Moved)
 		MarkRule.Count(counts, watch.Key, hit, kind)
 		if kind then
 			FightService.Note(watch.Player, kind, 1)
@@ -145,7 +153,8 @@ local function step()
 		local dx, dz = p.X - watch.FromX, p.Z - watch.FromZ
 		local moved = math.sqrt(dx * dx + dz * dz)
 		watch.Moved = math.max(watch.Moved, moved)
-		if watch.Mode == "A" and not watch.Broke and mode() == "A" then
+		-- walking takes the lead out only while tap to move is off (Config.Combat.TapMove)
+		if watch.Mode == "A" and not watch.Broke and mode() == "A" and not Combat.TapMove.On then
 			local outside = not MarkRule.Covers(mark, p.X, p.Z)
 			local l = lead.Root.Position
 			local under = mark.Kind == nil or MarkRule.Covers(mark, l.X, l.Z)
@@ -192,6 +201,14 @@ function SlamService.Recall(player: Player): { [string]: any }
 		end
 	end
 	return { Ok = true, Ready = at + recall.Cooldown }
+end
+
+-- Tap to move: the remote's checks on its argument, then FightService.TapMove on the player's lead.
+function SlamService.TapMove(player: Player, spot: any): { [string]: any }
+	if typeof(spot) ~= "Vector3" or spot.X ~= spot.X or spot.Y ~= spot.Y or spot.Z ~= spot.Z or spot.Magnitude > 1e6 then
+		return { Ok = false, Error = "BadArgs" }
+	end
+	return FightService.TapMove(FightService.LeadOf(player), spot :: Vector3)
 end
 
 -- The player's keeper, in their try, if one stands.
@@ -257,6 +274,19 @@ function SlamService.Start()
 	Net.Server.Handle("Recall", function(player: Player): { [string]: any }
 		return SlamService.Recall(player)
 	end)
+	FightService.TapMoved:Connect(function(lead: FightService.Fighter)
+		for _, watch in watches do
+			if watch.Lead == lead then
+				watch.Tapped = true
+			end
+		end
+		if lead.Owner then
+			FightService.Note(lead.Owner, "TapMoves", 1)
+		end
+	end)
+	Net.Server.Handle("TapMove", function(player: Player, spot: any): { [string]: any }
+		return SlamService.TapMove(player, spot)
+	end)
 	Players.PlayerRemoving:Connect(function(player: Player)
 		recalled[player] = nil
 		for mark, watch in watches do
@@ -267,6 +297,21 @@ function SlamService.Start()
 	end)
 	if RunService:IsStudio() then
 		DebugService.Register("Slam", command)
+		DebugService.Register("TapMove", function(who: any, what: any): any
+			local player = DebugService.ResolvePlayer(who)
+			if player == nil then
+				return { Ok = false, Error = "NoPlayer" }
+			elseif what == "Ready" then
+				local lead = FightService.LeadOf(player)
+				if lead then
+					lead.TapMovedAt = nil
+					lead.HoldUntil = nil
+				end
+				player:SetAttribute("TapMoveReady", nil)
+				return { Ok = lead ~= nil }
+			end
+			return SlamService.TapMove(player, what)
+		end)
 		DebugService.Register("Hands", function(who: any, what: any): any
 			local player = DebugService.ResolvePlayer(who)
 			if what == "Open" then

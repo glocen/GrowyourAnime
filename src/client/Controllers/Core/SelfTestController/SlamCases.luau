@@ -70,11 +70,15 @@ function SlamCases.Cases(): { any }
 			Place = "Festival", -- TR45: its world stands in that place only
 			Run = function(t: any)
 				local was = t.Server("Slam").Mode
+				-- A's walk out is the rule only while tap to move is off (Config.Combat.TapMove): off for this case
+				local tapWas = Combat.TapMove.On
+				t.Server("Tune", "Combat.TapMove.On", false)
 				local look = Combat.Keeper.Mark
 				local action = Actions.ById.KeeperSignature
 				local tell = action.Beats.Slam - action.Beats.Plant
 				local function restore()
 					t.Server("Slam", was)
+					t.Server("Tune", "Combat.TapMove.On", tapWas)
 				end
 				-- A try, its keeper in its ring and the lead on it.
 				t.Server("Slam", "Off")

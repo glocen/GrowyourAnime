@@ -223,6 +223,17 @@ return {
 	-- On: off for the balance check's runs without it (Tune "Combat.Skip.On"). Every 2.5 from 4 (research's verdict on the
 	-- blockout, 2026-11-13: at 4 the Shade was back within half a second and the leads shot point-blank most of the take).
 	Skip = { On = true, Close = 5, Every = 2.5, Step = 30, Body = 1.5, Ground = 2 },
+	-- Tap to move (TR69's trial block, tier 1; research's seeds, narrowed by the director's word by 2026-11-26, 23:23: "a
+	-- nice bonus", never a winning answer to every tell; Rules.TapMove, FightService.TapMove, TapMoveController). In a
+	-- fight, a tap or a click on the floor sends the lead there in a blink; walking no longer takes it out of a tell
+	-- (Keeper.Out's A), though walking past the leash still pulls it. Out of a fight it follows as before. Live numbers.
+	--   On: the switch; off, Keeper.Out's mode holds as it was.
+	--   Reach: studs from the lead at most; a farther tap is clamped along its line. Skip: the travel's seconds (the skip
+	--   back's glide, with its clip for a lead that has one). Hold: landed, it holds its spot facing its target until the
+	--   tell it left resolves, at most Hold seconds, then swings. Recover: seconds from one tap-move to the next, so a tap
+	--   answers about one tell in two. Drag: a press this long or this far is the camera's drag, never a tap. Ring: the
+	--   spot's grey block ring, Radius studs, for Seconds. Body: the body's width its way is checked at.
+	TapMove = { On = true, Reach = 10, Skip = 0.3, Hold = 0.6, Recover = 3, Drag = { Seconds = 0.25, Pixels = 12 }, Ring = { Radius = 1.1, Seconds = 0.6 }, Body = 1.5 },
 	-- The leads' passives (Definitions.Passives; Rules.Passive): off for the balance check's runs without them.
 	Passives = { On = true },
 	-- Damage numbers over the target: they rise this many studs over this many seconds. A flurry, one press's hits on one

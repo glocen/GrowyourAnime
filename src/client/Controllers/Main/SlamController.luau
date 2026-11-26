@@ -117,6 +117,8 @@ local function ownDisc(action: string): boolean
 end
 local veils: { [Model]: SphereHandleAdornment } = {}
 local PANE_GREY = Color3.fromRGB(196, 199, 206)
+local ROOT_UP = 3 -- a Shade's root over its feet at Scale 1 (FightService's LEAD_ROOT_HEIGHT, the rig's)
+local SCREEN_MIDDLE = 1.875 -- the Guard elite's screen's middle over the street, in studs (Scintilla's S1: 0.15 to 3.6)
 local PANE_THICK = 0.12
 local recall: TextButton? = nil
 local recallFace: Frame? = nil
@@ -475,11 +477,17 @@ local function shieldStruck(target: any, attacker: any, name: string, behind: an
 		if math.abs(closing) > 1e-3 then
 			local start = Vector3.new(from.Position.X, root.Position.Y, from.Position.Z)
 			local t = (wall.Ahead - (start - root.Position):Dot(look)) / closing
-			point = start + line * math.clamp(t, 0, 1) + Vector3.new(0, meets.Up * k, 0)
+			-- on the wall, at its middle's height: it stands from 0.15 to 3.6 over the street (Scintilla's S1), the root
+			-- LEAD_ROOT_HEIGHT x its scale over it
+			point = start + line * math.clamp(t, 0, 1) + Vector3.new(0, SCREEN_MIDDLE - ROOT_UP * k, 0)
 			way = line.Unit
 		end
 	end
 	local anchor = CFrame.lookAt(point, point + way)
+	if name == "GuardScreenBreak" and facing.Magnitude > 0.01 then
+		-- the wall's break draws in the Guard's root frame, Front its look, as GuardScreen finds the wall (Scintilla, f06b40f3)
+		anchor = CFrame.lookAt(root.Position, root.Position + facing.Unit)
+	end
 	local rows = Effects.At(name, anchor, k)
 	if rows then
 		struckLook = { Name = name, Anchor = anchor, Rows = rows }

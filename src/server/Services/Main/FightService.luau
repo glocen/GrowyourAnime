@@ -47,6 +47,7 @@ local Markers = require(Shared.World.Markers)
 local Passive = require(Shared.Rules.Passive)
 local MarkRule = require(Shared.Rules.Mark)
 local Hands = require(Shared.Rules.Hands)
+local TapMoveRule = require(Shared.Rules.TapMove)
 local Keeper = require(Shared.Rules.Keeper)
 local PlaceRole = require(Shared.Util.PlaceRole)
 local SupportRule = require(Shared.Rules.Support)
@@ -149,6 +150,8 @@ export type Fighter = {
 	PinUntil: number?,
 	Lunged: number?, -- a Hard Dasher's lunges so far in its run (TR69 E; Rules.Fight.Again)
 	Swings: number?, -- its Action's starts since its signature, for a row with Every (TR69 B, the Brawler elite's overhead)
+	TapMovedAt: number?, -- a lead's last tap-move (Config.Combat.TapMove; FightService.TapMove)
+	HoldUntil: number?, -- tapped clear: it holds its spot facing its target until then (Rules.TapMove.HoldUntil)
 	HarderUntil: number?,
 	Harder: number?,
 	Rates: { [string]: number }?,
@@ -188,6 +191,7 @@ FightService.Rose = Signal.new() -- (fighter) a lead up again: home with its pla
 FightService.Marked = Signal.new() -- (fighter, mark) a marked strike's footprint is down (TR44)
 -- (fighter, mark, struck: { Fighter }?) taken up: on its hit, with the leads it took; nil when its action ended first
 FightService.Unmarked = Signal.new()
+FightService.TapMoved = Signal.new() -- (lead) a tap to move sent it off (Config.Combat.TapMove)
 FightService.Broke = Signal.new() -- (fighter, target, signature: boolean) a Guard's raised shield broken open (AR52; TR54's dare)
 FightService.Capped = Signal.new() -- (fighter) a heal stopped short by its HealRoom: the Tower's cap bound (TR46)
 
@@ -1798,6 +1802,12 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 		if busy(f, at) then
 			return
 		end
+		-- tapped clear (Config.Combat.TapMove): landed, it holds its spot facing its target until the tell it left resolves,
+		-- then swings
+		if f.HoldUntil and at < f.HoldUntil then
+			stop(f)
+			return
+		end
 		if trySkip(f, target, avatar, at) then
 			return
 		end
@@ -2860,6 +2870,77 @@ end
 -- TR44's ways out of a mark (SlamService): `f`, a standing lead, breaks off what it was doing (its combo lost, a carry
 -- stopped) and goes to its place by its avatar at `speed`, then holds there until `untilAt` (A: the Slam), or else `hold`
 -- seconds once it arrives, at most `most` seconds on the way (B: the Recall's dash). False when it can't.
+-- Tap to move (TR69's trial block; Config.Combat.TapMove, Rules.TapMove): `f`, a lead in a fight, carried towards `spot`,
+-- clamped to Reach along its line, short of a wall on the way and onto the ground there, in TapMove.Skip seconds (a lead
+-- with a skip back plays its clip; the others TapStep's). Landed, it holds its spot facing its target until the tells it
+-- stood under resolve, at most Hold. The answer: { Ok, Error?, At?, Ready? }: At, the spot it goes to; Ready, when the
+-- next one counts.
+function FightService.TapMove(f: Fighter?, spot: Vector3): { [string]: any }
+	local tap = Combat.TapMove
+	local at = now()
+	local lead = if f and fighters[f.Id] == f and f.Side == "Lead" and standing(f) then f else nil
+	local refusal = TapMoveRule.Refusal({
+		On = tap.On == true,
+		Lead = lead ~= nil,
+		Stunned = lead ~= nil and lead.State == "Stun",
+		Fighting = lead ~= nil and lead.Target ~= nil,
+		Ready = lead ~= nil and TapMoveRule.Ready(lead.TapMovedAt, at, tap.Recover),
+	})
+	if refusal or lead == nil then
+		local last = if lead then lead.TapMovedAt else nil
+		return { Ok = false, Error = refusal or "NoLead", Ready = if last then last + tap.Recover else nil }
+	end
+	local from = lead.Root.Position
+	local x, z = TapMoveRule.Clamp(from.X, from.Z, spot.X, spot.Z, tap.Reach)
+	local way = Vector3.new(x - from.X, 0, z - from.Z)
+	local world = worldRays()
+	local go = way.Magnitude
+	if go > 1e-3 then
+		local wall = workspace:Spherecast(from, tap.Body / 2, way, world)
+		if wall then
+			go = math.max(0, wall.Distance - tap.Body / 2)
+		end
+	end
+	if go < 0.5 then
+		return { Ok = false, Error = "Blocked" }
+	end
+	local unit = way.Unit
+	local goal = from + unit * go
+	if workspace:Raycast(goal + Vector3.new(0, 1, 0), Vector3.new(0, -(LEAD_ROOT_HEIGHT + 1 + Combat.Skip.Ground), 0), world) == nil then
+		return { Ok = false, Error = "NoGround" }
+	end
+	-- the tells it stood under: each footprint of its enemies' that covers where it stands, and when it resolves
+	local ends: { number } = {}
+	local function under(mark: Mark?)
+		if mark and not mark.Up and MarkRule.Covers(mark, from.X, from.Z) then
+			table.insert(ends, mark.Slam + (mark.Turn or 0) * (if mark.Back then 2 else 1))
+		end
+	end
+	for _, other in fighters do
+		if against(lead, other) then
+			under(other.Mark)
+		end
+	end
+	for _, h in hazards do
+		if against(lead, h.Owner) then
+			under(h.Mark)
+		end
+	end
+	endAction(lead, at)
+	lead.Away = nil
+	lead.Model:SetAttribute("Away", nil)
+	start(lead, Actions.SkipOf(lead.Def) or Actions.ById.TapStep, at)
+	lead.Humanoid:MoveTo(goal) -- so it doesn't walk back to where it stood once it lands
+	glide(lead, unit, go, tap.Skip, lead.Target)
+	lead.TapMovedAt = at
+	lead.HoldUntil = TapMoveRule.HoldUntil(at + tap.Skip, ends, tap.Hold)
+	if lead.Owner then
+		lead.Owner:SetAttribute("TapMoveReady", at + tap.Recover)
+	end
+	FightService.TapMoved:Fire(lead)
+	return { Ok = true, At = goal, Ready = at + tap.Recover }
+end
+
 function FightService.Away(f: Fighter, speed: number, untilAt: number?, hold: number?, most: number?): boolean
 	if fighters[f.Id] ~= f or f.Side ~= "Lead" or not standing(f) or f.State == "Home" then
 		return false

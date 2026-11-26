@@ -63,6 +63,9 @@ function HandsCases.Cases(given: Given): { any }
 				local was = t.Server("Hands").On == true
 				local seconds = Combat.Hands.Open.Seconds
 				local mode = t.Server("Slam").Mode
+				-- the walk off the line is A's only while tap to move is off (Config.Combat.TapMove): off for this case
+				local tapWas = Combat.TapMove.On
+				t.Server("Tune", "Combat.TapMove.On", false)
 				t.Server("Hands", true)
 				t.Server("Tune", "Combat.Hands.Open.Seconds", OPEN_TEST)
 				t.Server("Slam", "A")
@@ -200,6 +203,7 @@ function HandsCases.Cases(given: Given): { any }
 				t.Server("Tune", "Combat.Hands.Open.Seconds", seconds)
 				t.Server("Hands", was)
 				t.Server("Slam", mode)
+				t.Server("Tune", "Combat.TapMove.On", tapWas)
 				if not ok then
 					error(err, 0)
 				end

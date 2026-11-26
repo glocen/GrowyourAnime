@@ -34,6 +34,7 @@ local MarkRule = require(Shared.Rules.Mark)
 local Parts = require(Shared.Util.Parts)
 local SlamController = require(script.Parent.Parent.Parent.Main.SlamController)
 local FighterController = require(script.Parent.Parent.Parent.Main.FighterController)
+local TapMoveController = require(script.Parent.Parent.Parent.Main.TapMoveController)
 local Helpers = require(script.Parent.Helpers)
 
 local ShadeCases = {}
@@ -348,12 +349,16 @@ function ShadeCases.Cases(given: Given): { any }
 			Name = "Shades (AR52): the Dasher's line goes down through the lead and fills to its end on the hit; under A, staying it hits and runs on through, walking off it hits empty stone; each counted",
 			Run = function(t: any)
 				local was = t.Server("Slam").Mode
+				-- A's walk off the line is the rule only while tap to move is off (Config.Combat.TapMove): off for this case
+				local tapWas = Combat.TapMove.On
+				t.Server("Tune", "Combat.TapMove.On", false)
 				t.Server("Slam", "A")
 				t.Server("Slam", "Reset")
 				local lead, foe = begin(t, "dasher")
 				if lead == nil or foe == nil then
 					t.Server("FightSpawn")
 					t.Server("Slam", was)
+					t.Server("Tune", "Combat.TapMove.On", tapWas)
 					return
 				end
 				local dasher = foe :: Model
@@ -515,6 +520,7 @@ function ShadeCases.Cases(given: Given): { any }
 				onHit:Disconnect()
 				t.Server("FightSpawn")
 				t.Server("Slam", was)
+				t.Server("Tune", "Combat.TapMove.On", tapWas)
 				if not ok then
 					error(err, 0)
 				end
@@ -788,6 +794,101 @@ function ShadeCases.Cases(given: Given): { any }
 					t.Check("both Normal Dashers lunge", #a >= 1 and #b >= 1, `{#a} and {#b}`)
 					t.Check("never two lines in flight on the lead at once (Normal's one)", together(a, b, land) == 0, `{together(a, b, land)} together`)
 				end
+			end,
+		},
+		{
+			Name = "Tap to move (TR69's block): a drag never moves the lead, a tap past reach clamps, one in recovery does nothing, and a melee lead tapped clear holds its spot through the slam, then swings",
+			Run = function(t: any)
+				local tap = Combat.TapMove
+				if not tap.On then
+					t.Check("tap to move is on", false)
+					return
+				end
+				t.Server("TapMove", "Ready")
+				local lead, foe = begin(t, "brawler_elite")
+				if lead == nil or foe == nil then
+					t.Server("FightSpawn")
+					return
+				end
+				local own = lead:GetAttribute("Def")
+				t.Row("the lead", nil, nil, tostring(own), if type(own) == "string" and Actions.Skips[own] then "its skip back's clip" else "melee: TapStep")
+				local function rootOf(model: Model): BasePart?
+					local root = model:FindFirstChild("HumanoidRootPart")
+					return if root and root:IsA("BasePart") then root else nil
+				end
+				local camera = workspace.CurrentCamera
+				local middle = if camera then camera.ViewportSize / 2 else Vector2.new(400, 300)
+				-- a drag: held too long, or moved too far; nothing is asked, so no tap-move happens
+				t.Check("a long press asks nothing", TapMoveController.Press(middle, tap.Drag.Seconds + 0.15, 0) == nil)
+				t.Check("a swipe asks nothing", TapMoveController.Press(middle, 0.05, tap.Drag.Pixels + 20) == nil)
+				t.Wait(0.4)
+				t.Check("a drag never moves the lead (no tap-move)", player:GetAttribute("TapMoveReady") == nil, tostring(player:GetAttribute("TapMoveReady")))
+				-- a tap 40 studs off: clamped to Reach along its line
+				local root, foeRoot = rootOf(lead), rootOf(foe)
+				if root == nil or foeRoot == nil then
+					t.Check("their roots", false)
+					t.Server("FightSpawn")
+					return
+				end
+				local from = root.Position
+				local away = flat(from - foeRoot.Position)
+				local side = if away.Magnitude > 0.1 then Vector3.new(-away.Unit.Z, 0, away.Unit.X) else Vector3.new(1, 0, 0)
+				local far = TapMoveController.Ask(from + side * 40)
+				t.Check("a far tap goes", far.Ok == true, tostring(far.Error))
+				local went = if typeof(far.At) == "Vector3" then flat(far.At - from).Magnitude else -1
+				t.Check("clamped to Reach", went > 0.5 and went <= tap.Reach + 0.1, string.format("%.2f studs", went))
+				t.Check("its ring marks the spot", TapMoveController.Ring() ~= nil)
+				local again = TapMoveController.Ask(from - side * 4)
+				t.Equal("a tap in recovery does nothing", again.Error, "Recovering")
+				t.Check("and the recovery stands", type(player:GetAttribute("TapMoveReady")) == "number")
+				-- the overhead's footprint on the lead, then a tap clear of it
+				t.Wait(tap.Skip + 0.2)
+				t.Server("TapMove", "Ready")
+				t.Server("Slam", "Ready")
+				local markAt: Vector3? = nil
+				waitFor(t, LUNGE_SOON + 4, function(): boolean
+					local m = foe:GetAttribute("MarkAt")
+					markAt = if typeof(m) == "Vector3" then m else nil
+					return markAt ~= nil and foe:GetAttribute("MarkTo") == nil
+				end)
+				local slam, radius = foe:GetAttribute("MarkSlam"), foe:GetAttribute("MarkRadius")
+				if markAt == nil or type(slam) ~= "number" or type(radius) ~= "number" then
+					t.Check("the overhead's footprint goes down", false)
+					t.Server("FightSpawn")
+					return
+				end
+				local leadAt = root.Position
+				local out = flat(leadAt - markAt)
+				local dir = if out.Magnitude > 0.1 then out.Unit else side
+				local hit = false
+				local onHit = Net.Client.On("Hit", function(h: any)
+					if type(h) == "table" and h.A == foe and h.T == lead then
+						hit = true
+					end
+				end)
+				local clear = TapMoveController.Ask(markAt + dir * (radius + 3))
+				t.Check("the tap clear goes", clear.Ok == true, tostring(clear.Error))
+				local landAt = now() + tap.Skip + 0.05
+				local spot = if typeof(clear.At) == "Vector3" then clear.At else leadAt
+				local drift = 0
+				while now() < slam + 0.05 and lead.Parent ~= nil do
+					if now() >= landAt then
+						drift = math.max(drift, flat(root.Position - spot).Magnitude)
+					end
+					task.wait()
+				end
+				t.Check("it holds its spot through the slam", drift <= 0.75, string.format("%.2f studs", drift))
+				t.Check("clear of the footprint", not MarkRule.Inside(markAt.X, markAt.Z, radius, root.Position.X, root.Position.Z))
+				t.Wait(0.2)
+				t.Check("the overhead misses it", not hit)
+				onHit:Disconnect()
+				t.Check("then it swings again", waitFor(t, tap.Hold + 2, function(): boolean
+					local action = lead:GetAttribute("Action")
+					local row = if type(action) == "string" then Actions.ById[action] else nil
+					return row ~= nil and row.Range > 0 -- a kit's action: never the step or a skip back (Range 0)
+				end), tostring(lead:GetAttribute("Action")))
+				t.Server("FightSpawn")
+				t.Server("TapMove", "Ready")
 			end,
 		},
 	}

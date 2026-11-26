@@ -254,6 +254,23 @@ local rows: { Action } = {
 		Signed = "the feel line: Quaestor, 2026-11-13 (docs/design.md, \"Combat\"; TR7)",
 	},
 	{
+		-- Tap to move's travel (TR69's trial block; Config.Combat.TapMove): a lead without a skip back of its own (Pip's,
+		-- Lyric's play theirs) is carried to the tapped spot in TapMove.Skip seconds, its body as it stands. No clip yet: a
+		-- block. Never chosen from a kit.
+		Id = "TapStep",
+		Clip = nil,
+		Length = 0.3,
+		CancelFrom = 0.3,
+		Cooldown = 0,
+		Beats = { Land = 0.3 },
+		Hits = {},
+		Range = 0,
+		Heavy = false,
+		State = nil,
+		Levers = { "movement during (the blink to the spot)", "the hold (until the tell it left resolves)" },
+		Signed = nil,
+	},
+	{
 		-- Lyric's signature (docs/roster.md; AR4, section 9): a breath, she lunges into the mic, and the note sweeps out
 		-- across the Shades in crests on every half-beat until she lets go. Each crest touches every Shade in the cone, a
 		-- fifth of the signature's total, and heals her and every ally lead in it (research's tier 2). The cone is 14 studs

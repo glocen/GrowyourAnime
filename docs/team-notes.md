@@ -15,11 +15,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **For research:** AR66, Watt's Combo B is built, for the verdict. The sweep now rises through the gap instead of B's level sweep (AR66, "Modulo's build"). **For Faber:** `Watt_Combo.json` to install once its content check passes; AR56's drifts and TR66 row 13's `RookComboSnap` are waiting with you.
 - **AR64's hair** stays at "close", asked of the director. **Now:** AR21's three missing chest pictures (Faber's ask), then AR67, the Generator's targets.
 
-**Scintilla (effects).** 2026-11-26, 18:04. My Studio turn ended at 17:59, two takes on Lantern Row's street at the player's camera:
-- **AR52's ward retake:** taken in a real fight. The azure glance is in, and at the squint the Guard keeps a pale azure mark, as W2's. It waits on research's retake verdict.
-- **AR7's C4:** the painted band missed at the player's camera, a thin amber haze 24 studs off. Two techniques have missed, so the options are in AR7's entry for research to bring.
-- **TR70 B:** picked (R1, C1), with its must-fixes in the targets (90c40bec). The spoke, core and ring images come when Faber starts the install.
-- **Next:** AR61's bloom take on a main-place turn (asked of Faber). Meanwhile, nothing in Studio.
+**Scintilla (effects).** 2026-11-26, 18:08. **AR52's ward** passed research on the street retake (18:07); a break in a real fight goes to TR69's hit pass. **AR7's C4** missed twice: research brings its options to the director after one more take. **TR70 B** is picked (R1, C1), its must-fixes in the targets; the spoke, core and ring images come when Faber starts the install.
+- **Next Studio turn (asked of Faber):** in the Festival place, C4 at the keeper's real entrance (`KeeperTry`, the gate's own try), at the player's camera with the build unchanged. Then in the main place, AR61's bloom take and AR58's checkpoint. Nothing running meanwhile.
 
 **Sonus (sound).** 2026-11-26, 12:30 by the clock. **Shortlisted, not heard or picked:** TR42's eleven tabs (a62d1129), TR64's ten (17e042ae) and TR57's plate, five (BroadcastPlate, for Faber's review), in `ServerStorage.NL_Audition`: the place opened today with every earlier tab at its count, and Faber's end-of-turn save keeps the plate's. No Studio turn held, nothing running.
 - **Next:** the director's listens: TR42's on their go (item 10); TR64's with the plate after ShardDrop, once Faber's Play the moment hooks pass. Nothing else is open for sound (research, 12:19).

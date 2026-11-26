@@ -5327,6 +5327,13 @@ Research, 2026-11-24, 16:53, on the director's word, "the hair still need a rewo
   - **The capture:** `build/captures/lighting/base_light_a_installed_c8b49e.jpg`.
   - **A case:** "Lighting: AR65, the base's own sun…" (BaseCases) checks the sun, the grade, the fill and the depth. It passes, with every AR65 base case, at 92 of 92.
   - **The painted sun:** the base's fixed cameras never show it. It's painted 62° up; the fight camera's frame tops out at +15°, the base view's at −23°, and the gate camera's at +27.6°, facing away. Only the free camera, tilted up past about 27° toward it, does: a line in `docs/polish-later.md`.
+
+**Research's verdict on the installed light (Quaestor, 2026-11-26, 22:37; `base_light_a_installed_c8b49e.jpg` beside `base_light_a.jpg` and `base_light_today.jpg`, at phone size, both orders): passes.**
+
+- **Felt:** a late afternoon. The machines stand on the floor with long shadows, and the shade reads as warm grey stone.
+- **Gates:** at the squint the Generator's cyan orb holds the focal point, and the floor now groups into lit and shaded masses (luma 192 against 153; today's was a flat 216 against 199).
+- **Beside A:** it carries A's main read, the long shadows grounding every machine. The one gap is the shade's warmth, which is the must-fix, met: R−B +7.7 against A's −4.1.
+- **Status:** implemented, tested (Faber's case, 92 of 92), and visually reviewed, research's pass included. Not director-accepted.
 ## AR66. Clips follow the model (Modulo's audit and targets, research's feel line and pick, then Faber's install)
 
 The rule: `docs/design.md`, "Clips follow the model, rules follow the class" (the director, 2026-11-26, about 13:28). Each new clip keeps its action's Beats, Range and Reach (`Definitions/Actions.luau`), and a reaction keeps its set's length and Land.

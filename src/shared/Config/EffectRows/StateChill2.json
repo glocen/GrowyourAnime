@@ -1,92 +1,257 @@
 {
  "Schema": "rows/1",
  "Effect": "StateChill2",
- "Why": "Chill (Frost), its second third, worn while the fill is in it (AR48, Scintilla's grey).",
+ "Why": "Chill (Frost), its second third, worn while the fill is in it: the crust on the legs' outline (AR48, Scintilla's grey, research's rule).",
  "Area": 1,
  "Grey": true,
  "Rows": {
-  "Sleeve": {
+  "B1L1": {
    "Kind": "Mesh",
-   "Body": "HumanoidRootPart",
-   "Ground": true,
-   "Part": [
-    "FxColumn"
-   ],
-   "Look": "fx_rise_Grey",
-   "Grey": "fx_rise_Grey",
-   "Color": {
-    "Color3": [
-     143,
-     227,
-     255
-    ]
-   },
+   "Body": "Left Leg",
+   "Part": ["FxChip1"],
+   "Color": {"Color3": [244, 253, 255]},
    "Tracks": {
+    "At": [[0, {"Vector3": [-0.608, -0.418, -0.508]}]],
+    "Tilt": [[0, {"Vector3": [0, 151.7, 43.5]}]],
+    "Transparency": [[0, 0.1], [3600, 0.1]],
+    "Glow": [[0, 1.4], [3600, 1.4]],
+    "Scale": [[0, {"Vector3": [0.565, 1.243, 0.904]}]]
+   },
+   "Why": "the bands before, held"
+  },
+  "B1L2": {
+   "Kind": "Mesh",
+   "Body": "Left Leg",
+   "Part": ["FxChip1"],
+   "Color": {"Color3": [244, 253, 255]},
+   "Tracks": {
+    "At": [[0, {"Vector3": [-0.614, -0.283, 0.511]}]],
+    "Tilt": [[0, {"Vector3": [0, -151.7, 43.5]}]],
+    "Transparency": [[0, 0.1], [3600, 0.1]],
+    "Glow": [[0, 1.4], [3600, 1.4]],
+    "Scale": [[0, {"Vector3": [0.593, 1.305, 0.949]}]]
+   },
+   "Why": "the bands before, held"
+  },
+  "B1L3": {
+   "Kind": "Mesh",
+   "Body": "Left Leg",
+   "Part": ["FxChip1"],
+   "Color": {"Color3": [244, 253, 255]},
+   "Tracks": {
+    "At": [[0, {"Vector3": [-0.617, -0.149, -0.513]}]],
+    "Tilt": [[0, {"Vector3": [0, 151.7, 43.5]}]],
+    "Transparency": [[0, 0.1], [3600, 0.1]],
+    "Glow": [[0, 1.4], [3600, 1.4]],
+    "Scale": [[0, {"Vector3": [0.611, 1.344, 0.978]}]]
+   },
+   "Why": "the bands before, held"
+  },
+  "B1L4": {
+   "Kind": "Mesh",
+   "Body": "Left Leg",
+   "Part": ["FxChip1"],
+   "Color": {"Color3": [244, 253, 255]},
+   "Tracks": {
+    "At": [[0, {"Vector3": [-0.64, 0.006, 0.525]}]],
+    "Tilt": [[0, {"Vector3": [0, -151.7, 43.5]}]],
+    "Transparency": [[0, 0.1], [3600, 0.1]],
+    "Glow": [[0, 1.4], [3600, 1.4]],
+    "Scale": [[0, {"Vector3": [0.73, 1.606, 1.168]}]]
+   },
+   "Why": "the bands before, held"
+  },
+  "B1R1": {
+   "Kind": "Mesh",
+   "Body": "Right Leg",
+   "Part": ["FxChip1"],
+   "Color": {"Color3": [244, 253, 255]},
+   "Tracks": {
+    "At": [[0, {"Vector3": [0.624, -0.401, -0.517]}]],
+    "Tilt": [[0, {"Vector3": [0, 28.3, 43.5]}]],
+    "Transparency": [[0, 0.1], [3600, 0.1]],
+    "Glow": [[0, 1.4], [3600, 1.4]],
+    "Scale": [[0, {"Vector3": [0.649, 1.428, 1.038]}]]
+   },
+   "Why": "the bands before, held"
+  },
+  "B1R2": {
+   "Kind": "Mesh",
+   "Body": "Right Leg",
+   "Part": ["FxChip1"],
+   "Color": {"Color3": [244, 253, 255]},
+   "Tracks": {
+    "At": [[0, {"Vector3": [0.633, -0.262, 0.522]}]],
+    "Tilt": [[0, {"Vector3": [0, -28.3, 43.5]}]],
+    "Transparency": [[0, 0.1], [3600, 0.1]],
+    "Glow": [[0, 1.4], [3600, 1.4]],
+    "Scale": [[0, {"Vector3": [0.694, 1.527, 1.11]}]]
+   },
+   "Why": "the bands before, held"
+  },
+  "B1R3": {
+   "Kind": "Mesh",
+   "Body": "Right Leg",
+   "Part": ["FxChip1"],
+   "Color": {"Color3": [244, 253, 255]},
+   "Tracks": {
+    "At": [[0, {"Vector3": [0.609, -0.157, -0.509]}]],
+    "Tilt": [[0, {"Vector3": [0, 28.3, 43.5]}]],
+    "Transparency": [[0, 0.1], [3600, 0.1]],
+    "Glow": [[0, 1.4], [3600, 1.4]],
+    "Scale": [[0, {"Vector3": [0.57, 1.254, 0.912]}]]
+   },
+   "Why": "the bands before, held"
+  },
+  "B1R4": {
+   "Kind": "Mesh",
+   "Body": "Right Leg",
+   "Part": ["FxChip1"],
+   "Color": {"Color3": [244, 253, 255]},
+   "Tracks": {
+    "At": [[0, {"Vector3": [0.625, -0.01, 0.517]}]],
+    "Tilt": [[0, {"Vector3": [0, -28.3, 43.5]}]],
+    "Transparency": [[0, 0.1], [3600, 0.1]],
+    "Glow": [[0, 1.4], [3600, 1.4]],
+    "Scale": [[0, {"Vector3": [0.652, 1.434, 1.043]}]]
+   },
+   "Why": "the bands before, held"
+  },
+  "B2L1": {
+   "Kind": "Mesh",
+   "Body": "Left Leg",
+   "Part": ["FxChip1"],
+   "Color": {"Color3": [244, 253, 255]},
+   "Tracks": {
+    "At": [[0, {"Vector3": [-0.638, 0.134, -0.524]}]],
+    "Tilt": [[0, {"Vector3": [0, 151.7, 43.5]}]],
+    "Transparency": [[0, 0.1], [3600, 0.1]],
+    "Glow": [[0, 1.4], [3600, 1.4]],
     "Scale": [
-     [
-      0,
-      {
-       "Vector3": [
-        1.1,
-        0.375,
-        1.1
-       ]
-      },
-      "Back Out"
-     ],
-     [
-      9,
-      {
-       "Vector3": [
-        1.1,
-        0.75,
-        1.1
-       ]
-      }
-     ],
-     [
-      3600,
-      {
-       "Vector3": [
-        1.1,
-        0.75,
-        1.1
-       ]
-      }
-     ]
-    ],
-    "Transparency": [
-     [
-      0,
-      0.35,
-      "Quad Out"
-     ],
-     [
-      6,
-      0.35
-     ],
-     [
-      3600,
-      0.35
-     ]
-    ],
-    "Glow": [
-     [
-      0,
-      2.2,
-      "Quad Out"
-     ],
-     [
-      9,
-      1.2
-     ],
-     [
-      3600,
-      1.2
-     ]
+     [0, {"Vector3": [0, 0, 0]}], [1, {"Vector3": [0.05, 0.05, 0.05]}, "Back Out"],
+     [9, {"Vector3": [0.719, 1.582, 1.15]}]
     ]
    },
-   "Why": "the hero: frost climbing the legs from the last step's top to this one's, snapping up (Back Out)"
+   "Why": "the hero: an ice tooth on the outline, out and up"
+  },
+  "B2L2": {
+   "Kind": "Mesh",
+   "Body": "Left Leg",
+   "Part": ["FxChip1"],
+   "Color": {"Color3": [244, 253, 255]},
+   "Tracks": {
+    "At": [[0, {"Vector3": [-0.626, 0.254, 0.518]}]],
+    "Tilt": [[0, {"Vector3": [0, -151.7, 43.5]}]],
+    "Transparency": [[0, 0.1], [3600, 0.1]],
+    "Glow": [[0, 1.4], [3600, 1.4]],
+    "Scale": [
+     [0, {"Vector3": [0, 0, 0]}], [3, {"Vector3": [0.05, 0.05, 0.05]}, "Back Out"],
+     [11, {"Vector3": [0.655, 1.441, 1.048]}]
+    ]
+   },
+   "Why": "the hero: an ice tooth on the outline, out and up"
+  },
+  "B2L3": {
+   "Kind": "Mesh",
+   "Body": "Left Leg",
+   "Part": ["FxChip1"],
+   "Color": {"Color3": [244, 253, 255]},
+   "Tracks": {
+    "At": [[0, {"Vector3": [-0.642, 0.404, -0.526]}]],
+    "Tilt": [[0, {"Vector3": [0, 151.7, 43.5]}]],
+    "Transparency": [[0, 0.1], [3600, 0.1]],
+    "Glow": [[0, 1.4], [3600, 1.4]],
+    "Scale": [
+     [0, {"Vector3": [0, 0, 0]}], [5, {"Vector3": [0.05, 0.05, 0.05]}, "Back Out"],
+     [13, {"Vector3": [0.739, 1.626, 1.182]}]
+    ]
+   },
+   "Why": "the hero: an ice tooth on the outline, out and up"
+  },
+  "B2L4": {
+   "Kind": "Mesh",
+   "Body": "Left Leg",
+   "Part": ["FxChip1"],
+   "Color": {"Color3": [244, 253, 255]},
+   "Tracks": {
+    "At": [[0, {"Vector3": [-0.639, 0.534, 0.525]}]],
+    "Tilt": [[0, {"Vector3": [0, -151.7, 43.5]}]],
+    "Transparency": [[0, 0.1], [3600, 0.1]],
+    "Glow": [[0, 1.4], [3600, 1.4]],
+    "Scale": [
+     [0, {"Vector3": [0, 0, 0]}], [7, {"Vector3": [0.05, 0.05, 0.05]}, "Back Out"],
+     [15, {"Vector3": [0.726, 1.597, 1.162]}]
+    ]
+   },
+   "Why": "the hero: an ice tooth on the outline, out and up"
+  },
+  "B2R1": {
+   "Kind": "Mesh",
+   "Body": "Right Leg",
+   "Part": ["FxChip1"],
+   "Color": {"Color3": [244, 253, 255]},
+   "Tracks": {
+    "At": [[0, {"Vector3": [0.62, 0.115, -0.514]}]],
+    "Tilt": [[0, {"Vector3": [0, 28.3, 43.5]}]],
+    "Transparency": [[0, 0.1], [3600, 0.1]],
+    "Glow": [[0, 1.4], [3600, 1.4]],
+    "Scale": [
+     [0, {"Vector3": [0, 0, 0]}], [1, {"Vector3": [0.05, 0.05, 0.05]}, "Back Out"],
+     [9, {"Vector3": [0.624, 1.373, 0.998]}]
+    ]
+   },
+   "Why": "the hero: an ice tooth on the outline, out and up"
+  },
+  "B2R2": {
+   "Kind": "Mesh",
+   "Body": "Right Leg",
+   "Part": ["FxChip1"],
+   "Color": {"Color3": [244, 253, 255]},
+   "Tracks": {
+    "At": [[0, {"Vector3": [0.605, 0.233, 0.507]}]],
+    "Tilt": [[0, {"Vector3": [0, -28.3, 43.5]}]],
+    "Transparency": [[0, 0.1], [3600, 0.1]],
+    "Glow": [[0, 1.4], [3600, 1.4]],
+    "Scale": [
+     [0, {"Vector3": [0, 0, 0]}], [3, {"Vector3": [0.05, 0.05, 0.05]}, "Back Out"],
+     [11, {"Vector3": [0.55, 1.21, 0.88]}]
+    ]
+   },
+   "Why": "the hero: an ice tooth on the outline, out and up"
+  },
+  "B2R3": {
+   "Kind": "Mesh",
+   "Body": "Right Leg",
+   "Part": ["FxChip1"],
+   "Color": {"Color3": [244, 253, 255]},
+   "Tracks": {
+    "At": [[0, {"Vector3": [0.634, 0.396, -0.522]}]],
+    "Tilt": [[0, {"Vector3": [0, 28.3, 43.5]}]],
+    "Transparency": [[0, 0.1], [3600, 0.1]],
+    "Glow": [[0, 1.4], [3600, 1.4]],
+    "Scale": [
+     [0, {"Vector3": [0, 0, 0]}], [5, {"Vector3": [0.05, 0.05, 0.05]}, "Back Out"],
+     [13, {"Vector3": [0.701, 1.542, 1.122]}]
+    ]
+   },
+   "Why": "the hero: an ice tooth on the outline, out and up"
+  },
+  "B2R4": {
+   "Kind": "Mesh",
+   "Body": "Right Leg",
+   "Part": ["FxChip1"],
+   "Color": {"Color3": [244, 253, 255]},
+   "Tracks": {
+    "At": [[0, {"Vector3": [0.61, 0.503, 0.509]}]],
+    "Tilt": [[0, {"Vector3": [0, -28.3, 43.5]}]],
+    "Transparency": [[0, 0.1], [3600, 0.1]],
+    "Glow": [[0, 1.4], [3600, 1.4]],
+    "Scale": [
+     [0, {"Vector3": [0, 0, 0]}], [7, {"Vector3": [0.05, 0.05, 0.05]}, "Back Out"],
+     [15, {"Vector3": [0.575, 1.265, 0.92]}]
+    ]
+   },
+   "Why": "the hero: an ice tooth on the outline, out and up"
   }
  }
 }

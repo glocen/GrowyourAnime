@@ -482,6 +482,9 @@ local Effects = {
 		fight_mark_core = "rbxassetid://112380963852248",
 		fight_glint_light = "rbxassetid://103104123211223",
 		fight_glint_core = "rbxassetid://135371519314738",
+		-- AR48's Sap, its mote: a dark disc with a light rim, white so its Color tints the rim (tools/fx/element_states.py
+		-- --pictures; the content check of 2026-11-26).
+		fx_mote_rim = "rbxassetid://100202936055493",
 	} :: { [string]: string },
 
 	-- The effects as rows (the header), and those in a rows file (Config.EffectRows), merged below. Tuned live:

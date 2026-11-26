@@ -86,7 +86,7 @@ def challenge():
     }
     life = round(RING_LIFE / 60, 4)
 
-    def ring(picture, colour, emission, seen, brightness, z, why):
+    def ring(picture, colour, emission, seen, brightness, z, why, grow=1.0):
         return {
             "Kind": "Emitter",
             "From": "Stamp",
@@ -103,7 +103,7 @@ def challenge():
                 "LockedToPart": False,
                 "Rotation": [0, 0],
                 "RotSpeed": [0, 0],
-                "Size": [[0, RING_EXT], [1, RING_EXT]],  # half the quad: the picture's edge RING_EXT from the foot
+                "Size": [[0, RING_EXT * grow], [1, RING_EXT * grow]],  # half the quad: the picture's edge RING_EXT from the foot
                 "Transparency": [[0, 1 - seen], [1, 1 - seen]],
                 "Color": c3(colour),
                 "LightEmission": emission,
@@ -120,12 +120,14 @@ def challenge():
 
     rows = {
         "Gaze": gaze,
-        "RingDeep": ring("keeper_ring_field", (0x7A, 0x4A, 0x12), 0, 0.4, 1, 0.3,
-                         "C4's deep warm laid under the band, so the ring holds on the pale street: only ever with its light"),
-        "RingWarm": ring("keeper_ring_field", (0xFF, 0xC9, 0x8A), 1, 1, 1.6, 0.32,
-                         "the hero: the band of warm light running out from the pole's foot to ten studs, its twin behind"),
-        "RingLine": ring("keeper_ring_line", (0xFF, 0xF6, 0xE8), 1, 1, 1.6, 0.34,
-                         "the band's outer edge, a warm white line, so the ring reads all the way round"),
+        # C4 in the game (2026-11-26): added warm light on the pale street read as a faint swirl, so the band is painted
+        # (light emission 0, near opaque) with its ink just outside, and the light only on the line's core (AR52's fix)
+        "RingInk": ring("keeper_ring_field", (0x5C, 0x30, 0x06), 0, 0.6, 1, 0.29,
+                        "the band's ink, a hair outside it, so its edge holds on the pale street", grow=1.015),
+        "RingBand": ring("keeper_ring_field", (0xE0, 0x7A, 0x16), 0, 0.95, 1, 0.3,
+                         "the hero: the band running out from the pole's foot to ten studs, painted warm amber, its twin behind"),
+        "RingLine": ring("keeper_ring_line", (0xFF, 0xF0, 0xD0), 1, 1, 1.6, 0.34,
+                         "the band's outer edge, a warm white line, the only light in the ring"),
     }
     return effect("KeeperChallenge", "The keeper's challenge, KeeperChallenge's own effect: research's pick C4 (Scintilla).",
                   rows, "KeeperChallenge", grey=False)

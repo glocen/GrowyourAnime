@@ -4148,6 +4148,7 @@ This is delivery 4, the block clip of section 5 polished, on research's open not
   - The keeper's Challenge clip didn't play in this take (its pose held), so the take's beats are read from the rows alone.
   - **The change, in technique:** AR52's day fix. Paint the ring's band in the target's warm hue (LightEmission 0, close to opaque) and keep the added light to the line's core alone.
   - Next take: my next Studio turn, with the clip checked first.
+  - **The change, built (16:29):** RingBand is painted warm amber (#E07A16, LE 0, 0.95 seen), with RingInk (#5C3006, 0.6) a hair outside it, and RingLine's warm white as the only light. The additive band is gone and the shape is the picked one. Logic offline: 8,668 passed. The next take uses the game's own path, where the keeper's spawn plays its Challenge (`Enemies.Enter`), since my own track didn't play.
 
 ## AR8. The effects pass
 

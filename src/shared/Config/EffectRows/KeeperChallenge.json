@@ -47,7 +47,91 @@
       },
       "Why": "the lantern flares as it lifts its face to you, it has heard you, and jolts brighter with the stamp"
     },
-    "RingDeep": {
+    "RingInk": {
+      "Kind": "Emitter",
+      "From": "Stamp",
+      "Body": "PoleFoot",
+      "Ground": true,
+      "Hold": true,
+      "Image": "keeper_ring_field",
+      "Grey": "",
+      "Emitter": {
+        "Lifetime": [
+          0.3,
+          0.3
+        ],
+        "Speed": [
+          0.01,
+          0.01
+        ],
+        "EmissionDirection": "Top",
+        "Orientation": "VelocityPerpendicular",
+        "LockedToPart": false,
+        "Rotation": [
+          0,
+          0
+        ],
+        "RotSpeed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            10.758999999999999
+          ],
+          [
+            1,
+            10.758999999999999
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0.4
+          ],
+          [
+            1,
+            0.4
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            92,
+            48,
+            6
+          ]
+        },
+        "LightEmission": 0,
+        "LightInfluence": 0,
+        "Brightness": 1,
+        "ZOffset": 0.29,
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot"
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "the band's ink, a hair outside it, so its edge holds on the pale street"
+    },
+    "RingBand": {
       "Kind": "Emitter",
       "From": "Stamp",
       "Body": "PoleFoot",
@@ -88,18 +172,18 @@
         "Transparency": [
           [
             0,
-            0.6
+            0.050000000000000044
           ],
           [
             1,
-            0.6
+            0.050000000000000044
           ]
         ],
         "Color": {
           "Color3": [
+            224,
             122,
-            74,
-            18
+            22
           ]
         },
         "LightEmission": 0,
@@ -129,91 +213,7 @@
           ]
         ]
       },
-      "Why": "C4's deep warm laid under the band, so the ring holds on the pale street: only ever with its light"
-    },
-    "RingWarm": {
-      "Kind": "Emitter",
-      "From": "Stamp",
-      "Body": "PoleFoot",
-      "Ground": true,
-      "Hold": true,
-      "Image": "keeper_ring_field",
-      "Grey": "",
-      "Emitter": {
-        "Lifetime": [
-          0.3,
-          0.3
-        ],
-        "Speed": [
-          0.01,
-          0.01
-        ],
-        "EmissionDirection": "Top",
-        "Orientation": "VelocityPerpendicular",
-        "LockedToPart": false,
-        "Rotation": [
-          0,
-          0
-        ],
-        "RotSpeed": [
-          0,
-          0
-        ],
-        "Size": [
-          [
-            0,
-            10.6
-          ],
-          [
-            1,
-            10.6
-          ]
-        ],
-        "Transparency": [
-          [
-            0,
-            0
-          ],
-          [
-            1,
-            0
-          ]
-        ],
-        "Color": {
-          "Color3": [
-            255,
-            201,
-            138
-          ]
-        },
-        "LightEmission": 1,
-        "LightInfluence": 0,
-        "Brightness": 1.6,
-        "ZOffset": 0.32,
-        "FlipbookLayout": "Grid4x4",
-        "FlipbookMode": "OneShot"
-      },
-      "Emit": [
-        [
-          0,
-          1
-        ]
-      ],
-      "Tracks": {
-        "At": [
-          [
-            0,
-            {
-              "Vector3": [
-                0,
-                0,
-                0
-              ]
-            }
-          ]
-        ]
-      },
-      "Why": "the hero: the band of warm light running out from the pole's foot to ten studs, its twin behind"
+      "Why": "the hero: the band running out from the pole's foot to ten studs, painted warm amber, its twin behind"
     },
     "RingLine": {
       "Kind": "Emitter",
@@ -266,8 +266,8 @@
         "Color": {
           "Color3": [
             255,
-            246,
-            232
+            240,
+            208
           ]
         },
         "LightEmission": 1,
@@ -297,7 +297,7 @@
           ]
         ]
       },
-      "Why": "the band's outer edge, a warm white line, so the ring reads all the way round"
+      "Why": "the band's outer edge, a warm white line, the only light in the ring"
     }
   }
 }

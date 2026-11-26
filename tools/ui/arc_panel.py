@@ -45,12 +45,22 @@ STATES = {
     "open": dict(normal=dict(at=3, rec="1,613"), hard=dict(at=1, rec="4,632")),
 }
 POWER = "6,620"
+TAP = 66   # a press's least height: 44 pt on the small phone (568 x 320) is 66 here (research's must-fix 1, 2026-11-26)
 HARD_WORDS = "Hard: enemies are 10 levels higher"   # Config.Stages.Offset.Hard
 
 
+def met(rec):
+    return int(POWER.replace(",", "")) >= int(rec.replace(",", ""))
+
+
 def lit_choice(state):
-    """The one press lit: the hardest open choice the player's power meets (DESIGN, for research's pick)."""
-    return "hard" if "at" in state["hard"] else "normal"
+    """The one press lit, and the mode B's pick opens on: a run in progress is never hidden (research's must-fix 2,
+    2026-11-26), else the hardest open mode the player's power meets."""
+    for which in ("hard", "normal"):
+        if state[which].get("at", 1) > 1:
+            return which
+    hard = state["hard"]
+    return "hard" if "at" in hard and met(hard["rec"]) else "normal"
 
 
 # ---- pieces --------------------------------------------------------------------------------------------------------------
@@ -88,10 +98,10 @@ def picture(P, cid, x, y, w, h, crop, r=10, shade=True):
 
 def top_bar(P):
     """Back and the screen's name, beside Roblox's own buttons."""
-    P.plate(262, 24, 104, 56, r=12, fill=RAISED, stroke=RIM, sw=1.5, shadow=False)
-    glyph(P, "back", 274, 40, 24, INK)
-    P.text(302, 61, "Back", S, role="display")
-    P.text(384, 63, "Festival of Battles", M, role="display")
+    P.plate(262, 18, 104, TAP, r=12, fill=RAISED, stroke=RIM, sw=1.5, shadow=False)
+    glyph(P, "back", 274, 39, 24, INK)
+    P.text(302, 57.5, "Back", S, role="display")
+    P.text(384, 60, "Festival of Battles", M, role="display")
 
 
 def road(P, x, y, w, at, hard, size=28):
@@ -199,29 +209,29 @@ def take_b(P, state):
         bx = x + i * (half + 8)
         on = which == pick
         shut = "shut" in state[which]
-        P.plate(bx, 108, half, 50, r=10, fill=RAISED if on else LOW, stroke=INK if on else RIM, sw=1.6 if on else 1.5,
+        P.plate(bx, 108, half, TAP, r=10, fill=RAISED if on else LOW, stroke=INK if on else RIM, sw=1.6 if on else 1.5,
                 inner=on, shadow=False)
         if which == "hard" and shut:
-            glyph(P, "lock", bx + half / 2 - 44, 121, 22, INK2)
-            P.text(bx + half / 2 + 12, 142, "Hard", M, role="display", anchor="middle", opacity=0.6)
+            glyph(P, "lock", bx + half / 2 - 44, 130, 22, INK2)
+            P.text(bx + half / 2 + 12, 150, "Hard", M, role="display", anchor="middle", opacity=0.6)
         elif which == "hard":
-            glyph(P, "chevron", bx + half / 2 - 42, 119, 22, EMBER)
-            P.text(bx + half / 2 + 12, 142, "Hard", M, role="display", anchor="middle")
+            glyph(P, "chevron", bx + half / 2 - 42, 128, 22, EMBER)
+            P.text(bx + half / 2 + 12, 150, "Hard", M, role="display", anchor="middle")
         else:
-            P.text(bx + half / 2, 142, "Normal", M, role="display", anchor="middle")
+            P.text(bx + half / 2, 150, "Normal", M, role="display", anchor="middle")
     st = state[pick]
     hard = pick == "hard"
     under = state["hard"]["shut"] if "shut" in state["hard"] else HARD_WORDS
-    P.text(x + w - 4, 182, under, S, fill=INK2, anchor="end")
+    P.text(x + w - 4, 198, under, S, fill=INK2, anchor="end")
     # what the pick holds: recommended beside the player's own
-    P.text(x + 4, 214, "Recommended", S, fill=INK2)
-    P.text(x + 4, 242, f"{st['rec']} CR", M, fill=INK)
-    P.text(x + w - 4, 214, "Your power", S, fill=INK2, anchor="end")
-    P.text(x + w - 4, 242, f"{POWER} CR", M, fill=INK, anchor="end")
-    P.add(f'<rect x="{x}" y="260" width="{w}" height="1.2" fill="{RIM}"/>')
+    P.text(x + 4, 224, "Recommended", S, fill=INK2)
+    P.text(x + 4, 252, f"{st['rec']} CR", M, fill=INK)
+    P.text(x + w - 4, 224, "Your power", S, fill=INK2, anchor="end")
+    P.text(x + w - 4, 252, f"{POWER} CR", M, fill=INK, anchor="end")
+    P.add(f'<rect x="{x}" y="264" width="{w}" height="1.2" fill="{RIM}"/>')
     P.text(x + 4, 290, f"Stretch {st['at']} of 4", S, fill=INK2)
-    road(P, x + 8, 304, w - 16, st["at"], hard, size=32)
-    press(P, x, 368, w, 68, "Continue" if st["at"] > 1 else "Fight", True)
+    road(P, x + 8, 302, w - 16, st["at"], hard, size=32)
+    press(P, x, 366, w, TAP + 2, "Continue" if st["at"] > 1 else "Fight", True)
 
 
 def take_c(P, state):

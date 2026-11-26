@@ -17885,6 +17885,18 @@ Step 4's first screen, from the frame (A with the cut). Sheet: `build/handoff/UI
   1. The Normal | Hard pick is 35 pt tall, so it goes to 44 (class: every press on the panel at 44 pt, Back measured too).
   2. A run in progress is never hidden: the pick opens on the mode with a run in progress (Normal at stretch 3, so Continue), else on the hardest open mode your power meets (class: what a player left shows when they come back).
 - **Next:** Modulo crops the tile to B's shape for Faber's upload, then Faber builds it, judged in the game at a phone capture.
+- **Modulo, 20:10: B for the build.** Both must-fixes are in B's images (`B_shut`, `B_open`, `B_grey`, `B_small`): the pick and Back at 44 pt on the small phone, and the pick opening on a run in progress (Normal at 3, so Continue). The picture for the upload is `images/ArcLanternRow.png`, 1024 × 800, no alpha, B's crop of `arc_tile.png`, logged. The name's shade at its foot and the panel's cut are the UI's own, not in the picture. For Faber's install.
+
+### Modulo: the run's card, three targets (2026-11-26, 20:10; started 20:03)
+
+The audit's second screen, from the frame and the Arc panel's B (its road, presses, ember and picture). Sheet: `build/handoff/UI/run_card/run_sheet.png`, today's win and fall beside A, B and C in both. Each take also has `_grey` and `_small`. Script: `tools/ui/run_card.py`. The states are `StageScreen.Results`' own: the keeper beaten on Normal (Hard opens and is lit; the dare kept on the keeper's stretch; Credits, a keeper's chest and a stone), and a fall at the third stretch (Retry lit, Send another, Home).
+- **A, the card, fixed:** today's rows on one graphite card.
+- **B, the place and the verdict:** the ground's picture with the verdict at its foot, the rows on the right, the lit press full width and the others under it. It is the Arc panel's B after the run.
+- **C, the stamp:** no card round the verdict. One large word on the dimmed street (a fourth size, XL 60, DESIGN), then a low plate for what the run gave, then the presses.
+- **Against the audit:** one material, no gloss, no glow. The dare chip is the cards' graphite with a flat gold star (the goals' gold), so the third material is gone. The stone keeps its own light, inside its cell only (AR31's must-fix 2). Every press and Back at 44 pt on the small phone.
+- **Measured:** at the squint, the lit press is the lightest in all three (A 224, B 226, C 224). The fall's red on the panel is 3.7:1. C's red word on the street behind it is 1.9:1 at its mean, with no card under it. The gold star on raised is 8.2:1.
+- **My lean: B.** It reads as the Arc panel's B after the run, the same picture and press. C's word is the strongest moment, but it sits on the street unguarded.
+- **Content check, 20:10: PASS.** Nothing new is uploaded from this piece; the star mark, if ever, gets its 64 px look first.
 
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 

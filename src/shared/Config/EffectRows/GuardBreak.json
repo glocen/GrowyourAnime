@@ -460,6 +460,83 @@
       },
       "Why": "the break lights the Guard for a moment"
     },
+    "Snap": {
+      "Kind": "Emitter",
+      "Image": "guard_ward_light",
+      "Emitter": {
+        "Lifetime": [
+          0.03333333333333333,
+          0.03333333333333333
+        ],
+        "Speed": [
+          0.01,
+          0.01
+        ],
+        "EmissionDirection": "Front",
+        "Orientation": "VelocityPerpendicular",
+        "LockedToPart": true,
+        "Rotation": [
+          0,
+          0
+        ],
+        "RotSpeed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            2.2
+          ],
+          [
+            1,
+            2.332
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0.4
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            255,
+            255,
+            255
+          ]
+        },
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "Brightness": 3,
+        "ZOffset": 1.25
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "W2's break: the ward's frame flashes white for two frames as it's torn, then it's gone"
+    },
     "Chip1": {
       "Kind": "Mesh",
       "Part": [

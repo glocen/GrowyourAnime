@@ -1,686 +1,575 @@
 {
   "Schema": "rows/1",
   "Effect": "GuardShield",
-  "Why": "The Guard's raised ward, GuardRaise's own effect: research's pick, G2 (AR52).",
+  "Why": "The Guard's raised ward, GuardRaise's own effect: research's pick, W2, the lantern's frame (AR52).",
   "Area": 1,
   "Grey": false,
   "Action": "GuardRaise",
   "Rows": {
-    "Deep": {
-      "Kind": "Mesh",
+    "Ink": {
+      "Kind": "Emitter",
       "From": "Raise",
-      "Part": [
-        "FxShell"
-      ],
-      "Color": {
-        "Color3": [
-          22,
-          60,
-          140
-        ]
-      },
-      "Tracks": {
-        "At": [
-          [
-            -8,
-            {
-              "Vector3": [
-                0,
-                0.7,
-                -1.56
-              ]
-            },
-            "Linear"
-          ],
-          [
-            120,
-            {
-              "Vector3": [
-                0,
-                0.7,
-                -1.56
-              ]
-            },
-            "Quad In"
-          ],
-          [
-            128,
-            {
-              "Vector3": [
-                0,
-                -0.30000000000000004,
-                -1.56
-              ]
-            }
-          ]
+      "Image": "guard_ward_ink",
+      "Emitter": {
+        "Lifetime": [
+          2.2666666666666666,
+          2.2666666666666666
         ],
-        "Scale": [
-          [
-            -8,
-            {
-              "Vector3": [
-                0.3724,
-                0.3724,
-                0.03
-              ]
-            },
-            "Back Out"
-          ],
-          [
-            0,
-            {
-              "Vector3": [
-                1.8619999999999999,
-                1.8619999999999999,
-                0.1
-              ]
-            },
-            "Sine InOut"
-          ],
-          [
-            60,
-            {
-              "Vector3": [
-                1.8992399999999998,
-                1.8992399999999998,
-                0.1
-              ]
-            },
-            "Sine InOut"
-          ],
-          [
-            120,
-            {
-              "Vector3": [
-                1.8619999999999999,
-                1.8619999999999999,
-                0.1
-              ]
-            },
-            "Quad In"
-          ],
-          [
-            128,
-            {
-              "Vector3": [
-                2.01096,
-                0.12,
-                0.03
-              ]
-            }
-          ]
+        "Speed": [
+          0.01,
+          0.01
         ],
-        "Transparency": [
-          [
-            -8,
-            0.9,
-            "Quad Out"
-          ],
-          [
-            0,
-            0.68,
-            "Sine InOut"
-          ],
-          [
-            120,
-            0.68,
-            "Quad In"
-          ],
-          [
-            128,
-            1
-          ]
-        ]
-      },
-      "Why": "the ward's hue laid deep under its light, Neon so the sun never pales it: it holds on the pale deck",
-      "Body": "HumanoidRootPart"
-    },
-    "Shield": {
-      "Kind": "Mesh",
-      "From": "Raise",
-      "Part": [
-        "FxShell"
-      ],
-      "Look": "fx_ribs_Grey",
-      "Grey": "fx_ribs_Grey",
-      "Color": {
-        "Color3": [
-          63,
-          140,
-          255
-        ]
-      },
-      "Tracks": {
-        "At": [
-          [
-            -8,
-            {
-              "Vector3": [
-                0,
-                0.7,
-                -1.6
-              ]
-            },
-            "Linear"
-          ],
-          [
-            120,
-            {
-              "Vector3": [
-                0,
-                0.7,
-                -1.6
-              ]
-            },
-            "Quad In"
-          ],
-          [
-            128,
-            {
-              "Vector3": [
-                0,
-                -0.30000000000000004,
-                -1.6
-              ]
-            }
-          ]
+        "EmissionDirection": "Front",
+        "Orientation": "VelocityPerpendicular",
+        "LockedToPart": true,
+        "Rotation": [
+          0,
+          0
         ],
-        "Scale": [
-          [
-            -8,
-            {
-              "Vector3": [
-                0.38,
-                0.38,
-                0.03
-              ]
-            },
-            "Back Out"
-          ],
-          [
-            0,
-            {
-              "Vector3": [
-                1.9,
-                1.9,
-                0.12
-              ]
-            },
-            "Sine InOut"
-          ],
-          [
-            60,
-            {
-              "Vector3": [
-                1.938,
-                1.938,
-                0.12
-              ]
-            },
-            "Sine InOut"
-          ],
-          [
-            120,
-            {
-              "Vector3": [
-                1.9,
-                1.9,
-                0.12
-              ]
-            },
-            "Quad In"
-          ],
-          [
-            128,
-            {
-              "Vector3": [
-                2.052,
-                0.12,
-                0.03
-              ]
-            }
-          ]
-        ],
-        "Transparency": [
-          [
-            -8,
-            0.8,
-            "Quad Out"
-          ],
-          [
-            0,
-            0.65,
-            "Sine InOut"
-          ],
-          [
-            120,
-            0.65,
-            "Quad In"
-          ],
-          [
-            128,
-            1
-          ]
-        ],
-        "Glow": [
-          [
-            -8,
-            3,
-            "Quad Out"
-          ],
-          [
-            5,
-            1.3,
-            "Sine InOut"
-          ],
-          [
-            120,
-            1.3
-          ]
-        ]
-      },
-      "Why": "the hero: the ward, a disc of lantern paper in azure, six ribs across it, before the Guard's chest, seen through",
-      "Body": "HumanoidRootPart"
-    },
-    "Rim": {
-      "Kind": "Mesh",
-      "From": "Raise",
-      "Part": [
-        "FxHoop"
-      ],
-      "Color": {
-        "Color3": [
-          200,
-          226,
-          255
-        ]
-      },
-      "Tracks": {
-        "At": [
-          [
-            -8,
-            {
-              "Vector3": [
-                0,
-                0.7,
-                -1.57
-              ]
-            },
-            "Linear"
-          ],
-          [
-            120,
-            {
-              "Vector3": [
-                0,
-                0.7,
-                -1.57
-              ]
-            },
-            "Quad In"
-          ],
-          [
-            128,
-            {
-              "Vector3": [
-                0,
-                -0.30000000000000004,
-                -1.57
-              ]
-            }
-          ]
-        ],
-        "Tilt": [
-          [
-            -8,
-            {
-              "Vector3": [
-                90,
-                0,
-                0
-              ]
-            }
-          ]
-        ],
-        "Scale": [
-          [
-            -8,
-            {
-              "Vector3": [
-                0.3952,
-                0.2,
-                0.3952
-              ]
-            },
-            "Back Out"
-          ],
-          [
-            0,
-            {
-              "Vector3": [
-                1.976,
-                0.2,
-                1.976
-              ]
-            },
-            "Sine InOut"
-          ],
-          [
-            60,
-            {
-              "Vector3": [
-                2.01552,
-                0.2,
-                2.01552
-              ]
-            },
-            "Sine InOut"
-          ],
-          [
-            120,
-            {
-              "Vector3": [
-                1.976,
-                0.2,
-                1.976
-              ]
-            },
-            "Quad In"
-          ],
-          [
-            128,
-            {
-              "Vector3": [
-                2.13408,
-                0.2,
-                0.1248
-              ]
-            }
-          ]
-        ],
-        "Transparency": [
-          [
-            -8,
-            0.6,
-            "Quad Out"
-          ],
-          [
-            0,
-            0,
-            "Linear"
-          ],
-          [
-            6,
-            0.1,
-            "Sine InOut"
-          ],
-          [
-            120,
-            0.15,
-            "Quad In"
-          ],
-          [
-            128,
-            1
-          ]
-        ]
-      },
-      "Why": "the ward's rim: a closed line of white light round the paper",
-      "Body": "HumanoidRootPart"
-    },
-    "Halo": {
-      "Kind": "Mesh",
-      "From": "Raise",
-      "Part": [
-        "FxHoop"
-      ],
-      "Color": {
-        "Color3": [
-          63,
-          140,
-          255
-        ]
-      },
-      "Tracks": {
-        "At": [
-          [
-            -8,
-            {
-              "Vector3": [
-                0,
-                0.7,
-                -1.55
-              ]
-            },
-            "Linear"
-          ],
-          [
-            120,
-            {
-              "Vector3": [
-                0,
-                0.7,
-                -1.55
-              ]
-            },
-            "Quad In"
-          ],
-          [
-            128,
-            {
-              "Vector3": [
-                0,
-                -0.30000000000000004,
-                -1.55
-              ]
-            }
-          ]
-        ],
-        "Tilt": [
-          [
-            -8,
-            {
-              "Vector3": [
-                90,
-                0,
-                0
-              ]
-            }
-          ]
-        ],
-        "Scale": [
-          [
-            -8,
-            {
-              "Vector3": [
-                0.41040000000000004,
-                1.0,
-                0.41040000000000004
-              ]
-            },
-            "Back Out"
-          ],
-          [
-            0,
-            {
-              "Vector3": [
-                2.17512,
-                1.0,
-                2.17512
-              ]
-            },
-            "Quad Out"
-          ],
-          [
-            5,
-            {
-              "Vector3": [
-                2.052,
-                1.0,
-                2.052
-              ]
-            },
-            "Sine InOut"
-          ],
-          [
-            60,
-            {
-              "Vector3": [
-                2.0930400000000002,
-                1.0,
-                2.0930400000000002
-              ]
-            },
-            "Sine InOut"
-          ],
-          [
-            120,
-            {
-              "Vector3": [
-                2.052,
-                1.0,
-                2.052
-              ]
-            },
-            "Quad In"
-          ],
-          [
-            128,
-            {
-              "Vector3": [
-                2.2161600000000004,
-                1.0,
-                0.1296
-              ]
-            }
-          ]
-        ],
-        "Transparency": [
-          [
-            -8,
-            0.8,
-            "Quad Out"
-          ],
-          [
-            0,
-            0,
-            "Quad Out"
-          ],
-          [
-            5,
-            0.4,
-            "Sine InOut"
-          ],
-          [
-            120,
-            0.4,
-            "Quad In"
-          ],
-          [
-            128,
-            1
-          ]
-        ]
-      },
-      "Why": "the rim's blue glow, flashed on Raise: the click of the ward shutting",
-      "Body": "HumanoidRootPart"
-    },
-    "Boss": {
-      "Kind": "Card",
-      "From": "Raise",
-      "Image": "fx_glow",
-      "Color": {
-        "Color3": [
-          63,
-          140,
-          255
-        ]
-      },
-      "Tracks": {
-        "At": [
-          [
-            -8,
-            {
-              "Vector3": [
-                0,
-                0.7,
-                -1.9000000000000001
-              ]
-            },
-            "Linear"
-          ],
-          [
-            120,
-            {
-              "Vector3": [
-                0,
-                0.7,
-                -1.9000000000000001
-              ]
-            },
-            "Quad In"
-          ],
-          [
-            128,
-            {
-              "Vector3": [
-                0,
-                -0.30000000000000004,
-                -1.9000000000000001
-              ]
-            }
-          ]
+        "RotSpeed": [
+          0,
+          0
         ],
         "Size": [
           [
-            -4,
-            0.8,
-            "Back Out"
-          ],
-          [
             0,
-            3.0,
-            "Sine InOut"
+            0.33
           ],
           [
-            120,
-            2.8,
-            "Quad In"
+            0.0147,
+            1.364
           ],
           [
-            128,
-            0
+            0.0294,
+            1.936
+          ],
+          [
+            0.0515,
+            2.2
+          ],
+          [
+            0.9412,
+            2.2
+          ],
+          [
+            0.9706,
+            1.76
+          ],
+          [
+            1,
+            0.22
           ]
         ],
         "Transparency": [
           [
-            -4,
-            0.3,
-            "Quad Out"
+            0,
+            1
           ],
           [
-            6,
-            0.7,
-            "Sine InOut"
+            0.0515,
+            0.3
           ],
           [
-            120,
-            0.7
+            0.9412,
+            0.3
+          ],
+          [
+            1,
+            1
           ]
         ],
-        "Brightness": [
+        "Color": {
+          "Color3": [
+            22,
+            60,
+            140
+          ]
+        },
+        "LightEmission": 0,
+        "LightInfluence": 0,
+        "Brightness": 1,
+        "ZOffset": 1.2
+      },
+      "Emit": [
+        [
+          -8,
+          1
+        ]
+      ],
+      "Tell": true,
+      "Tracks": {
+        "At": [
           [
-            -4,
-            2,
-            "Quad Out"
-          ],
-          [
-            6,
-            1.2
+            -8,
+            {
+              "Vector3": [
+                0,
+                0.7,
+                -1.6
+              ]
+            }
           ]
         ]
       },
-      "Why": "the boss: the ward lit to its middle, in its hue",
+      "Why": "W2's ink: a hair of deep azure along every stroke, under the rest",
+      "Body": "HumanoidRootPart"
+    },
+    "Body": {
+      "Kind": "Emitter",
+      "From": "Raise",
+      "Image": "guard_ward_light",
+      "Emitter": {
+        "Lifetime": [
+          2.2666666666666666,
+          2.2666666666666666
+        ],
+        "Speed": [
+          0.01,
+          0.01
+        ],
+        "EmissionDirection": "Front",
+        "Orientation": "VelocityPerpendicular",
+        "LockedToPart": true,
+        "Rotation": [
+          0,
+          0
+        ],
+        "RotSpeed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            0.33
+          ],
+          [
+            0.0147,
+            1.364
+          ],
+          [
+            0.0294,
+            1.936
+          ],
+          [
+            0.0515,
+            2.2
+          ],
+          [
+            0.9412,
+            2.2
+          ],
+          [
+            0.9706,
+            1.76
+          ],
+          [
+            1,
+            0.22
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0.6
+          ],
+          [
+            0.0515,
+            0.05
+          ],
+          [
+            0.9412,
+            0.05
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            63,
+            140,
+            255
+          ]
+        },
+        "LightEmission": 0,
+        "LightInfluence": 0,
+        "Brightness": 1,
+        "ZOffset": 1.22
+      },
+      "Emit": [
+        [
+          -8,
+          1
+        ]
+      ],
+      "Tell": true,
+      "Tracks": {
+        "At": [
+          [
+            -8,
+            {
+              "Vector3": [
+                0,
+                0.7,
+                -1.6
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "the hero: the lantern's frame, five ribs and two hoops, painted azure so it reads blue by day",
+      "Body": "HumanoidRootPart"
+    },
+    "Flash": {
+      "Kind": "Emitter",
+      "From": "Raise",
+      "Image": "guard_ward_light",
+      "Emitter": {
+        "Lifetime": [
+          2.2666666666666666,
+          2.2666666666666666
+        ],
+        "Speed": [
+          0.01,
+          0.01
+        ],
+        "EmissionDirection": "Front",
+        "Orientation": "VelocityPerpendicular",
+        "LockedToPart": true,
+        "Rotation": [
+          0,
+          0
+        ],
+        "RotSpeed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            0.33
+          ],
+          [
+            0.0147,
+            1.364
+          ],
+          [
+            0.0294,
+            1.936
+          ],
+          [
+            0.0515,
+            2.2
+          ],
+          [
+            0.9412,
+            2.2
+          ],
+          [
+            0.9706,
+            1.76
+          ],
+          [
+            1,
+            0.22
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            1
+          ],
+          [
+            0.0515,
+            0.55
+          ],
+          [
+            0.0588,
+            0
+          ],
+          [
+            0.0956,
+            0.55
+          ],
+          [
+            0.9412,
+            0.55
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            200,
+            226,
+            255
+          ]
+        },
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "Brightness": 1.5,
+        "ZOffset": 1.23
+      },
+      "Emit": [
+        [
+          -8,
+          1
+        ]
+      ],
+      "Tell": true,
+      "Tracks": {
+        "At": [
+          [
+            -8,
+            {
+              "Vector3": [
+                0,
+                0.7,
+                -1.6
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "the body's light added, white-azure: full on Raise, its click, then the strokes' glow (W2's white ribs)",
+      "Body": "HumanoidRootPart"
+    },
+    "Run": {
+      "Kind": "Emitter",
+      "From": "Raise",
+      "Image": "guard_ward_run",
+      "Emitter": {
+        "Lifetime": [
+          2.2666666666666666,
+          2.2666666666666666
+        ],
+        "Speed": [
+          0.01,
+          0.01
+        ],
+        "EmissionDirection": "Front",
+        "Orientation": "VelocityPerpendicular",
+        "LockedToPart": true,
+        "Rotation": [
+          0,
+          0
+        ],
+        "RotSpeed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            0.33
+          ],
+          [
+            0.0147,
+            1.364
+          ],
+          [
+            0.0294,
+            1.936
+          ],
+          [
+            0.0515,
+            2.2
+          ],
+          [
+            0.9412,
+            2.2
+          ],
+          [
+            0.9706,
+            1.76
+          ],
+          [
+            1,
+            0.22
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            1
+          ],
+          [
+            0.0956,
+            1
+          ],
+          [
+            0.1618,
+            0.2
+          ],
+          [
+            0.9412,
+            0.2
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            200,
+            226,
+            255
+          ]
+        },
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "Brightness": 1.5,
+        "ZOffset": 1.235,
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "Loop",
+        "FlipbookFramerate": [
+          13.71,
+          13.71
+        ]
+      },
+      "Emit": [
+        [
+          -8,
+          1
+        ]
+      ],
+      "Tell": true,
+      "Tracks": {
+        "At": [
+          [
+            -8,
+            {
+              "Vector3": [
+                0,
+                0.7,
+                -1.6
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "the hold: light running up the ribs, each a little behind its neighbour (W2's run), from after the click",
+      "Body": "HumanoidRootPart"
+    },
+    "Core": {
+      "Kind": "Emitter",
+      "From": "Raise",
+      "Image": "guard_ward_core",
+      "Emitter": {
+        "Lifetime": [
+          2.2666666666666666,
+          2.2666666666666666
+        ],
+        "Speed": [
+          0.01,
+          0.01
+        ],
+        "EmissionDirection": "Front",
+        "Orientation": "VelocityPerpendicular",
+        "LockedToPart": true,
+        "Rotation": [
+          0,
+          0
+        ],
+        "RotSpeed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            0.33
+          ],
+          [
+            0.0147,
+            1.364
+          ],
+          [
+            0.0294,
+            1.936
+          ],
+          [
+            0.0515,
+            2.2
+          ],
+          [
+            0.9412,
+            2.2
+          ],
+          [
+            0.9706,
+            1.76
+          ],
+          [
+            1,
+            0.22
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            1
+          ],
+          [
+            0.0515,
+            0.15
+          ],
+          [
+            0.0588,
+            0
+          ],
+          [
+            0.0956,
+            0.15
+          ],
+          [
+            0.9412,
+            0.15
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            255,
+            255,
+            255
+          ]
+        },
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "Brightness": 1,
+        "ZOffset": 1.24
+      },
+      "Emit": [
+        [
+          -8,
+          1
+        ]
+      ],
+      "Tell": true,
+      "Tracks": {
+        "At": [
+          [
+            -8,
+            {
+              "Vector3": [
+                0,
+                0.7,
+                -1.6
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "the strokes' white core where they're thickest",
       "Body": "HumanoidRootPart"
     }
   }

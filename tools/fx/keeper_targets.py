@@ -3,6 +3,9 @@
 
     py tools/fx/keeper_targets.py <stage.json> [out_dir] [S4_smear,S5_lantern_arc,S6_echoes | C3_pulse,C4_wide_ring]
     (default out: build/handoff/Lamplighter/targets; default: the move's own targets, by the stage's Move)
+    py tools/fx/keeper_targets.py --pictures [out_dir]   (default: build/handoff/Lamplighter/fx/pictures)
+    C4's build (research's pick): its ring as two Grid4x4 flipbooks, field and line, for KeeperChallenge's flat
+    particles (tools/fx/keeper_moves.py): see ring_pictures().
 
 A stage, written at the capture (the keeper held on its move's beat, Strike or Stamp, as shade_targets.py's):
     {"Picture": "<held frame>.png", "Camera": {...}, "Kind": "Keeper", "Move": "swing"|"challenge",
@@ -362,7 +365,60 @@ def render(st: KeeperStage, name, f):
     return out if st.hud is None else out * (1 - st.hud) + st.base * st.hud
 
 
+# --- C4's build: its ring as flipbooks ----------------------------------------------------------------------------------
+RING_PICTURES = ROOT / "build" / "handoff" / "Lamplighter" / "fx" / "pictures"
+RING_EXT = 10.6  # studs from the pole's foot to the pictures' edges: the ring's last radius and a little more
+RING_LIFE = 18  # frames: the ring is gone at 18 (k), its fainter twin three frames later, cut there with the particle
+RING_CELL = 256  # pixels a cell of a 1024 sheet, Grid4x4: 0.083 studs a pixel
+
+
+def ring_field(rho, g, px):
+    """C4's two rings at frame g from Stamp, as draw_challenge lays them: the band (k) and the fill inside it rising to
+    RING_FILL at its inner edge, the stronger of the two rings, and the white line's mask at each radius."""
+    field = np.zeros_like(rho)
+    line = np.zeros_like(rho)
+    for behind, strength in ((0, 1.0), (3, 0.45)):
+        h = g - behind
+        if h < 0:
+            continue
+        r = 0.4 + (RING_REACH - 0.4) * ease_out(min(h / 16, 1.0))
+        k = (1 - life(h, 4, 18)) * strength
+        band = min(RING_BAND * (1 - 0.4 * life(h, 0, 16)), r)
+        inner = r - band
+        edge = np.clip((r - rho) / px + 0.5, 0, 1)  # inside the radius, a pixel's soft edge
+        in_band = np.clip((rho - inner) / px + 0.5, 0, 1) * edge
+        fill = RING_FILL * k * (np.clip(rho, 0, inner) / r) ** 2 * edge * (1 - in_band)
+        field = np.maximum(field, k * in_band + fill)
+        width = max(0.05, 1.3 * px)  # the line 0.05 studs, never under a pixel and a bit
+        line = np.maximum(line, k * np.clip(1 - np.abs(rho - r) / width, 0, 1))
+    return field, line
+
+
+def ring_pictures(out=RING_PICTURES):
+    """C4's ring as two Grid4x4 flipbooks played once over the ring's life (16 cells over RING_LIFE frames, each drawn
+    at its middle): the field, laid deep warm under and added warm over by two particles, and the white line. Seen
+    from above, the pole's foot at the middle: they lie flat on the street, so turning them changes nothing."""
+    step = 2 * RING_EXT / RING_CELL
+    axis = -RING_EXT + (np.arange(RING_CELL) + 0.5) * step
+    u, v = np.meshgrid(axis, axis)
+    rho = np.hypot(u, v)
+    fields, lines = [], []
+    for c in range(16):
+        g = (c + 0.5) * RING_LIFE / 16
+        f, l = ring_field(rho, g, step)
+        fields.append(blur(f, 0.7))
+        lines.append(l)
+    for name, cells in (("keeper_ring_field", fields), ("keeper_ring_line", lines)):
+        sheet = np.concatenate([np.concatenate(cells[r * 4:(r + 1) * 4], axis=1) for r in range(4)], axis=0)
+        from ward_targets import write_rgba
+        write_rgba(sheet, out / f"{name}.png")
+        print(name, out / f"{name}.png", f"most {float(sheet.max()):.2f}")
+
+
 def main(argv):
+    if argv[:1] == ["--pictures"]:
+        ring_pictures(Path(argv[1]) if len(argv) > 1 else RING_PICTURES)
+        return
     st = KeeperStage(Path(argv[0]))
     out = Path(argv[1]) if len(argv) > 1 else OUT
     only = argv[2].split(",") if len(argv) > 2 else None

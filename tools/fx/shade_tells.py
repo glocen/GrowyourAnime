@@ -1,6 +1,7 @@
 """The Shades' tells (AR52, "Scintilla's looks"): the Guard's ward and the Dasher's lane, written as rows files for
-tools/fx/rows_take.py. Scintilla's, the effect family's one script. Built to research's pick of 2026-11-26 (G2 ward, D1
-lane; their targets in build/handoff/Shade/targets/, drawn by tools/fx/shade_targets.py), in their colours.
+tools/fx/rows_take.py. Scintilla's, the effect family's one script. Built to research's picks of 2026-11-26 (the ward
+W2, after the director rejected G2's build at 12:57, "too thick", "glass"; the lane D1; their targets in
+build/handoff/Shade/targets/, drawn by tools/fx/ward_targets.py and tools/fx/shade_targets.py), in their colours.
 
     py tools/fx/shade_tells.py [out_dir]        (default: build/handoff/Shade/fx)
     py tools/fx/rows_take.py build/handoff/Shade/fx/<Effect>.rows.json ...
@@ -11,18 +12,17 @@ The Guard. Feel line: a Guard shuts its sleeves and a curved paper shield of lig
 lantern; your fighter's blows skate off it in sparks where they land, until a heavy one tears it open into paper and
 light. Research's condition (AR52, its pass in the game): it reads as raised apart from the mask, never as a bigger face,
 and a glance shows itself where the hit lands. At the quarter: the ribs read as paper and lantern, or it's any game's ring.
-- GuardShield, GuardRaise's own effect, on its beats, riding the root: the ward (G2), a disc 3.8 across before the Guard's
-  chest, domed a little toward the blow: the kit's shell on the lantern's ribs, tinted azure (six ribs across it), seen
-  through. Under it, the hue laid deep (Neon, so the sun never pales it), the target's technique for the pale deck. Its
-  rim, the kit's hoop stood up facing the blow a hair wider than the paper, Neon: a thin closed white line round the
-  edge; beside it the halo, a wider, deeper hoop in the hue, the rim's blue glow. A glow card at its middle, its boss.
-  It snaps up in the eight frames before Raise (Back Out), breathes through the hold, and folds down over eight frames
-  from Drop. The halo flashes on Raise, the click of it shutting (the target's click). A break ends the action, and with
-  it the ward at once: GuardBreak takes its place.
+- GuardShield, GuardRaise's own effect, on its beats, riding the root: the ward (W2), a paper lantern's frame before
+  the Guard's chest, lines only: five bowed ribs meeting top and bottom and two short hoops, azure light with a white
+  core and a hair of deep azure ink, no surface (the vault's way: drawn lines, never glass). The target's own strokes
+  as pictures, on five flat particles facing the blow, drawn toward the camera over the Guard's raised arms. It grows
+  out of its middle in the eight frames before Raise, clicks on Raise, light runs up its ribs in the hold, and it
+  closes over eight frames from Drop. A break ends the action, and with it the ward at once: GuardBreak takes its place.
 - GuardGlance, played by the builder's hook on each glance, anchored where the blow meets the ward, its Front the way
   the blow travels: a glint where it lands and pale azure needles skating back off it toward the attacker.
-- GuardBreak, played by the hook on the break, anchored at the ward's middle the same way: a ring and a puff, an azure
-  light, and six chips of light flung out and on along the blow, turning, gone by a third of a second.
+- GuardBreak, played by the hook on the break, anchored at the ward's middle the same way: the ward's frame flashed
+  white for two frames as it's torn (W2's break), a ring and a puff, an azure light, and six chips of light flung out
+  and on along the blow, turning, gone by a third of a second.
 
 The Dasher. Feel line: a Dasher folds behind its mask and a blade of light cuts open along the street to your fighter,
 filling toward you like a fuse; then the Dasher is down it in a streak, and a slash bursts where it lands.
@@ -61,21 +61,26 @@ LINE_TO_LAND = round((1.25 - 0.2667) * 60)  # frames from the Line beat to Land:
 RAISE_TO_DROP = round((2.3 - 0.3) * 60)  # frames from Raise to Drop: 120
 FLOOR = -ROOT_HEIGHT + 0.04  # a hair over the street, from the root
 
-# The picked targets' colours (AR52: G2 ward and D1 lane, research's pick of 2026-11-26; tools/fx/shade_targets.py).
+# The picked targets' colours (AR52, research's picks of 2026-11-26: the ward W2, tools/fx/ward_targets.py; the lane D1, tools/fx/shade_targets.py).
 AZURE = (63, 140, 255)  # the ward's light
-AZURE_RIM = (200, 226, 255)  # its rim, Neon: a white core with the hue in it
-AZURE_DEEP = (22, 60, 140)  # the target's #163C8C, laid under the light, so the ward holds on the pale deck
-DEEP_FILL = 0.68  # the deep layer's Transparency: the target lays it at 0.32
-PAPER_SEEN = 0.65  # the paper's Transparency through the hold: seen through to the mask, as the target's middle
-HALO_BAND = 0.3  # studs: the halo's band toward the Guard, its strip beside the rim from the quarter's camera
-HALO_SEEN = 0.4  # the halo's Transparency through the hold, after its flash on Raise
+AZURE_DEEP = (22, 60, 140)  # W2's ink, #163C8C: the hair of deep azure laid under the light, so it holds on the pale deck
+AZURE_RIM = (200, 226, 255)  # a white core with the hue in it: the glance's needles
+WARD_EXT = 2.2  # studs from the ward's middle to its pictures' edges (tools/fx/ward_targets.py, EXT)
+WARD_DRAW = 8  # frames it's drawn on before Raise, and drawn off after Drop (W2's beats)
+INK_SEEN = 0.3  # the ink's Transparency through the hold
+BODY_SEEN = 0.05  # the painted body's
+FLASH_SEEN = 0.55  # the added light's, white-azure: 0 on Raise, its click, then this glow (the half checkpoint, 2026-11-26)
+CORE_SEEN = 0.15  # the core's: 0 on Raise
+WARD_LIFT = 1.2  # studs each pass is drawn toward the camera (ZOffset), its place on the screen kept: the Guard's raised
+# arms reach 1.69 studs ahead of its root in the hold, past the ward's plane at 1.6, and hid its lower half (W2 draws over them)
+RUN_SEEN = 0.2  # the running light's through the hold
+RUN_RATE = round(16 * 60 / 70, 2)  # its sheet's 16 steps over the run's cycle of 70 frames (ward_targets.RUN_CYCLE)
 AMBER = (255, 154, 31)  # the lane's light, Neon in its edges and fuse
 AMBER_CORE = (255, 232, 196)  # the edges' white core
 AMBER_DEEP = (122, 58, 0)  # laid under the light, so the lane holds on the pale deck
 AMBER_HOT = (255, 206, 140)  # the run's streak, the landing's needles
 GUARD_AT = (0, 0.7, -1.6)  # the ward's middle from the root: Config.Combat.Guard.Look's Ahead 1.6, Up 0.4, and the
 # target's 0.3 more (shade_targets.draw_guard)
-WARD = 1.9  # its radius
 
 
 def at_beat(rows, prefix, beat, frame=0):
@@ -109,102 +114,78 @@ def effect(name, why, rows, action=None, world=False):
 
 
 def guard_shield():
-    c = GUARD_AT
+    """W2, research's pick (AR52): the lantern's frame, five bowed ribs and two hoops, lines only, no surface. Its strokes
+    are pictures drawn by the target's own code (ward_targets.pictures), each one flat particle before the Guard's chest
+    facing the blow (VelocityPerpendicular, held to its carrier), the vault's way for a held flat shape, so it stands in
+    the Guard's own plane and the camera sees it turned as the Guard is. Its passes, under to over: the ink, a hair of
+    deep azure; the body painted azure (LightEmission 0), so it reads as blue lines on the pale deck, where added light
+    went white (the quarter checkpoint, 2026-11-26); the flash, the body's light added white-azure, full on Raise and
+    the strokes' glow after; the run, light climbing the ribs in the hold, a looped flipbook, added; the white core,
+    added. Every pass drawn WARD_LIFT toward the camera, over the Guard's raised arms (the half checkpoint). One particle
+    each for the action's whole life: opened over the eight frames before Raise, its click on Raise, held, closed over
+    eight frames from Drop. A break ends the action, and the ward with it: GuardBreak takes its place."""
     d = RAISE_TO_DROP
-    at = [[-8, v3(*c), "Linear"], [d, v3(*c), "Quad In"], [d + 8, v3(c[0], c[1] - 1.0, c[2])]]
-    full = (WARD, WARD, 0.12)  # times the shell's unit 2: a disc 3.8 across, domed a quarter stud toward the blow
+    span = d + 2 * WARD_DRAW
+    life = span / 60
 
-    def grows(x, y, z, flat=0.03):  # snapped up in the eight frames before Raise, breathing, folded down after Drop
-        return [[-8, v3(x * 0.2, y * 0.2, flat), "Back Out"], [0, v3(x, y, z), "Sine InOut"],
-                [d // 2, v3(x * 1.02, y * 1.02, z), "Sine InOut"], [d, v3(x, y, z), "Quad In"], [d + 8, v3(x * 1.08, 0.12, flat)]]
+    def q(frame):  # a frame from Raise as a share of the particle's life
+        return round((frame + WARD_DRAW) / span, 4)
 
-    def back(by):  # the ward's place, `by` studs on toward the Guard (+Z): behind the paper, so it's drawn under it
-        return [[key[0], v3(key[1]["Vector3"][0], key[1]["Vector3"][1], key[1]["Vector3"][2] + by)] + key[2:] for key in at]
+    size = [[t, round(WARD_EXT * k, 3)] for t, k in ((0, 0.15), (q(-6), 0.62), (q(-4), 0.88), (q(-1), 1), (q(d), 1),
+                                                       (q(d + 4), 0.8), (1, 0.1))]  # Size: half the quad, the picture's EXT
 
-    def stood(radius, band):  # the hoop stood up facing the blow, its band `band` studs deep toward the Guard
-        return [[key[0], v3(key[1]["Vector3"][0] * radius, band / 0.3, key[1]["Vector3"][1] * radius)] + key[2:]
-                for key in grows(WARD, WARD, 0.12)]
+    def fade(seen, click=None, start=None):  # opened, its click on Raise (if any), held at `seen`, gone
+        keys = [[0, 1 if start is None else start], [q(-1), seen]]
+        if click is not None:
+            keys += [[q(0), click], [q(5), seen]]
+        return keys + [[q(d), seen], [1, 1]]
 
-    def click(keys):  # opened a twentieth wider on Raise, back over five frames: the snap of it shutting
-        wide = [0, v3(keys[1][1]["Vector3"][0] * 1.06, keys[1][1]["Vector3"][1], keys[1][1]["Vector3"][2] * 1.06), "Quad Out"]
-        return [keys[0], wide, [5] + keys[1][1:]] + keys[2:]
+    def flat(picture, colour, emission, transparency, z, why, brightness=1, more=None):
+        return {
+            "Kind": "Emitter",
+            "From": "Raise",
+            "Image": picture,
+            "Emitter": {
+                "Lifetime": [life, life],
+                "Speed": [0.01, 0.01],
+                "EmissionDirection": "Front",
+                "Orientation": "VelocityPerpendicular",
+                "LockedToPart": True,
+                "Rotation": [0, 0],
+                "RotSpeed": [0, 0],
+                "Size": size,
+                "Transparency": transparency,
+                "Color": c3(colour),
+                "LightEmission": emission,
+                "LightInfluence": 0,
+                "Brightness": brightness,
+                "ZOffset": round(WARD_LIFT + z, 3),
+                **(more or {}),
+            },
+            "Emit": [[-WARD_DRAW, 1]],
+            "Tell": True,  # a tell: drawn at every Effects level
+            "Tracks": {"At": [[-WARD_DRAW, v3(*GUARD_AT)]]},
+            "Why": why,
+        }
 
-    # By day the paper carried the hue alone, lit by the sun and seen through to the pale deck, and read pale icy cyan
-    # (the build beside its target, 2026-11-26). The target's own technique: the hue laid deep under the light.
-    deep = {
-        "Kind": "Mesh",
-        "From": "Raise",
-        "Part": ["FxShell"],
-        "Color": c3(AZURE_DEEP),
-        "Tracks": {
-            "At": back(0.04),
-            "Scale": grows(WARD * 0.98, WARD * 0.98, 0.1),
-            "Transparency": [[-8, 0.9, "Quad Out"], [0, DEEP_FILL, "Sine InOut"], [d, DEEP_FILL, "Quad In"], [d + 8, 1]],
-        },
-        "Why": "the ward's hue laid deep under its light, Neon so the sun never pales it: it holds on the pale deck",
+    rows = {
+        "Ink": flat("guard_ward_ink", AZURE_DEEP, 0, fade(INK_SEEN), 0,
+                    "W2's ink: a hair of deep azure along every stroke, under the rest"),
+        "Body": flat("guard_ward_light", AZURE, 0, fade(BODY_SEEN, start=0.6), 0.02,
+                     "the hero: the lantern's frame, five ribs and two hoops, painted azure so it reads blue by day"),
+        "Flash": flat("guard_ward_light", AZURE_RIM, 1, fade(FLASH_SEEN, click=0), 0.03,
+                      "the body's light added, white-azure: full on Raise, its click, then the strokes' glow (W2's white ribs)",
+                      brightness=1.5),
+        "Run": flat("guard_ward_run", AZURE_RIM, 1, [[0, 1], [q(5), 1], [q(14), RUN_SEEN], [q(d), RUN_SEEN], [1, 1]], 0.035,
+                    "the hold: light running up the ribs, each a little behind its neighbour (W2's run), from after the click",
+                    brightness=1.5, more={"FlipbookLayout": "Grid4x4", "FlipbookMode": "Loop",
+                                          "FlipbookFramerate": [RUN_RATE, RUN_RATE]}),
+        "Core": flat("guard_ward_core", (255, 255, 255), 1, fade(CORE_SEEN, click=0), 0.04,
+                     "the strokes' white core where they're thickest"),
     }
-    shield = {
-        "Kind": "Mesh",
-        "From": "Raise",
-        "Part": ["FxShell"],
-        "Look": "fx_ribs_Grey",
-        "Grey": "fx_ribs_Grey",
-        "Color": c3(AZURE),
-        "Tracks": {
-            "At": at,
-            "Scale": grows(*full),
-            "Transparency": [[-8, 0.8, "Quad Out"], [0, PAPER_SEEN, "Sine InOut"], [d, PAPER_SEEN, "Quad In"], [d + 8, 1]],
-            "Glow": [[-8, 3, "Quad Out"], [5, 1.3, "Sine InOut"], [d, 1.3]],
-        },
-        "Why": "the hero: the ward, a disc of lantern paper in azure, six ribs across it, before the Guard's chest, seen through",
-    }
-    # the rim: a closed line of white light round the paper, its band toward the Guard
-    rim = {
-        "Kind": "Mesh",
-        "From": "Raise",
-        "Part": ["FxHoop"],
-        "Color": c3(AZURE_RIM),
-        "Tracks": {
-            "At": back(0.03),
-            "Tilt": [[-8, v3(90, 0, 0)]],
-            "Scale": stood(1.04, 0.06),
-            "Transparency": [[-8, 0.6, "Quad Out"], [0, 0, "Linear"], [6, 0.1, "Sine InOut"], [d, 0.15, "Quad In"], [d + 8, 1]],
-        },
-        "Why": "the ward's rim: a closed line of white light round the paper",
-    }
-    # the halo: the rim's blue glow, a hoop a little wider and deeper in the hue, so from the quarter's camera its band
-    # shows beside the white line as the target's azure edge. Its flash on Raise is the click (the target's: the rim
-    # 2.6 times brighter, gone over five frames), where a ring of the kit's grey sheet read grey with a dark edge by day.
-    halo = {
-        "Kind": "Mesh",
-        "From": "Raise",
-        "Part": ["FxHoop"],
-        "Color": c3(AZURE),
-        "Tracks": {
-            "At": back(0.05),
-            "Tilt": [[-8, v3(90, 0, 0)]],
-            "Scale": click(stood(1.08, HALO_BAND)),
-            "Transparency": [[-8, 0.8, "Quad Out"], [0, 0, "Quad Out"], [5, HALO_SEEN, "Sine InOut"], [d, HALO_SEEN, "Quad In"], [d + 8, 1]],
-        },
-        "Why": "the rim's blue glow, flashed on Raise: the click of the ward shutting",
-    }
-    boss = {
-        "Kind": "Card",
-        "From": "Raise",
-        "Image": "fx_glow",
-        "Color": c3(AZURE),
-        "Tracks": {
-            "At": [[key[0], v3(key[1]["Vector3"][0], key[1]["Vector3"][1], key[1]["Vector3"][2] - 0.3)] + key[2:] for key in at],
-            "Size": [[-4, 0.8, "Back Out"], [0, 3.0, "Sine InOut"], [d, 2.8, "Quad In"], [d + 8, 0]],
-            "Transparency": [[-4, 0.3, "Quad Out"], [6, 0.7, "Sine InOut"], [d, 0.7]],
-            "Brightness": [[-4, 2, "Quad Out"], [6, 1.2]],
-        },
-        "Why": "the boss: the ward lit to its middle, in its hue",
-    }
-    rows = {"Deep": deep, "Shield": shield, "Rim": rim, "Halo": halo, "Boss": boss}
     ride(rows)
-    return effect("GuardShield", "The Guard's raised ward, GuardRaise's own effect: research's pick, G2 (AR52).",
-                  rows, action="GuardRaise")
+    return effect("GuardShield", "The Guard's raised ward, GuardRaise's own effect: research's pick, W2, the lantern's "
+                  "frame (AR52).", rows, action="GuardRaise")
 
 
 def guard_glance():
@@ -229,6 +210,29 @@ def guard_break():
             "Color": c3(AZURE),
             "Tracks": {"At": [[0, v3(0, 0, 0.5)]], "Brightness": [[0, 2.5, "Quad Out"], [8, 0]]},
             "Why": "the break lights the Guard for a moment",
+        },
+        "Snap": {
+            "Kind": "Emitter",
+            "Image": "guard_ward_light",
+            "Emitter": {
+                "Lifetime": [2 / 60, 2 / 60],
+                "Speed": [0.01, 0.01],
+                "EmissionDirection": "Front",
+                "Orientation": "VelocityPerpendicular",
+                "LockedToPart": True,
+                "Rotation": [0, 0],
+                "RotSpeed": [0, 0],
+                "Size": [[0, WARD_EXT], [1, round(WARD_EXT * 1.06, 3)]],
+                "Transparency": [[0, 0], [1, 0.4]],
+                "Color": c3((255, 255, 255)),
+                "LightEmission": 1,
+                "LightInfluence": 0,
+                "Brightness": 3,
+                "ZOffset": round(WARD_LIFT + 0.05, 3),
+            },
+            "Emit": [[0, 1]],
+            "Tracks": {"At": [[0, v3(0, 0, 0)]]},
+            "Why": "W2's break: the ward's frame flashes white for two frames as it's torn, then it's gone",
         },
     }
     for key in ("PuffLine", "PuffFill", "PuffDark"):

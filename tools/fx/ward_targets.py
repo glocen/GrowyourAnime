@@ -3,6 +3,9 @@ glass"): new targets on the Guard's stage, for research's pick in pairs beside t
 
     py tools/fx/ward_targets.py [stage.json] [out_dir] [W1_rim,W2_frame,W3_ripple]
     (default stage: build/handoff/Shade/stage/stage_guard.json; default out: build/handoff/Shade/targets)
+    py tools/fx/ward_targets.py --pictures [out_dir]   (default: build/handoff/Shade/fx/pictures)
+    W2's build (research's pick): its strokes as three pictures, ink, light and core, for the Beams of GuardShield
+    (tools/fx/shade_tells.py): see pictures().
 
 Why the build read as glass: it was a smooth surface with a deep fill, a Fresnel brightening, a sheen and a bright closed
 rim, the cues of a glass lens. The vault the director shared draws its held shapes otherwise
@@ -151,8 +154,9 @@ def rim_ribs(u, v, aa, f, drawn, rib_k):
     return edges, lights, cores
 
 
-def frame_ribs(u, v, aa, f, drawn):
-    """W2's strokes: a lantern's frame face on, five bowed ribs top to bottom and its two hoops."""
+def frame_ribs(u, v, aa, f, drawn, run_k=1.0):
+    """W2's strokes: a lantern's frame face on, five bowed ribs top to bottom and its two hoops; `run_k` the light running
+    up the ribs (0: none, as the build's still passes draw them)."""
     W, H = R * 0.92, R * 1.0 * max(drawn, 1e-3)
     edges, lights, cores = [], [], []
     vv = np.clip(v / H, -1, 1)
@@ -167,7 +171,7 @@ def frame_ribs(u, v, aa, f, drawn):
         width = (STROKE if abs(c) == 1 else RIB * 1.2) * taper(s) * inside
         # light running up the rib: a brighter stretch climbing it, each rib a little behind its neighbour
         phase = (f / 50 + 0.17 * i) % 1.4 - 0.2
-        run = 1 + 0.9 * np.exp(-((s - phase) / 0.09) ** 2)
+        run = 1 + 0.9 * run_k * np.exp(-((s - phase) / 0.09) ** 2)
         e, l, co = ink_light(d, width, aa, 1.0, core_k=1.0 if abs(c) == 1 else 0.6)
         edges.append(e), lights.append(l * run), cores.append(co * run)
     for j, h in enumerate((-0.93, 0.93)):  # the hoops: short strokes across its top and its bottom
@@ -269,7 +273,80 @@ def render(st: Stage, name, f, broken=False):
     return out if st.hud is None else out * (1 - st.hud) + st.base * st.hud
 
 
+# --- the build's pictures (W2, research's pick) ------------------------------------------------------------------------
+PIC = 512  # pixels a side: the ward is about 150 pixels tall at a phone, so a mip or two above it
+EXT = 2.2  # studs from the ward's middle to the picture's edge, both ways: the frame (1.75 wide, 1.9 tall) and its glow
+BORDER = 0.15  # studs at the picture's edge over which everything fades out, so a Beam's edge never shows as a line
+PICTURES = ROOT / "build" / "handoff" / "Shade" / "fx" / "pictures"
+LIGHT_MAX = 1.25  # a stroke's body plus its glow at the most: the light picture's alpha is its share of this
+
+
+def write_rgba(alpha: np.ndarray, path) -> None:
+    """A white picture with straight alpha, for a Beam's Color to tint (white everywhere, so its mips never fringe)."""
+    import subprocess
+    h, w = alpha.shape
+    rgba = np.ones((h, w, 4))
+    rgba[..., 3] = np.clip(alpha, 0, 1)
+    data = (rgba * 255 + 0.5).astype(np.uint8).tobytes()
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgba", "-s", f"{w}x{h}", "-i", "-",
+                    str(path)], input=data, check=True)
+
+
+def pictures(out=PICTURES):
+    """W2's frame, drawn whole (drawn 1, no running light) by frame_ribs, the target's own strokes, as three passes:
+    ink (its hair of deep azure, laid under), light (its azure body and glow, added) and core (its white core, added).
+    Laid out for a Beam stretched once (TextureMode Stretch, TextureLength 1) from the ward's foot (Attachment0) to its
+    top (Attachment1), FaceCamera: the picture's top row lands at Attachment0 (handbook/visuals/vfx-engine-facts.md,
+    "Beam"), so row 0 is the frame's foot; across, its columns, the Beam's width, EXT both ways."""
+    step = 2 * EXT / PIC
+    axis = -EXT + (np.arange(PIC) + 0.5) * step
+    u, v = np.meshgrid(axis, axis)  # row r is v = axis[r]: row 0 the foot
+    edges, lights, cores = frame_ribs(u, v, step, 0, 1.0, run_k=0.0)
+    inner = EXT - np.maximum(np.abs(u), np.abs(v))
+    window = np.clip(inner / BORDER, 0, 1) ** 2
+    passes = {
+        "guard_ward_ink": np.clip(sum(edges), 0, 1) * window,
+        "guard_ward_light": np.clip(sum(lights) / LIGHT_MAX, 0, 1) * window,
+        "guard_ward_core": np.clip(sum(cores), 0, 1) * window,
+    }
+    for name, alpha in passes.items():
+        write_rgba(alpha, out / f"{name}.png")
+        print(name, out / f"{name}.png", f"coverage {float((alpha > 0.02).mean()):.3f}")
+    run_sheet(out)
+    return passes
+
+
+RUN_CYCLE = 70  # frames: frame_ribs' light climbs its ribs once every 1.4 x 50 frames
+RUN_CELLS = 4  # a Grid4x4 flipbook, looped: 16 pictures over one cycle, 60 x 16 / 70 = 13.7 a second
+RUN_CELL = 256  # pixels a cell: the sheet is 1024 a side, Roblox's most
+
+
+def run_sheet(out=PICTURES):
+    """W2's hold, its light running up the ribs: only the light the run adds (frame_ribs with the run less without),
+    16 steps of one cycle in a Grid4x4 sheet, left to right then down, each cell laid out as the passes above."""
+    step = 2 * EXT / RUN_CELL
+    axis = -EXT + (np.arange(RUN_CELL) + 0.5) * step
+    u, v = np.meshgrid(axis, axis)
+    inner = EXT - np.maximum(np.abs(u), np.abs(v))
+    window = np.clip(inner / BORDER, 0, 1) ** 2
+    _, still, _ = frame_ribs(u, v, step, 0, 1.0, run_k=0.0)
+    base = sum(still)
+    cells = []
+    for k in range(RUN_CELLS ** 2):
+        _, lights, _ = frame_ribs(u, v, step, k * RUN_CYCLE / RUN_CELLS ** 2, 1.0, run_k=1.0)
+        cells.append(np.clip(sum(lights) - base, 0, None))
+    top = max(float(c.max()) for c in cells)
+    rows = [np.concatenate(cells[r * RUN_CELLS:(r + 1) * RUN_CELLS], axis=1) for r in range(RUN_CELLS)]
+    sheet = np.concatenate(rows, axis=0) / top * np.tile(window, (RUN_CELLS, RUN_CELLS))
+    write_rgba(sheet, out / "guard_ward_run.png")
+    print("guard_ward_run", out / "guard_ward_run.png", f"16 cells, the run's light at most {top:.2f} of a stroke's")
+
+
 def main(argv):
+    if argv[:1] == ["--pictures"]:
+        pictures(Path(argv[1]) if len(argv) > 1 else PICTURES)
+        return
     st = Stage(Path(argv[0]) if argv else STAGE)
     out = Path(argv[1]) if len(argv) > 1 else OUT
     only = argv[2].split(",") if len(argv) > 2 else SHAPES

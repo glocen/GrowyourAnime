@@ -5559,6 +5559,10 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
   - **Why not the other two:** more health lengthens every phase to fix one, and pushes the fight to about 70 s against the band's 75. A larger share for phase 1 is taken from phase 2, which already lands only one or two doubles. The slam is phase 1's idea, so meeting it early teaches it sooner.
   - **Accept:** two slams landed in phase 1 in every run, and the fight at 60 to 65 s at the same measure. If the second slam still meets the line, `First` goes to 1.
   - **One more measure, about survival:** run once with the lead not kept whole, the player stepping out of every ring, and give the lead's health at the keeper's fall. `docs/balance.md` wants about 30% for an on-budget lead with 2% lifesteal, a figure solved for 45 s, and the phased fight runs about 60. If it ends far lower, the keeper's attack while phased comes down beside `Health` (research's number, from that measure).
+- **Research, 2026-11-26, 21:13, after Faber's six runs (one slam in phase 1 in all six, at `First` 2 and 1):** `First` goes to 0, Faber's proposal.
+  - **Why:** the seed missed its own timings, since the keeper's opening swing holds the slam until about 3.3 to 5 s whatever `First` is above about 0.2. At 0, the slam is ready when the Challenge ends and takes the swing's place, so the slams land at about 3.5 and 15.5 s, the timings the seed meant.
+  - **Accept:** unchanged: two slams in phase 1 in every run, the fight at 60 to 65 s.
+  - **If the second still meets the turn,** the slam's cooldown while phased goes from 12 to 10, research's number, without another ask. Off, both stay as they are.
 
 ## TR70. The break and its reveal, overhauled (research, 2026-11-26, 14:17; overhaul 2 of `docs/production-plan.md`, "The overhaul"; for Faber, with Scintilla's targets)
 

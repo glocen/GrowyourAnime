@@ -5341,7 +5341,59 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
   - No run should end by accident. A walk out of the room ends it today without asking, so Faber either holds the avatar in or asks the same question.
   - The look comes from the screens' kit until AR62's style frame is picked.
 - **The lines** (`Rules/Broadcast.luau`, 383 and 385). The class is a qualifier tacked on after a comma; both of the Tower's lines have it:
-  - the day's record: "{who} reached Tower floor {N}!" It shows only when the run beats the server's best today, so the line needn't say so;
-  - the week's lead: "{who} took first place on this week's Tower: floor {N}!"
+  - the day's record: "{who} reached Tower floor {N}". It shows only when the run beats the server's best today, so the line needn't say so;
+  - the week's lead: "{who} took first place in the Tower this week: floor {N}". No exclamation marks: the voice guide (`docs/research/cloud-2026-11-24/voice-and-naming.md`, section 5).
   - The other five lines read naturally and stay.
 - **Cases:** the confirm's Stay keeps the run; Leave ends it at the last floor won, with its rewards; a walk to the room's edge doesn't end a run unasked; the two lines as written above (the Broadcast cases change with them).
+
+## TR68. The voice pass: the lines that read as generated (research's words, 2026-11-26; for Faber)
+
+- **Why:** the director's "ai slop line" of 13:25 is the fifth such rejection. The fifteen weak lines found on 11-24 (`docs/research/cloud-2026-11-24/voice-and-naming.md`, section 3) were never changed. Research swept every line in `src/` today (614 unique strings) against the rule now in `docs/ui.md`, "Words players read". Item names and the word "Stretch" wait for their own pass.
+- **The lines** (file and line at HEAD; `{…}` stays as it is in code):
+
+| Where | Now | New |
+|---|---|---|
+| Rules/Broadcast.luau:383, 385 | "…reached Tower floor {N}!", "…took first place on this week's Tower: floor {N}!" | "{who} reached Tower floor {N}", "{who} took first place in the Tower this week: floor {N}" (no "!", the only ones in the game) |
+| BreakerScreen.luau:868 | "Nothing waits. Shards drop on Lantern Row." | "No shards yet. Lantern Row drops them." |
+| BreakerScreen.luau:935 | "No shard yet. They drop on Lantern Row." | "No shards yet. Lantern Row drops them." |
+| BreakerScreen.luau:875, 879 | "It holds one Voidkin: no voltage", "Saves under a minute: not offered" | "This shard holds one Voidkin. It takes no voltage.", "Under a minute left. No voltage needed." |
+| BreakerScreen.luau:877 | "Already broken: open it" | "Ready to open" |
+| BreakerScreen.luau:881 | "Needs a battery of %s kWh: upgrade the base" | "Needs a %s kWh battery. Upgrade the base." |
+| BaseController.luau:116, 117; VoidkinScreen/init.luau:108 | "The lead can't work too", "A worker can't lead too", "The lead fights: it can't be stationed" | "Your lead can't work a bay", "Take it out of its bay first", "Your lead can't work a bay" |
+| BaseController.luau:121 | "It would save under a minute" | "Saves less than a minute" |
+| BaseController.luau:123 | "The shares come to more than the whole" | "Over 100%. Lower one share." |
+| BaseController.luau:124 | "That shard has moved on" | "That shard changed. Try again." |
+| BaseController.luau:129; BaseView.luau:83 | "Raise the base's level first" | "Upgrade the base first" |
+| BaseController.luau:131, 1165; Goals.luau:39 | "The Stone Condenser wakes at base level {n}", "Wakes at base level {n}", "…the Condenser wakes." | "The Stone Condenser turns on at base level {n}", "Turns on at base level {n}", "…the Condenser turns on." |
+| BaseController.luau:132, 133 | "A convert is already under way", "Not enough stones in the bag for that convert" | "The Condenser is busy", "Not enough stones" |
+| BaseController.luau:474, 504, 1243; BaseView.luau:229 | "Nobody works here", "Bay {n} · nobody works here", "Nobody on it" | "Empty", "Bay {n} · empty", "Empty" |
+| BaseController.luau:481, 528 | "Bay {n}: who works?", "Who works?" | "Bay {n}: pick a worker", "Pick a worker" |
+| BaseController.luau:495 | "First, choose" | "Pick a shard first" |
+| BaseView.luau:73, 74 | "Stores the power nothing uses.", "Shows the power made against the power drawn." | "Stores spare power.", "Power made against power used." |
+| BaseView.luau:84 | "It isn't awake yet" | "Not open yet" |
+| BaseView.luau:221 | "Idle: no shard in" | "Empty" |
+| PowerScreen.luau:394, 632 | "Demand over generation: the machines slow", "nothing draws now" | "Using more power than you make. Machines slow down.", "nothing uses power now" |
+| StageScreen.luau:664; Rules/Sheet.luau:37 | "Hard: every foe is {n} levels higher", "chances against an even foe" | "Hard: enemies are {n} levels higher", "against an enemy of your level" |
+| Rules/Home.luau:48 | "Not in a boss's arena" | "Not during a keeper fight" |
+| Rules/Home.luau:63; Rules/Hud.luau:306 | "You're home", "At home" | "Back at your base", "At base" |
+| VoidkinScreen/init.luau:107, 229; Config/Hud.luau:1591 | "Still healing at home", "Healing at home {t}", "Its Voidkin waits at home." | "Still healing at base", "Healing at base {t}", "Its Voidkin is at your base." |
+| VoidkinScreen/init.luau:109, 235 | "Stationed: recall it first", "Stationed in {at}" | "Working in a bay. Take it out first.", "Working in {at}" |
+| VoidkinScreen/init.luau:887 | "Its own name" | "Nickname" |
+| VoidkinScreen/init.luau:907 | "Its moves come when it's built", "{n} hits in a string, again and again" | "Moves coming soon", "{n}-hit combo, repeating" |
+| VoidkinScreen/init.luau:956 | "All {n} stars: a copy now sells for Credits" | "All {n} stars. Extra copies sell for Credits." |
+| VoidkinScreen/Bag.luau:112; ShopScreen.luau:72 | "…salvage an item from its card to free a slot", "Your Inventory is full" | "Bag full. Salvage an item to free a slot." in both |
+| VoidkinScreen/Bag.luau:122 | "It doesn't go there" | "Wrong slot" |
+| VoidkinScreen/Bag.luau:1112 | "Salvage off: every item kept" | "Auto-salvage off" |
+| ShopScreen.luau:245 | "{named} bought: it's in your Inventory" | "{named} bought. It's in your bag." |
+| ShopScreen.luau:282 | "None this stock.\nWhen one is in,\nthe Shop's crown is lit." | "None in this stock.\nThe Shop's sign lights up\nwhen one comes in." |
+| ShopScreen.luau:525 | "…in every server. Your counts are your own." | "…the same in every server. Each player has their own limit." |
+| EquipmentScreen/Look.luau:209 | "It's at the most already" | "Already at max" |
+| EquipmentScreen/Reinforce.luau:344 | "Every level is reached" | "Max level" |
+| Emblems.luau:265; Look.luau:215 | "Legendary is the top" | "Already Legendary" |
+| SettingsScreen.luau:159 | "Not saved: try again" | "Not saved. Try again." |
+| Rules/Hud.luau:516, 559, 572, 574 | "{n} shards: into the Breaker", "{n} ready: open them at the Breaker", "Breaking: it opens at the Breaker", "Through the Door: {ground}" | "{n} shards to the Breaker", "{n} ready to open at the Breaker", "In the Breaker", "Go to {ground}" |
+| Reveal/Plate.luau:65, 79 | "Your lead: it fights beside you", "Tap to continue" | "Your lead fights beside you", "Continue" |
+| TowerScreen.luau:97 | "This Week's Climb" | "This week's climb" |
+
+- **Cases:** the self-tests that assert these strings change with them. Nothing else changes.
+- **Not in this pass:** "Stretch" in what players read, the Void Shop's name and the dock's Home (the director's), and the item names (their own pass).

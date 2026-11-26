@@ -103,6 +103,16 @@ Rest, pressed, selected, disabled with its reason, waiting on the server, succee
 
 About twenty characters, passed through Roblox's text filter before anyone else can see it, shown with the real name beneath on the detail screen (`docs/roblox-rules.md`).
 
+## Words players read
+
+The director has rejected generated-sounding lines five times ("corny", "ai slop"; `docs/decisions.md`, 11-17 to 11-26). Every line players read follows this. The craft and its sources: `docs/research/cloud-2026-11-24/voice-and-naming.md`, sections 2 and 5.
+- **Plain, dry, concrete.** Real words used exactly ("High voltage"), a straight face a little older than the player, one thing you can see or do ("Stand outside every slam.").
+- **Ask before it ships:** would a 13-year-old say every word of it to a friend? If not, rewrite it.
+- **Never:** a riddle for a fact ("Nothing waits."); a qualifier tacked on after a comma ("…, this server's best today"); a colon meaning "so" ("Stationed: recall it first"); a machine with feelings ("wakes", "has moved on"); "foe", hype words, puns, lists of three, exclamation marks.
+- **A refusal says the fix:** "Take it off first", never "That can't be done".
+- **One word for one thing:** base, never home (the dock's Home is a button, not a place); enemy, never foe; bag, never Inventory; keeper, never boss; "Empty" for every empty slot.
+- **Lengths:** a button 1 or 2 words; a toast or refusal about 6; a tip or goal about 8, one sentence.
+
 ## Reviews
 
 Each screen starts from a target the director picked, and is judged beside it on a real phone-sized capture (`/ga-review`, in pairs). The director's word accepts it (`AGENTS.md`, "target first, verdicts in pairs"). The UI lint (clipping, overlap, touch sizes, safe areas) runs before either.

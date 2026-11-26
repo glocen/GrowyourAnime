@@ -327,6 +327,8 @@ local function plate(name: string, spot: Spot, lines: number): Frame
 	World.Apart(frame, "Base")
 	-- Nor over the player's own avatar: under the band on a phone, a plate over a machine ahead stood on its head.
 	World.Off(frame)
+	-- And whole, or hidden: a name the frame's edge cuts doesn't read (AR65's second look); its stem may run off the foot.
+	World.Whole(frame, m.Stem.H)
 	local accent = accentOf(spot)
 	local words = Theme.Frame.Neutral.Words
 	local panel = Instance.new("Frame")
@@ -684,7 +686,8 @@ local function sizePlates()
 	end
 	-- No plate stands across a nearer machine on the screen (AR65 must-fix 2): where it stands at its point, against each
 	-- nearer machine's outline. Across one, it slides aside, SLIDE_STEP pixels at a time up to half its width, its middle
-	-- kept over its own machine; with no room, it hides, and must clear by HIDE_SLACK pixels to show again.
+	-- kept over its own machine; with no room, it hides, and must clear by HIDE_SLACK pixels to show again. (The frame's
+	-- edge is World's: World.Whole, where the plate stands last.)
 	local scale = Layers.Scale()
 	for _, spot in spots do
 		local at = camera:WorldToViewportPoint(spot.Anchor.Position + spot.Over)

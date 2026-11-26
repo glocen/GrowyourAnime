@@ -53,7 +53,7 @@ local Screen = require(script.Parent.Kit.Screen)
 
 local World = {}
 
-type Plate = { Frame: Frame, Where: () -> Vector3?, Reach: number, Shift: Vector2, Below: boolean, Open: boolean, Slide: number?, Drop: number?, Swell: UIScale?, Apart: string?, Clear: (() -> (Vector2?, Vector2?))?, Off: boolean?, Beside: { Prompt: ProximityPrompt, Gap: number, Card: Vector2? }? }
+type Plate = { Frame: Frame, Where: () -> Vector3?, Reach: number, Shift: Vector2, Below: boolean, Open: boolean, Slide: number?, Drop: number?, Swell: UIScale?, Apart: string?, Clear: (() -> (Vector2?, Vector2?))?, Off: boolean?, Beside: { Prompt: ProximityPrompt, Gap: number, Card: Vector2? }?, Whole: number?, Cut: boolean? }
 -- A plate on the screen, authored pixels from the layer's corner: its middle, its foot, half its width, its height; and how
 -- far its point stands from the camera, if known.
 -- Ceiling: its own, under the one Settle is given (an open plate's: the top bar's foot, not the band's).
@@ -71,6 +71,8 @@ local foot: GuiObject? = nil -- the HUD's piece over the dock, the next step's c
 local prompts: { [ProximityPrompt]: boolean } = {} -- the prompts showing now
 -- Roblox's card for a two-word prompt, GUI pixels (measured 2026-11-17): where its billboard can't be read.
 local PROMPT_CARD = Vector2.new(164, 72)
+-- Authored pixels a plate kept whole and cut by the frame's edge must clear it by before it shows again: no flicker there.
+local WHOLE_SLACK = 4
 
 function World.Plate(name: string, size: Vector2, where: () -> Vector3?, reach: number?): Frame
 	local frame = Instance.new("Frame")
@@ -150,6 +152,16 @@ function World.Off(frame: Frame)
 	local plate = plates[frame]
 	if plate then
 		plate.Off = true
+	end
+end
+
+-- Kept whole (AR65's second look: a name cut by the frame's edge, "LANTER", doesn't read): the plate hides while the
+-- viewport's sides or foot would cut it where it stands last, all moves made. `below`: authored pixels at its foot that may
+-- run off (a stem under its name).
+function World.Whole(frame: Frame, below: number?)
+	local plate = plates[frame]
+	if plate then
+		plate.Whole = below or 0
 	end
 end
 
@@ -464,6 +476,7 @@ RunService:BindToRenderStep("NL_WorldPlates", Enum.RenderPriority.Camera.Value +
 	local groups: { [string]: { Row } } = {} -- the plates kept apart, by group, where each would stand
 	local clear: { [Frame]: Kept } = {}
 	local off: { [Frame]: Kept } = {}
+	local whole: { [Frame]: Row } = {}
 	for frame, plate in plates do
 		if frame.Parent == nil then
 			plates[frame] = nil
@@ -566,6 +579,11 @@ RunService:BindToRenderStep("NL_WorldPlates", Enum.RenderPriority.Camera.Value +
 			local swell = if plate.Swell then plate.Swell.Scale else 1
 			off[frame] = { Box = World.AvatarBox, Middle = on.X / scale + shift.X, Foot = on.Y / scale + shift.Y, Half = frame.Size.X.Offset * swell / 2, Tall = frame.Size.Y.Offset * swell }
 		end
+		if plate.Whole then
+			local swell = if plate.Swell then plate.Swell.Scale else 1
+			-- Tall here: what may run off its foot
+			whole[frame] = { Frame = frame, Middle = on.X / scale + shift.X, Foot = on.Y / scale + shift.Y, Half = frame.Size.X.Offset * swell / 2, Tall = plate.Whole * swell }
+		end
 		local group = plate.Apart
 		if group then
 			local swell = if plate.Swell then plate.Swell.Scale else 1
@@ -590,6 +608,10 @@ RunService:BindToRenderStep("NL_WorldPlates", Enum.RenderPriority.Camera.Value +
 			if avoided and foot then
 				avoided.Foot = foot
 			end
+			local wholeRow = whole[row.Frame]
+			if wholeRow and foot then
+				wholeRow.Foot = foot
+			end
 		end
 	end
 	-- Last, a plate over the landmark it names hides, and one kept off the avatar where it would stand over it: where it
@@ -605,6 +627,21 @@ RunService:BindToRenderStep("NL_WorldPlates", Enum.RenderPriority.Camera.Value +
 					frame.Visible = false
 				end
 			end
+		end
+	end
+	-- And a plate kept whole hides where the frame's edge would cut it: its sides, and its foot less what may run off,
+	-- against the viewport's, in the layer's authored pixels (as `on` is). Its top is the band's. Once cut, it clears the
+	-- edge by WHOLE_SLACK to show again.
+	local view = camera.ViewportSize
+	local left, right = (-inset.X - corner.X) / scale, (view.X - inset.X - corner.X) / scale
+	local bottom = (view.Y - inset.Y - corner.Y) / scale
+	for frame, row in whole do
+		local plate = plates[frame]
+		local slack = if plate.Cut then WHOLE_SLACK else 0
+		local cut = row.Middle - row.Half - slack < left or row.Middle + row.Half + slack > right or row.Foot - row.Tall + slack > bottom
+		plate.Cut = cut
+		if cut then
+			frame.Visible = false
 		end
 	end
 end)

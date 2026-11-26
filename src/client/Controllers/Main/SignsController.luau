@@ -105,6 +105,8 @@ local function make(key: string, marker: Instance, lines: { string }, look: any,
 	end)
 	-- nor over the player's own avatar: at the plot's gate, the Door's plate stood on it (AR16, 2026-11-17)
 	World.Off(frame)
+	-- and whole, or hidden: a name the frame's edge cuts doesn't read (AR65's second look)
+	World.Whole(frame)
 	if group then
 		World.Apart(frame, group)
 	end

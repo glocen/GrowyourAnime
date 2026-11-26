@@ -1138,6 +1138,80 @@ function BaseCases.Cases(given: Given): { any }
 			end,
 		},
 		{
+			Name = "Base: AR65's second look: no plate (a machine's, the Door's, a sign) shows cut by the frame's edge, its name whole or hidden, as the camera turns round the yard",
+			Place = "Main",
+			Run = function(t: any)
+				local plot = Players.LocalPlayer:GetAttribute("Plot")
+				local door = if type(plot) == "number" then Markers.Find("FestivalDoor", { Plot = plot }) else nil
+				local frameOf = if door then door:FindFirstChild("Frame") else nil
+				if door == nil or frameOf == nil or not frameOf:IsA("BasePart") then
+					t.Check("the plot's Festival Door, to stand by", false, if door == nil then "no door streamed in" else "no Frame")
+					return
+				end
+				local c = BaseManifest.pieces[frameOf:GetAttribute("Piece") :: string].centre
+				local origin = frameOf.CFrame * CFrame.new(-c[1], -c[2], -c[3])
+				local camera = workspace.CurrentCamera
+				-- A plate's name row in viewport pixels: its panel, the stem under it left out (it may run off the foot).
+				local function nameBox(frame: Frame): (Vector2, Vector2)
+					local screen = frame:FindFirstAncestorOfClass("ScreenGui")
+					local inset = if screen and not screen.IgnoreGuiInset then GuiService:GetGuiInset() else Vector2.zero
+					local panel = frame:FindFirstChild("Panel")
+					local box = if panel and panel:IsA("GuiObject") then panel else frame
+					return box.AbsolutePosition + inset, box.AbsolutePosition + box.AbsoluteSize + inset
+				end
+				-- The game's camera on a stand (12 studs behind the avatar and 4.7 up, AR15's measure), turned round it in steps
+				-- finer than a plate's width on the screen, so a plate crossing either side is met at least once.
+				local stands = { { Name = "the way in", At = origin * Vector3.new(0, 3.5, 18) }, { Name = "40 out", At = origin * Vector3.new(0, 3.5, 40) } }
+				local shown, cut, worst = 0, 0, ""
+				local seen: { [string]: boolean } = {}
+				camera.CameraType = Enum.CameraType.Scriptable
+				for _, stand in stands do
+					for step = 0, 119 do
+						local turn = math.rad(step * 3)
+						local back = Vector3.new(math.sin(turn), 0, math.cos(turn))
+						camera.CFrame = CFrame.lookAt(stand.At + back * 12.07 + Vector3.new(0, 4.74, 0), stand.At + Vector3.new(0, 1.5, 0))
+						for _ = 1, 2 do
+							RunService.RenderStepped:Wait()
+						end
+						local view = camera.ViewportSize
+						local each: { [string]: Frame } = {}
+						for key, part in BaseController.Parts() do
+							if string.sub(key, -5) == "Plate" and typeof(part) == "Instance" and part:IsA("Frame") then
+								each[key] = part
+							end
+						end
+						for key, part in SignsController.Parts() do
+							if typeof(part) == "Instance" and part:IsA("Frame") then
+								each[`Sign {key}`] = part
+							end
+						end
+						for key, frame in each do
+							if not frame.Visible then
+								continue
+							end
+							local low, high = nameBox(frame)
+							shown += 1
+							seen[key] = true
+							if low.X < -0.5 or high.X > view.X + 0.5 or high.Y > view.Y + 0.5 then
+								cut += 1
+								if #worst < 600 then
+									worst ..= string.format("%s at %s, %d deg: %.0f..%.0f of %.0f, foot %.0f of %.0f", key, stand.Name, step * 3, low.X, high.X, view.X, high.Y, view.Y) .. "; "
+								end
+							end
+						end
+					end
+				end
+				camera.CameraType = Enum.CameraType.Custom
+				local names = {}
+				for key in seen do
+					table.insert(names, key)
+				end
+				table.sort(names)
+				t.Check("plates shown on the turn, so the check meets them", shown > 0 and seen.DoorPlate == true, `{shown} shown: {table.concat(names, ", ")}`)
+				t.Check("no plate shown cut by the frame's edge", cut == 0, `{cut} cut: {worst}`)
+			end,
+		},
+		{
 			Name = "Base: AR15's Festival Door, the ring tunnel: its four rings turn always about the tunnel's axis at their plan's rates, its core lit by whether its ground is open, its way inside the front ring's open opening, its name on the plate",
 			Place = "Main", -- TR45: its world stands in that place only
 			Run = function(t: any)

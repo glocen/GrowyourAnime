@@ -527,59 +527,78 @@ def idle(t):
 SHADE = (0.0, 3.9)  # the Combo's Shade: he doesn't close in, it comes to him
 
 
+CHEST = (0.0, 3.3, 3.2)  # the Shade's chest, its front: its coat is 1.2 deep about its middle (SHADE)
+FLANK = (-1.05, 3.38, 3.15)  # its chest's near corner, on the side the player's camera sees (AR66): at the coat, not in it
+
+
+def point_at(t, f, label, fist, point, ease, hint=(70, 0, 10), left=None, **body):
+    """Keys the body with his right fist reaching `fist`, then the spear carried through that fist along the line that
+    puts its point on `point` (stage places)."""
+    arms = {"RA": ("reach", fist, hint)}
+    if left is not None:
+        arms["LA"] = left
+    t.key(f, label, ease=ease, **arms, **body)
+    bpy.context.scene.frame_set(t.start + f)
+    r6._refresh()
+    d = Vector(point) - Vector(stage_of(r6.hand(t.rig, "Right Arm").to_translation()))
+    t.spear(f, ease=ease, m=0.0, h=1.0, D=tuple(d.normalized()), s=t.rest["spear"]["tip"] - d.length)
+
+
 def combo(t):
-    """Three blows, all of the shaft, none of the blade. He pulls the spear out of the street and lays it across in
-    both fists like a bar, and shoves the Shade with it: the wall. The butt end snaps round into it. Then he stands it
-    up and drives it down into the street in front of him, and the street does the rest. He picks it up and stands it
-    back by his foot."""
-    bar = (1.0, 0.0, 0.0)
+    """He keeps the Shade at the spear's length and works it with the point, never the shaft (AR66, research's feel
+    line, B, the drive). He lifts the spear out of the street and drops into a low guard, then steps out to his left
+    and thrusts, so the point lands where the player sees it. He carries the point out to his right, lays the blade
+    flat and sweeps it across the Shade's chest. Then he raises it overhand and drives it down into the Shade with a
+    lunge, a heavy blow you see land over its head. He ends set behind the shaft like a wall, feet planted, the point
+    held in, and stands it back by his foot."""
     t.key(0, "the lean", look=(0.0, 3.9, 3.2), H=(0, 0, 0))
     t.spear(2, ease="cubic")
     t.spear(9, m=0.0, D=(0.08, 0.04, 1.0), s=2.9)  # straight up out of the street, a hand's width
     t.key(9, "out of the street", T=(-2, -10, -4, 0.08, 0, 0), crouch=0.1, RA=("reach", (2.2, 0.55, 3.3), (36, 0, 50)))
-    t.spear(12, D=(0.1, 0.05, 1.0), s=2.5)  # brought in front of him upright, the butt clear of his legs, unbroken
-    t.key(12, T=(-3, -8, -2, 0.04, 0, 0), crouch=0.12, RA=("reach", (1.25, 1.35, 3.45), (70, 0, 30)))
-    # tipped over to his right, the blade going out and down away from him, and taken at its middle in both fists, a
-    # bar as long each side of him, drawn back to his chest: then shoved at it at arm's length with a step
-    t.spear(15, ease="in", D=bar, s=4.8)
-    t.key(15, "across, in both fists", ease="in", T=(-6, -4, 0, 0, 0, -0.12), crouch=0.16,
-          RA=("reach", (0.9, 0.95, 2.75), (52, 0, 4)), LA=("shaft", 3.0, (52, 0, -4)))
-    t.spear(21, ease="out")
-    t.key(21, "1: the wall", ease="out", T=(12, 0, 0, 0, 0, 0.45), crouch=0.2, feet={"Left Leg": (-0.75, 0.55)},
-          RA=("reach", (0.9, 2.0, 3.2), (90, 0, 2)))
+    point_at(t, 12, None, (1.3, 0.1, 3.0), (0.9, 2.0, 8.5), "in")  # tipped forward over his hand, the butt still up
+    # the low guard: the point on the Shade, the shaft along his forearm, his left hand open, out at the Shade
+    point_at(t, 15, "the guard", (1.6, -0.45, 2.85), (0.15, 2.4, 2.95), "in", left=(70, 0, -30),
+             T=(4, -38, 0, 0, 0, -0.2), crouch=0.22, feet={"Left Leg": (-0.75, 0.55), "Right Leg": (0.9, -0.45)},
+             look=(0.0, 3.9, 3.4))
+    point_at(t, 18, "drawn", (1.6, -0.8, 2.7), (0.5, 1.95, 2.9), "in", T=(2, -46, 0, 0, 0, -0.32), crouch=0.24,
+             left=(66, 0, -28))
+    # a lunge out to his left, and the point into the Shade's near side: the player's camera sees him beside the Shade,
+    # not behind it, and the shaft across the gap between them
+    point_at(t, 21, "1: the thrust", (0.45, 0.8, 3.0), FLANK, "out", T=(9, -14, 0, -1.1, 0, 0.2), crouch=0.3,
+             feet={"Left Leg": (-2.0, 0.85), "Right Leg": (0.0, -0.35)}, left=(-16, 0, -22))  # the left swings back
     t.mark(21, "Hit1")
-    t.spear(24, ease="cubic")  # the wall holds a beat on the hit, then the left lets go
-    t.key(24, ease="cubic")
-    # the butt drops to the street before him, the blade standing high over his right shoulder, his body wound down
-    # and round to his right; then the whole spear wheels: the butt comes up into the Shade's chest as the blade
-    # sweeps down past his right side behind him, his body turning up and into it. A diagonal across the player's view
-    # as long as the spear, where a jab straight ahead would run along it and vanish
-    t.spear(28, ease="in", D=(0.415, -0.138, 0.9), s=2.6)
-    t.key(28, ease="in", T=(12, -12, 0, 0, 0, 0.25), crouch=0.3, RA=("reach", (1.0, 1.0, 2.9), (70, 0, 20)), LA=(40, 0, -26))
-    t.spear(36, ease="out", D=(0.85, -0.3, -0.43), s=1.9)  # out past his side, clear of his arm
-    t.key(36, "2: the butt, rising", ease="out", T=(4, 22, 0, 0, 0, 0.4), crouch=0.1, RA=("reach", (1.1, 1.3, 3.0), (64, 0, 30)),
-          LA=(-40, 0, -32))
+    # the point drawn out of the thrust and swung wide behind his left, the camera's side, the blade laid flat and the
+    # shaft across the player's view; then swept round and up through the open gap that camera sees between him and the
+    # Shade, to its near shoulder, and on up into the raise. (B's sweep went level, right to left: from this camera a
+    # spear aimed at the Shade points at the lens, and that sweep showed only past its contact; research's must-fix 1)
+    point_at(t, 29, "swung out", (0.5, 1.1, 2.65), (-2.9, 0.05, 2.45), "in", T=(4, 28, -4, -0.45, 0, 0.0), crouch=0.28,
+             feet={"Left Leg": (-0.95, 0.6), "Right Leg": (0.55, -0.45)},
+             left=(-28, 0, -20))  # the left swung back, under the shaft
+    t.spear(29, roll=90.0)
+    point_at(t, 36, "2: the sweep", (0.85, 0.85, 3.3), (-1.2, 3.25, 4.3), "out", T=(-2, 2, 4, -0.4, 0, 0.2), crouch=0.2,
+             left=(-30, 0, -18))  # the left swung back, out of the gap
     t.mark(36, "Hit2")
-    t.spear(44, ease="cubic", D=(0.5, -0.1, 0.86), s=2.2)
-    t.key(44, ease="cubic", T=(2, 4, 0, 0, 0, 0.2), crouch=0.12, RA=("reach", (1.1, 1.4, 3.2), (62, 0, 26)))
-    # stood up before him and lifted in both fists, the left above the right: R6's two hands meet on one shaft only
-    # within about a stud of his chest, so the shaft rises there, leaning a hair away from his face
-    # lifted high, his body rising and rocked back on it; then driven in one-handed at a slant ahead of him, the blade
-    # leaning out over the Shade, his body lunged down over it and the left flung back
-    t.spear(54, ease="in", D=(0.02, 0.06, 1.0), s=2.0, B=(0.8, 1.1, 0.0))
-    t.key(54, "up, both hands", ease="in", T=(-8, -12, 0, 0, 0, -0.05), crouch=-0.04, RA=("reach", (0.22, 1.0, 3.6), (96, 0, 8)),
-          LA=("shaft", 1.5, (84, 0, -10)), look=(0.0, 3.9, 4.2))
-    t.spear(60, ease="hold", m=1.0)
-    t.key(60, "3: into the street", ease="out", T=(22, -15, 0, 0, 0, 0.35), crouch=0.36, feet={"Right Leg": (0.9, 0.35)},
-          RA=("reach", (0.86, 2.0, 2.45), (64, 0, 12)), LA=(-44, 0, -26), look=(0.0, 3.9, 4.0))
+    point_at(t, 42, None, (1.05, 0.7, 3.7), (-1.7, 2.7, 5.2), "cubic", T=(-4, -2, 4, -0.4, 0, 0.12), crouch=0.16)
+    point_at(t, 48, None, (1.9, 0.1, 3.9), (-0.4, 2.8, 5.8), "in", T=(0, -14, 0, -0.3, 0, -0.05), crouch=0.14)
+    # raised over his right shoulder, overhand, the point down at the Shade, his weight back; then driven down and in
+    point_at(t, 54, "raised overhand", (2.25, -0.5, 5.0), (0.3, 2.3, 4.3), "in", hint=(165, 0, 25), left=(40, 0, -10),
+             T=(-8, -20, 0, 0, 0, -0.25), crouch=0.04, look=(0.0, 3.9, 3.8), feet={"Right Leg": (0.85, -0.55)})
+    t.spear(54, roll=0.0)
+    point_at(t, 60, "3: the drive", (2.15, 0.5, 4.3), (0.0, 3.3, 2.95), "out", hint=(100, 0, 45), T=(17, -16, 0, 0, 0, 0.42),
+             crouch=0.38, feet={"Left Leg": (-0.7, 1.0)}, look=(0.0, 3.9, 3.0))
     t.mark(60, "Hit3")
-    t.key(72, "held on it", ease="sine", T=(12, -15, 0, 0, 0, 0.22), crouch=0.34, LA=(-24, 0, -18))
-    t.key(80, ease="cubic", T=(6, -8, 0, 0, 0, 0.1), crouch=0.14, LA=(-6, 0, -10), RA=("reach", (1.2, 1.5, 3.0), (60, 0, 20)))
-    t.spear(80, ease="cubic")
-    t.spear(88, ease="cubic", m=0.0, D=(0.05, -0.05, 1.0), s=2.7)  # lifted a hand's width, carried back
+    # set: the feet where the drive left them, his weight sunk behind the shaft, the point held in
+    point_at(t, 68, "set, the point held in", (1.3, 0.5, 3.4), (0.05, 3.25, 2.8), "sine", hint=(90, 0, 25),
+             T=(10, -22, 0, 0, 0, 0.3), crouch=0.42)
+    point_at(t, 78, None, (1.3, 0.5, 3.3), (0.05, 3.25, 2.7), "cubic", hint=(90, 0, 25), T=(9, -22, 0, 0, 0, 0.29),
+             crouch=0.45)
+    point_at(t, 84, None, (1.2, 0.4, 3.0), (0.9, 1.2, 8.4), "cubic", T=(5, -10, 0, 0, 0, 0.1), crouch=0.18,
+             left=(-6, 0, -10))
+    # lifted a hand's width and carried back over its place, the fist out past it so the shaft leans off his arm
+    t.spear(88, ease="cubic", m=0.0, D=(0.1, 0.0, 1.0), s=2.7)
     t.spear(89, ease="cubic", B=B_LEAN)  # its new place, taken while it's in the air
     t.key(88, "back by his foot", ease="cubic", T=(2, -5, -2, 0, 0, 0.0), crouch=0.08, feet={"Right Leg": HUB["feet"]["Right Leg"],
-          "Left Leg": HUB["feet"]["Left Leg"]}, RA=("reach", (2.25, 0.5, 3.0), (30, 0, 48)))
+          "Left Leg": HUB["feet"]["Left Leg"]}, RA=("reach", (2.6, 0.5, 3.0), (16, 0, 64)), LA=HUB["LA"])
     t.spear(96, ease="hold", m=1.0)
     t.key(96, ease="sine", T=HUB["T"], crouch=HUB["crouch"], RA=HUB["RA"], LA=HUB["LA"], look=EYES)
     t.key(110)

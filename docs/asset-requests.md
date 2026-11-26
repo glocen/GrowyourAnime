@@ -18006,6 +18006,19 @@ The rule: `docs/design.md`, "Clips follow the model, rules follow the class" (th
 - **Must-fix for the build (class: every key):** no part passes through the body or the street, as the audit lists for the picked four. Kirra's Up A has its head under the street at 6 to 8, not yet re-audited. Lyric's Up B has its speakers in her arms at 8 and 25.
 - **design.md, reconciled:** the shared sets are where a reaction starts, and a model they don't fit gets its own. Kirra and Lyric left the robe list. `lyric_clips.py`'s header is Modulo's to match.
 
+### Modulo's build of Watt's Combo, B (2026-11-26, 18:03; started 17:32)
+
+- **Where:** `tools/blender/watt_clips.py`, `combo()`, exported to `build/handoff/Watt/clips/Watt_Combo.json` with `pack_Combo.png`, `arcs_Combo.png` and `bare_Combo.png`. Beside B, from the player's view: `build/scratch/modulo/ar66/build/strip_Combo.png` against `out/strip_ComboB.png`. The beats are kept: 111 frames, Hit1 21, Hit2 36, Hit3 60, the spear back by his foot at 88. `Watt.clips.json` is unchanged.
+- **Must-fix 1, every hit outside the Shade** (the `play` view, −43°, 20°):
+  - **The thrust:** from the low guard, a step to his left (the open side), the point to the Shade's near chest corner, seen in the gap between them.
+  - **The sweep, changed from B (research's call):** B's went level, right to left. From this camera, a spear aimed at the Shade points at the lens, so that sweep showed only after its contact. Now the blade swings out wide behind his left, with the shaft across the view as B's was at 24 to 32. Then it sweeps round and up through the gap to the Shade's near shoulder, and on into the raise.
+  - **The drive:** overhand, from above the Shade's shoulder down to its chest, as in B.
+- **Must-fix 2:** the drive plants, and from 68 to 78 his feet are set and the point is held at the Shade's chest. Then he stands the spear back by his foot.
+- **Must-fix 3:**
+  - `r6parity`'s audit passes on the bare rig. The spear clears his head, torso, legs and the street.
+  - Left: the shaft is 0.09 into the right forearm at 59, beside the holding hand. That's the fist's grip on R6's block forearm, as in the shipped Idle at rest (0.07).
+- **Status:** made and self-reviewed: the audit, and the player's view beside B. The content check before upload: PASS, both conditions held (the point at the Shade's surface; the clip written by `combo()`). Delivered to the handoff for research's verdict, then Faber's install. Not accepted.
+
 ## AR67. The Generator's new model, and any machine that needs one (Modulo's targets, research's pick, then Faber's install)
 
 Research, 2026-11-26, 17:47, on the director's word of about 17:46 (the register): "we can change the whole model of any machine that need it and dont need to stick with what i said abt the generator turning ... just make it the best it can be".

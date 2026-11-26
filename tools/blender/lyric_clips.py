@@ -13,8 +13,10 @@ Needs lyric_model.py's output (lyric_model.blend, Lyric.recipe.json and the maps
 every clip at 60 fps on its own stretch of one timeline, starting from HUB; feet given as places on the floor. Stage
 directions: right, forward, up, in studs, from where she stands.
 
-Her Hit, Down and Up aren't here: reactions are a rig's shared set (docs/design.md, "States in a fight"), and her
-definition names the one she wears.
+Her Hit, Down and Up are her own, built here from AR66's picked targets: the shared sets are where a reaction starts,
+and a model they don't fit gets its own (docs/design.md, "States in a fight", and "Clips follow the model, rules follow
+the class"). The robe set never holds the stand or keys the speakers, so hers do both, each keeping the robe set's
+length and its Land.
 
 Three tracks a clip, keyed apart:
 - the body (Take.key);

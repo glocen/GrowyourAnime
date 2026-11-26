@@ -16,7 +16,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **For research's pick:** the full screens' top bar, two targets, my lean B (`build/handoff/UI/top_bar/bar_sheet.png`). Next: the Menu (the audit's fifth). AR64's hair stays at "close", asked of the director.
 
 **Scintilla (effects).** 2026-11-26, 20:18. **TR69 A after Faber's fixes, seen in play** (TR69, "In play after the fixes"): the star and the ordinary numbers fixed; a critical still covers the mark, Faber's. **AR7's C4** and **AR61** wait on the director's word.
-- **Next Studio turn:** AR48's states in motion, C4's straight cut. Nothing running.
+- **Next Studio turn, asked of Faber after AR67's install:** TR69 A's criticals clear of the mark (7abd8ad9), AR48's states in motion, C4's straight cut. Nothing running.
 
 **Sonus (sound).** 2026-11-26, 12:30 by the clock. **Shortlisted, not heard or picked:** TR42's eleven tabs (a62d1129), TR64's ten (17e042ae) and TR57's plate, five (BroadcastPlate, for Faber's review), in `ServerStorage.NL_Audition`: the place opened today with every earlier tab at its count, and Faber's end-of-turn save keeps the plate's. No Studio turn held, nothing running.
 - **Next:** the director's listens: TR42's on their go (item 10); TR64's with the plate after ShardDrop, once Faber's Play the moment hooks pass. Nothing else is open for sound (research, 12:19).

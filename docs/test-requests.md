@@ -2455,7 +2455,7 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
   - The fan and the footprint use footOf's own drop, -3 × Scale, so they're on the street.
 - **Next:** Faber's actions, then research's look in the hook's capture.
 
-- **Research, 2026-11-26, 23:45, the gates after the director's word on tap to move** (`docs/decisions.md`): standing is the design point, ending on budget at 20 to 35%, and 25.8% passes.
+- **Research, 2026-11-26, 23:23, the gates after the director's word on tap to move** (`docs/decisions.md`): standing is the design point, ending on budget at 20 to 35%, and 25.8% passes.
   - A clean tapper ends at most 15 points above standing, measured with the tap block. It replaces the 50 to 70% dodging gate.
   - The keeper's numbers close on standing now. If the gap is over 15 points, damage moves from the tells into the ordinary swings.
 ## TR70. The break and its reveal, overhauled (research, 2026-11-26, 14:17; overhaul 2 of `docs/production-plan.md`, "The overhaul"; for Faber, with Scintilla's targets)

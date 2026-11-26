@@ -1375,7 +1375,7 @@ This is delivery 4, the block clip of section 5 polished, on research's open not
 - **For the director, on their return:** F1 (option 2, research's lean) or O3 (option 3, no ring), as `C4x_F1_entrance_peak.png` beside `C4x_O3_entrance_peak.png`, with C4's three takes shown as tried. No build hour before the director's word.
 
 
-**Research, 2026-11-26, 23:35: F1 goes ahead in the dev build** (Scintilla). Parking it left the maker idle under the delegation of 2026-11-24, 21:13. F1 and O3 stay with the director as options under the two-techniques rule, and O3 is only the ring off, so its word can still swap them.
+**Research, 2026-11-26, 23:20: F1 goes ahead in the dev build** (Scintilla). Parking it left the maker idle under the delegation of 2026-11-24, 21:13. F1 and O3 stay with the director as options under the two-techniques rule, and O3 is only the ring off, so its word can still swap them.
 ## AR10. Kirra, the courier (Modulo, then Faber)
 
 Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three starters (`docs/roster.md`, her row: Common, Agility, Assassin, Zone 1). The four deliveries of AR1, measured against Rook, Pip and Lyric. Her install waits for "Content as data" (`docs/production-plan.md`); her art doesn't.
@@ -4119,7 +4119,7 @@ Made; self-reviewed as stills at the smallest phone, the take by its frames; the
 - **So the redraw of A and B without the pale band waits** for the director's pick, and the game doesn't change before it.
 
 
-**Research's pick, 2026-11-26, 23:35: C,** today's faces at Haze 0, kept as the setting (one number, Faber's). It's a pick, not a rework, so it's research's under the delegation of 2026-11-24, 21:13. A and B aren't redrawn.
+**Research's pick, 2026-11-26, 23:20: C,** today's faces at Haze 0, kept as the setting (one number, Faber's). It's a pick, not a rework, so it's research's under the delegation of 2026-11-24, 21:13. A and B aren't redrawn.
 ## AR57. The Guard's and the Dasher's elites (Modulo now, then Faber)
 
 Research, 2026-11-23, 21:54, on the director's pick of 21:53 (`docs/decisions.md`). Tier 2: a new asset players see that nothing covers, in Modulo's area and then Faber's. AR52 left "the masks' elite versions" waiting.
@@ -4889,7 +4889,7 @@ Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit firs
 - **Until the director's word:** the build stays in the dev build, and no build hour.
 
 
-**Research, 2026-11-26, 23:35: the star over a smaller mass goes ahead in the dev build** (Scintilla, keeping the technique). "As built" stays with the director as the other option under the two-techniques rule.
+**Research, 2026-11-26, 23:20: the star over a smaller mass goes ahead in the dev build** (Scintilla, keeping the technique). "As built" stays with the director as the other option under the two-techniques rule.
 ## AR62. The screens' redo: their colours, their light and their art (research's audit, then Modulo's directions, then Faber, a screen at a time)
 
 **Why:** the director, 2026-11-24, 13:35, on a still of the Arc panel: "that lantern drawing is so bad and the rest is just a pain in the eye many hud design will need a big polish and change of colors"; and 13:37: "let not add those shiny bright effect that goes outside the ui buttons" (the register; `docs/ui.md`, rule 5, "Light stays in its piece"). The sixth time the colour has been called too much. It's a redo under the 11:11 word: blockouts beside the old, research's verdict in the game, the old kept.
@@ -5115,7 +5115,7 @@ The audit's fourth screen (the director, 2026-11-24: "this left ui is so ugly", 
   - Effects and sounds only on a ready signature, a poise break, a level up, a reward banked and the lead's low health. The rest stays silent.
   - Faber builds, Sonus shortlists the sounds, and the director judges in play.
 
-**Research, 2026-11-26, 23:35, after Gemini's production read (`build/scratch/quaestor/gemini/transcripts/2026-11-26_production-speed-quality.md`):**
+**Research, 2026-11-26, 23:20, after Gemini's production read (`build/scratch/quaestor/gemini/transcripts/2026-11-26_production-speed-quality.md`):**
 - **AR62's final frame (A with the cut, beside B) is withdrawn.** The HUD overhaul above replaces it.
 - **Home's two cards** join the overhaul, after its first screen. They no longer wait on examples from the director.
 - **One specimen first:** the overhaul's picked style goes into one screen, the fight's HUD, and is judged in play before any other screen takes it. It isn't copied across screens before then, as graphite was.

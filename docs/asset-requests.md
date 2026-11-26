@@ -5241,6 +5241,22 @@ The script is `tools/ui/hud_finish.py`.
 - **Content check:** PASS (fresh eyes, rules 2 to 4). The skull is a clean cartoon foe marker.
 - **Next:** research's pick, in pairs.
 
+### Research's pick: F2, the deeper slate (Quaestor, 2026-11-27, 00:36; alone, with Gemini busy on the audits)
+
+- **Felt:** the cards and the press now read as finished pieces of one set. The rims, the stroked type and the overlapping portrait carry it.
+- **The pair, at full size and in both orders:**
+  - On F2's deeper plate, the white stroked type and the side rims stand out the way the study's construction intends.
+  - Beside it, F1's mid slate reads washed out.
+  - At phone size the two are almost the same. The whole difference is the plate's one value.
+- **Gates (Modulo's, measured):**
+  - text from 5.3 to 19.7;
+  - the squint reads the press first.
+- **The director's "too black":** F2's plate sits at 56/64/77, clear of near-black, and its colour lives in the rims, the gold and the bars.
+  - The plate is one token in Tune, with F1's value kept as the other.
+  - The director judges it in play. If F2 reads somber there, it goes to F1 in one change.
+- **To Faber:** skin piece 1's block with F2's construction now. The icons go in as images, so they swap in later without a rebuild.
+- **The icons are their own piece next:** painted icons in our style, and the signature press's first, since the squint reads the press first. This follows Modulo's base targets, with targets in pairs. Today's flat marks stay in the dev build until then.
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

@@ -59,7 +59,7 @@ def swing():
     drag = trail("Lantern", "Strike", [[-4, 0.2, "Sine InOut"], [4, 0.9, "Quad Out"], [14, 0]], 7,
                  "the lantern's weight dragged round after the blow: lower, softer, later")
     drag["Tracks"]["Transparency"] = [[-4, 0.8, "Quad Out"], [4, 0.45, "Quad In"], [14, 1]]
-    cut = at_beat(sheet_rows("Cut", "crescent", 0.3, [[0, 3], [0.15, 4.4], [1, 4.8]], 0.3, [-25, 25],
+    cut = at_beat(sheet_rows("Cut", "crescent", 0.3, [[0, 3], [0.15, 4.4], [1, 4.8]], 0.3, 0,
                              "the cut where the pole's foot passes on Strike"), "Cut", "Strike")
     for row in cut.values():
         row["Body"] = "PoleFoot"
@@ -93,7 +93,7 @@ def challenge():
         },
         "Why": "the stamp: a hoop flat on the street opening from the pole's foot, its upright band keeping it read from a low camera",
     }
-    dust = at_beat(sheet_rows("Dust", "puff", 0.5, [[0, 1.6], [1, 2.8]], 0.45, [0, 360],
+    dust = at_beat(sheet_rows("Dust", "puff", 0.5, [[0, 1.6], [1, 2.8]], 0.45, 40,
                               "the street's dust off the stamp, a breath after"), "Dust", "Stamp", frame=2)
     for row in dust.values():
         row["Body"] = "PoleFoot"

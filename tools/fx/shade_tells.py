@@ -25,13 +25,16 @@ The Dasher. Feel line: a Dasher folds behind its mask and a blade of light cuts 
 filling toward you like a fuse; then the Dasher is down it in a streak, and a slash bursts where it lands.
 - DasherLine, DasherLunge's own effect, on its beats. Every row rides the Dasher's root and is held where it first shows
   (Hold), so the line stays on the stone, laid along the aim fixed at Line, while the Dasher runs down it.
-  - Lane (Line): the hero, the kit's shell flattened on the street to the hit's own lane, 14 studs from the Dasher's feet
-    and 4 across (Most and Past; Half either side), pointed at both ends like the Dasher's mask. It cuts open across in
-    four frames.
-  - Fuse (Line to Land): a brighter, narrower blade inside it, growing from the Dasher's feet to the line's end at Land,
-    the time left to move. Both close over six frames after Land.
+  - Lane (Line): the hero, the hit's own lane drawn flat on the street: every point within 2 studs (Half) of the line
+    from the Dasher's feet to 14 studs on (Most and Past), so a plate 4 across and two round ends (LaneNear, LaneFar:
+    the kit's shell flattened to a disc). Drawn as what hits, so nobody is hit off it (Faber's review, 2026-11-26). It
+    cuts open across in four frames.
+  - Fuse (Line to Land): a brighter, narrower blade inside it in six pieces, lit in turn from the Dasher's feet, the
+    last on Land: the time left to move. Each piece is held where it was laid at Line and shown by its fade, since a
+    held row's place is set once. All close over six frames after Land.
   - Streak (Lunge to Land): a trail behind the Dasher's root as it runs.
   - Slash (Land): the crescent sheet where it lands, with needles on along the run.
+  World: the rows draw at the studs written, never the body's scale, since the hit's lane is 14 by 4 for an elite too.
 
 Frames at 60 a second from each row's beat. The block-in is Grey: every colour in its grey. The colours come after the
 blockout's verdict. Nothing red, nothing left behind (AGENTS.md, rule 4).
@@ -73,10 +76,12 @@ def ride(rows, body="HumanoidRootPart", hold=False, at=None):
     return rows
 
 
-def effect(name, why, rows, action=None):
+def effect(name, why, rows, action=None, world=False):
     data = {"Schema": "rows/1", "Effect": name, "Why": why, "Area": 1, "Grey": True}
     if action:
         data["Action"] = action
+    if world:  # drawn in studs as written, whatever the body's scale: the hit's lane is the same for an elite
+        data["World"] = True
     data["Rows"] = rows
     return data
 
@@ -106,7 +111,7 @@ def guard_shield():
         },
         "Why": "the hero: a lens of ribbed paper before the Guard, snapped up by Raise, held, folded down at Drop",
     }
-    ring = at_beat(sheet_rows("Click", "ring", 0.3, [[0, 3], [1, 5]], 0.34, [0, 0],
+    ring = at_beat(sheet_rows("Click", "ring", 0.3, [[0, 3], [1, 5]], 0.34, 0,
                               "the click of the shield shutting: a ring snapped open on Raise, round the shield"), "Click", "Raise")
     ride(ring, at=front)
     return effect("GuardShield", "The Guard's raised shield, GuardRaise's own effect: the grey block-in (AR52).",
@@ -115,7 +120,7 @@ def guard_shield():
 
 def guard_glance():
     rows = {
-        **sheet_rows("Glint", "glint", 0.22, [[0, 1.2], [0.15, 1.8], [1, 1.6]], 0.85, [0, 90],
+        **sheet_rows("Glint", "glint", 0.22, [[0, 1.2], [0.15, 1.8], [1, 1.6]], 0.85, 30,
                      "where the blow meets the paper: a glint, small, a glance and not a hit"),
         "Skate": needles(5, [18, 28], [0.1, 0.18], 75, 0.7, 0, direction="Back"),
     }
@@ -125,9 +130,9 @@ def guard_glance():
 
 def guard_break():
     rows = {
-        **sheet_rows("Tear", "ring", 0.32, [[0, 2.4], [1, 5]], 0.34, [0, 0],
+        **sheet_rows("Tear", "ring", 0.32, [[0, 2.4], [1, 5]], 0.34, 0,
                      "the shield torn open: a ring out from its middle"),
-        **sheet_rows("Puff", "puff", 0.45, [[0, 2], [1, 3.4]], 0.45, [0, 360],
+        **sheet_rows("Puff", "puff", 0.45, [[0, 2], [1, 3.4]], 0.45, 40,
                      "the paper's dust where it was, a breath after"),
         "Light": {
             "Kind": "Light",
@@ -161,52 +166,38 @@ def guard_break():
 
 
 def dasher_line():
-    half = LINE_LENGTH / 2
     n = LINE_TO_LAND
-    lane = {
-        "Kind": "Mesh",
-        "From": "Line",
-        "Part": ["FxShell"],
-        "Look": "fx_rise_Warm",
-        "Grey": "fx_rise_Grey",
-        "Tracks": {
-            "At": [[0, v3(0, FLOOR, -half)]],
-            "Scale": [
-                [0, v3(0.02, 0.02, half), "Back Out"],
-                [4, v3(LINE_HALF, 0.02, half), "Linear"],
-                [n, v3(LINE_HALF, 0.02, half), "Quad In"],
-                [n + 6, v3(0.02, 0.02, half * 1.05)],
-            ],
-            "Transparency": [[0, 0.1, "Linear"], [n, 0.25, "Quad In"], [n + 6, 1]],
-            "Glow": [[0, 3, "Quad Out"], [4, 1.2, "Sine InOut"], [n, 1.6]],
-        },
-        "Why": "the hero: a blade of light cut open along the street, pointed at both ends like the Dasher's mask",
+    grey = {"Look": "fx_rise_Warm", "Grey": "fx_rise_Grey"}
+    open_close = lambda wide, deep, long: [  # cut open across in four frames, held, closed across over six after Land
+        [0, v3(0.02, deep, long), "Back Out"], [4, v3(wide, deep, long), "Linear"], [n, v3(wide, deep, long), "Quad In"],
+        [n + 6, v3(0.02, deep, long)]]
+    fade = [[0, 0.1, "Linear"], [n, 0.25, "Quad In"], [n + 6, 1]]
+    glow = [[0, 3, "Quad Out"], [4, 1.2, "Sine InOut"], [n, 1.6]]
+    # the lane: what the hit takes, every point within Half of the line from the feet to Most + Past, so a stadium: a
+    # plate down the line, and a disc of the shell flattened at each end
+    rows = {
+        "Lane": {"Kind": "Mesh", "From": "Line", "Part": ["FxPlate"], **grey, "Tracks": {
+            "At": [[0, v3(0, FLOOR, -LINE_LENGTH / 2)]], "Scale": open_close(2 * LINE_HALF, 0.04, LINE_LENGTH),
+            "Transparency": fade, "Glow": glow},
+            "Why": "the hero: a blade of light cut open along the street, as wide and as long as what the hit takes"},
     }
-    # the fuse: from the Dasher's feet to the line's end at Land, its length L(t) = 14 t / n, its middle at L / 2
+    for key, z in (("LaneNear", 0), ("LaneFar", -LINE_LENGTH)):
+        rows[key] = {"Kind": "Mesh", "From": "Line", "Part": ["FxShell"], **grey, "Tracks": {
+            "At": [[0, v3(0, FLOOR, z)]], "Scale": open_close(LINE_HALF, 0.02, LINE_HALF), "Transparency": fade, "Glow": glow},
+            "Why": "the lane's round end: the hit reaches Half past the line's end and behind the feet"}
+    # the fuse: six pieces of a brighter, narrower blade inside it, from the feet to the line's end, each showing in turn
+    # so the whole is lit on Land, the time left to move. Each is placed at Line, held there (Hold places a row once,
+    # when it first shows), and shown by its fade alone.
     steps = 6
-    at_keys, scale_keys = [], []
-    for k in range(steps + 1):
-        frame = round(n * k / steps)
-        length = max(0.05, LINE_LENGTH * k / steps)
-        at_keys.append([frame, v3(0, FLOOR + 0.02, -length / 2), "Linear"])
-        scale_keys.append([frame, v3(LINE_HALF * 0.4, 0.02, length / 2), "Linear"])
-    at_keys[-1] = at_keys[-1][:2]
-    scale_keys[-1] = [n, scale_keys[-1][1], "Quad In"]
-    scale_keys.append([n + 6, v3(0.02, 0.02, half)])
-    fuse = {
-        "Kind": "Mesh",
-        "From": "Line",
-        "Part": ["FxShell"],
-        "Look": "fx_rise_Warm",
-        "Grey": "fx_rise_Grey",
-        "Tracks": {
-            "At": at_keys,
-            "Scale": scale_keys,
-            "Transparency": [[0, 0, "Linear"], [n, 0, "Quad In"], [n + 6, 1]],
-            "Glow": [[0, 2, "Linear"], [n, 4]],
-        },
-        "Why": "the fuse: a brighter blade inside the lane, reaching the line's end on Land, the time left to move",
-    }
+    piece = LINE_LENGTH / steps
+    for k in range(1, steps + 1):
+        lit, full = round(n * (k - 1) / steps), round(n * k / steps)
+        rows[f"Fuse{k}"] = {"Kind": "Mesh", "From": "Line", "Part": ["FxPlate"], **grey, "Tracks": {
+            "At": [[0, v3(0, FLOOR + 0.02, -(k - 0.5) * piece)]],
+            "Scale": open_close(LINE_HALF * 0.8, 0.04, piece),
+            "Transparency": ([[0, 1, "Linear"]] if lit > 0 else []) + [[lit, 1, "Quad Out"]] + ([[full, 0, "Linear"]] if full < n else []) + [[n, 0, "Quad In"], [n + 6, 1]],
+            "Glow": [[0, 2, "Linear"], [n, 4]]},
+            "Why": f"the fuse's piece {k} of {steps}: lit in turn from the feet, the whole blade lit on Land"}
     streak = {
         "Kind": "Beam",
         "From": "Lunge",
@@ -224,7 +215,7 @@ def dasher_line():
         },
         "Why": "the run: a streak behind the Dasher down its line, gone soon after it lands",
     }
-    slash = at_beat(sheet_rows("Slash", "crescent", 0.3, [[0, 3], [0.15, 4.2], [1, 4.6]], 0.3, [-20, 20],
+    slash = at_beat(sheet_rows("Slash", "crescent", 0.3, [[0, 3], [0.15, 4.2], [1, 4.6]], 0.3, 0,
                                "where it lands: the crescent sheet across the run"), "Slash", "Land")
     ride(slash, hold=True, at=v3(0, 0, -0.8))
     on = needles(6, [26, 40], [0.12, 0.2], 35, 1.0, 0)
@@ -233,11 +224,11 @@ def dasher_line():
     on["Hold"] = True
     on["Tracks"]["At"] = [[0, v3(0, 0, -0.8)]]  # from the slash, in front of the body (the content check, AR52)
     on["Why"] = "needles on along the run as it lands"
-    rows = {"Lane": lane, "Fuse": fuse, "Streak": streak, **slash, "On": on}
-    for name in ("Lane", "Fuse"):
-        rows[name]["Body"] = "HumanoidRootPart"
-        rows[name]["Hold"] = True
-    return effect("DasherLine", "The Dasher's line, DasherLunge's own effect: the grey block-in (AR52).", rows, action="DasherLunge")
+    for row in rows.values():  # the lane and the fuse stay on the stone where the line was laid
+        row["Body"] = "HumanoidRootPart"
+        row["Hold"] = True
+    rows.update({"Streak": streak, **slash, "On": on})
+    return effect("DasherLine", "The Dasher's line, DasherLunge's own effect: the grey block-in (AR52).", rows, action="DasherLunge", world=True)
 
 
 def build():

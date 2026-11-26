@@ -191,8 +191,8 @@
           ]
         ],
         "Rotation": [
-          -25,
-          25
+          0,
+          0
         ],
         "FlipbookLayout": "Grid4x4",
         "FlipbookMode": "OneShot",
@@ -259,8 +259,8 @@
           ]
         ],
         "Rotation": [
-          -25,
-          25
+          0,
+          0
         ],
         "FlipbookLayout": "Grid4x4",
         "FlipbookMode": "OneShot",
@@ -352,8 +352,8 @@
           ]
         ],
         "Rotation": [
-          -25,
-          25
+          0,
+          0
         ],
         "FlipbookLayout": "Grid4x4",
         "FlipbookMode": "OneShot",

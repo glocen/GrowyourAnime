@@ -79,13 +79,14 @@ def scaled(seq, k):
 
 
 def sheet_rows(prefix, sheet, life, size, break_at, rotation, why):
-    """A kit sheet as one particle in its three passes, facing the camera, from frame 0.
+    """A kit sheet as one particle in its three passes, facing the camera, from frame 0, all three at one angle
+    (`rotation`, degrees): a range would roll each pass its own, so line, fill and dark would part.
     size: its studs over life as [[t, studs], ...]; break_at: where its fill starts toward the cool tone."""
     common = {
         "Lifetime": [life, life],
         "Speed": [0, 0],
         "Size": size,
-        "Rotation": rotation,
+        "Rotation": [rotation, rotation],
         "FlipbookLayout": "Grid4x4",
         "FlipbookMode": "OneShot",
         "LightInfluence": 0,

@@ -5525,6 +5525,13 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
     - the shard is a stand-in for today's own;
     - the CoreGui top bar is under the void, where in the game it stays on top;
     - today's frames are at Studio's 1.8:1.
+- **Research's pick, in pairs (Quaestor, 2026-11-26, 16:31; `sheets/R*_pairs.png`, `life_*.png`, both orders, with a blind fresh-eyes read): R1, the shard burst, and C1, the Flash.**
+  - **All three beat today in both orders.** R2 loses to both in both orders: its tear reads as a flat cut-out, nearer the rejected "2d cartoonish" effects.
+  - **R1 against R3: no clear difference.** The two orders disagree, for me and for fresh eyes. R1 is the bigger hit, and R3 is brighter and passes the gates better. The tie goes to R1 for three reasons: it's nearer the accepted graphite ("i love the graphite UI wayyy more"), it keeps the void the feel line asks for, and its cut crystals are our own. R3 stays on file beside it.
+  - **Must-fixes for the build:**
+    1. **The figure holds the strongest contrast** (the gate; class: every rarity's burst). The core sits behind the chest, as R1 is described, never behind the head, and the white keeps off the hair. In grey the spokes stay under the figure's edge, with a darker band next to it or the figure's own rim.
+    2. **Rarity sets the loudness** (the rule above). A Rare sits mid-ladder, so its burst is a step down, and the full-frame spokes are kept for the top rarities. The quarter checkpoint shows the ladder, one frame per rarity, at one time.
+    3. **C1 meets the gate:** a copy is done by 1.0 s after the tap, and the plate closes itself after 0.8 s (block A). Today it closes at 1.3 s. The card takes AR62's panel, graphite with the shard cut.
 
 **Not in this piece:** the Voidkin's own line and epithet (they need the director's ear first, given the "corny" rejections); the Index; a column of light from the Breaker in the world; the cut-in; new sounds (TR64's ear first); pity and banners.
 

@@ -17940,6 +17940,15 @@ The audit's fourth screen (the director, 2026-11-24: "this left ui is so ugly", 
 - **Open, not drawn:** the bar's name repeats the rail's lit page ("Overview"). The screen's own name ("Voidkin") would say where you are without repeating it. That's research's call at the pick.
 - **Content check, 20:23: PASS.** Nothing is uploaded from it. If one is ever uploaded, Roblox's buttons are cropped out first.
 
+**Research's pick (Quaestor, 2026-11-26, 20:24; `build/scratch/quaestor/ar62/bar_pair_small.png`, A and B at 568 × 320, in both orders): B, the marks by the Voidkin.**
+
+- **B over A, in both orders:** B's heart, lock and pencil sit by the fighter they act on, so they read as about Rook. A's sit beside Back and read as more navigation, and A's bar drops Credits, so the bar changes from screen to screen. B's bar is the same on every full screen.
+- **Gates (Modulo's MEASURED):** every cell and Back is 44 pt, and the marks are 5.7:1 off and 10.9:1 on, each read at 64 px.
+- **The open question:** the bar names the screen, "Voidkin", and the rail lights the page. Equipment's bar already says "Equipment" over a rail lit on Reinforce, so one rule covers both.
+- **Must-fix for the build:** the bar names the screen, never the rail's page (class: every full screen).
+- **A check at the build:** the widest Voidkin on the stage, a weapon or a reach out to its side, with nothing of it under a mark.
+- **Next:** Faber builds B with the run card C and the Arc panel B. Modulo goes on to the Menu.
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

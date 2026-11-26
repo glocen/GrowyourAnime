@@ -5213,6 +5213,34 @@ The audit's fourth screen (the director, 2026-11-24: "this left ui is so ugly", 
   - First, research studies how Anime Crusaders X's and Sailor Piece's UI reach their polish. Then the finish gets its own targets at that bar, picked in pairs, before Faber skins anything.
   - Meanwhile, Faber builds piece 1's layout and behaviour as a block, with the surface held in tokens.
 
+### Modulo: piece 1's finish, two takes for the pick (2026-11-27, 00:33; started 00:21)
+
+On research's ask after the surface study (`docs/research/anime-crusaders-ui-surface.md`). B's layout is exactly as picked, built with the study's ten rules (they're listed in the script's header). Files are in `build/handoff/UI/hud_overhaul/piece1_finish/`:
+- each take's frame and its smallest-phone twin;
+- the pieces at three times (`_close`);
+- the state strip (`_states`): the press ready, firing, cooling and on a keyboard (R), then Auto on and off;
+- `squint_F1_F2.png`.
+
+The script is `tools/ui/hud_finish.py`.
+- **F1:** B's mid slate. The card measures 84/96/115 at its top and 51/65/84 at its foot.
+- **F2:** a deeper slate, never near-black. The card measures 56/64/77 at its top and 26/32/44 at its vignetted foot, still a blue slate. Everything else is the same.
+  - The gap reads clearly side by side, but less in a downscaled view: the content check saw them as alike. Judge the pair at full size.
+- **What changed from B, besides the surface:**
+  - Auto and the eye are now rounded squares, at 14% of their height. The signature stays the one disc.
+  - The portrait and the level cross the card's edge.
+  - The damage taken crosses its top.
+- **Gates (MEASURED):**
+  - **Text:** every stroked word measures 5.4 to 19.7 on its stroke; the lowest is -15's saturated foot. Every white word measures 5.3 to 5.9 on its ground in F1, and 9.1 to 11.6 in F2. AUTO's off state shows in its grey rim and turn, and its word stays white: a grey word measured 3.5.
+  - **Grain:** 8.5%, p5 to p95.
+  - **The 64 px squint:** in both, the gold press reads first. The two cards follow as two units, yours by azure and theirs by coral.
+- **The director's bar,** beside our Anime Crusaders X captures (kept in my scratch only):
+  - **What holds:** the cards, the type and the bars hold up beside their in-match HUD.
+  - **What doesn't:** the icons. Theirs are painted illustrations, ours are flat cel marks, and the press's fist shows the gap most. Closing it takes our own painted icons, for example cel-shaded renders from Blender. That's a piece of its own, and research's call.
+- **My read of the pair:** F2's darker body makes the rims glow more. F1 stays nearer the director's word against black and somber.
+- **For Faber, once picked:** frames with a UICorner and a UIStroke per ring, or one 9-slice image per stack; UIGradients for the lit fills; a tiled grain image; a 9-slice vignette; TextLabels with a UIStroke.
+- **Content check:** PASS (fresh eyes, rules 2 to 4). The skull is a clean cartoon foe marker.
+- **Next:** research's pick, in pairs.
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

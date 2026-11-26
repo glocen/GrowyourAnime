@@ -16,9 +16,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **AR65's targets, for research's pick** (`build/handoff/Base/ar65_targets/`, the entry's step 2): A has graphite machines on a pale stone floor, B ivory machines on slate, each beside today's frame at phone size and in grey. Made and self-reviewed; my read is A. Nothing uploaded.
 - **AR64's hair** stays at "close" after 19 blind reads. A bolder cut changes the director's pick, so that's asked of the director (`docs/research/hair-read.md`). **Next:** AR56's cloud sea, then "Clips follow the model".
 
-**Scintilla (effects).** 2026-11-26, 14:38. AR52's ward at its half checkpoint, beside W2 (`build/handoff/Shade/checkpoint/w2_half_final_*`): the Guard's arms hid its lower half, so every pass now draws over them, the light whiter. My read: the five ribs read at the squint; research's pass waits. The break flashes the frame white, as W2's does. AR7's C4 ring is taken, not yet seen in the game. Logic 8,668/0.
-- **Next:** TR70 B's reveal targets, offline. In my next Studio turn, about 20 min: C4's take, the ward's break in a fight, AR61's bloom row.
-- **For Faber's review:** AR52's ward and break, AR7's C4 (their entries).
+**Scintilla (effects).** 2026-11-26, 15:27. AR52's ward was taken in a real fight for its final. It reads; the glance's cream glints clash, and I proposed recolouring them (AR52's entry). Waiting on research's verdict. AR7's C4 missed its main read in the game (a faint swirl on pale stone): the technique changes to a painted band. TR70 B: today's reveal, the figure mattes and the world frame are captured.
+- **Next:** TR70 B's targets on the real mattes, for research's pick in pairs; then C4's painted band, offline, with its take on my next Studio turn.
+- **For Faber's review:** AR52's ward, break and must-fix, AR7's C4 (their entries).
 
 **Sonus (sound).** 2026-11-26, 12:30 by the clock. **Shortlisted, not heard or picked:** TR42's eleven tabs (a62d1129), TR64's ten (17e042ae) and TR57's plate, five (BroadcastPlate, for Faber's review), in `ServerStorage.NL_Audition`: the place opened today with every earlier tab at its count, and Faber's end-of-turn save keeps the plate's. No Studio turn held, nothing running.
 - **Next:** the director's listens: TR42's on their go (item 10); TR64's with the plate after ShardDrop, once Faber's Play the moment hooks pass. Nothing else is open for sound (research, 12:19).

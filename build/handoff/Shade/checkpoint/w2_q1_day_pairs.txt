@@ -1,0 +1,5 @@
+w2_q1_day_pairs.png: the build build\handoff\Shade\checkpoint\w2_q1_day_peak.png beside the target build\handoff\Shade\checkpoint\W2_frame_guard_peak_crop.png, at 360 px tall
+row 1, y 6 to 378: build (left, 640 px wide) | target (right, 640 px)
+row 2: target (left) | build (right), the order swapped
+row 3: row 1 at a 96 px thumbnail's sharpness (the squint)
+row 4: row 1 in greyscale

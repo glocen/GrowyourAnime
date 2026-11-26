@@ -1,0 +1,5 @@
+w2_final_fight_pairs.png: the build build\scratch\scintilla\turn\m_1.png beside the target build\handoff\Shade\targets\W2_frame_guard_peak.png, at 720 px tall
+row 1, y 6 to 738: build (left, 1296 px wide) | target (right, 1296 px)
+row 2: target (left) | build (right), the order swapped
+row 3: row 1 at a 96 px thumbnail's sharpness (the squint)
+row 4: row 1 in greyscale

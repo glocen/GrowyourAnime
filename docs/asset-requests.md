@@ -4143,6 +4143,11 @@ This is delivery 4, the block clip of section 5 polished, on research's open not
 **C4's build (Scintilla, 2026-11-26, 14:36).**
 - **Technique:** the ring as the target's own drawing, two 4x4 flipbooks of its 18 frames (`tools/fx/keeper_targets.py --pictures`): the field and the line. Played once, flat on the street at the keeper's feet from Stamp (Ground, Hold), 10.6 studs to its edge. Under to over: the field laid deep warm #7A4A12, the field added warm, the line added warm white. The Gaze's glow keeps its beats. The hoop and the dust are dropped: the ring is the one hero shape.
 - **Status:** implemented and taken (logic offline, 0 failed). Not yet seen in the game: the PC ran short of memory and my Studio turn ended first. The take waits for my next turn. **For Faber's review:** `tools/fx/keeper_targets.py`, `tools/fx/keeper_moves.py`, `KeeperChallenge.json`. `Actions.luau`'s KeeperChallenge comment ("the hoop and dust on Stamp") is now stale.
+- **C4 in the game (Scintilla, 2026-11-26, 15:26): the main read missed.** I took it at the stage's camera, by day, slowed 0.2 (`build/handoff/Lamplighter/checkpoint/c4_game_1_strip_vs_target.png` and `c4_game_1_feet.png`).
+  - The ring reads as a faint pale swirl on the pale stone, not the target's warm gold band. The added warm and white wash out on bright ground, and the deep field at 0.6 transparency barely shows.
+  - The keeper's Challenge clip didn't play in this take (its pose held), so the take's beats are read from the rows alone.
+  - **The change, in technique:** AR52's day fix. Paint the ring's band in the target's warm hue (LightEmission 0, close to opaque) and keep the added light to the line's core alone.
+  - Next take: my next Studio turn, with the clip checked first.
 
 ## AR8. The effects pass
 
@@ -16026,6 +16031,18 @@ Written by `tools/fx/shade_tells.py`, from the kit's uploaded meshes and images 
   - **Must-fix, one (class: every ward light; it serves the director's "to thicc", "glass"):** the added light stays on the line. In the hold and around the glance's glint, the blue bloom spreads past the ribs, so the build reads softer and wider than W2's fine white strokes. Narrow the light to the stroke, keep its core white, and change no technique.
   - **Next:** that fix, then the ward in a real fight (raise, glance, break, drop) beside W2 at phone size, for the final. The glance's lit strokes stay out of the block, as you wrote.
 - **The must-fix, done (Scintilla, 2026-11-26, 14:41):** the light and the run are redrawn as the stroke alone, with no glow past it (`ward_targets.py`, `HALO`): the glow, painted and added, was the soft blue band, and the run's bright stretches carried it, the bloom by the glance's frames. Same technique, the core still white. Content check PASS, uploaded under the group, Approved (`docs/asset-log.md`); the review sheet is `build/handoff/Shade/fx/pictures/guard_ward_review.png`. Not yet in the game: the fight take (raise, glance, break, drop) is my next Studio turn. **For Faber's review:** `ward_targets.py`, the two ids in `Config.Effects`.
+- **The ward in a real fight, for the final (Scintilla, 2026-11-26, 15:26):** Faber's AR52 Guard case run alone (23 of 24 passed: the miss is the case's stale "Shield" row name, told to Faber), Rook against the Guard on the test pad's pale sand, the game's own camera. Sheets in `build/handoff/Shade/checkpoint/`:
+  - `w2_final_fight_phone.png` shows six moments at phone size (844 wide): raise, hold, glance, the glints at the drop, break, break +0.17 s.
+  - `w2_final_fight_close.png` shows the same moments close.
+  - `w2_final_fight_pairs.png` shows the hold beside W2's peak.
+
+  What I see:
+  - The raise's click reads, as a white card.
+  - The hold reads as W2's azure-white frame, small at this camera.
+  - **The glance's glints are still G2's cream** (`GuardGlance`: 255,246,230): on pale ground they read as beige cards beside the azure frame, the frame's one clash.
+  - **At the break, AR1's golden Haymaker square takes the eye.** The ward's white ring and azure chips come after it.
+
+  My proposal: give the glance the ward's own azure-white, one row's colours, tier 1. I'm waiting for your verdict.
 
 ## AR53. Goals' look, basic at launch: the dare's line, today's three, the Mask Ledger's page (Modulo, after AR52's clips)
 

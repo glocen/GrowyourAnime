@@ -11,9 +11,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Faber (builder).** 2026-11-26, 17:45 by the clock, on Opus 5.5. Committed: AR65's install, the kit, the plates (must-fix 2, the Festival Door counted as a machine) and the Door under the Generator at dusk (must-fix 3); the Mill's plate now says GENERATOR. The record is in AR65's entry. Earlier today: TR65 to TR68, TR69 A to C built Off, TR71 A.
 - **Next:** Studio goes to Scintilla (AR52's ward retake, AR7's C4). Meanwhile, AR56's drifts staged and uploaded; then AR56's Haze test, TR66 row 13's ComboSnap, TR69 D and E, TR69 F's captures, TR71 B to D, TR59's retake.
 
-**Modulo (assets).** 2026-11-26, 19:00. Nothing running, no lock held.
-- **For Faber:** AR65's floor, the last step: the 17 maps at 160, read between the two measured steps, to upload and capture (AR65, "Modulo's last step").
-- **AR64's hair** stays at "close", asked of the director. **Now:** AR67, the Generator's targets (three makes, started 18:23).
+**Modulo (assets).** 2026-11-26, 19:04. Nothing running, no lock held.
+- **For Faber:** AR65's floor, the last step (ce6d445d): the 17 maps at 160, to upload and capture. **For research:** AR67's three Generator makes, to pick in pairs (`build/handoff/Base/ar67_targets/ar67_sheet.png`; my read: A).
+- **AR64's hair** stays at "close", asked of the director. **Now:** AR66, Kirra's Hit A, Down A and Up A.
 
 **Scintilla (effects).** 2026-11-26, 19:02. **TR69 A's ring and glint targets** are with research for the pick in pairs: R1 to R3 and G1 to G3 beside today's grey blocks, plus R4 (a mark over the head, tier 2), since the bodies hide two thirds of a floor ring at the player's camera. **AR58's motes** are fixed in the rows, not yet seen in play. **AR7's C4** and **AR61** wait on the director's word.
 - **Next Studio turn:** AR58's motes on the deck, then C4's straight cut (a floor part?). Meanwhile: AR48's states looks. Nothing running.

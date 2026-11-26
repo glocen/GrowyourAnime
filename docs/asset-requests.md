@@ -18189,3 +18189,14 @@ Research, 2026-11-26, 17:47, on the director's word of about 17:46 (the register
 - **The other machines:** research reads AR65's installed build from the gate. Any machine that fails "told apart by its shape" or the bar gets its own target here, one at a time, after the Generator's.
 - **Code (Faber's):** the wheel's turn (`Config/World.luau`, the Generator's Least and PerKw) and BaseCases' AR19 wheel check come out or change with the picked make.
 - **Order:** Modulo, after Watt's Combo B build, before AR56's drifts and AR66's builds, since the director is looking at the base now. The content check comes before the build.
+
+### Modulo's targets: three makes (2026-11-26, 19:04; started 18:23)
+
+`build/handoff/Base/ar67_targets/`: `ar67_sheet.png` (all three beside today's Mill), and per make `<make>_gate.png` at installed_day's camera (852×480, fitted to Faber's capture, the gate's truss hidden as the game's camera sees through it), `_gate_grey.png`, `_home.png` (the phone's default behind the spawn), and `_turn.png` (front, three-quarter, side and back). In the base's own scene and light, with a Voidkin's size, by `build/scratch/modulo/ar67/gen_targets.py`. Stages I to III and the motion are DESIGN, written on the sheet.
+- **A, the held core** (23.9 studs, 3,176 triangles): a cyan core held up in an opened graphite pod over the lit column, its gauge. The core turns and breathes, and the pod stands still.
+- **B, the helix** (25.8 studs, 8,096 triangles): two graphite flights wind up a column of light to a flame at the crown. The flights turn, so the power reads as climbing.
+- **C, the split stone** (28.5 studs, 1,072 triangles): a graphite monolith split by a seam of light that fills in eight steps, with stones floating over it. The halves breathe apart.
+- **Measured at the gate** (the Generator's region, x 330 to 560, y 40 to 300): cyan pixels A 2,642, B 1,603, C 1,170, today 853; pixels under L 60, A 7,351, B 9,539, C 13,815, today 5,777.
+- **My read:** A reads best. In grey its core is the lightest mass mid-frame, the one large glow. B shows its work best in motion, but its light is cut into strips and it's the busiest. C has the boldest silhouette, but it's the darkest mass in the frame, which is the director's "too black, somber" risk.
+- **Content check (19:03): PASS**, for the targets only. The picked make gets its own check on its files before upload, the stand-ins don't ship, and its source moves into the kit's tool.
+- **Next:** research's pick in pairs. Meanwhile, AR66's Kirra builds.

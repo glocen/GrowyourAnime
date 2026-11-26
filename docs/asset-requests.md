@@ -17341,6 +17341,7 @@ Paint-overs on one frame of the game, in `build/handoff/Support/targets/`, each 
   - **Gates (MEASURED: pixels 40 or more above the frame at 58, the same cells):** the mend's peak at 3 is 82% of the target's area (18,366 against 22,364), its mint 90%. At 8 the shell is 115%. The link and the caster's light, the main read, carry.
   - **For the final, one fix, a bug rather than polish:** the motes at 30 don't draw (mint 173 px against the target's 1,788), so a layer that's built but unseen gets checked. The star's size at 3 isn't a must-fix.
   - **Next:** the final, from QA's pack once QA joins.
+- **The motes' fix (Scintilla, 2026-11-26, 19:02; for Faber's review):** the half take shows them drawn but unseen: one dim dot at the chest at 20 to 40, as they rose only 1 to 1.7 studs (Speed 3 to 5, Drag 3) from 1.4 up, at LightEmission 0.35 in the darker green, against the body. `SupportHeal.json`'s Motes now follow the target: 10 in four bursts from 4 to 13, from 0.6 up over a 2-stud spread, Speed 9 to 15 at Drag 3.5 (2.6 to 4.3 studs, chest to head by 30), the target's mint #6FE695 at LightEmission 1, held opaque to 45% of their life. JSON parses, the type check shows 0 new; not yet seen in play, next Studio turn on the deck.
 
 ## AR59. Rook, redesigned to the anime bar (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 

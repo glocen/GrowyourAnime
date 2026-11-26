@@ -474,18 +474,18 @@
    "Emitter": {
     "EmissionDirection": "Top",
     "SpreadAngle": [
-     25,
-     25
+     20,
+     20
     ],
     "Lifetime": [
      0.6,
-     0.9
+     0.8
     ],
     "Speed": [
-     3,
-     5
+     9,
+     15
     ],
-    "Drag": 3,
+    "Drag": 3.5,
     "Acceleration": {
      "Vector3": [
       0,
@@ -496,25 +496,25 @@
     "Size": [
      [
       0,
-      0.32
+      0.42
      ],
      [
-      0.5,
-      0.26
+      0.6,
+      0.34
      ],
      [
       1,
-      0
+      0.08
      ]
     ],
     "Transparency": [
      [
       0,
-      0.1
+      0
      ],
      [
-      0.7,
-      0.3
+      0.45,
+      0.02
      ],
      [
       1,
@@ -523,23 +523,31 @@
     ],
     "Color": {
      "Color3": [
-      38,
-      204,
-      98
+      111,
+      230,
+      149
      ]
     },
-    "LightEmission": 0.35,
+    "LightEmission": 1,
     "LightInfluence": 0,
     "ZOffset": 0.5
    },
    "Emit": [
     [
-     5,
-     6
+     4,
+     3
     ],
     [
-     11,
-     4
+     7,
+     3
+    ],
+    [
+     10,
+     2
+    ],
+    [
+     13,
+     2
     ]
    ],
    "Tracks": {
@@ -549,7 +557,7 @@
       {
        "Vector3": [
         0,
-        1.4,
+        0.6,
         0
        ]
       }
@@ -558,11 +566,11 @@
     "Radius": [
      [
       2,
-      0.9
+      1.0
      ]
     ]
    },
-   "Why": "round motes rising off it and slowing, after the burst: never falling, never sticking"
+   "Why": "round motes rising off it and slowing, after the burst: bright mint, rising 2.5 to 4.5 studs, from its chest to its head by frame 30 as the target has them; never falling, never sticking"
   }
  }
 }

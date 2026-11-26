@@ -5540,7 +5540,15 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
 - a Tower run's end;
 - a new Voidkin's plate (Lead or Work, TR70);
 - the return card.
-The line names the one thing nearest to done, for example "Your shard is ready: Open", read from the state the server already holds. Research writes the table of lines with the block.
+The line names the one thing nearest to done, read from the state the server already holds. The first that's true wins (research's words, 14:22):
+  1. a shard is ready: "Your shard is ready" · Open;
+  2. a Voidkin's star is paid for: "{name} can take a star" · See;
+  3. a bay is empty and a Voidkin is free: "Bay {n} is empty" · Pick;
+  4. the base's upgrade is affordable: "You can upgrade the base" · Upgrade;
+  5. a goal needs one more: "{goal}: 1 left" · Go;
+  6. otherwise the next fight: "The Lamplighter is next", "Lantern Row on Hard" or "Lantern Row again" · Fight.
+  - A fall's card keeps its three presses (Retry, Send another, Home), with the line above them.
+  - Words fit `docs/ui.md`, "Words players read". A press is one word.
 
 **D. The return card, the whole screen** (the director, 2026-11-24, 21:13: "it need to be the whole screen"; TR53's card):
 - what the base made while you were away, in one Collect;

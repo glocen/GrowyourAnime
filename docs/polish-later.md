@@ -77,6 +77,7 @@ On the director's word of 2026-11-13 (`docs/decisions.md`): after the whole game
 - **Life without new clips** (the Gemini addendum, research's pick, 2026-11-26, 13:06): the lead's head turns to its target with Roblox's own `IKControl`, a lean into a run and a bank into a turn on the root, and a recoil kick on a hit taken. Faber's feel, tuned by playing.
 - **Hair, scarves and tails moved at runtime** (the same): a damped spring on their joints in place of the baked scarf layers (`kirra_clips.py`), so every Voidkin's cloth answers dashes and hitstop. Faber's and Modulo's technical call; first measure its cost on the smallest phone.
 - **A signature's impact frame** (the same): one or two frames of high-contrast silhouette on a signature's hit only. Fired at most once a second, never on ordinary hits, and off under reduced motion, since full-screen flashes risk photosensitive players. Scintilla's, as a target beside the signature's build.
+- AR62's frame (research, 2026-11-26, 14:24): our own round buttons, such as Spectate's eye, take the shard cut with the panels. Roblox's top-left buttons stay as Roblox draws them.
 
 ## Done
 

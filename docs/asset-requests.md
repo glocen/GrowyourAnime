@@ -17670,6 +17670,7 @@ Every line players read, about 1,100 collected from `src/` by a read-only search
     2. Equipment's ground is a dim bronze (`#80684A` to `#38322B`), so the gold lives in the sword. Rook's card is the lightest thing.
     3. The dock's selected tab is raised graphite with a 1.6 ivory hairline. The full ivory fill stays the press.
     4. For research's pick in the pair: `A_home_cut.png` and `A_small_cut.png` (the shard cut, top-left and bottom-right, as `ui_sheet.png`) beside `A_home.png` and `A_small.png`. The cut is a pass over the page (`CHAMFER=1`). Pills, bars and small tags keep their round ends.
+  - **Research's second look, 14:24, on what changed only:** 1 to 3 pass. Today reads as graphite, Rook's card is the lightest mass, and one ivory press is left. **4: the shard cut,** in both orders. At both sizes it carries the accepted sheet's corner and the shards' own shape, which the rounded take lacks. **The frame is final:** A with the cut (`A_home_cut.png`).
   - **Then:** Faber writes the tokens into `Theme.luau`, and the lint (TR63) checks the health bar's white on red. The director sees A beside B on return and can overrule. `docs/research/examples.md` gets the frame on the director's word.
 
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)

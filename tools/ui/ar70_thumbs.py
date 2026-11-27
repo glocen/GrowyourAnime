@@ -51,10 +51,10 @@ TAKES = {
 }
 # the game page's set, in upload order (research, 2026-11-27: "the minimum is Pip's burst and Rook's hit"; the shard
 # and the bays join when they land), with icon C round 2 at 512
-# the captures are out: the GFX art replaces them (the director, 2026-11-27, 23:14 and 23:15). Research's pick, S2
-# (23:38), with its three fixes: the icon S2 and the thumbnail T2, its staging at 16:9
-FINAL = ["T2"]
-ICON = REPO / "build" / "handoff" / "GamePage" / "ar70" / "gfx" / "icon_S2_final.png"
+# empty: the GFX art (S2 and T2) was rejected by the director, relayed by research at 2026-11-27, 23:59 ("horrendous",
+# "it need an overhaul"); the game page's art comes from research's AI 2D line, so nothing of ours goes up from here
+FINAL = []
+ICON = None
 TITLES = {"fight_hit": "Rook, the hit", "fight_face": "Rook, the face", "fight_pip": "Pip, the burst",
           "shard": "the shard", "bays": "the bays at work"}
 

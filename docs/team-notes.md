@@ -11,11 +11,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Faber (builder).** 2026-11-27, 16:12 by the clock, on Opus 5.5. **AR68 A** (research's pick, the director's top-left overhaul) is in the game (248640e1): the card and blade, the lag chip, Rook's bust; AR68 51/51, captured day and dusk in a fight (`build/captures/ar68/a/`), for research's pass and the director's look. **TR73** measured (cc54af7d, `docs/requests/TR73.md`): the director's case isn't reproduced in a bare 1v1; research's call on health ×10. The full suite (4,632/45) found and I fixed a crash that leaked a fight into later cases; open, not mine: the flurry, KeeperChallenge's Wick, a 3-digit shard count over its mark.
 - **Next:** the pre-publish smoke (Base → Festival → Base on a fresh save, a dodge, a cancel, a kill); Kirra's build at my Studio turn; TR69 F.
 
-**Modulo (assets).** 2026-11-27, 16:33. **AR70, the game page's icon:** three targets, for the director's side by side (`build/handoff/GamePage/ar70/icon_sheet.png`). They are A the strike, B the card and C the stare. Content check PASS. The read beside shipped icons waits on the director's icons. AR68 A is in the game (Faber, 248640e1).
-- **For Faber's install:**
-  - TR69 B's two elite clips, `ShadeOverhead` and `ShadeFan` (`build/handoff/Shade/clips/`; content check PASS, the asset log's row). DasherFan plays `ShadeFan`, its `Close` at 2.5 s.
-  - Kirra's hair and map, and both portraits uploaded again (AR60, round 2).
-- **Now:** nothing running, no lock held. Next: AR70's three thumbnails once an icon is picked. Pip (AR63) once the director has seen Kirra's hair in the game.
+**Modulo (assets).** 2026-11-27, 16:36. **AR70's icon targets are with the director for the pick** (`build/handoff/GamePage/ar70/icon_sheet.png`: A the strike, B the card, C the stare; content check PASS; 95fdefc8). **My queue is empty:** every piece left waits on one of the director's looks.
+- **Waiting:** AR70's three thumbnails on the icon's pick. Pip (AR63) on the director's look at Kirra in the game. The foe's card in A's language and AR55's return card on the director's look at AR68 A in the game (R1).
+- **Now:** nothing running, no lock held. A new piece from research or the director starts at once.
 
 **Scintilla (effects).** 2026-11-27, 14:41. AR69: research picked fall A and burn A, with one must-fix each; the install is my piece now. Rung 4's gold at night now reads gold in play (AR61), for Faber's review. No Studio turn held, nothing running.
 - **Next:** AR69's install. F1's round 2 waits for a Festival turn; AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.

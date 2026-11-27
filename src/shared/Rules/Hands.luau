@@ -18,7 +18,8 @@
 --   Hands.Waits(readyAt, at, wait) -> boolean                  Auto, on, still waits for a thumb
 --   Hands.Tally(at) -> Tally                                   a new fight's read-out, from `at`
 --   Hands.Note(tally, what, amount, at)                        a count added: "Calls", "OnPurpose", "Accident", "Taps",
---                                                              "Waited" (seconds), "Taken" (health); "Blow" only keeps it up
+--                                                              "Waited" (seconds), "Taken" (health), "TapMoves" (TR69's
+--                                                              block); "Blow" only keeps it up
 --   Hands.Over(tally, at, linger) -> boolean                   its fight is over: Linger seconds since its last blow
 --   Hands.Rate(tally) -> number?                               presses a second (Calls and taps over its length)
 
@@ -33,6 +34,7 @@ export type Tally = {
 	Taps: number,
 	Waited: number, -- seconds a full ring waited before its signature went
 	Taken: number, -- health the lead lost
+	TapMoves: number, -- taps that sent the lead off (TR69's block; SlamService)
 }
 
 function Hands.Calls(on: boolean, mode: string, inTry: boolean, fighting: boolean, tower: boolean): boolean
@@ -66,7 +68,7 @@ function Hands.Waits(readyAt: number, at: number, wait: number): boolean
 end
 
 function Hands.Tally(at: number): Tally
-	return { From = at, To = at, Calls = 0, OnPurpose = 0, Accident = 0, Taps = 0, Waited = 0, Taken = 0 }
+	return { From = at, To = at, Calls = 0, OnPurpose = 0, Accident = 0, Taps = 0, Waited = 0, Taken = 0, TapMoves = 0 }
 end
 
 function Hands.Note(tally: Tally, what: string, amount: number, at: number)

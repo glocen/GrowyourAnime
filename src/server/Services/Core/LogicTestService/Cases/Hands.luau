@@ -73,10 +73,12 @@ return {
 			Hands.Note(tally, "Taps", 1, 16)
 			Hands.Note(tally, "Waited", 0.5, 16)
 			Hands.Note(tally, "Taken", 40, 18)
+			Hands.Note(tally, "TapMoves", 1, 18) -- SlamService's, on each tap that sends the lead off (TR69's block)
 			Hands.Note(tally, "Blow", 0, 20)
 			t.Equal("its length, first blow to last", tally.To - tally.From, 10)
 			t.Equal("its presses a second", Hands.Rate(tally), 0.2)
-			t.Check("its counts", tally.Calls == 1 and tally.OnPurpose == 1 and tally.Accident == 1 and tally.Taps == 1 and tally.Waited == 0.5 and tally.Taken == 40)
+			t.Check("its counts", tally.Calls == 1 and tally.OnPurpose == 1 and tally.Accident == 1 and tally.Taps == 1 and tally.Waited == 0.5 and tally.Taken == 40
+				and tally.TapMoves == 1)
 			t.Check("still up inside Linger", not Hands.Over(tally, 20 + H.Linger - 0.1, H.Linger))
 			t.Check("over after it", Hands.Over(tally, 20 + H.Linger, H.Linger))
 			t.Check("an unknown count is refused", not pcall(Hands.Note, tally, "Damage", 1, 21))

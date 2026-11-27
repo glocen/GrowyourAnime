@@ -178,14 +178,15 @@ local function run(filter: string?): string
 		Equal = function(label: string, actual: any, expected: any)
 			record(actual == expected, label, `got {tostring(actual)}, want {tostring(expected)}`)
 		end,
-		Row = function(label: string, low: number?, high: number?, ours: number?, unit: string)
-			local reading = if ours then string.format("%.3g", ours) else "not measured"
+		Row = function(label: string, low: number?, high: number?, ours: (number | string)?, unit: string)
+			-- a reading may be a word (the tap case's clip), never formatted as a number
+			local reading = if type(ours) == "number" then string.format("%.3g", ours) elseif ours ~= nil then tostring(ours) else "not measured"
 			if not low or not high then
 				checks += 1 -- a measure with no target yet is the case's evidence
 				table.insert(lines, `NOTE  {current} · {label} (ours {reading} {unit})`)
 				return
 			end
-			local ok = ours ~= nil and ours >= low - 0.005 and ours <= high + 0.005 -- a frame's read lands on a target's edge
+			local ok = type(ours) == "number" and ours >= low - 0.005 and ours <= high + 0.005 -- a frame's read lands on a target's edge
 			local target = if low == high then string.format("%.3g", low) else string.format("%.3g to %.3g", low, high)
 			record(ok, label, `target {target}, ours {reading} {unit}`, if ok then "PASS" else "MISS")
 		end,

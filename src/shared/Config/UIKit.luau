@@ -178,9 +178,13 @@ local chests: { [string]: Image } = {
 -- plate and the signature's press, Modulo's, under the group. Joined into Images below, as the equipment's are. The health
 -- fill is cut through its middle row: with no top or bottom cut, Roblox drew only its top row's colour (seen 2026-11-27).
 local hudM: { [string]: Image } = {
-	MLeadPlate = { Id = "rbxassetid://111657507849090", Pixels = Vector2.new(808, 200), Points = Vector2.new(202, 50), Pad = 6 },
-	MLevelTab = { Id = "rbxassetid://87612167685084", Pixels = Vector2.new(168, 104), Points = Vector2.new(42, 26), Pad = 6 },
-	MHealthFill = { Id = "rbxassetid://139822441121388", Pixels = Vector2.new(544, 48), Points = Vector2.new(136, 12), Cut = { 4, 6, 4, 6 }, Pad = 0 },
+	-- The top left, A (research's pick, 2026-11-27, 14:29; build/handoff/UI/ar68/m_dark/top_left/export/), each laid whole
+	-- at its box (Config.Hud.M.Lead): the health and its lag revealed by a clip, never stretched.
+	MLeadPlate = { Id = "rbxassetid://137691293282188", Pixels = Vector2.new(800, 224), Points = Vector2.new(200, 56), Pad = 0 },
+	MLevelTab = { Id = "rbxassetid://117802703396092", Pixels = Vector2.new(132, 80), Points = Vector2.new(33, 20), Pad = 0 },
+	MHealthFill = { Id = "rbxassetid://92359092192467", Pixels = Vector2.new(480, 48), Points = Vector2.new(120, 12), Pad = 0 },
+	MHealthLag = { Id = "rbxassetid://113566758510821", Pixels = Vector2.new(480, 48), Points = Vector2.new(120, 12), Pad = 0 },
+	MLeadBustRook = { Id = "rbxassetid://101046364884188", Pixels = Vector2.new(264, 248), Points = Vector2.new(66, 62), Pad = 0 },
 	MPressDisc = { Id = "rbxassetid://102004651769383", Pixels = Vector2.new(288, 288), Points = Vector2.new(72, 72), Pad = 6 },
 	MPressRing = { Id = "rbxassetid://73690327035879", Pixels = Vector2.new(288, 288), Points = Vector2.new(72, 72), Pad = 6 },
 	MPressGlow = { Id = "rbxassetid://95716092192754", Pixels = Vector2.new(368, 368), Points = Vector2.new(92, 92), Pad = 0 },

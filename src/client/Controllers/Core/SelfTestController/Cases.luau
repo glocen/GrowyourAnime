@@ -64,6 +64,7 @@ local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
+local LeadPlate = require(UI.LeadPlate)
 local Digits = require(UI.Kit.Digits)
 local Fade = require(UI.Kit.Fade)
 local BreakerScreen = require(UI.BreakerScreen)
@@ -5139,7 +5140,7 @@ local cases = {
 			t.Wait(cfg.Seconds + 0.1) -- anything popping settles
 			local middle = pill.AbsolutePosition + pill.AbsoluteSize / 2
 			local most, moved, levelMost, glinted, whitest = 1, 0, 1, 0, 0
-			local rest = (HudConfig.M :: any).Colours.Text -- the plate's level at rest, lit toward pale gold at a level-up (AR68 M)
+			local rest = (HudConfig.M :: any).Lead.Colours.Bright -- the plate's level at rest in white, lit toward pale gold at a level-up (AR68 A)
 			local watch = RunService.RenderStepped:Connect(function()
 				most = math.max(most, Pop.Active(pill))
 				moved = math.max(moved, (pill.AbsolutePosition + pill.AbsoluteSize / 2 - middle).Magnitude)
@@ -5414,17 +5415,19 @@ local cases = {
 			local def = Voidkin.ById[lead:GetAttribute("Def") :: string]
 			t.Check("its portrait in its rarity's frame", def ~= nil and parts.LeadPortrait:GetAttribute("Voidkin") == def.Id and parts.LeadPortrait:GetAttribute("Rarity") == def.Rarity, `{parts.LeadPortrait:GetAttribute("Face")}`)
 			t.Check("and its type's gem", def ~= nil and parts.LeadGem:GetAttribute("Kit") == `Gem{def.Type}`, `{parts.LeadGem:GetAttribute("Kit")}`)
-			-- AR68 M: the digits on the health bar, off-white over their soft shadow, now bold and the most regular after it;
-			-- the experience's line under the bar; the level on its tab at the portrait's foot.
+			-- AR68 M's top left, A: the digits on the health bar in white Montserrat Heavy with the dark edge, '2,518  /  4,061';
+			-- the experience's line under the bar; the level on its tab at the card's foot.
 			local text, bar, xpBar = parts.LeadHealthText :: TextLabel, parts.LeadHealth :: GuiObject, parts.Lead:FindFirstChild("Xp") :: GuiObject
 			local middle = text.AbsolutePosition.Y + text.AbsoluteSize.Y / 2
 			t.Check("its digits on the health bar", middle >= bar.AbsolutePosition.Y - 1 and middle <= bar.AbsolutePosition.Y + bar.AbsoluteSize.Y + 1,
 				string.format("their middle %.0f on %.0f to %.0f", middle, bar.AbsolutePosition.Y, bar.AbsolutePosition.Y + bar.AbsoluteSize.Y))
-			local runs = text:FindFirstChild("Runs") :: TextLabel?
-			local shadow = if runs then runs:FindFirstChild("Shadow") :: UIStroke? else nil
-			local m: any = HudConfig.M
-			t.Check("off-white over its soft shadow, now bold (M)", runs ~= nil and runs.RichText and runs.TextColor3 == m.Colours.Text
-				and string.find(runs.Text, "<b>", 1, true) == 1 and shadow ~= nil and shadow.Color == m.Colours.Shadow, if runs then runs.Text else "no runs")
+			local digitsShown = text:FindFirstChild("Shown") :: TextLabel?
+			local edge = if digitsShown then digitsShown:FindFirstChild("Edge") :: UIStroke? else nil
+			local a: any = HudConfig.M.Lead
+			local share, top = string.match(under, "^(.-)%s*/%s*(.+)$")
+			t.Check("in white Montserrat Heavy with the dark edge, spaced '  /  ' (A)", digitsShown ~= nil and digitsShown.TextColor3 == a.Colours.Bright
+				and digitsShown.FontFace.Family == a.Font and digitsShown.FontFace.Weight == Enum.FontWeight.Heavy and edge ~= nil and edge.Color == a.Colours.Ink
+				and (share == nil or digitsShown.Text == `{share}  /  {top}`), if digitsShown then digitsShown.Text else "no digits")
 			t.Check("the experience's line under the bar", xpBar ~= nil and xpBar.AbsolutePosition.Y >= bar.AbsolutePosition.Y + bar.AbsoluteSize.Y - 1)
 			HudCases.LevelTab(t, parts)
 			local credits = (parts.Credits :: TextLabel).Text
@@ -6098,6 +6101,46 @@ local cases = {
 		end,
 	},
 	{
+		-- AR68 M's top left, A (Config.Hud.M.Lead.Health): the health revealed by its clip, Root + Span of the share wide; on a
+		-- hit the lag holds at the old share, then drains to the new a beat later; a heal carries it with the light at once.
+		Name = "HUD: AR68 A, the lead's health revealed, and the last hit's lag holds then drains",
+		Run = function(t: any)
+			local a: any = HudConfig.M.Lead
+			local card = LeadPlate.new(Layers.Get("Hud"))
+			card.Frame.Name = "NL_TestLead"
+			local bar = card.Health
+			local light, lag, front = bar:FindFirstChild("Light") :: Frame, bar:FindFirstChild("Lag") :: Frame, bar:FindFirstChild("Front") :: Frame
+			-- a UDim's offset is whole authored points: each width within 1
+			local function reach(share: number): number
+				return LeadPlate.Pt(a.Health.Root + a.Health.Span * share)
+			end
+			LeadPlate.Fill(bar, 1)
+			t.Near("full: the light Root + Span wide", light.Size.X.Offset, reach(1), 1)
+			t.Check("its image whole, never stretched", (light:FindFirstChildOfClass("ImageLabel") :: ImageLabel).Size.X.Offset == math.floor(LeadPlate.Pt(a.Health[3])))
+			t.Check("no end line at full", not front.Visible)
+			LeadPlate.Fill(bar, 0.6)
+			t.Near("a hit: the light at the new share", light.Size.X.Offset, reach(0.6), 1)
+			t.Near("the lag holds at the old", lag.Size.X.Offset, reach(1), 1)
+			t.Check("the light's end lit", front.Visible and front.Size.X.Scale > 0
+				and math.abs((front.Position.X.Scale + front.Size.X.Scale) * bar.Size.X.Offset - light.Size.X.Offset) < 1)
+			t.Wait(a.Health.Hold * 0.6)
+			t.Near("still held inside its beat", lag.Size.X.Offset, reach(1), 1)
+			t.Wait(a.Health.Hold * 0.4 + a.Health.Drain + 0.15)
+			t.Near("then drained to the light", lag.Size.X.Offset, reach(0.6), 1)
+			LeadPlate.Fill(bar, 0.4)
+			t.Wait(a.Health.Hold * 0.5)
+			LeadPlate.Fill(bar, 0.2)
+			t.Near("a second hit inside the beat: the lag still at the first's old share", lag.Size.X.Offset, reach(0.6), 1)
+			LeadPlate.Fill(bar, 0.9)
+			t.Near("a heal: the lag with the light at once", lag.Size.X.Offset, reach(0.9), 1)
+			LeadPlate.Fill(bar, 0.001)
+			t.Check("a sliver left: Least wide at least", light.Visible and light.Size.X.Offset >= LeadPlate.Pt(a.Health.Least) - 1)
+			LeadPlate.Fill(bar, 0)
+			t.Check("none left: no light", not light.Visible)
+			card.Frame:Destroy()
+		end,
+	},
+	{
 		-- AR12 (V2, Block; docs/ui.md, rule 3): each pill in its system's colour, and the HUD's face one value.
 		Name = "HUD: AR12, the pills wear their systems' colours, and the HUD's text takes the face named, at once",
 		Run = function(t: any)
@@ -6125,7 +6168,7 @@ local cases = {
 				t.Wait(0.1)
 				t.Check(`{face}: the pill's value wears it`, value.FontFace.Family == row.Family and value.FontFace.Weight.Name == row.Strong, `{value.FontFace.Family} {value.FontFace.Weight.Name}`)
 				-- The plates' words keep their own face whatever the HUD's (AR62's F2; the lead's plate Oswald, AR68 M).
-				t.Check(`{face}: the lead's name keeps the plate's face`, name.FontFace.Family == HudConfig.M.Font, name.FontFace.Family)
+				t.Check(`{face}: the lead's name keeps the plate's face`, name.FontFace.Family == HudConfig.M.Lead.Font, name.FontFace.Family)
 				local joined = Text.new({ Name = "SelfTestFace", Font = Theme.Font.Number, Parent = Layers.Get("Hud") })
 				t.Check(`{face}: a label that joins the HUD wears it too`, joined.FontFace.Family == row.Family and joined.FontFace.Weight.Name == row.Number, `{joined.FontFace.Family} {joined.FontFace.Weight.Name}`)
 				joined:Destroy()

@@ -2405,11 +2405,14 @@ function BaseCases.Cases(given: Given): { any }
 				end
 				local made = t.Server("Act", "SetLead", { Voidkin = worker })
 				local now = t.Server("Bays")
-				t.Check(`made the lead, it leaves bay {bay}`, type(made) == "table" and made.Ok == true and type(now) == "table" and now[bay] == "",
-					if type(made) == "table" then tostring(made.Error) else tostring(made))
+				-- TR72: a worker made the lead swaps places, the old lead taking its bay (or leaving it empty while it heals)
+				t.Check(`made the lead, it leaves bay {bay} to the old lead`, type(made) == "table" and made.Ok == true and type(now) == "table"
+					and now[bay] ~= worker and (now[bay] == was or now[bay] == ""),
+					if type(made) == "table" then `{made.Error}, bay {bay}: {if type(now) == "table" then now[bay] else "?"}` else tostring(made))
 				local back = t.Server("Act", "SetLead", { Voidkin = was })
 				local after = t.Server("Bays")
-				t.Check("the old lead back, the bay still empty", type(back) == "table" and back.Ok == true and type(after) == "table" and after[bay] == "")
+				t.Check("the old lead back, the worker back in its bay", type(back) == "table" and back.Ok == true and type(after) == "table"
+					and after[bay] ~= was and (after[bay] == worker or after[bay] == ""), if type(after) == "table" then tostring(after[bay]) else "no bays")
 			end,
 		},
 		{

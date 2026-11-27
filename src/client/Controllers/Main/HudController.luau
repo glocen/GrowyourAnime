@@ -1421,8 +1421,11 @@ local function paintHeal()
 		-- long on the phone's face): the "+N" starts after their end.
 		local drawn = digits.TextBounds.X * bar.Size.X.Offset / math.max(bar.AbsoluteSize.X, 1)
 		local after = bar.Position.X.Offset + (bar.Size.X.Offset + drawn) / 2 + h.Gap
-		healGain.Position = UDim2.fromOffset(after, bar.Position.Y.Offset - h.Rise * (1 - (1 - life) ^ 2))
-		healGain.Size = UDim2.fromOffset(Text.Wide(healGain, healGain.Text) + 2, bar.Size.Y.Offset)
+		-- its box at least its line tall, centred on the bar (A's bar is 12 points, under the caption's line)
+		local tall = math.max(bar.Size.Y.Offset, math.ceil(healGain.TextSize * 1.25))
+		local y = bar.Position.Y.Offset + (bar.Size.Y.Offset - tall) / 2
+		healGain.Position = UDim2.fromOffset(after, y - h.Rise * (1 - (1 - life) ^ 2))
+		healGain.Size = UDim2.fromOffset(Text.Wide(healGain, healGain.Text) + 2, tall)
 		healGain.TextTransparency = math.clamp((life - 2 / 3) * 3, 0, 1)
 	end
 end

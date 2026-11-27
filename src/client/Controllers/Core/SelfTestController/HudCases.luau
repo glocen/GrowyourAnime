@@ -84,9 +84,9 @@ end
 -- tab's art under the number, the number on it, both words in the plate's off-white, the plate in M's look.
 function HudCases.LevelTab(t: any, parts: { [string]: any })
 	local lead = parts.Lead :: Frame
-	local m: any = HudConfig.M
+	local a: any = HudConfig.M.Lead
 	local tab = lead:FindFirstChild("LevelTab", true) :: GuiObject?
-	if not t.Check("its level on its tab, the plate in M's look", tab ~= nil and lead:GetAttribute("Look") == "M", "no LevelTab") or not tab then
+	if not t.Check("its level on its tab, the plate in M's look (A)", tab ~= nil and lead:GetAttribute("Look") == "MA", "no LevelTab") or not tab then
 		return
 	end
 	local portrait = parts.LeadPortrait :: GuiObject
@@ -95,7 +95,7 @@ function HudCases.LevelTab(t: any, parts: { [string]: any })
 	local face = portrait.AbsolutePosition.Y + portrait.AbsoluteSize.Y
 	t.Check("the tab astride the portrait's foot", top < face and foot > face, string.format("%.0f to %.0f over %.0f", top, foot, face))
 	local number, name = parts.LeadLevel :: TextLabel, parts.LeadName :: TextLabel
-	t.Check("the number and the name in the plate's off-white", number.TextColor3 == m.Colours.Text and name.TextColor3 == m.Colours.Text,
+	t.Check("the number in white, the name in the plate's off-white", (number.TextColor3 == a.Colours.Bright or number:GetAttribute("Lit") ~= nil) and name.TextColor3 == a.Colours.Text,
 		`{number.TextColor3:ToHex()}, {name.TextColor3:ToHex()}`)
 	local middle = number.AbsolutePosition + number.AbsoluteSize / 2
 	t.Check("the number on the tab", middle.X > left and middle.X < right and middle.Y > top and middle.Y < foot,
@@ -206,16 +206,20 @@ function HudCases.Cases(given: Given): { any }
 				HudController.LeadTaken(10)
 				t.Wait(0.1)
 				local slate: any = HudConfig.Slate
-				local m: any = HudConfig.M
+				local a: any = HudConfig.M.Lead
 				local edge = taken:FindFirstChild("Edge") :: UIStroke?
 				t.Equal("hits while it shows add up", taken.Text, "−25")
-				t.Check("in the plate's coral, in its dark edge (AR68 M)", taken.Visible and taken.TextColor3 == m.Colours.Taken and edge ~= nil
-					and edge.Color == m.Edge.Colour, taken.TextColor3:ToHex())
-				local mark = (parts.Lead :: Frame):FindFirstChild("ClassMark", true) :: GuiObject?
+				t.Check("in the plate's coral, in its dark edge (AR68 A)", taken.Visible and taken.TextColor3 == a.Colours.Taken and edge ~= nil
+					and edge.Color == a.Colours.Ink, taken.TextColor3:ToHex())
+				local name = parts.LeadName :: TextLabel
 				local lo, hi = card.AbsolutePosition.X, card.AbsolutePosition.X + card.AbsoluteSize.X
-				t.Check("inside the plate, clear of the name's marks", taken.AbsolutePosition.X >= lo and taken.AbsolutePosition.X + taken.AbsoluteSize.X <= hi + 1
-					and mark ~= nil and taken.AbsolutePosition.X >= mark.AbsolutePosition.X + mark.AbsoluteSize.X - 1,
-					string.format("%.0f..%.0f in %.0f..%.0f", taken.AbsolutePosition.X, taken.AbsolutePosition.X + taken.AbsoluteSize.X, lo, hi))
+				-- over the blade's right end, a row above the name's: its baseline over the name's cap height
+				local k = taken.AbsoluteSize.Y / math.max(taken.Size.Y.Offset, 0.01)
+				local takenFoot = taken.AbsolutePosition.Y + taken.TextSize * a.Rise * k
+				local nameCap = name.AbsolutePosition.Y + name.TextSize * (a.Rise - 0.574) * k -- Montserrat's cap height, 700 of its 1219
+				t.Check("inside the plate, over the name's row", taken.AbsolutePosition.X >= lo and taken.AbsolutePosition.X + taken.AbsoluteSize.X <= hi + 1
+					and takenFoot <= nameCap + 1,
+					string.format("%.0f..%.0f in %.0f..%.0f; its foot %.0f, the name's cap %.0f", taken.AbsolutePosition.X, taken.AbsolutePosition.X + taken.AbsoluteSize.X, lo, hi, takenFoot, nameCap))
 				local top = taken:GetAttribute("Top")
 				local y = taken.Position.Y.Offset
 				t.Check("on the name's row, risen no more than Rise", type(top) == "number" and y <= top + 0.5 and y >= top - Slate.Pt(slate.Taken.Rise) - 0.5,

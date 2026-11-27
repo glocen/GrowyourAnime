@@ -1197,11 +1197,6 @@ return {
 	-- dark Edge (a stroke, and the same again Drop lower, under it).
 	M = {
 		Per = 1 / 0.85,
-		Plate = { 6, 6, 190, 38 },
-		Health = { 49, 26, 136, 12, Least = 8, Root = 3 }, -- its light Root + (W - Root) of the share wide, Least at least
-		Tab = { 24, 38, 30, 14 },
-		Portrait = { 6, 6, 44, 44 },
-		Xp = { 50, 41, 138, 2.2 },
 		Glow = { -8, 96, 92, 92 },
 		Disc = { 8, 112, 60, 60 },
 		-- Filling: its opacity while the ring fills. Glyph: today's stand-in art (a mark, not a drawn disc) of the circle wide.
@@ -1220,31 +1215,60 @@ return {
 		Eye = { 136, 149, 36, 19 },
 		EyeMark = { 145, 154, 18, 9 },
 		AutoMark = { 80, 155, 8, 8 },
-		Marks = { Gap = 5, Gem = 10, Class = 11, Step = 11, Y = 15 }, -- the gem Gap after the name, the class's mark Step on
 		Texts = {
-			Name = { X = 58, Baseline = 21, Size = 16, Bold = true },
-			Taken = { X = 184, Baseline = 21, Size = 15, Bold = true }, -- its right edge at X
-			Health = { X = 119, Baseline = 37, Size = 14 }, -- centred; the share bold, " / most" regular in Most
-			Level = { X = 39, Baseline = 49.6, Size = 14, Bold = true }, -- centred
 			Label = { Baseline = 139, Size = 15, Bold = true }, -- centred on its card
 			Auto = { X = 93, Baseline = 164.5, Size = 14, Bold = true },
 		},
 		Rise = 0.86,
 		-- Oswald's drawn size in Roblox against the frame's at one size: the name, the digits and the level measured at
-		-- 0.71, 0.77 and 0.78 of the mock's cap height (2026-11-27, the phone box), so each size is set over this
+		-- 0.71, 0.77 and 0.78 of the mock's cap height (2026-11-27, the phone box), so each size is set over this (the
+		-- press's words; the lead's plate is Montserrat, Lead.Em)
 		Em = 0.75,
 		Font = "rbxasset://fonts/families/Oswald.json",
 		Colours = {
 			Text = Color3.fromHex("#F2EADB"),
-			Most = Color3.fromHex("#F3E6D6"),
-			Taken = Color3.fromHex("#E23B4E"),
 			Hue = Color3.fromHex("#E8622A"),
-			Xp = Color3.fromHex("#F2C35A"),
-			XpLit = Color3.fromHex("#FFE7A6"),
-			Shadow = Color3.fromHex("#0E131B"),
 		},
 		Edge = { Colour = Color3.fromHex("#08090C"), Clear = 0.08, Line = 0.75, Drop = 0.9 },
-		Shadow = { Down = 1, Clear = 0.45 }, -- the health's digits: a soft shadow, not the edge
+		-- The top left, A: the card and the blade (research's pick, 2026-11-27, 14:29; Modulo's export,
+		-- build/handoff/UI/ar68/m_dark/top_left/export/m_lead.json). Boxes { x, y, w, h } in the lead group's points, its top
+		-- left At in the layer's frame points (the old plate's top edge). Each image laid whole at its box (Pad 0).
+		Lead = {
+			At = { 0, 6 },
+			Box = { -2, 7.5, 198.5, 56 }, -- the plate's drawn extent from the group's left (its image's opaque edge, 196.5 in the frame)
+			Plate = { -2, 7.5, 200, 56 },
+			Bust = { 1, -4.5, 66, 62 }, -- MLeadBust<Name>: the hair free over the card's top
+			Face = { 15, 10.5, 46, 46 }, -- a lead with no bust: its old face art, square, clipped here
+			Tab = { -4, 48.5, 33, 20 },
+			-- Health and its lag: each image whole in a clip Root + Span x share wide, Least at least while any is left. The
+			-- lag holds at the old share Hold seconds after a hit, then drains in Drain; a heal moves it with the fill.
+			Health = { 67, 40.5, 120, 12, Root = 0.3, Span = 119.12, Least = 2.8, Hold = 0.35, Drain = 0.4 },
+			Front = { Width = 0.8, Colour = Color3.fromHex("#FFF4EC"), Clear = 0.1, Most = 0.99 }, -- the fill's end, while 0 < share < Most
+			Xp = { 65.68, 54.1, 116, 1.6 },
+			-- centres After past the name's right, then the gem's; Gem and Class the drawn shapes' size, the kit's icons drawn
+			-- Fill of their box (the class glyph 0.61, measured from its file; the gem by eye in the game, 2026-11-27)
+			Marks = { Y = 32.1, Gem = 8, GemAfter = 6, Class = 8.6, ClassAfter = 11, Fill = 0.61 },
+			Texts = {
+				Name = { X = 70, Baseline = 37.7, Size = 16.5, Least = 12, Room = 97, Line = 1.3 }, -- steps down to fit Room
+				Health = { X = 126.86, Baseline = 50.1, Size = 9.4, Line = 1.2 }, -- centred: '2,518  /  4,061', one weight
+				Level = { X = 14.5, Baseline = 61.5, Size = 11.5, Line = 1.2 }, -- centred
+				Taken = { X = 188, Baseline = 22, Size = 12, Line = 1.1 }, -- its right edge at X
+			},
+			Font = "rbxasset://fonts/families/Montserrat.json", -- Heavy, every word
+			-- Montserrat Heavy's drawn width in Roblox against the export's at one size: five of the json's fitted names
+			-- measured at 0.832 to 0.841 (2026-11-27, TextService at 100). Tracking (1.2 on the name) Roblox can't set.
+			Em = 0.836,
+			Rise = 0.794, -- the baseline's depth in Montserrat's line (ascent 968 of 1219)
+			Drop = 1, -- the edge's copy, this many points lower
+			Colours = {
+				Text = Color3.fromHex("#F2EADB"),
+				Bright = Color3.fromHex("#FFFFFF"),
+				Taken = Color3.fromHex("#FF6B6B"),
+				Ink = Color3.fromHex("#0B0C10"),
+				Xp = Color3.fromHex("#F2C35A"),
+				XpLit = Color3.fromHex("#FFE7A6"),
+			},
+		},
 	},
 	-- The top right's pills (AR12, V2 Block): each wears its system's row (Config.UIKit.Systems). Widths, authored.
 	Pills = { Credits = 124, Power = 200 },

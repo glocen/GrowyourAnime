@@ -62,5 +62,10 @@
       }
     ],
     "max_findings": 25
+  },
+  "memory_guard": {
+    "_doc": "Turing's floor (docs/turing.md): memory Windows has available, in GB, before a Studio playtest starts or Blender runs (memory_guard.py).",
+    "playtest_gb": 2.0,
+    "blender_gb": 2.0
   }
 }

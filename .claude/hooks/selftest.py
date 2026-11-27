@@ -340,10 +340,44 @@ def drift_cases() -> None:
         f.close()
 
 
+# ---------------------------------------------------------------- the memory guard
+
+def memory_cases() -> None:
+    g, play = "mem", "mcp__Roblox_Studio__start_stop_play"
+    f = Fixture()
+    try:
+        def run(name: str, tool_input: dict, gb: float, **env):
+            return f.run("memory_guard.py", {"session_id": "B", "hook_event_name": "PreToolUse", "tool_name": name,
+                                             "tool_input": tool_input}, NL_HOOKS_AVAIL_GB=str(gb), **env)[1]
+
+        check(g, "a playtest starts with memory over the floor", run(play, {"is_start": True}, 5) == {})
+        out = run(play, {"is_start": True}, 1.2)
+        check(g, "and is refused under it, with the reading", denied(out) and "1.20 GB" in reason(out), out)
+        check(g, "a stop always passes", run(play, {"is_start": False}, 0.3) == {})
+        out = run("Bash", {"command": '"C:/Program Files (x86)/Steam/steamapps/common/Blender/blender.exe" -b -P x.py'}, 1)
+        check(g, "Blender from the shell is refused under the floor", denied(out) and "Blender" in reason(out), out)
+        check(g, "another shell command passes", run("Bash", {"command": "git status"}, 0.5) == {})
+        check(g, "a file named for Blender isn't Blender", run("Bash", {"command": "cat tools/blender_notes.md"}, 0.5) == {})
+        check(g, "any other tool passes", run("mcp__Roblox_Studio__execute_luau", {}, 0.5) == {})
+        f.write("build/locks/blender.lock", "Modulo, bake, 2026-11-27 12:40\n")
+        out = run(play, {"is_start": True}, 9)
+        check(g, "a live render lock refuses a playtest and names its holder", denied(out) and "Modulo, bake" in reason(out), out)
+        old = time.time() - 3600
+        os.utime(f.root / "build/locks/blender.lock", (old, old))
+        check(g, "an hour-old lock is spent", run(play, {"is_start": True}, 9) == {})
+        f.config("hooks", lambda d: d.update(memory_guard={"playtest_gb": 1.0}))
+        check(g, "the floor is the config's", run(play, {"is_start": True}, 1.2) == {})
+        out = run(play, {"is_start": True}, 0.1, NL_HOOKS_TEST_CRASH="memory_guard")
+        check(g, "its own error warns and blocks nothing", not denied(out) and "memory_guard" in str(out), out)
+    finally:
+        f.close()
+
+
 def main(argv: list) -> int:
     lint_cases()
     ms = guard_cases()
     drift_cases()
+    memory_cases()
     failed = [r for r in RESULTS if not r[2]]
     for group, name, ok, seen in RESULTS:
         if "-v" in argv or not ok:

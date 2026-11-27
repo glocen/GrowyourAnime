@@ -159,6 +159,19 @@
             "onFailure": "block"
           }
         ]
+      },
+      {
+        "matcher": "^mcp__.*Roblox.*__start_stop_play$|^Bash$|^PowerShell$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "py",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/memory_guard.py"
+            ],
+            "timeout": 15
+          }
+        ]
       }
     ]
   }

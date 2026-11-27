@@ -17,6 +17,13 @@ return {
 	XpPerKillPerG = 10,
 	KillsPerHour = 450, -- seeds "pace.killsPerHour"
 	PaceHours = { 1, 3, 6, 10, 15, 22 }, -- by ground order; seeds "grounds[].paceHours"
+	-- Catch-up (docs/balance.md, "Catch-up"; TR72, item 3): a lead more than Below levels under the account's highest
+	-- Voidkin earns its fights' experience x (1 + Bonus), a fixed bonus in the experience bucket, whose sum stops at
+	-- XpCeiling (docs/balance.md, "Earning": catch-up, an event, research; x2.5). The builder's seeds, 2026-11-27, for
+	-- research to set (tier 2): halving a second lead's climb keeps it hours, and the gap leaves a lead a level or two
+	-- behind on its own. Neither the Training machine nor a worker's kWh takes it: the design gives it to the lead.
+	CatchUp = { Below = 5, Bonus = 1.0 },
+	XpCeiling = 2.5,
 	-- A new account's first fights (research's verdict on TR2, 2026-11-12): the first levels take these kills instead of the
 	-- pace's, so the lead reaches level 2 during its first pack, at its second kill. The builder's seed.
 	Early = { 2, 4, 6, 8, 10, 12, 14 },

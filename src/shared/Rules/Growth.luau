@@ -51,6 +51,22 @@ function Growth.XpToNext(level: number): number?
 	return round(Growth.KillsPerLevel(level) * Growth.XpPerKill(level))
 end
 
+-- What `lead`'s fight experience is multiplied by (docs/balance.md, "Catch-up"; TR72, item 3): x (1 + CatchUp.Bonus)
+-- when it stands more than CatchUp.Below levels under the account's highest Voidkin, else 1, never past XpCeiling.
+function Growth.CatchUp(data: Profile.Data, lead: Profile.OwnedVoidkin): number
+	local highest = lead.Level
+	for _, owned in data.Voidkin do
+		if owned.Level > highest then
+			highest = owned.Level
+		end
+	end
+	local seeds = GrowthConfig.CatchUp
+	if highest - lead.Level <= seeds.Below then
+		return 1
+	end
+	return math.min(1 + seeds.Bonus, GrowthConfig.XpCeiling)
+end
+
 -- Adds experience to an owned Voidkin and raises its level as far as it goes. Returns the levels gained. At the last
 -- level, experience isn't kept.
 function Growth.AddXp(owned: Profile.OwnedVoidkin, amount: number): number

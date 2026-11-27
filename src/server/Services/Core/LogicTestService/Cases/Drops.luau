@@ -102,6 +102,35 @@ return {
 		end,
 	},
 	{
+		Name = "Drops: catch-up, a lead more than a few levels under the account's highest earns its fights' experience faster, up to the bucket's ceiling",
+		Run = function(t: any)
+			local seeds = GrowthConfig.CatchUp
+			local data, lead = withLead()
+			local plain = (Drops.Roll("Ordinary", 1, GROUND, MISS) :: any).Xp
+			t.Equal("alone, the lead is the highest: no bonus", Growth.CatchUp(data, lead), 1)
+			local other = data.Voidkin[Collection.Uncover(data, "kirra", NOW).Id]
+			other.Level = lead.Level + seeds.Below
+			t.Equal(`{seeds.Below} levels under: no bonus yet`, Growth.CatchUp(data, lead), 1)
+			local even = Drops.Give(data, "Ordinary", 1, GROUND, MISS)
+			t.Equal("and the fall pays the plain experience", even.Xp, plain)
+			other.Level = lead.Level + seeds.Below + 1
+			local want = math.min(1 + seeds.Bonus, GrowthConfig.XpCeiling)
+			t.Equal(`{seeds.Below + 1} under: x{want}`, Growth.CatchUp(data, lead), want)
+			local before = lead.Xp
+			local behind = Drops.Give(data, "Ordinary", 1, GROUND, MISS)
+			t.Equal("the fall pays it", behind.Xp, math.floor(plain * want + 0.5))
+			t.Check("and the lead takes what the fall says", lead.Xp == before + behind.Xp or behind.Levels > 0, `{lead.Xp} after {before} + {behind.Xp}`)
+			t.Equal("the one ahead earns nothing from it", Growth.CatchUp(data, other), 1)
+			other.Level = lead.Level + seeds.Below + 1 -- the fall may have raised the lead (the first levels take two kills)
+			local bonus = seeds.Bonus
+			seeds.Bonus = 10
+			t.Equal("a bonus past the bucket stops at its ceiling", Growth.CatchUp(data, lead), GrowthConfig.XpCeiling)
+			seeds.Bonus = bonus
+			local problems = Saveable.Problems(data)
+			t.Check("the save stays saveable", #problems == 0, problems[1])
+		end,
+	},
+	{
 		Name = "Drops: without a lead, the rest still drops; anything malformed changes nothing",
 		Run = function(t: any)
 			local data = fresh()

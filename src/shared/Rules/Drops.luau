@@ -112,11 +112,11 @@ function Drops.Card(kind: any, level: any, ground: any): { Line }
 	}
 end
 
--- The fall written into one player's save: Credits, the lead's experience (levels as far as it goes), the shard the roll
--- won, on the account's first kill, Config.Drops.First, and the chest `chestRoll` drops (Rules.Chests.Dropped; the sure one
--- needs no roll), and with `loot`'s rolls, its stones and an elite's Emblem Case (TR47; TR56), at `place`'s difficulty
--- and from its stage's chests (TR48; Normal when nil); the case stands for the elite's own chest. A keeper's case comes
--- with its win (Rules.Progress.KeeperWon), never here.
+-- The fall written into one player's save: Credits, the lead's experience (levels as far as it goes, with Growth.CatchUp's
+-- bonus when it's far behind), the shard the roll won, on the account's first kill, Config.Drops.First, and the chest
+-- `chestRoll` drops (Rules.Chests.Dropped; the sure one needs no roll), and with `loot`'s rolls, its stones and an
+-- elite's Emblem Case (TR47; TR56), at `place`'s difficulty and from its stage's chests (TR48; Normal when nil); the case
+-- stands for the elite's own chest. A keeper's case comes with its win (Rules.Progress.KeeperWon), never here.
 -- { Ok, Credits, Xp, Levels, Shard, First, Chest, Stone, Stones, Case, Kills } where Shard, First, Chest, Stone and
 -- Case are "" when nothing dropped. A player without a lead still gets the rest.
 function Drops.Give(data: Profile.Data, kind: any, level: any, ground: any, roll: any, chestRoll: number?, loot: Loot?, place: Place?): { [string]: any }
@@ -126,7 +126,8 @@ function Drops.Give(data: Profile.Data, kind: any, level: any, ground: any, roll
 	end
 	data.Currency.Credits += drop.Credits
 	local lead = data.Voidkin[data.Roles.Lead]
-	local levels = if lead then Growth.AddXp(lead, drop.Xp) else 0
+	local xp = if lead then round(drop.Xp * Growth.CatchUp(data, lead)) else 0 -- a lead far behind earns faster (TR72, item 3)
+	local levels = if lead then Growth.AddXp(lead, xp) else 0
 	Goals.Note(data, "LevelUp", levels) -- today's "raise a Voidkin a level" (TR54)
 	local bag = data.Bag.Shards
 	if drop.Shard ~= "" then
@@ -160,7 +161,7 @@ function Drops.Give(data: Profile.Data, kind: any, level: any, ground: any, roll
 	return {
 		Ok = true,
 		Credits = drop.Credits,
-		Xp = if lead then drop.Xp else 0,
+		Xp = xp,
 		Levels = levels,
 		Shard = drop.Shard,
 		First = first,

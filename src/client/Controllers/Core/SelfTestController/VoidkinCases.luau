@@ -845,6 +845,15 @@ function VoidkinCases.Cases(given: Given): { any }
 				local view = ProfileController.Get() :: Profile.View
 				return `{words} · {Hud.KwChange(sign * Power.BayKw(view :: any, bay, view.Voidkin[id] :: any))}`
 			end
+			-- the Lead press's line on a stationed one (TR72, item 1; Hud.LeadNote): the lead it swaps with takes its bay,
+			-- "Rook takes Bay 2 · −6 kW" (its bay's kW, old minus new), else "Leaves Bay 2 · −18 kW". The test's lead is whole.
+			local function leadLine(id: string, bay: number): string
+				local view = ProfileController.Get() :: Profile.View
+				local oldId = view.Roles.Lead
+				local old = if oldId ~= "" and oldId ~= id then view.Voidkin[oldId] else nil
+				local kw = -Power.BayKw(view :: any, bay, view.Voidkin[id] :: any) + (if old then Power.BayKw(view :: any, bay, old :: any) else 0)
+				return `{Hud.LeadNote(`Bay {bay}`, if old then Read.VoidkinName(old) else nil)} · {Hud.KwChange(kw)}`
+			end
 			local function role(id: string, want: string): boolean
 				return waitFor(t, ANSWER, function(): boolean
 					local after = ProfileController.Get()
@@ -875,8 +884,10 @@ function VoidkinCases.Cases(given: Given): { any }
 				t.Check("and its button recalls it", shows("Recall"), labelOf(button("Work")))
 				t.Check(`Recall says its bay and what it stops making, Bay {empty}`, says(costs(`Bay {empty}`, free, empty, -1)))
 				local itsLead = button("Lead")
-				t.Check(`stationed, its Lead still pressable, saying "Leaves Bay {empty}" and its cost`, itsLead ~= nil and Button.State(itsLead) ~= "Disabled" and (says(costs(`Leaves Bay {empty}`, free, empty, -1), "Lead")),
-					if itsLead then Button.State(itsLead) else "none")
+				local line = leadLine(free, empty)
+				local fits, said = says(line, "Lead")
+				t.Check(`stationed, its Lead still pressable, saying who takes Bay {empty} and its cost`, itsLead ~= nil and Button.State(itsLead) ~= "Disabled" and fits,
+					`{if itsLead then Button.State(itsLead) else "none"}: "{said}", want "{line}"`)
 				t.Check("Recall", Button.Press(button("Work") :: TextButton) and role(free, ""))
 			elseif worker then
 				VoidkinScreen.Choose(worker)
@@ -884,8 +895,10 @@ function VoidkinCases.Cases(given: Given): { any }
 				t.Check("every bay busy: a stationed one reads Recall", labelOf(button("Work")) == "Recall", labelOf(button("Work")))
 				t.Check(`and says its bay and what it stops making, Bay {working}`, says(costs(`Bay {working}`, worker, working, -1)))
 				local itsLead = button("Lead")
-				t.Check(`its Lead still pressable, saying "Leaves Bay {working}" and its cost`, itsLead ~= nil and Button.State(itsLead) ~= "Disabled" and (says(costs(`Leaves Bay {working}`, worker, working, -1), "Lead")),
-					if itsLead then Button.State(itsLead) else "none")
+				local line = leadLine(worker, working)
+				local fits, said = says(line, "Lead")
+				t.Check(`its Lead still pressable, saying who takes Bay {working} and its cost`, itsLead ~= nil and Button.State(itsLead) ~= "Disabled" and fits,
+					`{if itsLead then Button.State(itsLead) else "none"}: "{said}", want "{line}"`)
 				t.Check("Recall", Button.Press(button("Work") :: TextButton) and role(worker, ""))
 				t.Check("and its button stations it", shows("Station"), labelOf(button("Work")))
 				t.Check("Station, to the bay it left", Button.Press(button("Work") :: TextButton) and role(worker, `Bay {working}`))

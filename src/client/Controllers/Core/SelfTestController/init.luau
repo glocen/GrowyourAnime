@@ -7,6 +7,9 @@
 --   game.ReplicatedStorage.NL_SelfTest:Invoke("Scorecard") -- a Manual case list: numbers against targets, never in "every check"
 -- A case with Place = "Main" or "Festival" runs only in that place's playtest, filtered or not (TR45; Util.PlaceRole);
 -- the report's second line counts the ones left for the other place.
+-- The first line's word is Util.Verdict's: FAILED on any failure seen; NOT VERIFIED when no case ran, a filtered case
+-- belongs to the other place, a case checked nothing, or evidence is missing (the server's errors unread, no frames
+-- drawn: a locked screen keeps Heartbeat at 60 while nothing renders); PASSED only when every case asked for passed.
 -- It returns the report as text. Leave the keyboard alone while it runs: real input would mix with the test's.
 -- From the kit's controller, cut to this game: the player's avatar never fights (docs/design.md, "Combat"), so there's no
 -- stamina, lock-on or entity state here. The lead's and the enemies' checks join when TR2 builds them.
@@ -21,6 +24,7 @@ local Net = require(Shared.Net)
 local Parts = require(Shared.Util.Parts)
 local TestInput = require(Shared.Util.TestInput)
 local PlaceRole = require(Shared.Util.PlaceRole)
+local Verdict = require(Shared.Util.Verdict)
 local BaseController = require(script.Parent.Parent.Main.BaseController)
 local Screen = require(script.Parent.Parent.Parent.UI.Kit.Screen)
 local Button = require(script.Parent.Parent.Parent.UI.Kit.Button)
@@ -109,8 +113,10 @@ local function run(filter: string?): string
 	local TakeCases = require(script.TakeCases)
 	local lines: { string } = {}
 	local passed, failed = 0, 0
+	local checks = 0 -- what the case running now has recorded: one that ran and recorded nothing vouches for nothing
 	local current = ""
 	local function record(ok: boolean, label: string, detail: string?, word: string?)
+		checks += 1
 		if ok then
 			passed += 1
 		else
@@ -175,6 +181,7 @@ local function run(filter: string?): string
 		Row = function(label: string, low: number?, high: number?, ours: number?, unit: string)
 			local reading = if ours then string.format("%.3g", ours) else "not measured"
 			if not low or not high then
+				checks += 1 -- a measure with no target yet is the case's evidence
 				table.insert(lines, `NOTE  {current} · {label} (ours {reading} {unit})`)
 				return
 			end
@@ -187,8 +194,9 @@ local function run(filter: string?): string
 	local started = os.clock()
 	-- The client's frame rate over the run: a Studio window that isn't in front draws at 13-33 fps, and timing checks
 	-- fail at that rate without anything being wrong.
+	-- Counted where frames are drawn (RenderStepped): on a locked screen Heartbeat still runs at 60 while nothing renders.
 	local frames = 0
-	local counting = RunService.Heartbeat:Connect(function()
+	local counting = RunService.RenderStepped:Connect(function()
 		frames += 1
 	end)
 	-- Script errors anywhere during the run fail it, on both sides: a case can pass while something it doesn't look at
@@ -278,6 +286,8 @@ local function run(filter: string?): string
 	local takes = TakeCases.Cases() -- stills held for research (AR62's before set), apart for the same reason
 	table.move(takes, 1, #takes, #cases + 1, cases)
 	local elsewhere = 0
+	local ran, empty = 0, 0
+	local empties: { string } = {}
 	pcall(serverCall, "TravelStub", true) -- no case ever leaves the place: each trip asked for is recorded (TR45)
 	-- The bays as the run found them, put back after any case that changed them, which a NOTE names: a lead swapped in
 	-- and back takes its worker out of its bay (Collection.SetLead), and a dozen cases cycle the roster, so the save's
@@ -319,6 +329,8 @@ local function run(filter: string?): string
 		end
 		if chosen then
 			current = case.Name
+			ran += 1
+			checks = 0
 			local ok, err = pcall(function()
 				if not case.Stay then -- Stay: the case checks the screen as it is
 					t.Reset()
@@ -327,6 +339,10 @@ local function run(filter: string?): string
 			end)
 			if not ok then
 				record(false, "crashed", tostring(err))
+			end
+			if checks == 0 then
+				empty += 1
+				table.insert(empties, `EMPTY {case.Name} · ran and checked nothing`)
 			end
 			keepBays()
 		end
@@ -344,16 +360,38 @@ local function run(filter: string?): string
 	end
 	watch:Disconnect()
 	current = "Script errors"
+	local missing: { string } = {}
 	local ok, serverErrors = pcall(serverCall, "TestErrors")
-	local serverList = if ok and type(serverErrors) == "table" then serverErrors else {}
-	record(#serverList == 0, "none on the server", serverList[1])
+	if ok and type(serverErrors) == "table" then
+		record(#serverErrors == 0, "none on the server", serverErrors[1])
+	else
+		table.insert(missing, `the server's error list couldn't be read ({tostring(serverErrors)})`)
+	end
 	record(#clientErrors == 0, "none on the client", clientErrors[1])
 
 	pcall(serverCall, "TravelStub", false)
 	counting:Disconnect()
 	local seconds = os.clock() - started
 	local rate = math.round(frames / math.max(seconds, 1e-3))
-	table.insert(lines, 1, `SELF-TEST {if failed == 0 then "PASSED" else "FAILED"}: {passed} passed, {failed} failed ({string.format("%.1f", seconds)} s, {rate} fps)`)
+	if rate < 5 then
+		table.insert(missing, `no frames drawn ({rate} fps rendered): a locked screen or a hidden window, so nothing on screen was read`)
+	end
+	local word, reasons = Verdict.Of({
+		Failed = failed,
+		Ran = ran,
+		Skipped = if filter then elsewhere else 0, -- a full run leaves the other place's cases to its own playtest
+		Empty = empty,
+		Missing = missing,
+	})
+	for index, line in empties do
+		table.insert(lines, index, line)
+	end
+	table.insert(lines, 1, `SELF-TEST {word}: {passed} passed, {failed} failed, {ran} case(s) run ({string.format("%.1f", seconds)} s, {rate} fps)`)
+	if word ~= Verdict.Failed then
+		for index, reason in reasons do
+			table.insert(lines, 1 + index, `WHY   {reason}`)
+		end
+	end
 	if rate < 50 then
 		table.insert(lines, 2, `WARN  the client ran at {rate} fps: timing checks need about 60 (bring this Studio's window to the front)`)
 	end

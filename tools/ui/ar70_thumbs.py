@@ -5,6 +5,7 @@ nothing shows what the game doesn't have (rule 4).
     py tools/ui/ar70_thumbs.py <out_dir> thumbs [key ...]               each take: crop, grade, logotype; 1920 x 1080
     py tools/ui/ar70_thumbs.py <out_dir> one <capture> <cx> <cy> <w> [corner] [grade]   a trial crop of any capture
     py tools/ui/ar70_thumbs.py <out_dir> sheet <refs_dir> <beside_dir>  ours at the store's card size among the top games'
+    py tools/ui/ar70_thumbs.py <out_dir> final <final_dir>             the icon and the made thumbnails, in upload order
 
 A crop is its centre (cx, cy) and width w, in fractions of the capture's width and height; its height follows from 16:9.
 The grade works on the engine's picture, already tone-mapped: back to linear light, an exposure, a contrast round middle
@@ -45,6 +46,10 @@ TAKES = {
     "fight_pip": dict(capture="build/captures/ar70/shot1_staged_pip_burst_day00.png", box=(0.5, 0.5, 1.0),
                       corner="br", grade=DAY),
 }
+# the game page's set, in upload order (research, 2026-11-27: "the minimum is Pip's burst and Rook's hit"; the shard
+# and the bays join when they land), with icon C round 2 at 512
+FINAL = ["fight_kirra", "shard", "bays"]   # old Pip and old Rook are out (the director, 2026-11-27, by 23:12, through research)
+ICON = REPO / "build" / "handoff" / "GamePage" / "ar70" / "player" / "icon_C.png"
 TITLES = {"fight_hit": "Rook, the hit", "fight_face": "Rook, the face", "fight_pip": "Pip, the burst",
           "shard": "the shard", "bays": "the bays at work"}
 
@@ -199,5 +204,21 @@ if __name__ == "__main__":
         corner = rest[4] if len(rest) > 4 else "br"
         changes = json.loads(rest[5]) if len(rest) > 5 else None
         make(out, Path(rest[0]).stem, capture, box, corner, changes)
+    elif mode == "final":
+        dest = Path(rest[0]).resolve()
+        dest.mkdir(parents=True, exist_ok=True)
+        for old in dest.glob("*.png"):
+            old.unlink()
+        assert probe(ICON) == (512, 512), probe(ICON)
+        (dest / "icon_512.png").write_bytes(ICON.read_bytes())
+        n = 0
+        for key in FINAL:
+            src = out / f"thumb_{key}.png"
+            if src.exists():
+                assert probe(src) == (W, H), (src, probe(src))
+                n += 1
+                (dest / f"thumbnail_{n}_{key}.png").write_bytes(src.read_bytes())
+        for f in sorted(dest.glob("*.png")):
+            print(f"{f.name}: {probe(f)[0]} x {probe(f)[1]}, {f.stat().st_size / 1e6:.2f} MB")
     else:
         sheet(out, Path(rest[0]).resolve(), Path(rest[1]).resolve())

@@ -1,0 +1,86 @@
+{
+ "PaintCardYours": {
+  "file": "PaintCardYours.png",
+  "size": [
+   496,
+   156
+  ],
+  "slice": [
+   45,
+   45,
+   45,
+   45
+  ],
+  "note": "236 x 66 points at 2x, 6 points of shadow and glow round it"
+ },
+ "PaintCardTheirs": {
+  "file": "PaintCardTheirs.png",
+  "size": [
+   488,
+   144
+  ],
+  "slice": [
+   45,
+   45,
+   45,
+   45
+  ],
+  "note": "232 x 60 points at 2x, 6 points of shadow and glow round it"
+ },
+ "PaintButton": {
+  "file": "PaintButton.png",
+  "size": [
+   192,
+   88
+  ],
+  "slice": [
+   37,
+   37,
+   37,
+   37
+  ],
+  "note": "84 x 32 points at 2x, 6 points of shadow and glow round it"
+ },
+ "PaintButtonOn": {
+  "file": "PaintButtonOn.png",
+  "size": [
+   192,
+   88
+  ],
+  "slice": [
+   37,
+   37,
+   37,
+   37
+  ],
+  "note": "84 x 32 points at 2x, 6 points of shadow and glow round it"
+ },
+ "PaintPortraitCommon": {
+  "file": "PaintPortraitCommon.png",
+  "size": [
+   148,
+   148
+  ],
+  "slice": [
+   37,
+   37,
+   37,
+   37
+  ],
+  "note": "62 x 62 points at 2x, 6 points of shadow and glow round it"
+ },
+ "PaintLevel": {
+  "file": "PaintLevel.png",
+  "size": [
+   88,
+   66
+  ],
+  "slice": [
+   22,
+   22,
+   22,
+   22
+  ],
+  "note": "32 x 21 points at 2x, 6 points of shadow and glow round it"
+ }
+}

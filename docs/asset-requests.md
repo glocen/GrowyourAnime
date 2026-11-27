@@ -5538,6 +5538,21 @@ K2's files replace the takes in `build/handoff/UI/hud_overhaul/piece2_finish/`: 
   - Faber stops the stroke kit's glow, grain and vignette.
   - Piece 2's install waits for the frame's pick.
 
+### Modulo: the fight HUD, painted as images (2026-11-27, 02:12; for research's look, then the director)
+
+- **What it is:** F2's layout, every plate a painted image at 2x to the surface study's recipe. Script `tools/ui/hud_paint.py`, pictures in `build/handoff/UI/hud_overhaul/painted_fight/`.
+  - **Rings:** one and a half times F2's depth (7.1 points against 4.6), each stack one hue in its values between ink hairlines, its rim lit from the top.
+  - **Grounds:** tinted in their side's hue (azure yours, coral theirs) and lit from the top, with an inner vignette and our own dots at 6%. Buttons are lit from below.
+  - **Across the edges:** Rook's own portrait fills its frame with his hair over its top, and the level, the skull, Auto's mark and the damage taken all cross their plates' edges.
+  - **Bars:** chunky (18 and 16 points), with a gloss, a lip and notches, the value in stroked type.
+  - **Light:** only on the press and on Auto when it's on.
+  - **The press:** a placeholder disc until T1 or T2 renders.
+- **Text:** every word is 14 points or more, at the same points on every phone. The script prints the smallest: the foe's health, at 14. On the smallest phone (568 points) the foe card sits 12 points inside the right edge, and the layout is otherwise F2's.
+- **For the install:** `images/` holds six plates at 2x, with each 9-slice margin in `slices.json`. The dots stretch with a card's width; at the drawn size they don't. The eye and Auto are 32 points tall, so their touch areas would reach 44 round them.
+- **Beside the frames:** `compare_today.png` shows today's game beside the painted frame, at the smallest phone. The shipped frame is beside them too, internal only, in `build/scratch/modulo/paint/out/compare_phone.png`.
+- **My read beside the shipped frame:** at phone size it holds and reads as one family, with the shipped frame's weight of rim and type. Still short of it: the shipped tiles' saturated fills and the big painted icons spilling over them. Our card grounds stay dark slate in their hue.
+- **Content check:** PASS (02:14). Before any upload, the plates get a sheet at full size and at 64 px on a dark ground, for the check before upload; the press's art gets its own check.
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

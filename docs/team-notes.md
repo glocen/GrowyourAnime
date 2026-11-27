@@ -8,7 +8,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Next:** AR68 A's must-fixes pass once Faber's captures land; TR73's health ×10 read; AR69 and F1's fixes as Scintilla brings them; the Festival of Battles against the bar.
 - **With the director:** the icon's direction (a, b or c); whether research's acting lead of 11-24 still runs; whether the top-left overhaul word (relayed by Modulo) is theirs.
 
-**Faber (builder).** 2026-11-27, 21:57 by the clock, on Opus 5.5. **Launch bug 3** passed by research (46a55c70): the run's line is a pill under the keeper's bar. **AR70 shot 1, staged**, sent to Modulo: Rook's Haymaker (strike, hit, step) and Pip's Lantern Burst, day and the brightest dusk (`build/captures/ar70/shot1_staged_*`). Next: TR73's late first swing, then its poise duels; then AR70's shots 2 and 3 in the main place.
+**Faber (builder).** 2026-11-27, 23:09 by the clock, on Opus 5.5. **TR73's poise duels are running unattended** in the Festival playtest since 22:05: 250 fights (poise 0, 1.5 and 3 s; Rook, Watt and Kirra against Pip and Lyric at 30/30, health x10; then the late-start reruns), 83 done at 23:01, the end about 01:10. A second playtest would take the save and stop them. Then, in this order: AR70's two retakes on this place (Modulo's brief, 77971156), shots 2 and 3 in the main place, TR73's read. Launch bug 3 passed (46a55c70).
 - **Next:** the pre-publish smoke (Base → Festival → Base on a fresh save, a dodge, a cancel, a kill); Kirra's build at my Studio turn; TR69 F.
 
 **Modulo (assets).** 2026-11-27, 22:03. **AR70's thumbnails** (research's piece of 20:17; `docs/requests/AR70.md`). **The staged fight is ready as three takes for research's pick**, from Faber's shot 1 of 21:57: Rook, the hit; Rook, the face; and Pip, the burst. They're in `build/handoff/GamePage/ar70/thumbs/`, read at the card's size beside 30 top games. The shard and the bays wait on Faber's shots 2 and 3 in the main place.
@@ -21,7 +21,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Sonus (sound).** 2026-11-27, 14:15 by the clock. **Music: stopped** on the director's word (14:15): the director handles the tracks, and none of my 12 unheard APM picks is offered (TR35). My 22 picks are in the game, unheard, each with its next take ready (TR42). No Studio turn held, nothing running.
 - **Next:** the director's word on the 22 in play (a bad one takes its next take); then research's next cue list.
 
-**Turns.** Studio: one at a time while memory is short. **Faber, from 20:47 (2026-11-27), on the Festival place, to about 23:30:** launch bug 3's case, Modulo's night captures and AR70's fight shot, then TR73's duels again and its poise duels; then the main place for AR70's captures. Blender: headless only while Studio is open, with 2 GB free. Timing tests: nobody.
+**Turns.** Studio: one at a time while memory is short. **Faber, from 20:47 (2026-11-27), on the Festival place, to about 01:10:** TR73's poise duels, unattended; then AR70's two retakes here, then the main place for shots 2 and 3, to about 02:30. Blender: headless only while Studio is open, with 2 GB free. Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

@@ -440,6 +440,7 @@ The director's words from 2026-11-27, 14:30 on, newest on top, in the table's ow
 
 | Date | The words | They cover |
 |---|---|---|
+| 2026-11-28, by 00:48 | "your call it js need to be extremely good and well composited and use other games we talked about so far as benchmark we can play them if u need tho i will play some deadlock so the memory might be short if it to low we will close roblox studio and we will work on whatever we can work whitout studio" | research's call on the three asks open at the time: Pip's verdict, the base's layout (A, B or C), and the Shades' redesign inside AR75; the bar: extremely good, composited, benchmarked against the games named so far; the director offers to play them for references; while the director plays, Studio is closed when memory is too low, and the team works on what needs no Studio |
 | 2026-11-28, by 00:24 | "i will be harsher from now on since we are in full production stage and looking to ship the game in december or sooner" | the launch: December 2026 or sooner; the director's reviews harsher in full production |
 | 2026-11-28, by 00:23 | "everything in that screen looks bad by the way and i meant it literally everything need an upgrade/complete overhaul" | everything in the base fight capture (AR75's list): the HUD, the world's labels, the base, the machines, the figures, the effects |
 | 2026-11-28, by 00:20 | "the whole hud and base, map looks like a hot mess of garbage ik it a prototype but we are going very bad right now" | the fight HUD and the base as one frame: AR75 (replaces AR74) |

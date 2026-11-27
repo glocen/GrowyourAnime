@@ -128,6 +128,7 @@ The decisions in force: what binds the work today, grouped, one line each. A sta
 ## Release
 
 - Launch free with "Early Access" in the title and on the page. Aim for Sunday 2026-11-29. L264,22 [2026-11-17, by 12:16] [2026-11-27, by 12:34]
+- The game page's icon: AR70's three Rook renders are rejected ("horrendous plain terribly bad"). The next starts from a study of the top games' icons on Roblox, and Rook isn't its centre ("Why rook stop making stuff then making it the center of the world"). Log, "Words after the split" [2026-11-27, by 17:10]
 - Public release waits for the director. "Private publish OK (Recommended)" for the director's timed phone run. L86,84 [2026-11-24, by 02:47] [2026-11-24, 10:50]
 - Ship delayed content in named updates every two to four weeks with featured stock. Set the order nearer launch. L99 [2026-11-23, 15:06]
 

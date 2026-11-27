@@ -440,3 +440,5 @@ The director's words from 2026-11-27, 14:30 on, newest on top, in the table's ow
 
 | Date | The words | They cover |
 |---|---|---|
+| 2026-11-27, by 17:10 | "Why rook stop making stuff then making it the center of the world" | the game page's icon and art (AR70): Rook isn't its centre. Whether it reaches past the game page isn't said |
+| 2026-11-27, by 17:10 | "Imfg what is this game page icon this is horrendous plain terribly bad do research ln tops game page browse roblox" | AR70's three icon targets (A, B, C), all rejected; research studies the top games' pages on Roblox |

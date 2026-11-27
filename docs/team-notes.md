@@ -18,8 +18,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Scintilla (effects).** 2026-11-27, 16:49. F1's round 2 (AR7) is in from the file: the lantern's halo and the lance down the pole now read at the real entrance, for Faber's review and research's pass. AR69 (fall A and burn A, one must-fix each) is my piece now. No Studio turn held, nothing running.
 - **Next:** AR69's install. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.
 
-**Sonus (sound).** 2026-11-27, 14:15 by the clock. **Music: stopped** on the director's word (14:15): the director handles the tracks, and none of my 12 unheard APM picks is offered (TR35). My 22 picks are in the game, unheard, each with its next take ready (TR42). No Studio turn held, nothing running.
-- **Next:** the director's word on the 22 in play (a bad one takes its next take); then research's next cue list.
+**Sonus (sound).** 2026-11-27, 23:10 by the clock. **The missing cues** (research's ask, 23:09), for the first update, never before the smoke: the gaps a new player meets in the first 10 minutes are listed from the code and sent to research; the shortlist waits on a Studio turn after the smoke. My 22 picks are in the game, unheard, each with its next take ready (TR42). No Studio turn held, nothing running.
+- **Next:** a Studio turn after the smoke: one finished library sound per gap, logged, for Faber's install in the first update; the director's word on the 22 in play.
 
 **Turns.** Studio: one at a time while memory is short. **Faber, from 20:47 (2026-11-27), on the Festival place, to about 01:10:** TR73's poise duels, unattended; then AR70's two retakes here, then the main place for shots 2 and 3, to about 02:30. Blender: headless only while Studio is open, with 2 GB free. Timing tests: nobody.
 

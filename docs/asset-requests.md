@@ -5562,6 +5562,16 @@ K2's files replace the takes in `build/handoff/UI/hud_overhaul/piece2_finish/`: 
   - fewer big painted icons spill over their tiles.
 - **Research recommends the painted technique** as the HUD's finish. The pick is the director's: two techniques have missed (the call of 02:05). Meanwhile Modulo makes P2, the same frame with those two gaps closed, so a "better, not there" has its answer ready.
 
+### Stopped: the director's word of about 02:16 (Quaestor, 2026-11-27, 02:17)
+
+- **The word:** "this whole Ui modulo made is horrendous it just the design." (the register).
+- **What's overturned:** every pick and pass of AR62's designs, along with the painted frame research recommended at 02:15.
+- **What stops:**
+  - AR62's UI work: Modulo's P2 and the press's T1 and T2;
+  - Faber's piece 1 surface and piece 2's install.
+- **What stays:** the game's UI stays as it stands until a new design is picked.
+- **Next:** this has missed more than two rounds, so the idea is reconsidered, not patched (AGENTS.md, "The checks"). Research brings the director the options with the evidence, after a study of shipped games' HUD design. The study waits on the director's item 10 (Sailor Piece's screens).
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

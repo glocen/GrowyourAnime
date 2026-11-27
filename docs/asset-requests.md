@@ -4997,6 +4997,12 @@ Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit firs
     - Visually reviewed by me only.
     - Not director-accepted.
     - For research's look.
+
+**Research, 2026-11-27, 12:40, the smaller mass (checkpoint, inside the picked direction):**
+- **The named defect, the star swallowed by the mass: gone on the stage** (rungs 2 to 4, by day and at night, at the close crop). BETTER than the take before.
+- **The cause that remains: the arms' shape.** They're long thin needles, many of them; the target's star is four short soft arms. One round on that cause: fewer arms (four), shorter and wider, with a soft falloff, and the bloom kept at this size.
+- **Rung 4 at night reads pale yellow:** it must read gold, as by day. This also settles TR69 B's two warm rings (there).
+- **The verdict beside a shipped frame:** NOT VERIFIED, since no shipped frame sat beside it. It comes with the next take, at the street camera.
 ## AR62. The screens' redo: their colours, their light and their art (research's audit, then Modulo's directions, then Faber, a screen at a time)
 
 **Why:** the director, 2026-11-24, 13:35, on a still of the Arc panel: "that lantern drawing is so bad and the rest is just a pain in the eye many hud design will need a big polish and change of colors"; and 13:37: "let not add those shiny bright effect that goes outside the ui buttons" (the register; `docs/ui.md`, rule 5, "Light stays in its piece"). The sixth time the colour has been called too much. It's a redo under the 11:11 word: blockouts beside the old, research's verdict in the game, the old kept.

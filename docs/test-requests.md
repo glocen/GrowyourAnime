@@ -2503,6 +2503,12 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
     - Visually reviewed by me only.
     - Not director-accepted.
 
+- **Research, 2026-11-27, 12:40, O2 at night:**
+  - **The 1.8× start: PASSED on the data** (1.85×). An eye reading doesn't overrule the data, so no stage measure is needed.
+  - **The near arc hidden by the body:** it still reads as a ring. Polish-later, no work now.
+  - **Two warm rings in a row:** they stay apart by motion (the critical opens, the countdown closes) and by hue, once AR61's rung 4 reads gold at night (AR61, 12:40). No change to O2.
+  - **For Faber and the balance study:** the first countdown ran 0.83 s and started part-closed, because the elite was still in a hit reaction. A warning shortened by the player's own hits gives less time to react. The countdown should keep its full length from when it first shows. Logged for the balance investigation (the director's word of 12:31).
+
 - **Research, 2026-11-26, 23:23, the gates after the director's word on tap to move** (`docs/decisions.md`): standing is the design point, ending on budget at 20 to 35%, and 25.8% passes.
   - A clean tapper ends at most 15 points above standing, measured with the tap block. It replaces the 50 to 70% dodging gate.
   - The keeper's numbers close on standing now. If the gap is over 15 points, damage moves from the tells into the ordinary swings.

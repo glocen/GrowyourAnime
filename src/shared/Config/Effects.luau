@@ -490,6 +490,15 @@ local Effects = {
 		guard_screen_light = "rbxassetid://103562717473757",
 		guard_screen_core = "rbxassetid://104521595079706",
 		guard_screen_run = "rbxassetid://140644189831387",
+		-- AR61's star, the hit sparks' hero (tools/fx/hit_star_sheets.py; the content check of 2026-11-27): the target's
+		-- star as Grid4x4 flipbooks, four arms at rung 2, six at 3, nine at 4. The light's colour is baked in, so its row is
+		-- white; the ink is #1C1726, half seen, and never plays alone.
+		hit_star4_light = "rbxassetid://84097540214877",
+		hit_star4_ink = "rbxassetid://123700714208373",
+		hit_star6_light = "rbxassetid://121909135736127",
+		hit_star6_ink = "rbxassetid://128394657850290",
+		hit_star9_light = "rbxassetid://129249816428485",
+		hit_star9_ink = "rbxassetid://82313747404878",
 	} :: { [string]: string },
 
 	-- The effects as rows (the header), and those in a rows file (Config.EffectRows), merged below. Tuned live:

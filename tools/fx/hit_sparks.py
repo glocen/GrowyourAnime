@@ -22,10 +22,11 @@ Layers, each offset toward the camera (HIT_FRONT, 2.5 studs) so neither body cut
 (handbook/visuals/vfx.md, "Layers"):
 - Back: a soft glow in the hit's colour, frame 0, gone by 5 to 7: a small white mass under the hero, the size of the
   star's arms and half seen, so the arms read over it (research's lean, option 2, 2026-11-26).
-- Star: the hero, the kit's spark sheet as one particle in its three passes (a white line over its colour's fill over
-  its ink twin, a little smaller and half seen), facing the camera, so it reads from any camera. It snaps open in its first frames and
-  breaks outward. The three passes take one fixed rotation, since each emitter would roll its own. Rung 4 lays a second
-  star over it, turned a sixteenth and smaller: the critical's denser burst of straight arms (the target's).
+- Star: the hero, the target's own star (tools/fx/hit_star_sheets.py): four arms at rung 2, six at 3, nine at 4, short,
+  wide and soft, snapping open in 2 frames and breaking outward, as one particle in two passes facing the camera, so it
+  reads from any camera: its light, the rung's colour baked in and held (gold stays gold), over its ink twin. It
+  replaced the kit's spark sheet, whose eight long thin arms drew needles at twice the target's reach, and rung 4's
+  second star over it (research's round, 2026-11-27, 12:35).
 - Lance: the star's long arm, along the blow (the target's "the arm along the blow longest"): one streak particle
   thrown along it. With the needles it's what says which way.
 - Needles: fx_streak, stretched along their travel, thrown in a cone along the blow, fast then slow (Drag): a frame
@@ -63,6 +64,9 @@ GOLD = (255, 207, 77)  # UIKit.Numbers.Critical, #FFCF4D: a critical
 WHITE = (255, 255, 255)
 INK = DARK  # the ink twin
 SIZE = {2: 1.0, 3: 1.35, 4: 1.7}  # the target's sizes by rung
+STAR_ARMS = {2: 4, 3: 6, 4: 9}  # the target's, and the sheets' names (tools/fx/hit_star_sheets.py)
+STAR_END = {2: 10, 3: 12, 4: 14}  # the star gone by this frame (its sheet's life is one frame more)
+STAR_HALF = 1.6  # the sheet's half-width by a rung's size (hit_star_sheets.HALF): a particle's Size is its half-width
 BACK = 1.1  # the backlight's Size by a rung's size: the target's 0.9 studs of radius, as the soft picture draws it
 
 
@@ -148,6 +152,32 @@ def star_passes(prefix, sheet, life, size, hue, rotation, why, z=0.0, frame=0, i
             "Why": why if name == "Line" else f"{prefix}'s {name.lower()} pass" + (", its ink twin: its read on the pale deck" if name == "Dark" else ""),
         }
     return rows
+
+
+def star(rung):
+    """The hero: the target's star as its sheet (tools/fx/hit_star_sheets.py), one particle a pass, from frame 0, upright
+    (its arm along the blow is the Lance's). Its Size is the sheet's half-width, held: the opening and the break are in
+    the sheet. The light carries its colour; the ink its own, half seen in the sheet."""
+    arms = STAR_ARMS[rung]
+    common = {
+        "Lifetime": [round((STAR_END[rung] + 1) / 60, 4)] * 2,
+        "Speed": [0, 0],
+        "Size": [[0, round(STAR_HALF * SIZE[rung], 3)], [1, round(STAR_HALF * SIZE[rung], 3)]],
+        "Rotation": [0, 0],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": c3(WHITE),
+    }
+    passes = {
+        "StarLine": ({"LightEmission": 1, "ZOffset": HIT_FRONT + LAYER}, f"hit_star{arms}_light",
+                     "the hero: the star snapping open on the struck side and breaking outward"),
+        "StarDark": ({"LightEmission": 0, "ZOffset": HIT_FRONT - LAYER}, f"hit_star{arms}_ink",
+                     "the star's ink twin, under it: its read on the pale deck"),
+    }
+    return {name: {"Kind": "Emitter", "Image": image, "Emitter": {**common, **own}, "Emit": [[0, 1]],
+                   "Tracks": {"At": [[0, v3(0, 0, 0)]]}, "Why": why}
+            for name, (own, image, why) in passes.items()}
 
 
 def lance(rung, hue):
@@ -250,12 +280,6 @@ def light(range_, brightness, frames):
     }
 
 
-def star_size(rung):
-    """The spark sheet's studs over its life: open in its first frames, then swelling a little as it breaks."""
-    k = SIZE[rung]
-    return [[0, round(1.4 * k, 3)], [0.12, round(2.2 * k, 3)], [1, round(2.6 * k, 3)]]
-
-
 def effect(name, why, rows):
     return {"Schema": "rows/1", "Effect": name, "Why": why, "Area": 1, "Grey": False, "Rows": rows}
 
@@ -263,15 +287,13 @@ def effect(name, why, rows):
 def build():
     rung2 = {
         "Back": back(2, 5, PLAIN),
-        **star_passes("Star", "spark", 0.2, star_size(2), PLAIN, 0,
-                     "the hero: the spark sheet snapping open on the struck side and breaking outward, a quick flick"),
+        **star(2),
         **lance(2, PLAIN),
         "Needles": needles(5, [26, 38], [0.12, 0.2], 50, 0.9, 1, colour=PLAIN, z=HIT_FRONT - FRONT + 4 * LAYER),
     }
     rung3 = {
         "Back": back(3, 6, PLAIN),
-        **star_passes("Star", "spark", 0.24, star_size(3), PLAIN, 0,
-                     "the hero: the spark sheet, a third wider and a few frames longer than an ordinary hit's"),
+        **star(3),
         **lance(3, PLAIN),
         "Needles": needles(8, [32, 46], [0.14, 0.22], 55, 1.15, 1, colour=PLAIN, z=HIT_FRONT - FRONT + 4 * LAYER),
         **star_passes("Ring", "ring", 0.3, [[0, 1.6], [1, 5.0]], PLAIN, 0,
@@ -279,10 +301,7 @@ def build():
     }
     rung4 = {
         "Back": back(4, 7, GOLD),
-        **star_passes("Star", "spark", 0.28, star_size(4), GOLD, 0,
-                     "the hero: the spark sheet in the critical's gold, the widest"),
-        **star_passes("Star2", "spark", 0.24, scaled(star_size(4), 0.72), GOLD, 22.5,
-                     "a second star over it, turned a sixteenth: the critical's denser burst of straight arms", z=2 * LAYER, ink=False),
+        **star(4),
         **lance(4, GOLD),
         "Needles": needles(12, [36, 52], [0.16, 0.26], 60, 1.3, 1, colour=GOLD, z=HIT_FRONT - FRONT + 4 * LAYER),
         **star_passes("Ring", "ring", 0.32, [[0, 2.0], [1, 6.0]], GOLD, 0,

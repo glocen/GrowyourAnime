@@ -80,15 +80,25 @@
     },
     "StarLine": {
       "Kind": "Emitter",
-      "Image": "fx_spark_line",
+      "Image": "hit_star4_light",
       "Emitter": {
         "Lifetime": [
-          0.2,
-          0.2
+          0.1833,
+          0.1833
         ],
         "Speed": [
           0,
           0
+        ],
+        "Size": [
+          [
+            0,
+            1.6
+          ],
+          [
+            1,
+            1.6
+          ]
         ],
         "Rotation": [
           0,
@@ -97,20 +107,6 @@
         "FlipbookLayout": "Grid4x4",
         "FlipbookMode": "OneShot",
         "LightInfluence": 0,
-        "Size": [
-          [
-            0,
-            1.4
-          ],
-          [
-            0.12,
-            2.2
-          ],
-          [
-            1,
-            2.6
-          ]
-        ],
         "Color": {
           "Color3": [
             255,
@@ -141,109 +137,29 @@
           ]
         ]
       },
-      "Why": "the hero: the spark sheet snapping open on the struck side and breaking outward, a quick flick"
-    },
-    "StarFill": {
-      "Kind": "Emitter",
-      "Image": "fx_spark_fill",
-      "Emitter": {
-        "Lifetime": [
-          0.2,
-          0.2
-        ],
-        "Speed": [
-          0,
-          0
-        ],
-        "Rotation": [
-          0,
-          0
-        ],
-        "FlipbookLayout": "Grid4x4",
-        "FlipbookMode": "OneShot",
-        "LightInfluence": 0,
-        "Size": [
-          [
-            0,
-            1.4
-          ],
-          [
-            0.12,
-            2.2
-          ],
-          [
-            1,
-            2.6
-          ]
-        ],
-        "Color": [
-          [
-            0,
-            {
-              "Color3": [
-                248,
-                241,
-                223
-              ]
-            }
-          ],
-          [
-            0.4,
-            {
-              "Color3": [
-                248,
-                241,
-                223
-              ]
-            }
-          ],
-          [
-            1,
-            {
-              "Color3": [
-                149,
-                145,
-                134
-              ]
-            }
-          ]
-        ],
-        "LightEmission": 0.8,
-        "ZOffset": 2.5
-      },
-      "Emit": [
-        [
-          0,
-          1
-        ]
-      ],
-      "Tracks": {
-        "At": [
-          [
-            0,
-            {
-              "Vector3": [
-                0,
-                0,
-                0
-              ]
-            }
-          ]
-        ]
-      },
-      "Why": "Star's fill pass"
+      "Why": "the hero: the star snapping open on the struck side and breaking outward"
     },
     "StarDark": {
       "Kind": "Emitter",
-      "Image": "fx_spark_dark",
+      "Image": "hit_star4_ink",
       "Emitter": {
         "Lifetime": [
-          0.2,
-          0.2
+          0.1833,
+          0.1833
         ],
         "Speed": [
           0,
           0
+        ],
+        "Size": [
+          [
+            0,
+            1.6
+          ],
+          [
+            1,
+            1.6
+          ]
         ],
         "Rotation": [
           0,
@@ -252,42 +168,14 @@
         "FlipbookLayout": "Grid4x4",
         "FlipbookMode": "OneShot",
         "LightInfluence": 0,
-        "Size": [
-          [
-            0,
-            1.26
-          ],
-          [
-            0.12,
-            1.98
-          ],
-          [
-            1,
-            2.34
-          ]
-        ],
         "Color": {
           "Color3": [
-            28,
-            23,
-            38
+            255,
+            255,
+            255
           ]
         },
         "LightEmission": 0,
-        "Transparency": [
-          [
-            0,
-            0.5
-          ],
-          [
-            0.6,
-            0.6
-          ],
-          [
-            1,
-            1
-          ]
-        ],
         "ZOffset": 2.45
       },
       "Emit": [
@@ -310,7 +198,7 @@
           ]
         ]
       },
-      "Why": "Star's dark pass, its ink twin: its read on the pale deck"
+      "Why": "the star's ink twin, under it: its read on the pale deck"
     },
     "Lance": {
       "Kind": "Emitter",

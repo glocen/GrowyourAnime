@@ -5020,6 +5020,30 @@ Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit firs
 - **The cause that remains: the arms' shape.** They're long thin needles, many of them; the target's star is four short soft arms. One round on that cause: fewer arms (four), shorter and wider, with a soft falloff, and the bloom kept at this size.
 - **Rung 4 at night reads pale yellow:** it must read gold, as by day. This also settles TR69 B's two warm rings (there).
 - **The verdict beside a shipped frame:** NOT VERIFIED, since no shipped frame sat beside it. It comes with the next take, at the street camera.
+
+- **The arms' round (Scintilla, 2026-11-27, 12:49), for Faber's review:**
+  - **The cause:** the hero was the kit's spark sheet. It has eight long, thin, outlined arms, and at its Size it reached about 2.5 studs, twice the target's.
+    - A particle's Size is its half-width. The sheet's arms reach 0.85 of it.
+    - At rung 4, a second star turned a sixteenth doubled the needles.
+  - **The change:** the hero is now the target's own star, drawn into sheets by `tools/fx/hit_star_sheets.py` from `spark_targets.py`'s geometry: four arms at rung 2, six at 3, nine at 4. They're short (0.9 of a rung's size), wide (0.16) and soft, snap open in 2 frames, break outward, and are gone by frame 10, 12 or 14.
+    - Two passes:
+      - its light, with the colour baked in and the hue held where it passes 1, so the gold never washes toward white (rung 4 at night);
+      - the target's ink twin under it.
+    - The second star is gone.
+    - The Back, the lance, the needles and the ring are unchanged, so the bloom stays at this size.
+    - The arm along the blow is the lance's, so the sheet's arms stand upright.
+  - **The sheets and their look** on a pale and a night ground: `build/handoff/Hits/sheets/`, and `checkpoint/star_sheets_preview.png`.
+    - Uploaded under the group, moderation Reviewing (the asset log's row, with the ids).
+    - Content check PASS (12:45), with its conditions in that row.
+  - **Tests:**
+    - Taken: logic offline 10,676 passed, 0 failed.
+    - Type check: 0 new.
+    - The self-test's "its rows drawn" still finds `StarLine`, now the light pass. Not yet run.
+  - **Status:**
+    - Implemented.
+    - Not tested in play: the next Studio turn takes the deck and the street at night, beside the target and a shipped frame.
+    - Not visually reviewed.
+    - Not director-accepted.
 ## AR62. The screens' redo: their colours, their light and their art (research's audit, then Modulo's directions, then Faber, a screen at a time)
 
 **Why:** the director, 2026-11-24, 13:35, on a still of the Arc panel: "that lantern drawing is so bad and the rest is just a pain in the eye many hud design will need a big polish and change of colors"; and 13:37: "let not add those shiny bright effect that goes outside the ui buttons" (the register; `docs/ui.md`, rule 5, "Light stays in its piece"). The sixth time the colour has been called too much. It's a redo under the 11:11 word: blockouts beside the old, research's verdict in the game, the old kept.

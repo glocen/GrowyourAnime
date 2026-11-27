@@ -1,0 +1,8 @@
+# Reference games' folder names in build/reference/ (tools/checks/reference_guard.py): a folder or a picture named for one
+# is refused outside build/reference/. Add a game when its folder is made.
+anime-crusaders-x
+anime-crusaders
+anime-vanguards
+dragon-hunter
+sailor-piece
+taichi-panda

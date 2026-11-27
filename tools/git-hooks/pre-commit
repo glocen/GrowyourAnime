@@ -1,0 +1,4 @@
+#!/bin/sh
+# The studio's pre-commit (git config core.hooksPath tools/git-hooks): the reference guard (Turing).
+command -v py >/dev/null 2>&1 || { echo "reference guard: py not found, so not checked" >&2; exit 0; }
+exec py tools/checks/reference_guard.py

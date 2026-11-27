@@ -34,6 +34,23 @@ function Fight.CatchTo(action: Actions.Action, beat: string, clock: number): num
 	return at
 end
 
+-- A Shade's warning joined `clock` seconds into its action (TR69 B, TR73): the rate its effect's clock runs at from 0, so
+-- the whole countdown shows, open from its start, and still lands on the action's first hit; nil when it joined on time
+-- or at or past that hit (then it plays from where the action is).
+function Fight.Squeeze(action: Actions.Action, clock: number): number?
+	local first: number? = nil
+	for beat in action.Hits do
+		local at = action.Beats[beat]
+		if at and (first == nil or at < first) then
+			first = at
+		end
+	end
+	if first == nil or clock <= 0 or clock >= first then
+		return nil
+	end
+	return first / (first - clock)
+end
+
 -- The first action of `kit` (in its order) that's off its cooldown at `now`. `readyAt` holds when each may go again.
 -- `held`, an action's id the choice passes over: a lead's signature while its Auto is off and no tap has armed it (TR52).
 function Fight.Choose(kit: { Actions.Action }, readyAt: { [string]: number }, now: number, held: string?): Actions.Action?

@@ -194,6 +194,9 @@ FightService.Unmarked = Signal.new()
 FightService.TapMoved = Signal.new() -- (lead) a tap to move sent it off (Config.Combat.TapMove)
 FightService.Broke = Signal.new() -- (fighter, target, signature: boolean) a Guard's raised shield broken open (AR52; TR54's dare)
 FightService.Capped = Signal.new() -- (fighter) a heal stopped short by its HealRoom: the Tower's cap bound (TR46)
+-- (attacker, target, landed: { Action, Beat, Total, Dodged, Push, Flinch, Stun }) each target's share of a hit, as it lands:
+-- Push the studs it's thrown after its weight, Flinch whether it flinched, Stun its seconds (TR73's duel harness reads it)
+FightService.Landed = Signal.new()
 
 local GROUP_FIGHTERS = "Fighters"
 local GROUP_AVATARS = "Avatars"
@@ -204,7 +207,7 @@ local SHADE_ROOT_HEIGHT = 3 -- the Shade rig's root above its feet, at scale 1 (
 local LEAD_ROOT_HEIGHT = 3 -- an R6 lead's root above its feet
 local AWAY_THERE = 1.5 -- studs from its place by the avatar a broken-off lead counts as there (TR44)
 
-local rng = Random.new()
+local rng = Random.new() -- a hit's rolls; FightService.Seed sets it for a measured run (TR73)
 local fighters: { [string]: Fighter } = {}
 local byModel: { [Model]: Fighter } = {}
 local leads: { [Player]: Fighter } = {}
@@ -1285,8 +1288,10 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 	end
 	local last = fell and lastOfPack(target) -- a pack's last fall holds its beat (TR69 A)
 	local hold = if result.Dodged then 0 else Fight.Hold(rung, fell, Combat.Hitstop, last)
+	local landed = { Action = action.Id, Beat = beat, Total = result.Total, Dodged = result.Dodged == true, Push = 0, Flinch = false, Stun = 0 }
 	if not result.Dodged then
 		if not fell and target.Action == nil and target.State ~= "Stun" and not (target.PinUntil and at < target.PinUntil) and (Combat.Flinch.Kinds :: any)[target.Kind] then
+			landed.Flinch = true
 			setState(target, "Flinch", at + hold + Combat.Flinch.Seconds)
 			stop(target)
 		end
@@ -1294,6 +1299,7 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 		if broke and not fell and guardian == target then
 			stunned = math.max(stunned, Combat.Guard.Stagger) -- the break's stagger, whatever the lock
 		end
+		landed.Stun = stunned
 		if stunned > 0 then
 			-- stopped where it stands: the state first, so a client holds the pose its action was stopped in
 			target.StunLock = at + stunned + Combat.Stun.Lock
@@ -1309,8 +1315,11 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 		if finisher then
 			studs *= Combat.Hands.Finisher.Throw
 		end
-		push(target, line, if keep < 1 and not broke then studs * keep else studs, hold, seconds)
+		local thrown = if keep < 1 and not broke then studs * keep else studs
+		landed.Push = thrown * ((Combat.Weight :: any)[target.Kind] or 1)
+		push(target, line, thrown, hold, seconds)
 	end
+	FightService.Landed:Fire(f, target, landed)
 	Net.Server.FireAll("Hit", {
 		A = f.Model,
 		T = target.Model,
@@ -2554,6 +2563,11 @@ end
 -- to its end.
 function FightService.Frozen(player: Player): boolean
 	return player:GetAttribute("Try") ~= nil or player:GetAttribute("Tower") ~= nil
+end
+
+-- Studio's measured runs (TR73): the hits' rolls from `seed`, so a run can be played again.
+function FightService.Seed(seed: number)
+	rng = Random.new(seed)
 end
 
 function FightService.Remove(f: Fighter)

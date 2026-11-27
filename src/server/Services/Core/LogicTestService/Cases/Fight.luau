@@ -249,6 +249,23 @@ return {
 		end,
 	},
 	{
+		-- TR69 B (TR73): an elite's Overhead joined 0.37 s late showed its ring part-closed for 0.83 s. A late warning plays
+		-- its whole countdown from its start, squeezed into the time left, and lands on the first hit.
+		Name = "Fight: a late warning shows its whole countdown and still lands on the hit",
+		Run = function(t: any)
+			local overhead = Actions.ById.ShadeOverhead
+			local first = math.huge
+			for beat in overhead.Hits do
+				first = math.min(first, overhead.Beats[beat])
+			end
+			local rate = Fight.Squeeze(overhead, 0.37)
+			t.Check("joined 0.37 s late: squeezed", rate ~= nil and rate > 1, tostring(rate))
+			t.Check("its clock reaches the hit as the action does", math.abs((rate or 0) * (first - 0.37) - first) < 1e-6)
+			t.Check("on time: as it is", Fight.Squeeze(overhead, 0) == nil)
+			t.Check("at or past the hit: as it is", Fight.Squeeze(overhead, first) == nil and Fight.Squeeze(overhead, first + 0.1) == nil)
+		end,
+	},
+	{
 		Name = "Fight: the signature goes when it's ready, the combo otherwise",
 		Run = function(t: any)
 			local kit = Actions.KitOf("rook")

@@ -68,7 +68,7 @@ local HEALS: { [string]: (healed: View, healer: View?) -> () } = {
 
 -- Clock is the action's, which a hold pauses; Free runs through a hold (an effect that lives past the hit, unheld). At is
 -- when its action began (ActionAt), which a hit names.
-type Running = { Effect: Effects.Running, Clock: number, Free: number, At: number }
+type Running = { Effect: Effects.Running, Clock: number, Free: number, At: number, Squeeze: number? }
 
 -- A hit's push as this screen draws it (Config.Combat.Push.Shown): from the hold's end, along the hit's line, at the
 -- server's pace.
@@ -483,7 +483,14 @@ local function beginAction(view: View, action: Actions.Action, at: number)
 			local target = targetOf(view)
 			return if target then target.Root else nil
 		end, action)
-		table.insert(view.Running, { Effect = effect, Clock = view.Clock, Free = view.Clock, At = at })
+		-- A Shade's warning joined too late to catch up in step (TR69 B, TR73): its whole countdown from its start, squeezed
+		-- into the time left to the hit (Rules.Fight.Squeeze), never opened part-closed.
+		local squeeze = if sideOf(view) == "Shade" and view.Clock > 0 then Fight.Squeeze(action, view.Clock) else nil
+		if squeeze then
+			table.insert(view.Running, { Effect = effect, Clock = 0, Free = 0, At = at, Squeeze = squeeze })
+		else
+			table.insert(view.Running, { Effect = effect, Clock = view.Clock, Free = view.Clock, At = at })
+		end
 	end
 end
 
@@ -1047,8 +1054,18 @@ local function stepView(view: View, dt: number, now: number): boolean
 	end
 	for index = #view.Running, 1, -1 do
 		local running = view.Running[index]
-		running.Clock += step
-		running.Free += if frozen or now >= view.FrozenUntil then step else dt
+		local squeeze = running.Squeeze
+		if squeeze then
+			-- a late warning's clock, faster until it meets its action's (beginAction)
+			running.Clock = math.min(running.Clock + step * squeeze, view.Clock)
+			running.Free = running.Clock
+			if running.Clock >= view.Clock then
+				running.Squeeze = nil
+			end
+		else
+			running.Clock += step
+			running.Free += if frozen or now >= view.FrozenUntil then step else dt
+		end
 		if not running.Effect.Step(running.Clock, running.Free) then
 			table.remove(view.Running, index)
 		end

@@ -5358,6 +5358,34 @@ The script is `tools/ui/hud_icons.py`. `hud_finish.PAINTED` swaps the set in pla
 - **Faber's other gaps:** the foe card gets no gold bar, since nothing in our design gives it a measure. The −N's clamp, the 1-point notches and heals in the world stand. The glow, grain and vignette come next, as planned. The second look judges the three fixes, and the frame beside the shipped one.
 - **Outside piece 1:** the base's world signs read as a second HUD beside the cards (`docs/polish-later.md`).
 
+### Modulo: the press reopened, two targets for the pick (2026-11-27, 01:21; started 01:05)
+
+This follows the director's word (by 01:00) and research's ask (2747181c). The files are in `build/handoff/UI/hud_overhaul/press/`:
+- `press_states.png`: A and B ready, cooling at 5 s, in the last second, ready again, firing, and on a keyboard, at 3x;
+- `A_close.png` and `B_close.png`;
+- the smallest phone, `A_fight_small.png` and `B_fight_small.png`, with `phone_pair_x4.png` enlarged;
+- `A_fight.png` and `B_fight.png`.
+
+The script is `tools/ui/hud_press.py`.
+
+- **A, the skill's own art:** the Haymaker's hero shape, taken from its effect: the square of ember bars round the ram (`tools/blender/rook_haymaker_art.py`).
+  - One corner is flung open, and the white-hot strike breaks out through it. The punch's line comes in as streaks.
+  - Each skill's art would come from its own effect's hero shape.
+  - A first try cut the bars with the chisel's slits. They read as a window's grid, so the bars were redrawn, not polished.
+- **B, the name alone:** HAYMAKER as a title card, in Bangers (one of Roblox's faces).
+  - White into ember, with a heavy ink line and a hard shadow, on one ember slash.
+  - When ready, it overflows the ring.
+- **Both:** a dark ember face inside the gold ring, so the art holds at the smallest phone.
+- **The cooldown, both** (the Haymaker cools 10 s):
+  - The face comes back in its colour, clockwise from the top, behind a gold edge. What's still to come stays dark and grey.
+  - The seconds left stand big in the middle, stroked.
+  - In the last second, the count turns gold and the face's rim lights.
+  - Ready again, the press swells, flashes and throws a ring.
+  - The drained art under a small count and the thin ring outside are gone.
+- **Beside a shipped frame:** there's no Sailor Piece skill bar on disk yet (the director's item 10). The nearest is Anime Crusaders X's unit hotbar (`hud_bottom`). It's laid at the same screen share, and enlarged, in `build/scratch/modulo/press2/beside_shipped.png` (internal, never in git).
+- **Content check: PASS** (fresh eyes, rules 2 to 4). Nothing reads as gore at either size. The open square matches no symbol. HAYMAKER is our roster's own word, and Bangers is an OFL face Roblox ships. Its one hold, the x4 sheet's writer, is fixed: the script writes it. Before any upload, the exact files go through it again, with a 64 px sheet on a dark ground.
+- **Next:** research's pick in pairs.
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

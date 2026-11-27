@@ -6512,3 +6512,20 @@ Research, 2026-11-27, 02:40.
 The director handed the pick to research. **M, the orange broadcast,** because it has the boldest read at phone size, with warm plates in place of the purple and black the director keeps rejecting, the energy of the named anime HUDs (Anime Crusaders, Sailor Piece), and the clearest numbers of the four. P is gold ornament, S goes grey at dusk, and R's ring vanishes at dusk.
 - **One round, on one cause (M is louder than the fight):** the white plates drop to a warm off-white at about 85% brightness with a soft edge, and orange stays only on the live parts (health, the press ring, the level tab). The health numbers get their spacing back ("3,682 / 3,732").
 - **One piece first (R1):** the lead plate and the press, built in the game and captured on a phone-size view by day and at dusk, beside today's HUD and a shipped frame. Then the director judges it in the game. Pilot 1 counts this pick as research's.
+
+### Modulo: M's round, and the first piece's images (2026-11-27, 13:21; started 13:10)
+
+- **Made** with `tools/ui/hud_compositions.py` (`M`; `m_frame` is now drawn from its pieces) and `tools/ui/hud_m_export.py`, in `build/handoff/UI/ar68/m/`:
+  - **The plates:** the name, Auto and eye cards and the press's face go from white `#F7F4EC` to a warm off-white `#D9D1C3` (85%), each with a soft inner edge. Every card's hard shadow is now a soft one.
+  - **Orange** stays on the level tab and the press ring (and the ring's glow when awake). The cut between the sides, the press's label and Auto's mark go slate, and the eye's pupil ink. Awake, the press is a slate disc with its ring whole, no longer an orange disc. Health keeps its red.
+  - **The health digits** read "3,682 / 3,732" and stay inside the strip at both sizes.
+  - **The frames:** `M_568_*`, `M_852_*`, `M_wake`, and `m_round4_then_m.png` (round 4 left, this round right; 568, by day and at dusk).
+- **The first piece's images (R1)** for Faber, in `export/`:
+  - nine images at 4 px a point on alpha: the lead plate, the level tab, the health fill, the press's disc, ring and glow, the label card, a chip (Auto's and the eye's), the eye;
+  - `m_pieces.json`: each image's UIKit record (Pixels, Points, Pad, Cut), where each is laid in the lead's points at 568, and the live parts over them (the portrait, the skill's art, the xp bar, Auto's mark, every text with its font, size and colour);
+  - the health fill and the chips are nine-slices; the ring is white for its tint and fills by two halves;
+  - the foe's side and the cut wait for the next piece;
+  - **checked:** the pieces laid from the json as Skin lays them (sliced, tinted), against the same pieces drawn in place: PSNR 43.8 dB (`m_check.png`, the whole frame beside).
+- **Self-review:** at 568 by day, the plates sit back under the lanterns, and the orange is on the two live things (the ring and the level). At dusk, the off-white is still the brightest plate on the purple, a step down from round 4. The fight's numbers, the gold critical and the orange element, are now louder than the HUD.
+- **Checks:** content check PASSED (the ga-content-check agent, rules 2, 3 and 4: every frame and the nine images, the images on the dark sheet at 2x; no 64 px sheet, the pieces being plain shapes).
+- **Four facts:** made; self-reviewed as above; delivered to Faber at 13:21 for the build in the game (R1) and its captures by day and at dusk, beside today's HUD and a shipped frame; not in the game, not accepted.

@@ -1,0 +1,391 @@
+{
+ "about": "AR68, M: the lead plate and the press, research's round of 13:10, for the first build (R1). Points are the 568 frame's, the lead's group from the screen's top left; the game scales them as today's HUD. Each image's box is laid without its pad: an image is placed at box minus Pad, sized box plus twice Pad (UI.Kit.Skin's rule). Cut counts from the image's own edge, pad included. The foe's side and the cut between the sides wait for the next piece.",
+ "pixelsPerPoint": 4,
+ "images": {
+  "MLeadPlate": {
+   "file": "images/MLeadPlate.png",
+   "Pixels": [
+    808,
+    200
+   ],
+   "Points": [
+    202.0,
+    50.0
+   ],
+   "Pad": 6.0
+  },
+  "MLevelTab": {
+   "file": "images/MLevelTab.png",
+   "Pixels": [
+    168,
+    104
+   ],
+   "Points": [
+    42.0,
+    26.0
+   ],
+   "Pad": 6.0
+  },
+  "MHealthFill": {
+   "file": "images/MHealthFill.png",
+   "Pixels": [
+    544,
+    48
+   ],
+   "Points": [
+    136.0,
+    12.0
+   ],
+   "Pad": 0.0,
+   "Cut": [
+    4,
+    0,
+    4,
+    0
+   ]
+  },
+  "MPressDisc": {
+   "file": "images/MPressDisc.png",
+   "Pixels": [
+    288,
+    288
+   ],
+   "Points": [
+    72.0,
+    72.0
+   ],
+   "Pad": 6.0
+  },
+  "MPressRing": {
+   "file": "images/MPressRing.png",
+   "Pixels": [
+    288,
+    288
+   ],
+   "Points": [
+    72.0,
+    72.0
+   ],
+   "Pad": 6.0,
+   "Tint": "#E8622A"
+  },
+  "MPressGlow": {
+   "file": "images/MPressGlow.png",
+   "Pixels": [
+    368,
+    368
+   ],
+   "Points": [
+    92.0,
+    92.0
+   ],
+   "Pad": 0.0
+  },
+  "MLabelCard": {
+   "file": "images/MLabelCard.png",
+   "Pixels": [
+    264,
+    124
+   ],
+   "Points": [
+    66.0,
+    31.0
+   ],
+   "Pad": 6.0,
+   "Cut": [
+    12.0,
+    9.0,
+    12.0,
+    9.0
+   ]
+  },
+  "MChip": {
+   "file": "images/MChip.png",
+   "Pixels": [
+    304,
+    124
+   ],
+   "Points": [
+    76.0,
+    31.0
+   ],
+   "Pad": 6.0,
+   "Cut": [
+    12.0,
+    9.0,
+    12.0,
+    9.0
+   ]
+  },
+  "MEye": {
+   "file": "images/MEye.png",
+   "Pixels": [
+    80,
+    44
+   ],
+   "Points": [
+    20.0,
+    11.0
+   ],
+   "Pad": 1.0
+  }
+ },
+ "lays": [
+  {
+   "image": "MLeadPlate",
+   "box": [
+    6,
+    6,
+    190,
+    38
+   ],
+   "Z": 1,
+   "note": "the plate: the portrait's mount, the name card, the health card and both troughs"
+  },
+  {
+   "image": "MHealthFill",
+   "box": [
+    49,
+    26,
+    136,
+    12
+   ],
+   "Z": 2,
+   "note": "the health: from x 49, 3 + 133 times the share of health wide (a nine-slice: both slanted ends keep their shape; at least 8)"
+  },
+  {
+   "image": "MLevelTab",
+   "box": [
+    24,
+    38,
+    30,
+    14
+   ],
+   "Z": 3,
+   "note": "the level's tab, over the portrait's corner"
+  },
+  {
+   "image": "MPressGlow",
+   "box": [
+    -8,
+    96,
+    92,
+    92
+   ],
+   "Z": 4,
+   "note": "only while the press is awake (its skill ready)"
+  },
+  {
+   "image": "MPressDisc",
+   "box": [
+    8,
+    112,
+    60,
+    60
+   ],
+   "Z": 5,
+   "note": "the press's disc and its off-white face"
+  },
+  {
+   "image": "MPressRing",
+   "box": [
+    8,
+    112,
+    60,
+    60
+   ],
+   "Z": 6,
+   "note": "tinted the hue: the share fills clockwise from the top (two halves, each under a rotating UIGradient's transparency, or the kit's own radial fill if it has one); whole when awake"
+  },
+  {
+   "image": "MLabelCard",
+   "box": [
+    74,
+    124,
+    94,
+    19
+   ],
+   "Z": 7,
+   "note": "the press's label: 94 wide awake (the skill's name), 54 while filling (its share)"
+  },
+  {
+   "image": "MChip",
+   "box": [
+    70,
+    149,
+    64,
+    19
+   ],
+   "Z": 8,
+   "note": "Auto's card"
+  },
+  {
+   "image": "MChip",
+   "box": [
+    136,
+    149,
+    36,
+    19
+   ],
+   "Z": 9,
+   "note": "the eye's card"
+  },
+  {
+   "image": "MEye",
+   "box": [
+    145,
+    154,
+    18,
+    9
+   ],
+   "Z": 10,
+   "note": "the eye"
+  }
+ ],
+ "live": {
+  "portrait": {
+   "box": [
+    6,
+    6,
+    44,
+    44
+   ],
+   "z": "after MLeadPlate, under MLevelTab",
+   "note": "the lead's own portrait (hud_art's Portrait<Voidkin>), clipped to the mount's box"
+  },
+  "art": {
+   "centre": [
+    38,
+    142
+   ],
+   "radius": 20,
+   "z": "over MPressDisc, under MPressRing",
+   "note": "the skill's own art, clipped round; until it is drawn, today's press art; at 55% while filling"
+  },
+  "xp": {
+   "box": [
+    50,
+    41,
+    138,
+    2.2
+   ],
+   "colour": "#F2C35A",
+   "lit": "#FFE7A6",
+   "z": "over MLeadPlate",
+   "note": "a Frame over the plate's trough, its width the share to the next level"
+  },
+  "autoMark": {
+   "box": [
+    80,
+    155,
+    8,
+    8
+   ],
+   "colour": "#2C3340",
+   "note": "a Frame on MChip; Auto on"
+  },
+  "texts": [
+   {
+    "what": "the lead's name, upper case",
+    "x": 58,
+    "baseline": 21,
+    "anchor": "left",
+    "font": "Oswald",
+    "weight": "Bold",
+    "size": 16,
+    "colour": "#222833",
+    "tracking": 1.0
+   },
+   {
+    "what": "the type's gem and the class's mark, the kit's own icons",
+    "centres": [
+     [
+      108,
+      15
+     ],
+     [
+      119,
+      15
+     ]
+    ],
+    "sizes": [
+     10,
+     11
+    ],
+    "colour": "#222833"
+   },
+   {
+    "what": "the damage taken in the last hit",
+    "x": 184,
+    "baseline": 21,
+    "anchor": "right",
+    "font": "Oswald",
+    "weight": "Bold",
+    "size": 15,
+    "colour": "#E23B4E"
+   },
+   {
+    "what": "health, a spaced slash, the maximum: '3,682 / 3,732' (research's round: the spacing back)",
+    "x": 119,
+    "baseline": 37,
+    "anchor": "centre",
+    "font": "Oswald",
+    "size": 14,
+    "runs": [
+     [
+      "3,682",
+      "Bold",
+      "#F7F4EC"
+     ],
+     [
+      " / 3,732",
+      "Regular",
+      "#F3E6D6"
+     ]
+    ],
+    "shadow": "0, 1 down, 1.2 blur, #0E131B at 55%"
+   },
+   {
+    "what": "the level",
+    "x": 39,
+    "baseline": 49.6,
+    "anchor": "centre",
+    "font": "Oswald",
+    "weight": "Bold",
+    "size": 14,
+    "colour": "#F7F4EC"
+   },
+   {
+    "what": "the press's label: its share filling ('62%'), the skill's name awake ('HAYMAKER', tracking 1.2)",
+    "x": "the card's middle",
+    "baseline": 139,
+    "anchor": "centre",
+    "font": "Oswald",
+    "weight": "Bold",
+    "size": 15,
+    "colour": "#F7F4EC"
+   },
+   {
+    "what": "AUTO",
+    "x": 93,
+    "baseline": 164.5,
+    "anchor": "left",
+    "font": "Oswald",
+    "weight": "Bold",
+    "size": 14,
+    "colour": "#222833",
+    "tracking": 1.0
+   }
+  ]
+ },
+ "colours": {
+  "paper": "#D9D1C3",
+  "slate": "#2C3340",
+  "ink": "#222833",
+  "hue": "#E8622A",
+  "health": "#E23B4E",
+  "healthLit": "#FF8E98",
+  "xp": "#F2C35A",
+  "ivory": "#F7F4EC"
+ }
+}

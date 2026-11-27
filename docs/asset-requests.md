@@ -307,4 +307,5 @@ Written by `tools/fx/shade_tells.py`, from the kit's uploaded meshes and images 
 - [AR71](requests/AR71.md) · The game page's words and the content rating (research's drafts, the director's hand) · 43 lines · see the piece
 - [AR72](requests/AR72.md) · The Guard's mask, one more paper detail (Modulo's targets, research's pick, then the build) · 62 lines · see the piece
 - [AR73](requests/AR73.md) · The Guard elite's second mask takes the turned corner (Modulo, tier 1) · 43 lines · see the piece
-- [AR74](requests/AR74.md) · The HUD's left cluster, overhauled (Modulo's targets, research's pick, then the build) · 13 lines · see the piece
+- [AR74](requests/AR74.md) · The HUD's left cluster · replaced by AR75 before any work
+- [AR75](requests/AR75.md) · The whole frame: the fight HUD and the base, one composition · see the piece

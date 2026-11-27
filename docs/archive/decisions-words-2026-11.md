@@ -440,6 +440,7 @@ The director's words from 2026-11-27, 14:30 on, newest on top, in the table's ow
 
 | Date | The words | They cover |
 |---|---|---|
+| 2026-11-28, by 00:24 | "i will be harsher from now on since we are in full production stage and looking to ship the game in december or sooner" | the launch: December 2026 or sooner; the director's reviews harsher in full production |
 | 2026-11-28, by 00:23 | "everything in that screen looks bad by the way and i meant it literally everything need an upgrade/complete overhaul" | everything in the base fight capture (AR75's list): the HUD, the world's labels, the base, the machines, the figures, the effects |
 | 2026-11-28, by 00:20 | "the whole hud and base, map looks like a hot mess of garbage ik it a prototype but we are going very bad right now" | the fight HUD and the base as one frame: AR75 (replaces AR74) |
 | 2026-11-28, by 00:19 | "what is this childish baby hand holding talk hard: \"enemies are 10 level higher\" we dont need to mention it" | the Stages screen's line "Hard: enemies are 10 levels higher": removed |

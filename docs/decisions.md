@@ -128,7 +128,7 @@ The decisions in force: what binds the work today, grouped, one line each. A sta
 
 ## Release
 
-- Launch free with "Early Access" in the title and on the page. No fixed date: launch when it's ready at the bar ("we will launch whenever it ready"; Sunday 2026-11-29 dropped). L264,22 [2026-11-17, by 12:16] [2026-11-27, by 12:34] [2026-11-27, by 23:15]
+- Launch free with "Early Access" in the title and on the page. Launch when it's ready at the bar, in December 2026 or sooner ("looking to ship the game in december or sooner"; Sunday 2026-11-29 dropped). L264,22 [2026-11-17, by 12:16] [2026-11-27, by 12:34] [2026-11-27, by 23:15] [2026-11-28, by 00:24]
 - The game page's icon: AR70's three Rook renders are rejected ("horrendous plain terribly bad"). The next starts from a study of the top games' icons on Roblox, and Rook isn't its centre ("Why rook stop making stuff then making it the center of the world"). Then (b)'s three Kirra icons are rejected too ("omfg horrible he cant make art he need to study"). Modulo studies the shipped icons before any more art, and the subject is a Roblox player ("why kirra why not a robllx player or sum"). Log, "Words after the split" [2026-11-27, by 17:10] [2026-11-27, by 18:29]
 - Public release waits for the director. "Private publish OK (Recommended)" for the director's timed phone run. L86,84 [2026-11-24, by 02:47] [2026-11-24, 10:50]
 - Ship delayed content in named updates every two to four weeks with featured stock. Set the order nearer launch. L99 [2026-11-23, 15:06]

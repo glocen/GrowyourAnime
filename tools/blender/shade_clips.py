@@ -397,33 +397,59 @@ def guard_elite(t):
     t.key(164, T=HUB["T"], RA=DOWN_R, LA=DOWN_L, H=HUB["H"], crouch=0.0)
 
 
+TWIST = 90   # degrees: the elite's left sleeve turned about its length through its lunge (AR57's polish)
+
+
+def about_its_length(rig, part, x, y, z):
+    """A sleeve's angles (x, y, z) with its turn `y` about its own middle line. A shoulder's pivot is at the sleeve's
+    inner top edge (r6rig.JOINTS' C1), so a plain turn swings the sleeve in through the coat; this slides it back by
+    as much, so only the sleeve's faces turn and its place and outline hold. Returns (x, y, z, right, up, back)."""
+    q = r6.cframe(r6.JOINTS[part][2]).inverted() @ Vector((0.0, 0.0, 0.0))   # the sleeve's middle, from its pivot
+    bq = rig.bases[part] @ q
+
+    def turn(twist):
+        return (Matrix.Rotation(math.radians(x), 4, "X") @ Matrix.Rotation(math.radians(twist), 4, "Y")
+                @ Matrix.Rotation(math.radians(z), 4, "Z"))
+    m = turn(0.0) @ bq - turn(y) @ bq
+    return (x, y, z, m.x, m.y, m.z)
+
+
 def lunge_elite(t, hold=0):
     """The elite's Lunge (AR57): the same line in the same time, from lower. It lifts a hair first, then drops behind
     its mask all at once, sinks past where it will wait and comes back up to it: the crouch of something heavy. It
     waits lower and further back than the Dasher. It lands deeper, the coat piling onto its knees, and when it's
     picked up the coat comes first and the mask and the sleeves hang behind.
 
+    Its left sleeve is turned a quarter about its own middle line (TWIST, about_its_length) from the drop until it
+    swings forward after the landing, so the second mask it wears faces the player's camera through the wait and the
+    flight, where the sweep back would turn it face down (AR57's polish: past 75 degrees for 1.1 s, measured by
+    shade_elite_facing.py). A square sleeve's outline is the same a quarter round; half round its corners stand out,
+    so it turns back on the swing forward (81 to 88), clear of the coat.
+
     The Lunge's own markers and length, so AR52's seeds hold: `Line` at 0.27 s, `Lunge` at 1.0 s, `Land` 0.25 s
     after, `Close` 0.8 s after that, 2.3 s in all. `hold` frames more with its back open push `Close` and the rest later
     (the fan's: fan below)."""
     loose = {"Right Leg": None, "Left Leg": None}
+
+    def la(x, y, z):
+        return about_its_length(t.rig, "Left Arm", x, y, z)
     t.key(0)
     t.key(6, "lifts a hair", ease="in", T=(-5, 0, 0, 0, 0, -0.06), RA=(-14, 0, 12), LA=(-16, 0, -10), H=(-6, 0, 0))
-    t.key(16, "the line", ease="out", T=(45, 0, 0, 0, 0, -0.42), crouch=0.66, RA=(-58, 0, 16), LA=(-62, 0, -14),
+    t.key(16, "the line", ease="out", T=(45, 0, 0, 0, 0, -0.42), crouch=0.66, RA=(-58, 0, 16), LA=la(-62, TWIST, -14),
           H=(10, 0, 0), feet={"Right Leg": (0.92, -0.5), "Left Leg": (-0.92, 0.34)})  # wide, to get under itself
     t.mark(16, "Line")
-    t.key(22, "sinks", ease="sine", T=(48, 0, 0, 0, 0, -0.46), crouch=0.78, RA=(-64, 0, 16), LA=(-68, 0, -14), H=(8, 0, 0))
-    t.key(32, ease="sine", T=(45, 0, 0, 0, 0, -0.43), crouch=0.68, RA=(-58, 0, 16), LA=(-62, 0, -14), H=(10, 0, 0))
-    t.key(50, "dead still", ease="sine", T=(46, 0, 0, 0, 0, -0.44), crouch=0.69, RA=(-60, 0, 16), LA=(-64, 0, -14), H=(10, 0, 0))
-    t.key(60, "drawn back", ease="in", T=(49, 0, 0, 0, 0, -0.54), crouch=0.76, RA=(-66, 0, 16), LA=(-70, 0, -14), H=(12, 0, 0))
+    t.key(22, "sinks", ease="sine", T=(48, 0, 0, 0, 0, -0.46), crouch=0.78, RA=(-64, 0, 16), LA=la(-68, TWIST, -14), H=(8, 0, 0))
+    t.key(32, ease="sine", T=(45, 0, 0, 0, 0, -0.43), crouch=0.68, RA=(-58, 0, 16), LA=la(-62, TWIST, -14), H=(10, 0, 0))
+    t.key(50, "dead still", ease="sine", T=(46, 0, 0, 0, 0, -0.44), crouch=0.69, RA=(-60, 0, 16), LA=la(-64, TWIST, -14), H=(10, 0, 0))
+    t.key(60, "drawn back", ease="in", T=(49, 0, 0, 0, 0, -0.54), crouch=0.76, RA=(-66, 0, 16), LA=la(-70, TWIST, -14), H=(12, 0, 0))
     t.mark(60, "Lunge")
     t.key(64, "gone", ease="lin", T=(60, 0, 0, 0, 0, 0.5), feet=loose, RL=(24, 0, 5), LL=(-16, 0, -4),
-          RA=(-76, 0, 5), LA=(-82, 0, -5), H=(22, 0, 0), crouch=0.0)
-    t.key(69, ease="lin", T=(61, 0, 1, 0, 0, 0.5), RL=(-12, 0, 2), LL=(20, 0, -6), RA=(-80, 0, 8), LA=(-72, 0, -3), H=(21, 0, 2))
-    t.key(75, T=(62, 0, 2, 0, 0, 0.5), RL=(16, 0, 6), LL=(-14, 0, -2), RA=(-84, 0, 6), LA=(-74, 0, -6), H=(20, 0, 3))
+          RA=(-76, 0, 5), LA=la(-82, TWIST, -5), H=(22, 0, 0), crouch=0.0)
+    t.key(69, ease="lin", T=(61, 0, 1, 0, 0, 0.5), RL=(-12, 0, 2), LL=(20, 0, -6), RA=(-80, 0, 8), LA=la(-72, TWIST, -3), H=(21, 0, 2))
+    t.key(75, T=(62, 0, 2, 0, 0, 0.5), RL=(16, 0, 6), LL=(-14, 0, -2), RA=(-84, 0, 6), LA=la(-74, TWIST, -6), H=(20, 0, 3))
     t.mark(75, "Land")
     t.key(81, "the mask arrives", T=(30, 0, 0, 0, 0, 0.25), RL=(-34, 0, 4), LL=(-52, 0, -5), crouch=0.0,
-          RA=(-30, 0, 10), LA=(-40, 0, -10), H=(-18, 0, 4))
+          RA=(-30, 0, 10), LA=la(-40, TWIST, -10), H=(-18, 0, 4))
     t.key(88, "the rest arrives", T=(30, -4, 0, 0, 0, 0.2), feet={"Right Leg": (0.8, 0.5), "Left Leg": (-0.8, -0.34)},
           RA=(58, 0, 8), LA=(64, 0, -8), H=(-14, 6, 8), crouch=0.44)
     t.key(98, "its back open", ease="sine", T=(52, -5, 2, 0, 0, 0.24), RA=("hang", (0.5, 0.25), (0, 0, 6)), LA=("hang", (0.5, 0.3), (0, 0, -6)),

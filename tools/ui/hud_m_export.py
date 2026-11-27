@@ -1,7 +1,9 @@
 """AR68, M (research's pick, 2026-11-27, 13:10): the lead plate and the press as the game's pieces, for Faber's first
 build (Turing R1), from the same drawing as the frames (tools/ui/hud_compositions.py, `m_frame`'s pieces).
 
-    py tools/ui/hud_m_export.py <out>
+    py tools/ui/hud_m_export.py <out> [look]
+
+`look`: one of hud_compositions.M_LOOKS, `light` unless named (research picked `a`, slate, at 13:4x on 2026-11-27).
 
 Writes <out>/images/<Name>.png at the kit's 4 pixels a point (Config.UIKit.PixelsPerPoint), each a cut-out on alpha, and
 <out>/m_pieces.json: every image's record as UIKit.Images reads it (Pixels, Points, Pad, and Cut in points from the
@@ -29,7 +31,8 @@ PPP = 4
 T = hs.M_
 PAD = 6.0          # the soft shadow's reach (dx 1.2, dy 1.8, blur 1.3) with room
 CY = hc.PRESS[1]
-CHIP_CUT = (PAD + 6, PAD + 3, PAD + 6, PAD + 3)   # a chip's slanted ends and its soft edge keep their size
+CHIP_CUT = (PAD + 6, PAD + 3, PAD + 6, PAD + 3)
+LOOK = "light"   # a chip's slanted ends and its soft edge keep their size
 
 # name: (draw, its box x, y, w, h in the lead's points, pad, cut l, t, r, b in points or None, tint if drawn white)
 PIECES = {
@@ -39,12 +42,12 @@ PIECES = {
     "MPressDisc": (lambda P: hc.m_press_disc(P, T), (8, CY - 30, 60, 60), PAD, None, None),
     "MPressRing": (lambda P: hc.m_press_ring(P, T, 1.0, "#FFFFFF"), (8, CY - 30, 60, 60), PAD, None, T["hue"]),
     "MPressGlow": (lambda P: hc.m_press_glow(P, T), (-8, CY - 46, 92, 92), 0.0, None, None),
-    "MLabelCard": (lambda P: hc.card(P, hc.slant(74, CY - 18, 50), T["slate"]), (74, CY - 18, 54, 19), PAD, CHIP_CUT,
+    "MLabelCard": (lambda P: hc.card(P, hc.slant(74, CY - 18, 50), "slate"), (74, CY - 18, 54, 19), PAD, CHIP_CUT,
                    None),
-    "MChip": (lambda P: hc.card(P, hc.slant(70, CY + 7, 60), hc.M_PAPER, soft=True), (70, CY + 7, 64, 19), PAD, CHIP_CUT,
+    "MChip": (lambda P: hc.card(P, hc.slant(70, CY + 7, 60), "paper", soft=True), (70, CY + 7, 64, 19), PAD, CHIP_CUT,
               None),
-    "MEye": (lambda P: hs.eye_icon(P, 154, CY + 16.5, 16, T["ink"], T["ink"], sw=1.4), (145, CY + 12, 18, 9), 1.0, None,
-             None),
+    "MEye": (lambda P: hs.eye_icon(P, 154, CY + 16.5, 16, hc.M_LOOK["on_paper"], hc.M_LOOK["on_paper"], sw=1.4),
+             (145, CY + 12, 18, 9), 1.0, None, None),
 }
 
 # where each image is laid (its box without the pad), in the order drawn: Z from 1
@@ -65,34 +68,38 @@ LAYS = [
     ("MEye", (145, CY + 12, 18, 9), "the eye"),
 ]
 
-LIVE = {
-    "portrait": dict(box=[6, 6, 44, 44], z="after MLeadPlate, under MLevelTab",
-                     note="the lead's own portrait (hud_art's Portrait<Voidkin>), clipped to the mount's box"),
-    "art": dict(centre=[38, CY], radius=20, z="over MPressDisc, under MPressRing",
-                note="the skill's own art, clipped round; until it is drawn, today's press art; at 55% while filling"),
-    "xp": dict(box=[50, 41, 138, 2.2], colour=T["xp"], lit="#FFE7A6", z="over MLeadPlate",
-               note="a Frame over the plate's trough, its width the share to the next level"),
-    "autoMark": dict(box=[80, CY + 13, 8, 8], colour=T["slate"], note="a Frame on MChip; Auto on"),
-    "texts": [
-        dict(what="the lead's name, upper case", x=58, baseline=21, anchor="left", font="Oswald", weight="Bold", size=16,
-             colour=T["ink"], tracking=1.0),
-        dict(what="the type's gem and the class's mark, the kit's own icons", centres=[[108, 15], [119, 15]],
-             sizes=[10, 11], colour=T["ink"]),
-        dict(what="the damage taken in the last hit", x=184, baseline=21, anchor="right", font="Oswald", weight="Bold",
-             size=15, colour=T["ally"]),
-        dict(what="health, a spaced slash, the maximum: '3,682 / 3,732' (research's round: the spacing back)", x=119,
-             baseline=37, anchor="centre", font="Oswald", size=14,
-             runs=[["3,682", "Bold", T["ivory"]], [" / 3,732", "Regular", "#F3E6D6"]],
-             shadow="0, 1 down, 1.2 blur, #0E131B at 55%"),
-        dict(what="the level", x=39, baseline=49.6, anchor="centre", font="Oswald", weight="Bold", size=14,
-             colour=T["ivory"]),
-        dict(what="the press's label: its share filling ('62%'), the skill's name awake ('HAYMAKER', tracking 1.2)",
-             x="the card's middle", baseline=CY - 3, anchor="centre", font="Oswald", weight="Bold", size=15,
-             colour=T["ivory"]),
-        dict(what="AUTO", x=93, baseline=CY + 22.5, anchor="left", font="Oswald", weight="Bold", size=14, colour=T["ink"],
-             tracking=1.0),
-    ],
-}
+def live(L):
+    """The live parts over the images, in the look `L`'s colours."""
+    edge = ("a dark edge: a UIStroke #08090C at 92%, 0.75 pt, and the same edge again 0.9 pt lower, under the text"
+            if L["text"] else None)
+    return {
+        "portrait": dict(box=[6, 6, 44, 44], z="after MLeadPlate, under MLevelTab",
+                         note="the lead's own portrait (hud_art's Portrait<Voidkin>), clipped to the mount's box"),
+        "art": dict(centre=[38, CY], radius=20, z="over MPressDisc, under MPressRing",
+                    note="the skill's own art, clipped round; until it is drawn, today's press art; at 55% while filling"),
+        "xp": dict(box=[50, 41, 138, 2.2], colour=T["xp"], lit="#FFE7A6", z="over MLeadPlate",
+                   note="a Frame over the plate's trough, its width the share to the next level"),
+        "autoMark": dict(box=[80, CY + 13, 8, 8], colour=L["mark"], note="a Frame on MChip; Auto on"),
+        "texts": [
+            dict(what="the lead's name, upper case", x=58, baseline=21, anchor="left", font="Oswald", weight="Bold", size=16,
+                 colour=L["on_paper"], tracking=1.0, edge=edge),
+            dict(what="the type's gem and the class's mark, the kit's own icons", centres=[[108, 15], [119, 15]],
+                 sizes=[10, 11], colour=L["on_paper"]),
+            dict(what="the damage taken in the last hit", x=184, baseline=21, anchor="right", font="Oswald", weight="Bold",
+                 size=15, colour=T["ally"], edge=edge),
+            dict(what="health, a spaced slash, the maximum: '3,682 / 3,732' (research's round: the spacing back)", x=119,
+                 baseline=37, anchor="centre", font="Oswald", size=14,
+                 runs=[["3,682", "Bold", L["on_slate"]], [" / 3,732", "Regular", "#F3E6D6"]],
+                 shadow="0, 1 down, 1.2 blur, #0E131B at 55%"),
+            dict(what="the level", x=39, baseline=49.6, anchor="centre", font="Oswald", weight="Bold", size=14,
+                 colour=L["on_slate"], edge=edge),
+            dict(what="the press's label: its share filling ('62%'), the skill's name awake ('HAYMAKER', tracking 1.2)",
+                 x="the card's middle", baseline=CY - 3, anchor="centre", font="Oswald", weight="Bold", size=15,
+                 colour=L["on_slate"], edge=edge),
+            dict(what="AUTO", x=93, baseline=CY + 22.5, anchor="left", font="Oswald", weight="Bold", size=14, colour=L["on_paper"], edge=edge,
+                 tracking=1.0),
+        ],
+    }
 
 
 def transparent_shoot(P, out, scale=PPP):
@@ -139,14 +146,16 @@ def export(out):
             rec["Tint"] = tint
         records[name] = rec
     lays = [dict(image=n, box=list(b), Z=i + 1, note=note) for i, (n, b, note) in enumerate(LAYS)]
-    doc = dict(about="AR68, M: the lead plate and the press, research's round of 13:10, for the first build (R1). Points "
+    L = hc.M_LOOK
+    doc = dict(about=f"AR68, M: the lead plate and the press, look '{LOOK}', for the first build (R1). Points "
                      "are the 568 frame's, the lead's group from the screen's top left; the game scales them as today's "
                      "HUD. Each image's box is laid without its pad: an image is placed at box minus Pad, sized box plus "
                      "twice Pad (UI.Kit.Skin's rule). Cut counts from the image's own edge, pad included. The foe's side "
                      "and the cut between the sides wait for the next piece.",
-               pixelsPerPoint=PPP, images=records, lays=lays, live=LIVE,
-               colours=dict(paper=hc.M_PAPER, slate=T["slate"], ink=T["ink"], hue=T["hue"], health=T["ally"],
-                            healthLit=T["ally_lit"], xp=T["xp"], ivory=T["ivory"]))
+               pixelsPerPoint=PPP, images=records, lays=lays, live=live(L), look=LOOK,
+               colours=dict(paper=L["paper"], slate=L["slate"], well=L["well"], face=L["face"], textOnPaper=L["on_paper"],
+                            textOnSlate=L["on_slate"], hue=T["hue"], health=T["ally"], healthLit=T["ally_lit"],
+                            xp=T["xp"]))
     (out / "m_pieces.json").write_text(json.dumps(doc, indent=1), encoding="utf-8", newline="\n")
     return doc
 
@@ -192,10 +201,10 @@ def drawn_in_place(P):
     hc.m_press_glow(P, T)
     hc.m_press_disc(P, T)
     hc.m_press_ring(P, T, 1.0)
-    hc.card(P, hc.slant(74, CY - 18, 90), T["slate"])
-    hc.card(P, hc.slant(70, CY + 7, 60), hc.M_PAPER, soft=True)
-    hc.card(P, hc.slant(136, CY + 7, 32), hc.M_PAPER, soft=True)
-    hs.eye_icon(P, 154, CY + 16.5, 16, T["ink"], T["ink"], sw=1.4)
+    hc.card(P, hc.slant(74, CY - 18, 90), "slate")
+    hc.card(P, hc.slant(70, CY + 7, 60), "paper", soft=True)
+    hc.card(P, hc.slant(136, CY + 7, 32), "paper", soft=True)
+    hs.eye_icon(P, 154, CY + 16.5, 16, hc.M_LOOK["on_paper"], hc.M_LOOK["on_paper"], sw=1.4)
 
 
 def check(out, doc):
@@ -240,6 +249,8 @@ def check(out, doc):
 
 if __name__ == "__main__":
     dest = Path(sys.argv[1]).resolve()
+    LOOK = sys.argv[2] if len(sys.argv) > 2 else "light"
+    hc.M_LOOK = hc.M_LOOKS[LOOK]
     dest.mkdir(parents=True, exist_ok=True)
     d = export(dest)
     for n, rec in d["images"].items():

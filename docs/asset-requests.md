@@ -6590,6 +6590,13 @@ Research picks one, then Faber builds the first piece and the director judges it
 - **Beside the shipped frame:** UNCHANGED to slightly behind. AC's HUD is smaller, with fewer and lighter plates at the edges. Ours still takes a heavier corner. Premium is NOT VERIFIED until the Jujutsu Infinite and Sailor Piece frames are in and the first piece is judged in the game.
 - **Next:** Faber builds the first piece (the lead plate and the press) on (a). Modulo's press art is drawn on (a). The director judges it in the game. If the JI and SP study shows a clearly better direction, it comes as a new target beside (a), not as a patch.
 
+### Modulo: (a)'s images for the first piece (2026-11-27, 13:42)
+
+- **Made** with `tools/ui/hud_m_export.py <out> a` (it now takes M's look; `light` still writes the nine images as delivered, each identical), in `build/handoff/UI/ar68/m_dark/a/export/`: the nine images, `m_pieces.json` (the look's colours, and each text's dark edge as a UIStroke), `m_check.png`, `m_pieces_sheet.png` and `m_pieces_64.png`.
+- **What changes from the light set:** six images (the lead plate, the level tab, the press's disc, the label card, the chip, the eye). The health fill and the press's ring and glow are byte for byte the light set's. Laid from the json against drawn in place: PSNR 38.5 dB (the stretched chips' sheen and grain; equal by eye).
+- **Checks:** content check PASS on the six, at full size and at 64 px over dark. Their asset-log rows come with their upload ids.
+- **Four facts:** made; checked as above; delivered to Faber at 13:42 for the first piece; not in the game, not accepted.
+
 ## AR69. A Shade's fall and the burn, overhauled (Scintilla's targets, research's pick, then Scintilla's install)
 
 **The director, 2026-11-27, by 13:37:** "the fire effect when enemy die is so bad it still that old 2d vfx.." and "the burning effect is also bad". Both are overhauls, not another round, under the director's rule of 13:36 ("if you take an idea and it turn bad no matter the iterations > overhaul"). Today's: `ShadeBurst` (the sky lantern, a flat 2D flipbook picture on a billboard, `Config/Effects.luau`) and `StateBurn` (`Config/EffectRows/StateBurn.json`).

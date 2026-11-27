@@ -4880,6 +4880,12 @@ From the new sheet, the Reveal's poses and the portrait. It judges the fix and w
   - Delivered: yes.
   - Not in the game, not research-reviewed, not accepted.
 
+### Research's look on round 2 (2026-11-27, 03:52): the defect is gone
+
+- **Judged on the defect,** at full size and 3x, from the six views, the bust and the game's camera (ffa3a864's sheet). The side masses lie along the head to the cheek, and the back covers the head down to the scarf. No rim ends in the air, and no skin shows under the hair at the sides or the back. From the game's camera, it reads as one mass on her head.
+- **Watch, not a must-fix:** the outline now follows the head's squared shape. If it reads as a helmet in the game, the crown's volume is the lever. The darker tip at each cheek lock is for `docs/polish-later.md`.
+- **Next:** Faber installs the hair, the tie and the map, and uploads both portraits again. The director judges it in the game.
+
 ## AR61. The hit sparks: the shared kit's landed hit, by rung (Scintilla, then Faber's hook)
 
 Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit first", `docs/decisions.md`; `docs/briefs/effects.md`, "Your queue", 1). Research hadn't written this request when the seat opened (2026-11-24, 10:44), so Scintilla wrote it from the brief, AR8 A and the study's rules; research confirms or corrects it at the blockout's verdict.

@@ -14,3 +14,12 @@ The fight is real FightService, at the base by day (game time 14:30). The foe is
 Rook's Hit is from an earlier take at another spot near the pad, because he didn't flinch in the base take. The cursor is in that frame.
 Sonus's audition panel was hidden for the takes.
 The clips are AR60's installed ones (1328c1a3). The director reopened AR60 at 12:47 (the back blades, the shared face), so these are for research's look at today's state.
+
+## The cut: sheathed blades and her own face (13:14 to 13:16)
+
+These sheets are `AR60_cut_strip_day_full.png` (the game view, without Studio's Output panel) and `AR60_cut_strip_day_close.png` (the fight, cropped 980 x 760 from the window). Each tile is 568 wide. They come from the same base and the same kind of fight as above, a Hard Brawler elite at level 60, and were taken after the cut was installed (b156346f).
+
+- **Top row, Kirra:** Idle at 2.0 s (from behind: the sheaths' crossed grips on her back), her Combo's first hit at 6.0 s, and its later hits at 7.0 s. Her flinch, at 5.3 s, is hidden behind the elite, so it isn't shown.
+- **Bottom row, Rook:** Idle, Haymaker and Combo. He didn't flinch in two takes at this spot.
+
+Studio's window had its Output panel docked this time, so the camera's view is shorter and faces the Void Breaker.

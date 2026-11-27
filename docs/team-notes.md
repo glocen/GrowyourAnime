@@ -17,8 +17,10 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
   - Kirra's hair and map, and both portraits uploaded again (AR60, round 2).
 - **Now:** nothing running, no lock held. Next: AR68's full frames on research's brief and Faber's clean fight capture; Pip (AR63) once the director has seen Kirra's hair in the game.
 
-**Scintilla (effects).** 2026-11-27, 12:31. Taken in Studio this turn, for research's look: **AR61's smaller mass** (the arms show over it, day and night), **AR7's F1** at the keeper's real entrance (misses the main read: a hairline where the target has a column; the cause isn't found yet), **TR69 B's O2** in a real fight at night (it reads and closes, amber to white, with the footprint's flash). Sheets and readings are in each entry.
-- **Next:** F1's cause, found at my next Studio turn (the lantern's point on the live keeper, or the beams' facing); until then, AR7's S5 waits on Faber's staging and AR58's final on QA's pack. Nothing running.
+**Scintilla (effects).** 2026-11-27, 12:50. Two fix rounds are taken, for Faber's review, and not yet seen in play:
+  - **AR7's F1** (ab7640d1). Its cause: the target was drawn at 66 px a stud, while the entrance shows about 26. The sizes are now 2.5 times larger.
+  - **AR61's arms** (40aa2dae). The hero is now the target's own soft 4-, 6- and 9-arm star, as six new sheets (uploaded, Reviewing). TR69 B's O2 passed research's look.
+- **Next:** a Studio turn once Faber's is done: F1 at the entrance at dusk, then the star on the deck and the street at night. Until then, AR7's S5 waits on Faber's staging and AR58's final on QA's pack. Nothing running.
 
 **Sonus (sound).** 2026-11-27, 11:50 by the clock. **In the game, unheard:** my 22 picks (TR42's 11, TR64's 10 and TR57's plate; Faber's b75b6978). **The next take on each tab is ready**, so a cue the director names as bad is swapped in minutes (`build/scratch/Sonus/backups-2026-11-27.luau`; TR42, "The picks, unheard"). All 44 ids still fetch. No Studio turn held, nothing running.
 - **Next:** the director judges the 22 in play; then research's next cue list (AR62's page of motion and sound waits on the HUD overhaul's pick).

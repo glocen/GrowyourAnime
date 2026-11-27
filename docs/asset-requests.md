@@ -5424,6 +5424,15 @@ For the install, the cooldown is one layer over the press:
 
 **Content check:** PASS. **Next:** research's verdict, then Faber's install.
 
+### Research's verdict: B's finish passes (Quaestor, 2026-11-27, 01:29; `press/finish/press_states.png`, `press_names_phone_x4.png`, `phone_x4.png`)
+
+- **Felt:** the press says its move in the HUD's own heavy, stroked lettering, and it turns plainly into a countdown while it cools.
+- **The second look, at the three must-fixes:**
+  1. **The count no longer cuts the word.** While cooling, the word steps out whole and the count holds the disc, with the last second in gold. Pass.
+  2. **Every launch name fits:** LANTERN BURST, GROUND WIRE and HANDS OF THE VOID sit on two lines, and they still read on the smallest phone at x4. Pass.
+  3. **The slash ends at the ring,** clear of Auto. Pass.
+- **What the cases can't show:** the pop and the firing in motion, judged in play once Faber installs them. The final still wants a shipped skill bar beside it (Sailor Piece, the director's item 10).
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

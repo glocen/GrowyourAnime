@@ -23,6 +23,7 @@ export type Ticket = {
 	Ground: string?,
 	Difficulty: string?,
 	Stage: number?,
+	Alone: boolean?, -- the Keeper alone (TR74): the run begins at the keeper's stretch, as Rules.Stages.Alone allows
 	From: string?, -- the base server's JobId, so the way home finds it again
 	Sent: number, -- unix seconds with milliseconds, so the far side logs the trip's length
 }
@@ -31,7 +32,7 @@ export type Ticket = {
 export type Step = { Wait: number, Open: boolean }
 
 -- What an arrival starts: a stage's run, or the menu where they stand.
-export type Arrival = { Begin: boolean, Difficulty: string?, Stage: number?, Refused: string? }
+export type Arrival = { Begin: boolean, Difficulty: string?, Stage: number?, Alone: boolean?, Refused: string? }
 
 local MAX_TEXT = 64
 
@@ -39,9 +40,9 @@ local function text(value: any): string?
 	return if type(value) == "string" and #value > 0 and #value <= MAX_TEXT then value else nil
 end
 
--- A trip out to a stage.
-function Travel.Stage(ground: string, difficulty: string, stage: number, from: string?, sent: number): Ticket
-	return { V = Travel.Version, Go = "Stage", Ground = ground, Difficulty = difficulty, Stage = stage, From = from, Sent = sent }
+-- A trip out to a stage; `alone` for the Keeper alone.
+function Travel.Stage(ground: string, difficulty: string, stage: number, from: string?, sent: number, alone: boolean?): Ticket
+	return { V = Travel.Version, Go = "Stage", Ground = ground, Difficulty = difficulty, Stage = stage, Alone = if alone == true then true else nil, From = from, Sent = sent }
 end
 
 -- A trip home.
@@ -63,7 +64,7 @@ function Travel.Read(data: any): Ticket?
 	if ground == nil or difficulty == nil or type(stage) ~= "number" or stage ~= math.floor(stage) or stage < 1 or stage > 99 then
 		return nil
 	end
-	return Travel.Stage(ground, difficulty, stage, text(data.From), data.Sent)
+	return Travel.Stage(ground, difficulty, stage, text(data.From), data.Sent, data.Alone == true)
 end
 
 -- The ticket a joining player brought (TravelService, from Player:GetJoinData()), read only when they came by teleport
@@ -99,10 +100,17 @@ end
 
 -- What a player arriving in the Festival starts. A ticket's run begins at its checkpoint if the save opens it (TR50);
 -- refused, or with no ticket, a fresh player begins the first stretch on Normal (TR43) and anyone else gets the Arc
--- panel where they land.
-function Travel.Arrival(ticket: Ticket?, data: Profile.Data, ground: string): Arrival
+-- panel where they land. A ticket for the Keeper alone begins at the keeper's stretch if Rules.Stages.Alone allows it at
+-- `now` (the keeper's rest included), else refused as any.
+function Travel.Arrival(ticket: Ticket?, data: Profile.Data, ground: string, now: number): Arrival
 	local refused: string? = nil
-	if ticket and ticket.Go == "Stage" and ticket.Ground == ground then
+	if ticket and ticket.Go == "Stage" and ticket.Ground == ground and ticket.Alone then
+		local alone = Stages.Alone(data, ground, ticket.Difficulty :: string, now)
+		if alone.Ok then
+			return { Begin = true, Difficulty = ticket.Difficulty, Stage = alone.Stage, Alone = true }
+		end
+		refused = alone.Needs or alone.Error
+	elseif ticket and ticket.Go == "Stage" and ticket.Ground == ground then
 		-- the run begins at its checkpoint, as the save has it on arrival (TR50); the ticket's stage is the one it saw
 		local difficulty = ticket.Difficulty :: string
 		local stage = if StagesConfig.Offset[difficulty] ~= nil then Stages.Checkpoint(data, ground, difficulty) else ticket.Stage :: number

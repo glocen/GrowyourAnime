@@ -17,6 +17,9 @@
 -- * The Festival Door: a fresh player (Rules.Stages.Fresh) starts the first stretch on Normal where it lands, with no
 --   screen; anyone else is sent the Arc panel (Net StagePick), whose Normal and Hard begin a run (Net Stage) at that
 --   difficulty's checkpoint, set down where that stretch starts.
+-- * The Keeper alone (TR74; Rules.Stages.Alone): once a difficulty's keeper has fallen, the tile's second press begins a
+--   run at the keeper's stretch, refused while the keeper rests; its clear pays as the last stretch's and moves no
+--   checkpoint. The Stage request's third argument asks for it; from the base it rides the ticket (Rules.Travel).
 -- * A keeper's try is its stretch's: a run on Normal begins at it when no run is on there and the stretch is open, and
 --   the try's win (KeeperService.Won) is its stretch's last stop.
 -- * A run ends when the keeper's stretch is done (its card: Net StageDone, Rules.Stages.After later, past the fade), when
@@ -27,10 +30,12 @@
 -- StageLast.
 -- Studio:
 --   NL_Debug:Invoke("Stage")                                 the run, the gates shut to the player, their record
---   NL_Debug:Invoke("StageBegin", nil, difficulty, stage?)   a run begins, at `stage` or the checkpoint as the panel
+--   NL_Debug:Invoke("StageBegin", nil, difficulty, stage?, alone?)  a run begins, at `stage` or the checkpoint as the panel
+--                                                            (`alone`: the Keeper alone, as the tile's press)
 --   NL_Debug:Invoke("StageArrive", nil)                      as if the player had just come through the base's door: the
 --                                                            menu there; in the Festival, an arrival with no ticket
---   NL_Debug:Invoke("StageArriveBy", nil, difficulty, stage)  in the Festival, an arrival with a ticket for that stage
+--   NL_Debug:Invoke("StageArriveBy", nil, difficulty, stage, alone?)  in the Festival, an arrival with a ticket for that
+--                                                            stage (`alone`: the Keeper alone's)
 --   NL_Debug:Invoke("StageFell", nil, group)                 fells a group's standing Shades ("Pack 1", "Elite 1", or a
 --                                                            Hard run's own: "Elite 1 mine"), the player their hitter
 --   NL_Debug:Invoke("StageLine", nil, difficulty, cleared, reached?)  the record on Lantern Row: its cleared count (0
@@ -97,6 +102,7 @@ local function logRun(player: Player, run: Run, how: string)
 	run.Logged = true
 	local seconds = math.floor((os.clock() - run.Began) * 10 + 0.5) / 10
 	local stage = Stages.Label(run.Rule)
+	how = if run.Rule.Alone then `{how}Alone` else how -- the Keeper alone's length kept apart from a run's (TR48's pace)
 	Log.Info("StageService", `stage run {stage}: {how} after {seconds} s`)
 	table.insert(logged, { Stage = stage, How = how, Seconds = seconds })
 	if #logged > LOG_KEPT then
@@ -198,8 +204,9 @@ local function standStretch(player: Player, run: Run)
 end
 
 -- A run on `difficulty` begins for `player` at stretch `stage`, or at that difficulty's checkpoint (nil), set down at its
--- start unless `stay` (the Door's own landing). { Ok, Stage } or { Ok = false, Error, Needs?, Waits? }.
-function StageService.Begin(player: Player, ground: string, difficulty: string, stage: number?, stay: boolean?): { [string]: any }
+-- start unless `stay` (the Door's own landing); `alone`, the Keeper alone at the keeper's stretch as Rules.Stages.Alone
+-- allows (TR74). { Ok, Stage } or { Ok = false, Error, Needs?, Waits? }.
+function StageService.Begin(player: Player, ground: string, difficulty: string, stage: number?, stay: boolean?, alone: boolean?): { [string]: any }
 	local data = DataService.Get(player)
 	local lead = FightService.LeadOf(player)
 	if data == nil then
@@ -208,6 +215,13 @@ function StageService.Begin(player: Player, ground: string, difficulty: string, 
 		return { Ok = false, Error = "InTry" }
 	elseif lead == nil or not FightService.Standing(lead) then
 		return { Ok = false, Error = "NoLead" }
+	end
+	if alone then
+		local way = Stages.Alone(data, ground, difficulty, os.time())
+		if not way.Ok then
+			return way
+		end
+		stage = way.Stage
 	end
 	local at = stage or Stages.Checkpoint(data, ground, difficulty)
 	local rule, refusal = Stages.Start(data, ground, difficulty, at, os.time())
@@ -218,6 +232,9 @@ function StageService.Begin(player: Player, ground: string, difficulty: string, 
 	local start = Markers.Find("StageStart", { Stage = at, Ground = ground })
 	if start == nil then
 		return { Ok = false, Error = "NoStart" }
+	end
+	if alone then
+		rule.Alone = true
 	end
 	StageService.End(player)
 	local run: Run = { Rule = rule, Foes = {}, Groups = {}, Before = Stages.Holdings(data), Ending = false, OnStreet = false, Began = os.clock(), Logged = false }
@@ -391,7 +408,7 @@ end
 
 -- A pick in the base's place: the trip to the Festival, into that difficulty's run at its checkpoint, if the save opens
 -- it and the lead stands. The Festival checks again on arrival (Travel.Arrival).
-function StageService.Travel(player: Player, ground: string, difficulty: string): { [string]: any }
+function StageService.Travel(player: Player, ground: string, difficulty: string, alone: boolean?): { [string]: any }
 	local data = DataService.Get(player)
 	if data == nil then
 		return { Ok = false, Error = "NoData" }
@@ -400,11 +417,11 @@ function StageService.Travel(player: Player, ground: string, difficulty: string)
 	elseif not FightService.Standing(FightService.LeadOf(player)) then
 		return { Ok = false, Error = "NoLead" }
 	end
-	local way = Stages.Way(data, ground, difficulty)
+	local way = if alone then Stages.Alone(data, ground, difficulty, os.time()) else Stages.Way(data, ground, difficulty)
 	if not way.Ok then
 		return way
 	end
-	local ok, err = TravelService.ToStage(player, ground, difficulty, way.Stage)
+	local ok, err = TravelService.ToStage(player, ground, difficulty, way.Stage, alone)
 	return { Ok = ok, Error = err, Travel = true }
 end
 
@@ -417,7 +434,7 @@ function StageService.Arrived(player: Player, ticket: Travel.Ticket?)
 		return
 	end
 	local ground = WorldConfig.Row.Ground
-	local decision = Travel.Arrival(ticket, data, ground)
+	local decision = Travel.Arrival(ticket, data, ground, os.time())
 	local waited = 0
 	while player.Parent and not FightService.Standing(FightService.LeadOf(player)) and waited < TravelConfig.Hold do
 		waited += task.wait(0.2)
@@ -427,7 +444,7 @@ function StageService.Arrived(player: Player, ticket: Travel.Ticket?)
 	end
 	local begun = false
 	if decision.Begin then
-		local answer = StageService.Begin(player, ground, decision.Difficulty :: string, decision.Stage :: number, ticket == nil)
+		local answer = StageService.Begin(player, ground, decision.Difficulty :: string, decision.Stage :: number, ticket == nil, decision.Alone)
 		begun = answer.Ok == true
 		if not begun then
 			Log.Warn("StageService", `{player.Name}'s stage on arriving didn't begin: {tostring(answer.Error)}`)
@@ -461,7 +478,7 @@ local function state(who: any): any
 	local ground = WorldConfig.Row.Ground
 	return {
 		Ok = true,
-		Run = if run then { Difficulty = run.Rule.Difficulty, Stage = run.Rule.Stage, From = run.Rule.From, Kills = run.Rule.Kills, Last = run.Rule.Last, Done = run.Rule.Done, Foes = foes } else nil,
+		Run = if run then { Difficulty = run.Rule.Difficulty, Stage = run.Rule.Stage, From = run.Rule.From, Kills = run.Rule.Kills, Last = run.Rule.Last, Done = run.Rule.Done, Foes = foes, KeeperAlone = run.Rule.Alone == true } else nil,
 		Shut = shutTo,
 		Fresh = if data then Stages.Fresh(data) else nil,
 		Normal = if data then Stages.Line(data, ground, "Normal") else nil,
@@ -475,14 +492,15 @@ local function state(who: any): any
 end
 
 function StageService.Start()
-	Net.Server.Handle("Stage", function(player: Player, ground: any, difficulty: any): { [string]: any }
+	Net.Server.Handle("Stage", function(player: Player, ground: any, difficulty: any, alone: any): { [string]: any }
 		if type(ground) ~= "string" or type(difficulty) ~= "string" then
 			return { Ok = false, Error = Stages.Unknown }
 		end
+		local keeper = alone == true -- the Keeper alone (TR74); anything else asks for the run at its checkpoint
 		if not FESTIVAL then
-			return StageService.Travel(player, ground, difficulty)
+			return StageService.Travel(player, ground, difficulty, keeper)
 		end
-		return StageService.Begin(player, ground, difficulty)
+		return StageService.Begin(player, ground, difficulty, nil, nil, keeper)
 	end)
 	FightService.Fell:Connect(fell)
 	-- The base's Festival Door opens the menu, for everyone (the director, 2026-11-19: "the teleport point of the base will
@@ -540,12 +558,12 @@ function StageService.Start()
 		DebugService.Register("StageLog", function(): any
 			return { Ok = true, Runs = table.clone(logged) }
 		end)
-		DebugService.Register("StageBegin", function(who: any, difficulty: any, stage: any): any
+		DebugService.Register("StageBegin", function(who: any, difficulty: any, stage: any, alone: any): any
 			local player = DebugService.ResolvePlayer(who)
 			if player == nil or type(difficulty) ~= "string" or (stage ~= nil and type(stage) ~= "number") then
 				return { Ok = false, Error = "BadArgs" }
 			end
-			return StageService.Begin(player, WorldConfig.Row.Ground, difficulty, stage)
+			return StageService.Begin(player, WorldConfig.Row.Ground, difficulty, stage, nil, alone == true)
 		end)
 		DebugService.Register("StageFell", function(who: any, group: any): any
 			local player = DebugService.ResolvePlayer(who)
@@ -576,14 +594,14 @@ function StageService.Start()
 			return { Ok = true }
 		end)
 		-- In the Festival's place, an arrival with a ticket for that stage, read as one from GetJoinData is (TR45).
-		DebugService.Register("StageArriveBy", function(who: any, difficulty: any, stage: any): any
+		DebugService.Register("StageArriveBy", function(who: any, difficulty: any, stage: any, alone: any): any
 			local player = DebugService.ResolvePlayer(who)
 			if player == nil or type(difficulty) ~= "string" or type(stage) ~= "number" then
 				return { Ok = false, Error = "BadArgs" }
 			elseif not FESTIVAL then
 				return { Ok = false, Error = "NotFestival" }
 			end
-			local ticket = Travel.Read(Travel.Stage(WorldConfig.Row.Ground, difficulty, stage, nil, workspace:GetServerTimeNow()))
+			local ticket = Travel.Read(Travel.Stage(WorldConfig.Row.Ground, difficulty, stage, nil, workspace:GetServerTimeNow(), alone == true))
 			if ticket == nil then
 				return { Ok = false, Error = "BadTicket" }
 			end

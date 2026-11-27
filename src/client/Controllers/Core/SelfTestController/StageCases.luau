@@ -63,9 +63,24 @@ local function mine(stage: number, standing: boolean?): { Model }
 	return found
 end
 
-local function begin(difficulty: string): { [string]: any }
-	local ok, answer = pcall(Net.Client.Invoke, "Stage", GROUND, difficulty)
+local function begin(difficulty: string, alone: boolean?): { [string]: any }
+	local ok, answer = pcall(Net.Client.Invoke, "Stage", GROUND, difficulty, alone == true)
 	return if ok and type(answer) == "table" then answer else { Ok = false, Error = tostring(answer) }
+end
+
+-- Whether the keeper `keeper` and the lead have each lost health, as the server has them, and what it read.
+local function hurt(t: any, keeper: string): (boolean, boolean, string)
+	local keeperHurt, leadHurt, said = false, false, ""
+	for _, f in (t.Server("Fighters") or {}) :: { any } do
+		if f.Def == keeper then
+			keeperHurt = f.Health < f.MaxHealth
+			said ..= `keeper {math.floor(f.Health)}/{math.floor(f.MaxHealth)} `
+		elseif f.Kind == "Lead" then
+			leadHurt = f.Health < f.MaxHealth
+			said ..= `lead {math.floor(f.Health)}/{math.floor(f.MaxHealth)}`
+		end
+	end
+	return keeperHurt, leadHurt, said
 end
 
 local function line(difficulty: string): Profile.StageLine
@@ -486,6 +501,14 @@ function StageCases.Cases(): { any }
 				t.Check("the keeper ten levels up", waitFor(t, MOVE + 1, function(): boolean
 					return (t.Server("Keeper").KeeperLevel or 0) == Stages.Level(keeperDef.Level, "Hard")
 				end), `{t.Server("Keeper").KeeperLevel}`)
+				-- the Solo lead and its own keeper strike each other (Codex's find, TR74: a keeper for nobody stalled it)
+				t.Server("LeadHeal")
+				local fought = ""
+				t.Check("Hard's keeper and the Solo lead fight: each takes the other's hits", waitFor(t, 20, function(): boolean
+					local keeperHurt, leadHurt, now = hurt(t, keeperDef.Def)
+					fought = now
+					return keeperHurt and leadHurt
+				end), fought)
 				t.Server("KeeperEnd", "Win")
 				t.Check("its fall clears Hard's keeper stretch, the checkpoint cleared", waitFor(t, StagesConfig.Results.After + REPLICATE + 2, function(): boolean
 					return line("Hard").Cleared == count and line("Hard").Reached == nil
@@ -726,6 +749,96 @@ function StageCases.Cases(): { any }
 				if not ok then
 					error(problem, 0)
 				end
+			end,
+		},
+		{
+			Name = "Stages (TR74): the Keeper alone on the Arc's tile: shut before the keeper's fall, then a press begins the keeper's stretch alone, a full run's checkpoint kept; refused while the keeper rests; Hard's keeper fought alone",
+			Place = "Festival", -- TR45: its world stands in that place only
+			Run = function(t: any)
+				if Screen.Current() ~= nil then
+					Screen.Close()
+					t.Wait(0.3)
+				end
+				local before = t.Server("Stage")
+				local held = before.Checkpoint or { Normal = 1, Hard = 1 }
+				local was = { Normal = { before.Normal and before.Normal.Cleared or 0, held.Normal }, Hard = { before.Hard and before.Hard.Cleared or 0, held.Hard } }
+				local count = #(Stages.Of(GROUND) :: { any })
+				local keeperDef = (Stages.Last(GROUND, count) :: any)
+				local function restore()
+					Helpers.endRun(t)
+					t.Server("StageLine", "Hard", 0)
+					t.Server("StageLine", "Normal", was.Normal[1], was.Normal[2])
+					t.Server("StageLine", "Hard", was.Hard[1], was.Hard[2])
+					t.Server("KeeperRest", 0)
+					t.Server("LeadHeal")
+					if Screen.Current() == StageScreen.Name then
+						Screen.Close()
+					end
+				end
+				local function panel(): { [string]: Instance }
+					if Screen.Current() == StageScreen.Name then
+						Screen.Close()
+						t.Wait(0.4)
+					end
+					t.Server("StageArrive")
+					waitFor(t, REPLICATE + 2, function(): boolean
+						return Screen.Current() == StageScreen.Name and StageScreen.Parts().Normal ~= nil
+					end)
+					return StageScreen.Parts()
+				end
+				Helpers.endRun(t)
+				t.Server("LeadHeal")
+				t.Server("KeeperRest", 0)
+				-- before the keeper's fall: no strip
+				t.Server("StageLine", "Hard", 0)
+				t.Server("StageLine", "Normal", count - 1, count)
+				local shut = panel()
+				t.Check("the keeper not yet fallen: no Keeper alone on the tile", shut.NormalAlone == nil and shut.HardAlone == nil)
+				t.Equal("and asked anyway, refused: its fall first", begin("Normal", true).Needs, Stages.Fallen)
+				-- fallen on Normal, a full run in progress at stretch 2
+				t.Server("StageLine", "Normal", count, 2)
+				local open = panel()
+				local normal, hard = open.NormalAlone :: TextButton?, open.HardAlone :: TextButton?
+				t.Check("fallen on Normal: both presses on the bed's foot", normal ~= nil and hard ~= nil)
+				t.Check("Normal's open, Hard's shut until it falls there", normal ~= nil and normal:GetAttribute("Look") == "open" and hard ~= nil and hard:GetAttribute("Look") == "shut")
+				Helpers.lintClean(t, "the Arc panel with the Keeper alone")
+				t.Check("Normal's press begins the keeper's stretch", normal ~= nil and Button.Press(normal) and waitFor(t, REPLICATE, function(): boolean
+					return player:GetAttribute("StageRun") == `Normal {count}`
+				end), tostring(player:GetAttribute("StageRun")))
+				local run = t.Server("Stage").Run
+				t.Check("a Keeper alone run, from the keeper's stretch", run ~= nil and run.KeeperAlone == true and run.From == count)
+				t.Wait(MOVE)
+				local try = t.Server("KeeperTry")
+				t.Check("its try", try.Ok == true, tostring(try.Error))
+				t.Wait(MOVE + 1)
+				t.Server("KeeperEnd", "Win")
+				t.Check("its win ends the run", waitFor(t, Stages.After(GROUND, count) + REPLICATE + 2, function(): boolean
+					return player:GetAttribute("StageRun") == nil
+				end), tostring(player:GetAttribute("StageRun")))
+				t.Equal("the full run's checkpoint kept at stretch 2", line("Normal").Reached, 2)
+				local resting = begin("Normal", true)
+				t.Check("the keeper rests: refused, with the time left", resting.Ok == false and resting.Error == Stages.Resting and type(resting.Waits) == "number" and resting.Waits > 0, `{resting.Error} {resting.Waits}`)
+				-- Hard's Keeper alone: the Solo lead and its own keeper fight (Codex's find)
+				if Screen.Current() then
+					Screen.Close()
+					t.Wait(0.4)
+				end
+				t.Server("KeeperRest", 0)
+				t.Server("LeadHeal")
+				t.Server("StageLine", "Hard", count)
+				local hardRun = begin("Hard", true)
+				t.Check("Hard's Keeper alone begins at the keeper's stretch", hardRun.Ok == true and hardRun.Stage == count, `{hardRun.Error} {hardRun.Stage}`)
+				t.Wait(MOVE)
+				t.Check("its try", t.Server("KeeperTry").Ok == true)
+				local said = ""
+				t.Check("Hard's keeper and the Solo lead fight: each takes the other's hits", waitFor(t, 20, function(): boolean
+					local keeperHurt, leadHurt, now = hurt(t, keeperDef.Def)
+					said = now
+					return keeperHurt and leadHurt
+				end), said)
+				t.Server("KeeperEnd", "Win")
+				t.Wait(Stages.After(GROUND, count) + REPLICATE)
+				restore()
 			end,
 		},
 	}

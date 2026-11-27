@@ -797,4 +797,26 @@ function Fight.MoveEnd(from: Vector3, target: Vector3, avatar: Vector3, move: { 
 	return from + way * studs, way
 end
 
+-- Whether fighter `f` may strike `other` (FightService's every target and area), from their Side, For (the player a foe
+-- stands for alone, nil for the street's), Owner (a lead's player) and Solo (a lead fighting only its own foes, on Hard).
+-- Never its own side; a foe for one player only that player's lead; a Solo lead only its own foes, both ways.
+function Fight.Against(f: any, other: any): boolean
+	if other.Side == f.Side then
+		return false
+	end
+	if f.For and other.Owner ~= f.For then
+		return false
+	end
+	if (f.Solo and other.For ~= f.Owner) or (other.Solo and f.For ~= other.Owner) then
+		return false
+	end
+	return other.For == nil or other.For == f.Owner
+end
+
+-- Whom a keeper's try stands its keeper (and its adds) for: the player on Hard, whose lead fights Solo there and strikes
+-- only its own foes (research's find from Codex's audit, 2026-11-27, folded into TR74); nobody on Normal.
+function Fight.KeeperFor(difficulty: string?, player: any): any
+	return if difficulty ~= nil and difficulty ~= "Normal" then player else nil
+end
+
 return Fight

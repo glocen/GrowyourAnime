@@ -34,6 +34,7 @@ local Markers = require(Shared.World.Markers)
 local Progress = require(Shared.Rules.Progress)
 local Grounds = require(Shared.Definitions.Grounds)
 local Drops = require(Shared.Rules.Drops)
+local Fight = require(Shared.Rules.Fight)
 local Profile = require(Shared.Data.Profile)
 local Core = script.Parent.Parent.Core
 local DataService = require(Core.DataService)
@@ -314,6 +315,7 @@ function KeeperService.Try(player: Player): { [string]: any }
 		try.Keeper = FightService.SpawnEnemy((ring :: any).Def, KeeperService.LevelOf(player, (ring :: any).Level), CFrame.lookAt(copy.Centre.Position, looks), {
 			Ground = (ring :: any).Ground,
 			Difficulty = if try.Difficulty ~= "Normal" then try.Difficulty else nil,
+			For = Fight.KeeperFor(try.Difficulty, player), -- a Hard lead fights Solo: its keeper must be its own
 		})
 	end)
 	return { Ok = true }

@@ -91,8 +91,8 @@ local fell: { [string]: any }? = nil
 local sendAnother: () -> ()
 
 local on: StageScreen.On = {
-	Begin = function(ground: string, difficulty: string): { [string]: any }
-		local ok, answer = pcall(Net.Client.Invoke, "Stage", ground, difficulty)
+	Begin = function(ground: string, difficulty: string, alone: boolean?): { [string]: any }
+		local ok, answer = pcall(Net.Client.Invoke, "Stage", ground, difficulty, alone == true)
 		return if ok and type(answer) == "table" then answer else { Ok = false, Error = "NoAnswer" }
 	end,
 	Home = function(): { [string]: any }

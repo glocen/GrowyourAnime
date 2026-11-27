@@ -309,16 +309,7 @@ end
 
 -- Whether `f` may strike `other`: another side, and a foe fought alone and its player's lead only each other (TR29).
 local function against(f: Fighter, other: Fighter): boolean
-	if other.Side == f.Side then
-		return false
-	end
-	if f.For and other.Owner ~= f.For then
-		return false
-	end
-	if (f.Solo and other.For ~= f.Owner) or (other.Solo and f.For ~= other.Owner) then
-		return false
-	end
-	return other.For == nil or other.For == f.Owner
+	return Fight.Against(f, other)
 end
 
 local function cooldownOf(f: Fighter, action: Actions.Action): number

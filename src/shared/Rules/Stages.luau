@@ -32,6 +32,8 @@ Stages.Claimed = "Claimed" -- the run's clear is already written
 Stages.Ground = "Ground" -- the ground isn't open to this player
 Stages.Before = "Before" -- the stage before it, on the same difficulty
 Stages.Keeper = "Keeper" -- for Hard: the keeper's stage, on Normal
+Stages.Fallen = "Fallen" -- for the Keeper alone: the keeper's fall on that difficulty (Stages.Alone)
+Stages.Resting = "Resting" -- for the Keeper alone: the keeper rests after its last win (Rules.Progress.Resting)
 
 export type Run = {
 	Ground: string,
@@ -44,6 +46,7 @@ export type Run = {
 	Last: boolean, -- its stretch's last stop's foe fell to the player
 	Done: boolean, -- both: the quota met and its stretch's last stop fallen
 	Claimed: boolean, -- its stretch's clear is written
+	Alone: boolean?, -- the Keeper alone: begun at the keeper's stretch from the tile (Stages.Alone); its clear moves no checkpoint
 }
 
 -- A ground's stages, or nil for a ground with none.
@@ -126,6 +129,29 @@ function Stages.Way(data: Profile.Data, ground: string, difficulty: string): { [
 		return { Ok = false, Error = Stages.Locked, Needs = needs, Waits = waits }
 	end
 	return { Ok = true, Stage = stage }
+end
+
+-- The Keeper alone on `difficulty` (TR74; docs/design.md, "The Keeper alone"): once that difficulty's keeper has fallen,
+-- a run may begin at the keeper's stretch from the tile, the keeper's rest still holding it. { Ok, Stage } (the keeper's
+-- stretch), or { Ok = false, Error, Needs?, Waits? }: Unknown; Locked, Needs Stages.Ground or Stages.Keeper, else Stages.Fallen
+-- before the first fall there; Resting, Waits its seconds left. It pays as the run's last stretch does, never more:
+-- Stages.Clear writes no first clear and no whole run's time for it, and leaves a full run's checkpoint where it was.
+function Stages.Alone(data: Profile.Data, ground: string, difficulty: string, now: number): { [string]: any }
+	local count = #((Stages.Of(ground) or {}) :: { StagesConfig.Stage })
+	if count == 0 or not valid(ground, difficulty, count) then
+		return { Ok = false, Error = Stages.Unknown }
+	end
+	local needs, waits = Stages.Needs(data, ground, difficulty, count)
+	if needs and needs ~= Stages.Before then -- the ground, or Hard itself, still shut
+		return { Ok = false, Error = Stages.Locked, Needs = needs, Waits = waits }
+	elseif Stages.Line(data, ground, difficulty).Cleared < count then -- short of the keeper, or at it: its fall is what opens this
+		return { Ok = false, Error = Stages.Locked, Needs = Stages.Fallen }
+	end
+	local resting = Progress.Resting(data, ground, now)
+	if resting > 0 then
+		return { Ok = false, Error = Stages.Resting, Needs = Stages.Resting, Waits = resting }
+	end
+	return { Ok = true, Stage = count }
 end
 
 -- Nil when the stage is open to this player; else what it waits for, and for Stages.Before the stage it needs.
@@ -270,7 +296,9 @@ function Stages.Clear(data: Profile.Data, run: Run, now: number): { [string]: an
 	local ends = run.Stage >= count
 	local whole = math.max(0, now - run.Started)
 	if ends then
-		line.Reached = nil -- the keeper fell: the next run begins at the first stretch
+		if not run.Alone then
+			line.Reached = nil -- the keeper fell: the next run begins at the first stretch (a Keeper alone leaves a run's own)
+		end
 		if run.From == 1 and (line.Run == nil or line.Run == 0 or whole < line.Run) then
 			line.Run = whole
 		end

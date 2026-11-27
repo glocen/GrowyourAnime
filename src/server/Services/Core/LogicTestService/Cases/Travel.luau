@@ -102,22 +102,22 @@ return {
 		Name = "Travel: an arrival begins the ticket's difficulty at the player's own checkpoint if their save opens it (TR50); otherwise Stage 1 for a fresh player, the menu for anyone else",
 		Run = function(t: any)
 			local two = cleared(1)
-			local go = Travel.Arrival(Travel.Stage(GROUND, "Normal", 2, nil, NOW), two, GROUND)
+			local go = Travel.Arrival(Travel.Stage(GROUND, "Normal", 2, nil, NOW), two, GROUND, NOW)
 			t.Check("Stage 1 cleared: the run begins at its checkpoint, 2", go.Begin and go.Difficulty == "Normal" and go.Stage == 2 and go.Refused == nil)
-			local skip = Travel.Arrival(Travel.Stage(GROUND, "Normal", 4, nil, NOW), two, GROUND)
+			local skip = Travel.Arrival(Travel.Stage(GROUND, "Normal", 4, nil, NOW), two, GROUND, NOW)
 			t.Check("a ticket for Stage 4: the save's checkpoint still, 2, never past it", skip.Begin and skip.Stage == 2 and skip.Refused == nil)
-			local hard = Travel.Arrival(Travel.Stage(GROUND, "Hard", 1, nil, NOW), two, GROUND)
+			local hard = Travel.Arrival(Travel.Stage(GROUND, "Hard", 1, nil, NOW), two, GROUND, NOW)
 			t.Check("Hard before the keeper fell on Normal: refused", not hard.Begin and hard.Refused == Stages.Keeper)
 			local new = fresh()
-			local forged = Travel.Arrival(Travel.Stage(GROUND, "Normal", 4, nil, NOW), new, GROUND)
+			local forged = Travel.Arrival(Travel.Stage(GROUND, "Normal", 4, nil, NOW), new, GROUND, NOW)
 			t.Check("a fresh player's forged Stage 4: Stage 1 on Normal, its checkpoint", forged.Begin and forged.Difficulty == "Normal" and forged.Stage == 1)
-			local none = Travel.Arrival(nil, new, GROUND)
+			local none = Travel.Arrival(nil, new, GROUND, NOW)
 			t.Check("a fresh player with no ticket: Stage 1 on Normal", none.Begin and none.Stage == 1 and none.Refused == nil)
-			local back = Travel.Arrival(nil, two, GROUND)
+			local back = Travel.Arrival(nil, two, GROUND, NOW)
 			t.Check("anyone else with no ticket: the menu", not back.Begin and back.Refused == nil)
-			local elsewhere = Travel.Arrival(Travel.Stage("nowhere", "Normal", 1, nil, NOW), two, GROUND)
+			local elsewhere = Travel.Arrival(Travel.Stage("nowhere", "Normal", 1, nil, NOW), two, GROUND, NOW)
 			t.Check("a ticket for another ground: refused as unknown, the menu", not elsewhere.Begin and elsewhere.Refused == Stages.Unknown)
-			local homeTicket = Travel.Arrival(Travel.Home(NOW), two, GROUND)
+			local homeTicket = Travel.Arrival(Travel.Home(NOW), two, GROUND, NOW)
 			t.Check("a home ticket here: the menu", not homeTicket.Begin)
 		end,
 	},
@@ -150,7 +150,7 @@ return {
 			t.Check("the two places differ", type(main) == "number" and type(festival) == "number" and main ~= festival)
 			local came = Travel.Joined({ SourcePlaceId = main, TeleportData = ticket }, GameConfig.Places)
 			t.Check("from the base: the ticket whole", came ~= nil and came.Go == "Stage" and came.Stage == 3 and came.From == "job-a" and came.Sent == NOW)
-			local arrival = Travel.Arrival(came, data, GROUND)
+			local arrival = Travel.Arrival(came, data, GROUND, NOW)
 			t.Check("the round trip: the run begins where the base sent it", arrival.Begin and arrival.Difficulty == "Normal" and arrival.Stage == 3 and arrival.Refused == nil)
 			t.Check("from the Festival's own place (a hop): read", Travel.Joined({ SourcePlaceId = festival, TeleportData = Travel.Home(NOW) }, GameConfig.Places) ~= nil)
 			t.Equal("from another experience's place: none", Travel.Joined({ SourcePlaceId = 1234567, TeleportData = ticket }, GameConfig.Places), nil)
@@ -158,8 +158,25 @@ return {
 			t.Equal("a source place as text: none", Travel.Joined({ SourcePlaceId = tostring(main), TeleportData = ticket }, GameConfig.Places), nil)
 			t.Equal("no join data: none", Travel.Joined(nil, GameConfig.Places), nil)
 			t.Equal("from the base, broken: none", Travel.Joined({ SourcePlaceId = main, TeleportData = { V = 1, Go = "Stage" } }, GameConfig.Places), nil)
-			local menu = Travel.Arrival(Travel.Joined({ SourcePlaceId = 1234567, TeleportData = ticket }, GameConfig.Places), data, GROUND)
+			local menu = Travel.Arrival(Travel.Joined({ SourcePlaceId = 1234567, TeleportData = ticket }, GameConfig.Places), data, GROUND, NOW)
 			t.Check("a foreign ticket on a played save: the Arc panel, nothing begun", not menu.Begin and menu.Refused == nil)
+		end,
+	},
+	{
+		Name = "Travel (TR74): a ticket for the Keeper alone keeps its ask through Read, and an arrival begins it only where Rules.Stages.Alone allows",
+		Run = function(t: any)
+			local ticket = Travel.Read(Travel.Stage(GROUND, "Normal", 4, nil, NOW, true)) :: Travel.Ticket
+			t.Check("read back: still the Keeper alone", ticket ~= nil and ticket.Alone == true)
+			t.Check("a plain ticket asks nothing of it", (Travel.Read(Travel.Stage(GROUND, "Normal", 1, nil, NOW)) :: Travel.Ticket).Alone == nil)
+			t.Check("a forged Alone that isn't true is dropped", (Travel.Read({ V = Travel.Version, Go = "Stage", Ground = GROUND, Difficulty = "Normal", Stage = 1, Alone = "yes", Sent = NOW }) :: Travel.Ticket).Alone == nil)
+			local data = Profile.Template()
+			Migrations.Run(data)
+			local shut = Travel.Arrival(ticket, data, GROUND, NOW)
+			t.Check("a save whose keeper hasn't fallen: refused, so no run", shut.Begin == false or shut.Alone == nil, shut.Refused)
+			local count = #(Stages.Of(GROUND) :: { any })
+			data.Progress.Stages[GROUND] = { Normal = { Cleared = count, Best = table.create(count, 60) }, Hard = { Cleared = 0, Best = table.create(count, 0) } }
+			local open = Travel.Arrival(ticket, data, GROUND, NOW)
+			t.Check("its keeper fallen and not resting: the keeper's stretch, alone", open.Begin == true and open.Stage == count and open.Alone == true and open.Difficulty == "Normal", open.Stage)
 		end,
 	},
 }

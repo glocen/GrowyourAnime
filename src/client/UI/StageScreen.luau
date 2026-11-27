@@ -55,7 +55,7 @@ local StageScreen = {}
 StageScreen.Name = "Stages"
 
 export type On = {
-	Begin: (ground: string, difficulty: string) -> { [string]: any }, -- Net Stage: the run, at its checkpoint
+	Begin: (ground: string, difficulty: string, alone: boolean?) -> { [string]: any }, -- Net Stage: the run, at its checkpoint (`alone`: the Keeper alone)
 	Home: () -> { [string]: any }, -- Net Home
 	Say: (words: string, refused: boolean?) -> (), -- a toast; grey when it's a refusal (TR71 B)
 	-- whether someone leads now, standing; else the server time the fallen lead is whole, when it's healing at home
@@ -72,6 +72,7 @@ local MARGIN = 18 -- round the tile's group: its glow stands past it
 local WHITE = Color3.new(1, 1, 1)
 local INK = SEAM.Ink :: Color3
 local CHEVRONS = UIKit.Images.LevelChevrons :: UIKit.Image
+local ALONE = { Tall = 44, Caption = 16, Press = 24, Gap = 4 } -- the Keeper alone's strip at the bed's foot (TR74's grey block)
 local LOCK = HudConfig.Voidkin.Chrome.Images.LockOn :: UIKit.Image -- the closed shackle: shut (research's must-fix 1 on TR50)
 local CHEVRON = UIKit.Images.ChevronSingle :: UIKit.Image
 local IMAGES = LOOK.Images :: { [string]: UIKit.Image }
@@ -112,11 +113,11 @@ local function why(ground: string, needs: string?, waits: number?): string?
 	elseif not Refusal.Has("Stages", needs) then
 		return "Not here"
 	end
-	return Refusal.Words("Stages", needs, { Stage = waits, Keeper = keeperName(ground) })
+	return Refusal.Words("Stages", needs, { Stage = waits, Keeper = keeperName(ground), Minutes = if waits then math.max(1, math.ceil(waits / 60)) else nil })
 end
 
-local function begin(on: On, ground: string, which: string): boolean
-	local answer = on.Begin(ground, which)
+local function begin(on: On, ground: string, which: string, alone: boolean?): boolean
+	local answer = on.Begin(ground, which, alone)
 	if answer.Ok == true then
 		Screen.Close()
 		return true
@@ -619,6 +620,44 @@ function StageScreen.Pick(ground: string, view: Profile.View, on: On)
 	end
 	Glass.Edge(tile, "BedEdge", bx, by, bw, bh, BED.Corner, BED.Edge, BED.EdgeAlpha, nil, 10)
 	parts.Ground = Glass.Label(tile, "Ground", named, TITLE, SEAM.Text, bx, by + bh, bw, h - by - bh - BED.Inset, nil, true, 12)
+	-- The Keeper alone (TR74; Rules.Stages.Alone): once the keeper has fallen on Normal, the bed's foot offers it again on
+	-- its own, a press per difficulty, Hard's shut until it falls there too. A grey block until AR68's system dresses it.
+	local count = #((Stages.Of(ground) or {}) :: { any })
+	if count > 0 and Stages.Line(data, ground, "Normal").Cleared >= count then
+		local A = ALONE
+		local sy = by + bh - A.Tall
+		Glass.Fill(tile, "AloneStrip", bx, sy, bw, A.Tall, 0, TILE.Shut, 11)
+		Glass.Edge(tile, "AloneEdge", bx, sy, bw, A.Tall, 0, SEAM.Edge, TILE.ShutEdge, nil, 12)
+		parts.AloneSays = Glass.Label(tile, "AloneSays", "Keeper alone", SMALL, SEAM.Soft, bx, sy + 1, bw, A.Caption, nil, true, 13)
+		local pw = (bw - 3 * A.Gap) / 2
+		for index, which in Stages.Difficulties do
+			local fallen = Stages.Line(data, ground, which).Cleared >= count
+			local reason = if fallen then nil else why(ground, Stages.Fallen)
+			local button = Button.new({
+				Name = `{which}Alone`,
+				Text = "",
+				Bare = true,
+				Size = UDim2.fromOffset(pw, A.Press),
+				Position = UDim2.fromOffset(bx + A.Gap + (index - 1) * (pw + A.Gap), sy + A.Caption + 1),
+				Parent = tile,
+				OnPress = function(): boolean
+					local begun = begin(on, ground, which, true)
+					if begun then
+						difficulty = which
+					end
+					return begun
+				end,
+			})
+			button.ZIndex = 14
+			Button.Set(button, { Disabled = reason or false })
+			button:SetAttribute("Look", if reason then "shut" else "open")
+			local face = faceOf(button)
+			Glass.Fill(face, "Fill", 0, 0, pw, A.Press, 3, if fallen then TILE.Fill else TILE.Shut, 14)
+			Glass.Edge(face, "Edge", 0, 0, pw, A.Press, 3, if fallen then accent(which == "Hard").Edge else SEAM.Edge, TILE.ShutEdge, nil, 15)
+			Glass.Label(face, "Words", which, SMALL, if fallen then SEAM.Text else SEAM.Soft, 0, 0, pw, A.Press, nil, true, 16)
+			parts[`{which}Alone`] = button
+		end
+	end
 	-- Normal and Hard beside it, one press each.
 	local cx = bx + bw + ARC.Gap
 	local cw, ch = w - cx - BED.Inset, (h - 2 * BED.Inset - ARC.Gap) / 2

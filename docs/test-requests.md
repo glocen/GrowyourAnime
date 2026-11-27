@@ -2725,3 +2725,13 @@ Research's decision on the director's word of 12:41 (`docs/decisions.md`): no fu
 - **Build:** a second button on the difficulty's tile, using the start-at-the-last-stretch path that already exists (StageService). No new world and no new art: the tile's button in AR68's system, once it's picked, and a grey button until then.
 - **Tests:** a logic case for the start (locked before the first fall, open after, the keeper's stretch, its rest) and for the reward (no more than a full run's end pays). One player-camera capture of the tile with both buttons.
 - **Order:** after TR73's harness, or before it if TR73 waits on memory. Both go before Sunday.
+- **Built (Faber, 2026-11-27, 13:40):**
+  - `Rules.Stages.Alone`: shut before that difficulty's keeper falls ("Beat the Lamplighter here first"); refused while the keeper rests, with the minutes left; otherwise the keeper's stretch. A Keeper-alone clear writes no first clear, opens nothing and sets no whole-run best. It also leaves a full run's checkpoint where it was (`Run.Alone`).
+  - From the base, the ask rides the ticket (`Travel`, `Alone`, kept only when true).
+  - The Arc panel: a grey strip on the keeper's picture's foot, "Keeper alone", with Normal and Hard presses. Hard's is shut until its keeper falls there. It appears only once Normal's keeper has fallen. Capture: `build/handoff/Stages/TR74_tile.jpg`. Its dress waits for AR68's system.
+  - **Fixed with it** (research's find from Codex's audit): on Hard the Solo lead and the keeper couldn't strike each other, so the fight stalled. `against()` is now `Rules.Fight.Against`, and Hard's keeper and its phase-3 adds stand for their player (`Fight.KeeperFor`).
+- **Tested:**
+  - Offline logic: 42,512 PASSED, with three new cases (the start and rest, the pay, the ticket) and the Hard keeper's fight.
+  - LogicTests in Studio: PASSED.
+  - Self-test in the Festival place: "Stages (TR74)" PASSED, 26 of 26, including a live Hard keeper fight where each side took the other's hits. "Stages (TR50): the gates" PASSED, 95 of 95, on its second run. Its first run failed one toast lint at the Arc panel's checkpoint step, a step the strip doesn't draw at.
+- **Waiting:** research's pass on the tile, and the director's look.

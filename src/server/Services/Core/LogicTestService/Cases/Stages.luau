@@ -15,6 +15,7 @@ local Stages = require(Shared.Rules.Stages)
 local Collection = require(Shared.Rules.Collection)
 local Progress = require(Shared.Rules.Progress)
 local Stats = require(Shared.Rules.Stats)
+local Fight = require(Shared.Rules.Fight)
 local Grounds = require(Shared.Definitions.Grounds)
 local Enemies = require(Shared.Definitions.Enemies)
 
@@ -479,6 +480,71 @@ return {
 			end
 			t.Equal("the last stretch ends on the keeper", (Stages.Last(GROUND, #rows) :: any).Kind, "Keeper")
 			t.Equal("a ground with no stages: the plain wait", Stages.After("nowhere", 1), StagesConfig.Results.After)
+		end,
+	},
+	{
+		Name = "Stages (TR74): the Keeper alone opens on a difficulty once its keeper has fallen there, begins at the keeper's stretch, waits out the keeper's rest, pays as the last stretch does and moves no run's checkpoint",
+		Run = function(t: any)
+			local count = #(Stages.Of(GROUND) :: { any })
+			local data = fresh()
+			local none = Stages.Alone(data, GROUND, "Normal", NOW)
+			t.Check("a fresh save: shut, the keeper not yet fallen", none.Ok == false and none.Error == Stages.Locked and none.Needs == Stages.Fallen, none.Needs)
+			for stage = 1, count - 1 do
+				play(data, "Normal", stage, 60)
+			end
+			local before = Stages.Alone(data, GROUND, "Normal", NOW)
+			t.Check("at the keeper's stretch, before its fall: still shut", before.Ok == false and before.Needs == Stages.Fallen, before.Needs)
+			local hardShut = Stages.Alone(data, GROUND, "Hard", NOW)
+			t.Check("Hard before Normal's keeper: shut as Hard is", hardShut.Ok == false and hardShut.Needs == Stages.Keeper, hardShut.Needs)
+			local won = play(data, "Normal", count, 300)
+			t.Check("the keeper falls on Normal", won.Ok and won.Ends)
+			Progress.KeeperWon(data, GROUND, NOW + 300, "Normal")
+			local resting = Stages.Alone(data, GROUND, "Normal", NOW + 301)
+			t.Check("just after its win: refused while the keeper rests, with the seconds left", resting.Ok == false and resting.Error == Stages.Resting and type(resting.Waits) == "number" and resting.Waits > 0, resting.Waits)
+			local later = NOW + 300 + resting.Waits + 1
+			local open = Stages.Alone(data, GROUND, "Normal", later)
+			t.Check("after the rest: open, at the keeper's stretch", open.Ok == true and open.Stage == count, open.Stage)
+			t.Check("Hard's stays shut until its own keeper falls", Stages.Alone(data, GROUND, "Hard", later).Needs == Stages.Fallen)
+			t.Check("an unknown difficulty or ground", Stages.Alone(data, GROUND, "Nightmare", later).Error == Stages.Unknown and Stages.Alone(data, "nowhere", "Normal", later).Error == Stages.Unknown)
+			-- a full run in progress: two stretches in, its checkpoint at 3
+			play(data, "Normal", 1, 50)
+			play(data, "Normal", 2, 50)
+			t.Equal("a full run's checkpoint at 3", Stages.Checkpoint(data, GROUND, "Normal"), 3)
+			local line = Stages.Line(data, GROUND, "Normal")
+			local runBest, bestLast = line.Run, line.Best[count]
+			local run = Stages.Start(data, GROUND, "Normal", open.Stage :: number, later) :: Stages.Run
+			run.Alone = true
+			through(run)
+			local clear = Stages.Clear(data, run, later + 30)
+			t.Check("its clear ends the run, as the keeper's does", clear.Ok == true and clear.Ends == true)
+			t.Check("nothing first, nothing opened", clear.First == false and clear.Opened == "", clear.Opened)
+			t.Equal("no whole run's best from it", Stages.Line(data, GROUND, "Normal").Run, runBest)
+			t.Check("the stretch's own best kept as any clear's", Stages.Line(data, GROUND, "Normal").Best[count] == math.min(bestLast, 30))
+			t.Equal("the full run's checkpoint stays at 3", Stages.Checkpoint(data, GROUND, "Normal"), 3)
+			-- a full run's keeper still sends the next run to the first
+			local full = Stages.Start(data, GROUND, "Normal", 3, later) :: Stages.Run
+			through(full)
+			Stages.Clear(data, full, later + 60)
+			Stages.Advance(full, later + 60)
+			through(full)
+			Stages.Clear(data, full, later + 120)
+			t.Equal("a full run's keeper: the next begins at the first", Stages.Checkpoint(data, GROUND, "Normal"), 1)
+		end,
+	},
+	{
+		Name = "Stages (TR74, Codex's find): a Hard keeper and its adds stand for their player, so the Solo lead and they strike each other; the street's on Normal",
+		Run = function(t: any)
+			local owner, other = {}, {}
+			local soloLead = { Side = "Voidkin", Owner = owner, Solo = true }
+			local lead = { Side = "Voidkin", Owner = owner }
+			local hardKeeper = { Side = "Shade", For = Fight.KeeperFor("Hard", owner) }
+			t.Check("Hard: the keeper is its player's", hardKeeper.For == owner)
+			t.Check("Hard: the Solo lead strikes it, and it the lead", Fight.Against(soloLead, hardKeeper) and Fight.Against(hardKeeper, soloLead))
+			t.Check("the stall it fixes: a keeper for nobody, against a Solo lead, neither way", not Fight.Against(soloLead, { Side = "Shade" }) and not Fight.Against({ Side = "Shade" }, soloLead))
+			t.Check("another player's lead never strikes it", not Fight.Against({ Side = "Voidkin", Owner = other }, hardKeeper) and not Fight.Against(hardKeeper, { Side = "Voidkin", Owner = other }))
+			local normalKeeper = { Side = "Shade", For = Fight.KeeperFor("Normal", owner) }
+			t.Check("Normal: a keeper for nobody, fought by a lead as ever", normalKeeper.For == nil and Fight.Against(lead, normalKeeper) and Fight.Against(normalKeeper, lead))
+			t.Check("no side strikes its own", not Fight.Against(lead, { Side = "Voidkin", Owner = other }))
 		end,
 	},
 }

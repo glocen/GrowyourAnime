@@ -155,10 +155,11 @@ function TravelService.Going(player: Player): boolean
 	return going[player] ~= nil
 end
 
--- From the base to the Festival, into that stage. The caller has checked the save opens it; the far side checks again.
-function TravelService.ToStage(player: Player, ground: string, difficulty: string, stage: number): (boolean, string?)
+-- From the base to the Festival, into that stage (`alone`: the Keeper alone, TR74). The caller has checked the save opens
+-- it; the far side checks again.
+function TravelService.ToStage(player: Player, ground: string, difficulty: string, stage: number, alone: boolean?): (boolean, string?)
 	local here = if game.JobId ~= "" then game.JobId else nil
-	return send(player, "Festival", Travel.Stage(ground, difficulty, stage, here, workspace:GetServerTimeNow()), nil)
+	return send(player, "Festival", Travel.Stage(ground, difficulty, stage, here, workspace:GetServerTimeNow(), alone), nil)
 end
 
 -- From the Festival back to the base: the server they came from if it still stands, else any.

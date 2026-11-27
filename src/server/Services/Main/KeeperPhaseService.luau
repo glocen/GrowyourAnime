@@ -246,7 +246,7 @@ local function enter(run: Run, phase: number, at: number)
 		for index = 1, p.Adds.Count do
 			local a = math.rad(90 + (index - 1) * 360 / p.Adds.Count)
 			local spot = home * CFrame.new(math.cos(a) * p.Adds.Out, 0, -math.sin(a) * p.Adds.Out)
-			local add = FightService.SpawnEnemy(p.Adds.Def, f.Block.Level, CFrame.lookAt(spot.Position, home.Position))
+			local add = FightService.SpawnEnemy(p.Adds.Def, f.Block.Level, CFrame.lookAt(spot.Position, home.Position), if f.For then { For = f.For } else nil) -- a Hard keeper's adds are its player's too
 			if f.Target then
 				add.Target = f.Target
 			end

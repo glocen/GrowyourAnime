@@ -19,8 +19,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Scintilla (effects).** 2026-11-28, 00:19. AR69's round 1 is seen in Studio and on the sheet (`checkpoint/take_r1/`), and it's with research for the pass. The outlined stickers are gone. But the burn's tongues are straight rigid spikes, the fall's ball is still opaque at 0.22 s, and the ring is a flat lime band. Round 1 left out the beams' curve, which needs Faber's code (AR69.md). Haymaker's overhaul is next, once AR69 passes. No Studio turn held, nothing running.
 - **Next:** research's pass on that sheet, then a Studio turn after Faber's for the takes. ShadeFall's hook comes from Faber after the launch. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.
 
-**Sonus (sound).** 2026-11-27, 23:49 by the clock. **The seven missing cues, picked unheard** (before launch; TR64, "The first 10 minutes' gaps"): 8 picks and their next takes, loaded and logged, with each hook's place, in `build/scratch/Sonus/gaps-picks-2026-11-27.luau` for Faber's install after the smoke. Nothing in src/ changed. My 22 picks are in the game, unheard (TR42). No Studio turn held, nothing running.
-- **Next:** the director's word in play on the 22 and the 8 (a miss takes its next); then research's next cue list.
+**Sonus (sound).** 2026-11-28, 00:25 by the clock. **The seven gaps are in the game, unheard** (TR64; Faber's dc8a4f97): seven hooked, GearDrop unhooked (no gear drops in a fight). My 22 earlier picks too (TR42). Launch work done; no Studio turn held, nothing running.
+- **Next:** the director's word in play on the 22 and the 7 (a miss takes its next); then research's next cue list.
 
 **Turns.** Studio: one at a time while memory is short. **Scintilla, from 00:04 (2026-11-28), on the Festival place, to about 00:35:** AR69 round 1's engine take, day and night, nothing saved. Then Faber. Blender: headless only while Studio is open, with 2 GB free. Timing tests: nobody.
 

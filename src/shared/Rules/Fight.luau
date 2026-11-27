@@ -509,6 +509,12 @@ function Fight.PackSpots(def: string, count: number, with: string?, withCount: n
 	return spots
 end
 
+-- Whether a push at `at` moves a body pushed last at `pushedAt` (nil: never), with its kind's `poise` in seconds
+-- (Config.Combat.Poise, TR73): not within its poise of its last; a finishing throw (`fell`) always does.
+function Fight.Pushes(pushedAt: number?, at: number, poise: number, fell: boolean): boolean
+	return fell or poise <= 0 or pushedAt == nil or at - pushedAt >= poise
+end
+
 -- How long a hit's Stun (`seconds`) stops a fighter of a kind stopped `share` of it, at `at`: none while it's still locked
 -- from its last (`locked`, the time its lock ends), else the share of it. The lock starts where this one ends.
 function Fight.Stun(seconds: number?, share: number?, at: number, locked: number): number

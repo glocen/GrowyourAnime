@@ -14,9 +14,14 @@
 -- the lead's, Combat.Flinch.Kinds has no Rival), so each direction runs the rules its sides own: each result says which.
 -- `Health` (TR73's narrowing, research 2026-11-27) multiplies both sides' health, the kits and damage as they are: a
 -- longer fight, to see what lasts past the burst. Each result carries it.
+-- `Poise` (TR73) sets the lead's poise for the batch (Config.Combat.Poise.Lead, seconds; put back after). Each result
+-- carries the one it ran.
 -- `Off` turns one rule off for the batch, on the shared Config.Combat, and back after: "Skip" (Skip.On), "Flinch" (the
 -- lead's flinch, Flinch.Kinds.Lead), "Push" (every hit's push: Weight.Lead and Weight.Rival at 0).
 -- Each run seeds the hits' rolls (FightService.Seed: Seed + its index). The AI's own choices aren't seeded.
+-- The player's camera look is fixed from the lead to the rival for every fight (FightService.FixView), so a lead never
+-- waits on where Studio's camera points (View.Wait: 3 s, which made the off batches' first swings 4 to 5 s late, TR73).
+-- The avatar goes back where it stood before the pad is taken away, so neither it nor its lead falls into the void.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -74,6 +79,7 @@ type Result = {
 	Seed: number,
 	Off: string,
 	Health: number,
+	Poise: number,
 	Winner: string, -- "Lead", "Rival" or "Time"
 	WinnerDef: string,
 	Seconds: number,
@@ -239,6 +245,7 @@ local function fight(player: Player, spec: any, index: number): Result
 	lead.Root.AssemblyLinearVelocity = Vector3.zero
 	lead.Root.CFrame = leadAt
 	lead.Humanoid:MoveTo(leadAt.Position)
+	FightService.FixView(player, rivalAt.Position - leadAt.Position) -- the player watching their fight, the rival in view
 	task.wait(SETTLE)
 	local rival = FightService.SpawnRival(player, bare(spec.Rival, spec.RivalLevel, spec.Health), rivalAt, "Duel")
 	local sides: { [FightService.Fighter]: Side } = { [lead] = newSide(spec.Lead), [rival] = newSide(spec.Rival) }
@@ -336,6 +343,7 @@ local function fight(player: Player, spec: any, index: number): Result
 		Seed = seed,
 		Off = spec.Off or "",
 		Health = spec.Health or 1,
+		Poise = (Combat.Poise :: any).Lead,
 		Winner = winner,
 		WinnerDef = if winner == "Lead" then spec.Lead elseif winner == "Rival" then spec.Rival else "",
 		Seconds = seconds,
@@ -366,6 +374,11 @@ local function runOne(player: Player, spec: any, batch: Batch)
 			table.insert(undo, { row[1], row[2], row[1][row[2]] })
 			row[1][row[2]] = row[3]
 		end
+		if spec.Poise ~= nil then
+			local poise: any = Combat.Poise
+			table.insert(undo, { poise, "Lead", poise.Lead })
+			poise.Lead = spec.Poise
+		end
 		local set, was = setLead(player, spec.Lead, spec.LeadLevel, nil)
 		saved = was
 		assert(set, "the lead couldn't be set")
@@ -386,6 +399,7 @@ local function runOne(player: Player, spec: any, batch: Batch)
 		row[1][row[2]] = row[3]
 	end
 	FightService.SetSolo(player, false)
+	FightService.FixView(player, nil)
 	local lead = FightService.LeadOf(player)
 	if lead then
 		lead.Reblock = nil
@@ -397,11 +411,20 @@ local function runOne(player: Player, spec: any, batch: Batch)
 end
 
 local function run(player: Player, specs: { any }, batch: Batch)
+	local start = Parts.Root(player.Character)
+	local stood = if start then start.CFrame else nil
 	for _, spec in specs do
 		if batch.Stop or batch.Error then
 			break
 		end
 		runOne(player, spec, batch)
+	end
+	-- Off the pad before it goes: a lead left on it fell past FallenPartsDestroyHeight and fought on without a body.
+	local avatar = Parts.Root(player.Character)
+	if avatar and stood then
+		avatar.AssemblyLinearVelocity = Vector3.zero
+		avatar.CFrame = stood
+		task.wait(0.5) -- its lead follows it (FightService's Teleport mode)
 	end
 	local found = workspace:FindFirstChild(PAD_NAME)
 	if found then
@@ -432,6 +455,7 @@ local function duel(who: any, spec: any): any
 			Limit = one.Limit or 90,
 			Off = one.Off,
 			Health = one.Health,
+			Poise = one.Poise,
 		}
 		if type(given.Lead) ~= "string" or Voidkin.ById[given.Lead] == nil or type(given.Rival) ~= "string" or Voidkin.ById[given.Rival] == nil then
 			return { Ok = false, Error = "BadArgs" }
@@ -441,6 +465,9 @@ local function duel(who: any, spec: any): any
 		end
 		if given.Health ~= nil and not (type(given.Health) == "number" and given.Health > 0) then
 			return { Ok = false, Error = "BadHealth" }
+		end
+		if given.Poise ~= nil and not (type(given.Poise) == "number" and given.Poise >= 0) then
+			return { Ok = false, Error = "BadPoise" }
 		end
 		total += given.Runs
 		table.insert(specs, given)

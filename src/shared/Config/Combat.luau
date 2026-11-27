@@ -141,6 +141,9 @@ return {
 
 	-- How far a push moves each body, against its Push (handbook/feel/combat.md: a heavy enemy moves less).
 	Weight = { Lead = 1, Ordinary = 1, Elite = 0.4, Keeper = 0.15, Dummy = 1, Rival = 1 }, -- Rival: a Tower floor's Voidkin, a lead's body
+	-- Poise (TR73, tier 2, research and the builder, 2026-11-27): seconds after a push in which a body of that kind takes no
+	-- new push; its flinch stays, and a finishing throw still throws. 0 (none) until the duels at 0, 1.5 and 3 are read.
+	Poise = { Lead = 0 },
 
 	-- The hit's four moments (handbook/feel/combat.md, "Hit reactions and knockback"). The hold is the client's, presentation
 	-- only; the server pushes once the hold is over, so the body jumps on the frame it lets go.

@@ -206,7 +206,9 @@ local function sync(player: Player)
 		return
 	end
 	local block = Stats.Resolve(owned, Stats.PresetOf(data, owned), data)
-	if current and current.Model:GetAttribute("Voidkin") == id then
+	-- A lead whose body is gone (fallen past FallenPartsDestroyHeight: its Fighter outlives its parts) is built again.
+	local whole = current ~= nil and current.Root.Parent ~= nil
+	if current and whole and current.Model:GetAttribute("Voidkin") == id then
 		if not same(current.Block, block) then
 			FightService.SetBlock(current, block)
 		end
@@ -246,6 +248,10 @@ function LeadService.Start()
 		while true do
 			task.wait(1)
 			for _, player in Players:GetPlayers() do
+				local lead = FightService.LeadOf(player)
+				if lead and lead.Root.Parent == nil then
+					task.spawn(sync, player)
+				end
 				task.spawn(tick, player)
 			end
 		end

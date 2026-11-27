@@ -158,6 +158,7 @@ export type Fighter = {
 	Cooldowns: { [string]: number }?, -- an action's own cooldown (by Id) in place of its Definition's (a phased slam's)
 	Aimed: Mark?,
 	StunLock: number, -- no stun stops it again before this (Rules.Fight.Stun)
+	PushedAt: number?, -- its last push taken, for its kind's poise (Config.Combat.Poise)
 	-- The element states (Config.Combat.States): a burn still to pay, a chill, and when a shock and a sap end.
 	Burn: Fight.Burn?,
 	Chill: Fight.Chill?,
@@ -214,6 +215,8 @@ local leads: { [Player]: Fighter } = {}
 local packHit: { [string]: { [Fighter]: boolean } } = {} -- the leads that hit a pack, until it resets
 -- Where each player's camera looks, flat, as their client last said (Net "View"; TR24's fixes 2 and 3), by os.clock().
 local views: { [Player]: { Look: Vector3, At: number } } = {}
+-- A camera look fixed in place of the client's (FightService.FixView): the duel bench's, Studio only (TR73).
+local fixedViews: { [Player]: Vector3 } = {}
 -- A lead waiting in view for an enemy coming to it from out of view (TR24's fix 2): which, and since when.
 local waits: { [Fighter]: { Target: Fighter, Since: number } } = setmetatable({}, { __mode = "k" }) :: any
 local overs: { [Fighter]: number } = setmetatable({}, { __mode = "k" }) :: any -- halfOver's, once each
@@ -864,6 +867,10 @@ end
 -- Where the player watches from (TR24's fixes 2 and 3): their camera's flat look while their client's report is fresh,
 -- else the avatar's facing.
 local function lookOf(owner: Player?, avatar: BasePart): Vector3
+	local fixed = if owner then fixedViews[owner] else nil
+	if fixed then
+		return fixed
+	end
 	local view = if owner then views[owner] else nil
 	if view and os.clock() - view.At <= Combat.Lead.View.Fresh then
 		return view.Look
@@ -1316,6 +1323,12 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 			studs *= Combat.Hands.Finisher.Throw
 		end
 		local thrown = if keep < 1 and not broke then studs * keep else studs
+		-- Poise (Config.Combat.Poise): pushed within its kind's seconds, it stands; a finishing throw still throws.
+		if not Fight.Pushes(target.PushedAt, at, (Combat.Poise :: any)[target.Kind] or 0, fell) then
+			thrown = 0
+		elseif thrown > 0 then
+			target.PushedAt = at
+		end
 		landed.Push = thrown * ((Combat.Weight :: any)[target.Kind] or 1)
 		push(target, line, thrown, hold, seconds)
 	end
@@ -2539,6 +2552,13 @@ function FightService.SpawnRival(player: Player, block: Stats.Block, at: CFrame,
 	return f
 end
 
+-- The player's camera look fixed at `look` (flat), in place of their client's, or let go with nil: the duel bench's
+-- (DuelService, TR73), so a measured fight never waits on where Studio's camera happens to point (View.Wait).
+function FightService.FixView(player: Player, look: Vector3?)
+	local flatLook = if look then flat(look) else nil
+	fixedViews[player] = if flatLook and flatLook.Magnitude > 1e-3 then flatLook.Unit else nil
+end
+
 -- A lead fought alone, or not (TR43, a Hard stage's): it takes only its player's own foes (For), and no other foe takes
 -- it. Its target dropped when it changes.
 function FightService.SetSolo(player: Player, alone: boolean)
@@ -3053,6 +3073,7 @@ function FightService.Start()
 	end)
 	Players.PlayerRemoving:Connect(function(player: Player)
 		views[player] = nil
+		fixedViews[player] = nil
 		readouts[player] = nil
 		local lead = leads[player]
 		if lead then

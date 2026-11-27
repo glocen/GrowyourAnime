@@ -1121,6 +1121,13 @@ return {
 			t.Equal("the lock over: again", Fight.Stun(1.65, nil, 10.5, 10.5), 1.65)
 			t.Equal("a hit with no stun: none", Fight.Stun(nil, nil, 10, 0), 0)
 			t.Check("a lock after it", Combat.Stun.Lock > 0)
+			-- poise's rule (TR73)
+			t.Check("no poise: every push moves it", Fight.Pushes(10, 10.1, 0, false))
+			t.Check("never pushed: it moves", Fight.Pushes(nil, 10, 1.5, false))
+			t.Check("within its poise: it stands", not Fight.Pushes(10, 11.4, 1.5, false))
+			t.Check("its poise over: it moves", Fight.Pushes(10, 11.5, 1.5, false))
+			t.Check("a finishing throw: always", Fight.Pushes(10, 10.1, 1.5, true))
+			t.Check("the lead's poise is a number, 0 or more", type(Combat.Poise.Lead) == "number" and Combat.Poise.Lead >= 0)
 			-- the shield's rule
 			t.Equal("a shield up: its share", Fight.Shield({ Share = 0.3, Until = 15 }, 14.9), 0.3)
 			t.Equal("lapsed: none", Fight.Shield({ Share = 0.3, Until = 15 }, 15), 0)

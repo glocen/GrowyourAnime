@@ -6264,3 +6264,21 @@ Research, 2026-11-27, 02:40.
   - share at 568, and the glance read: NOT VERIFIED until today's frame is at the same size;
   - the three tests and motion: NOT VERIFIED. They go to Gemini's blind read, then the director.
 - **Open for the blind read:** A's corner brackets, a common sci-fi lock.
+
+### Modulo: round 3, the four systems as specimens (2026-11-27, 11:58; started 11:47)
+
+- **Why:** the director's word of about 03:35 (the palette and style change, to read premium), and Gemini's first step: one fight specimen per system over a day ground and a dusk ground, before any full screen (`2026-11-27_hud-palette.md`, `_hud-fourth.md`). Research's brief overrides any of this (told at 11:50).
+- **Made** with `tools/ui/hud_systems.py`, in `build/handoff/UI/ar68/specimens/`:
+  - `four_day.png` and `four_dusk.png`: P, Porcelain Relay; S, Smoked Prism; M, Match-Card (Festival Cut's palette, moved off the festival); R, Resonance Sight (Gemini's fourth).
+  - `corner.png`: each system's lead and press at 2x, on both grounds.
+  - The frames are at the smallest phone (568 × 315), with the press awake by day and filling at dusk.
+  - The world: a crop of AR57's Lantern Row captures, the same spot by day and at dusk, clear of today's HUD. It stands in for Faber's clean capture, so the world reads closer than it does in play.
+- **Data:** Rook (Red, Warrior, level 26) against an Orange Dasher, level 26, so the edge arrow points up. The press holds a labelled art slot.
+- **My calls, for the brief to change:** the ally's health is red in all four (`--green` draws Gemini's emerald in P, S and M). Beside red, experience takes the system's warm light, never blue (the pair rejected at 03:08).
+- **Measured:** the permanent fight HUD covers 10.3 to 10.9% of the screen. The smallest word is 14 pt in every frame.
+- **My read:**
+  - P and M read on both grounds. P risks a plain white card.
+  - S's dark glass sinks into the dusk sky, on the somber line.
+  - R leaves the most world, and by day it leans on its scrim over the pale sky.
+  - All four are clean vector stills. The material (a ceramic tooth, the glass's depth, the glints) and the motion aren't judged yet.
+- **Four facts:** made; self-reviewed; delivered to research for the brief and the pick; not accepted.

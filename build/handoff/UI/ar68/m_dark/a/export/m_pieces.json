@@ -128,6 +128,30 @@
     11.0
    ],
    "Pad": 1.0
+  },
+  "PressArtHaymaker": {
+   "file": "images/PressArtHaymaker.png",
+   "Pixels": [
+    200,
+    200
+   ],
+   "Points": [
+    50.0,
+    50.0
+   ],
+   "Pad": 0.0
+  },
+  "PressArtHaymakerCold": {
+   "file": "images/PressArtHaymakerCold.png",
+   "Pixels": [
+    200,
+    200
+   ],
+   "Points": [
+    50.0,
+    50.0
+   ],
+   "Pad": 0.0
   }
  },
  "lays": [
@@ -184,7 +208,30 @@
     60
    ],
    "Z": 5,
-   "note": "the press's disc and its off-white face"
+   "note": "the press's disc and its face"
+  },
+  {
+   "image": "PressArtHaymaker",
+   "box": [
+    13,
+    117,
+    50,
+    50
+   ],
+   "Z": 6,
+   "note": "the skill's own art while the press is awake (another skill's art takes the same box)"
+  },
+  {
+   "image": "PressArtHaymakerCold",
+   "box": [
+    13,
+    117,
+    50,
+    50
+   ],
+   "Z": 7,
+   "note": "the same art, greyed, in its place while the press fills",
+   "when": "filling"
   },
   {
    "image": "MPressRing",
@@ -194,7 +241,7 @@
     60,
     60
    ],
-   "Z": 6,
+   "Z": 8,
    "note": "tinted the hue: the share fills clockwise from the top (two halves, each under a rotating UIGradient's transparency, or the kit's own radial fill if it has one); whole when awake"
   },
   {
@@ -205,7 +252,7 @@
     94,
     19
    ],
-   "Z": 7,
+   "Z": 9,
    "note": "the press's label: 94 wide awake (the skill's name), 54 while filling (its share)"
   },
   {
@@ -216,7 +263,7 @@
     64,
     19
    ],
-   "Z": 8,
+   "Z": 10,
    "note": "Auto's card"
   },
   {
@@ -227,7 +274,7 @@
     36,
     19
    ],
-   "Z": 9,
+   "Z": 11,
    "note": "the eye's card"
   },
   {
@@ -238,7 +285,7 @@
     18,
     9
    ],
-   "Z": 10,
+   "Z": 12,
    "note": "the eye"
   }
  ],
@@ -258,9 +305,9 @@
     38,
     142
    ],
-   "radius": 20,
+   "radius": 24,
    "z": "over MPressDisc, under MPressRing",
-   "note": "the skill's own art, clipped round; until it is drawn, today's press art; at 55% while filling"
+   "note": "the skill's own art, an image per skill laid at its box: Rook's Haymaker is PressArtHaymaker awake and PressArtHaymakerCold while the press fills (the grey is in the image)"
   },
   "xp": {
    "box": [

@@ -6,7 +6,8 @@ build (Turing R1), from the same drawing as the frames (tools/ui/hud_composition
 `look`: one of hud_compositions.M_LOOKS, `light` unless named (research picked `a`, slate, at 13:4x on 2026-11-27).
 
 Writes <out>/images/<Name>.png at the kit's 4 pixels a point (Config.UIKit.PixelsPerPoint), each a cut-out on alpha, and
-<out>/m_pieces.json: every image's record as UIKit.Images reads it (Pixels, Points, Pad, and Cut in points from the
+<out>/m_pieces.json: every image's record as UIKit.Images reads it (the press art's two, Rook's Haymaker awake and
+greyed, painted by tools/ui/hud_m_press_art.py) (Pixels, Points, Pad, and Cut in points from the
 image's own edge, pad included, as UI.Kit.Skin slices it), where each is laid in the lead's points at 568 (its box
 without the pad), its tint if it is drawn white, and the live parts over them (the portrait, the art, the bars, the
 texts) with their fonts, sizes and colours.
@@ -24,6 +25,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import hud_compositions as hc  # noqa: E402
+import hud_m_press_art as pa  # noqa: E402
 import hud_systems as hs  # noqa: E402
 import style_frames as sf  # noqa: E402
 
@@ -32,7 +34,9 @@ T = hs.M_
 PAD = 6.0          # the soft shadow's reach (dx 1.2, dy 1.8, blur 1.3) with room
 CY = hc.PRESS[1]
 CHIP_CUT = (PAD + 6, PAD + 3, PAD + 6, PAD + 3)
-LOOK = "light"   # a chip's slanted ends and its soft edge keep their size
+LOOK = "light"
+FACE = None        # the press art's painted face, written by export() (tools/ui/hud_m_press_art.py)
+ART = (hc.PRESS[0] - 25, CY - 25, 50, 50)     # the press art's page: its circle of 24 round the press's middle   # a chip's slanted ends and its soft edge keep their size
 
 # name: (draw, its box x, y, w, h in the lead's points, pad, cut l, t, r, b in points or None, tint if drawn white)
 PIECES = {
@@ -48,6 +52,9 @@ PIECES = {
               None),
     "MEye": (lambda P: hs.eye_icon(P, 154, CY + 16.5, 16, hc.M_LOOK["on_paper"], hc.M_LOOK["on_paper"], sw=1.4),
              (145, CY + 12, 18, 9), 1.0, None, None),
+    # the skill's own art, Rook's Haymaker (research's pick, 13:58): awake, and greyed while the press fills
+    "PressArtHaymaker": (lambda P: pa.art(FACE, hc.PRESS[0], CY, hc.PRESS[2] - 6, True)(P), ART, 0.0, None, None),
+    "PressArtHaymakerCold": (lambda P: pa.art(FACE, hc.PRESS[0], CY, hc.PRESS[2] - 6, False)(P), ART, 0.0, None, None),
 }
 
 # where each image is laid (its box without the pad), in the order drawn: Z from 1
@@ -57,7 +64,9 @@ LAYS = [
                                        "both slanted ends keep their shape; at least 8)"),
     ("MLevelTab", (24, 38, 30, 14), "the level's tab, over the portrait's corner"),
     ("MPressGlow", (-8, CY - 46, 92, 92), "only while the press is awake (its skill ready)"),
-    ("MPressDisc", (8, CY - 30, 60, 60), "the press's disc and its off-white face"),
+    ("MPressDisc", (8, CY - 30, 60, 60), "the press's disc and its face"),
+    ("PressArtHaymaker", ART, "the skill's own art while the press is awake (another skill's art takes the same box)"),
+    ("PressArtHaymakerCold", ART, "the same art, greyed, in its place while the press fills", "filling"),
     ("MPressRing", (8, CY - 30, 60, 60), "tinted the hue: the share fills clockwise from the top (two halves, each under "
                                          "a rotating UIGradient's transparency, or the kit's own radial fill if it has "
                                          "one); whole when awake"),
@@ -75,8 +84,9 @@ def live(L):
     return {
         "portrait": dict(box=[6, 6, 44, 44], z="after MLeadPlate, under MLevelTab",
                          note="the lead's own portrait (hud_art's Portrait<Voidkin>), clipped to the mount's box"),
-        "art": dict(centre=[38, CY], radius=20, z="over MPressDisc, under MPressRing",
-                    note="the skill's own art, clipped round; until it is drawn, today's press art; at 55% while filling"),
+        "art": dict(centre=[38, CY], radius=24, z="over MPressDisc, under MPressRing",
+                    note="the skill's own art, an image per skill laid at its box: Rook's Haymaker is PressArtHaymaker "
+                         "awake and PressArtHaymakerCold while the press fills (the grey is in the image)"),
         "xp": dict(box=[50, 41, 138, 2.2], colour=T["xp"], lit="#FFE7A6", z="over MLeadPlate",
                    note="a Frame over the plate's trough, its width the share to the next level"),
         "autoMark": dict(box=[80, CY + 13, 8, 8], colour=L["mark"], note="a Frame on MChip; Auto on"),
@@ -128,8 +138,11 @@ def bare_page(w, h):
 
 
 def export(out):
+    global FACE
     images = out / "images"
     images.mkdir(parents=True, exist_ok=True)
+    (out / "work").mkdir(exist_ok=True)
+    FACE = pa.face(out / "work" / "press_face.png")
     records = {}
     for name, (draw, (bx, by, bw, bh), pad, cut, tint) in PIECES.items():
         w, h = bw + 2 * pad, bh + 2 * pad
@@ -145,7 +158,8 @@ def export(out):
         if tint:
             rec["Tint"] = tint
         records[name] = rec
-    lays = [dict(image=n, box=list(b), Z=i + 1, note=note) for i, (n, b, note) in enumerate(LAYS)]
+    lays = [dict(image=n, box=list(b), Z=i + 1, note=note, **({"when": w[0]} if w else {}))
+            for i, (n, b, note, *w) in enumerate(LAYS)]
     L = hc.M_LOOK
     doc = dict(about=f"AR68, M: the lead plate and the press, look '{LOOK}', for the first build (R1). Points "
                      "are the 568 frame's, the lead's group from the screen's top left; the game scales them as today's "
@@ -200,6 +214,7 @@ def drawn_in_place(P):
     hc.m_level_tab(P, T)
     hc.m_press_glow(P, T)
     hc.m_press_disc(P, T)
+    pa.art(FACE, hc.PRESS[0], CY, hc.PRESS[2] - 6, True)(P)
     hc.m_press_ring(P, T, 1.0)
     hc.card(P, hc.slant(74, CY - 18, 90), "slate")
     hc.card(P, hc.slant(70, CY + 7, 60), "paper", soft=True)
@@ -214,14 +229,19 @@ def check(out, doc):
     P = bare_page(w, h)
     P.add(f'<rect width="{w}" height="{h}" fill="#5A6170"/>')
     for lay in doc["lays"]:
-        lay_svg(P, out, doc["images"][lay["image"]], lay["box"])
+        if lay.get("when") != "filling":
+            lay_svg(P, out, doc["images"][lay["image"]], lay["box"])
     hs.shoot(P, work / "laid.png")
     P = bare_page(w, h)
     P.add(f'<rect width="{w}" height="{h}" fill="#5A6170"/>')
     drawn_in_place(P)
     hs.shoot(P, work / "drawn.png")
     P = hc.Page(568, "day")
-    hc.m_frame(P, 1.0)
+    hc.PRESS_ART = lambda P_, cx, cy, ra, awake: pa.art(FACE, cx, cy, ra, awake)(P_)
+    try:
+        hc.m_frame(P, 1.0)
+    finally:
+        hc.PRESS_ART = None
     hs.shoot(P, work / "whole.png")
     r = subprocess.run(["ffmpeg", "-i", str(work / "laid.png"), "-i", str(work / "drawn.png"), "-lavfi", "psnr",
                         "-f", "null", "-"], capture_output=True, text=True)

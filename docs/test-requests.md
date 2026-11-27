@@ -2642,3 +2642,12 @@ The line names the one thing nearest to done, read from the state the server alr
     - The chests' fuzz case now holds every emblem: none goes with an item.
   - **Tests:** type check 0 new; logic 42,486 pass offline, covering the swap, the healing one, from home, salvage's emblem, jewels and Lost, and the words.
   - **Not yet:** no Studio run (memory), not visually reviewed. Items 3 (the catch-up) and 4 (Training's kills, from block B's timed run) wait. AR62's piece 1 goes first, by research's word.
+- **Faber, 2026-11-27, 03:32: items 3 and 4 in.**
+  - **Item 3, the catch-up** (`Rules.Growth.CatchUp`, through `Drops.Give`; 090c94f6): a lead more than `Config.Growth.CatchUp.Below` (5) levels under the account's highest Voidkin earns its fights' experience x (1 + `Bonus`), so x2, capped at `XpCeiling` (x2.5). Both are the builder's seeds, research's to set (tier 2).
+  - **Item 4, kills an hour:** three clean Normal runs of Lantern Row in the Festival place, stretch 1 to the keeper's fall. The lead was on the level-9 on-budget sheet, the avatar walked by script, the waves were on and the keeper's phases off.
+    - The runs: 35 kills in about 211 s (the walk to the gate estimated), 36 in 234 s, and 35 in 211 s. The keeper's fight was about 39 s of each.
+    - The median is 596 an hour, so `KillsPerHour` = 596, and Training's rate follows.
+    - It also sets kills per level: ground 1 is about 66 a level, was 50, and a level takes the same hours at the pace measured.
+    - Not in it: the keeper's 300 s rest after a win, which a player running back to back waits on; the keeper's phases (TR69 D's phased fights ran 55 to 70 s).
+    - `tools/balance/seeds.json` still says 450: research's file.
+  - **Tests:** type check 0 new; logic 42,538 pass offline and in Studio. The pace pins in Stats and Training moved to the new number (66 a level, about 57 a minute). Not visually reviewed: nothing players see changed.

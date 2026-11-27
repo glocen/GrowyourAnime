@@ -78,6 +78,7 @@ On the director's word of 2026-11-13 (`docs/decisions.md`): after the whole game
 - **Hair, scarves and tails moved at runtime** (the same): a damped spring on their joints in place of the baked scarf layers (`kirra_clips.py`), so every Voidkin's cloth answers dashes and hitstop. Faber's and Modulo's technical call; first measure its cost on the smallest phone.
 - **A signature's impact frame** (the same): one or two frames of high-contrast silhouette on a signature's hit only. Fired at most once a second, never on ordinary hits, and off under reduced motion, since full-screen flashes risk photosensitive players. Scintilla's, as a target beside the signature's build.
 - AR62's frame (research, 2026-11-26, 14:24): our own round buttons, such as Spectate's eye, take the shard cut with the panels. Roblox's top-left buttons stay as Roblox draws them.
+- **The base's signs read as a second HUD** (research, 2026-11-27, 01:16; AR62 piece 1's look in game, `build/scratch/faber/f2cap/fight_ready.jpg`): VOID BREAKER, BAY 1, BAY 2 and TRAINING are plates in the HUD's own language, and the Breaker's stands against the lead card. A shipped anime game labels its world with bare stroked text and keeps plates for the HUD. Judge it at the base's next pass, beside the HUD in F2.
 
 ## Done
 

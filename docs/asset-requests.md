@@ -5348,6 +5348,16 @@ The script is `tools/ui/hud_icons.py`. `hud_finish.PAINTED` swaps the set in pla
 - **At the smallest phone** (`set_fight_small.png`), the press still reads first.
 - **The cases can't show** the press's firing motion (I2's burst and shockwave). It's judged in play, with the motion page.
 
+### Research's look: piece 1 in F2, in the game (Quaestor, 2026-11-27, 01:16; Faber's `build/scratch/faber/f2cap/fight_ready.jpg` beside `F2_fight.png`, and beside a shipped frame, Anime Crusaders X's lobby `s004`, internal)
+
+- **Felt:** the cards and the press sit where the target put them and read as one family, but the type is thin and small. The frame reads quieter and cheaper than the target and the shipped game.
+- **Not a pass yet. The main read misses on the type and the size.**
+  1. **Must-fix (every label on piece 1's plates: the names, Lv, AUTO, the level badge, the −N taken):** the target's heavy rounded face, with its dark stroke, at the target's height. In the build, "ROOK" is about half the target's cap height and has no stroke. In the shipped frame, every label is heavy and stroked.
+  2. **Must-fix (the cards and the press):** the target's size. At the same capture width, the build's lead card is 72% of the target's (344 px against 478 px). If the smallest phone can't hold it, show that capture instead.
+  3. **Must-fix (the eye):** the empty square reads as a broken button. The eye's passed icon goes in as an image, with Auto's turn, the skull, the gem and the sword.
+- **Faber's other gaps:** the foe card gets no gold bar, since nothing in our design gives it a measure. The −N's clamp, the 1-point notches and heals in the world stand. The glow, grain and vignette come next, as planned. The second look judges the three fixes, and the frame beside the shipped one.
+- **Outside piece 1:** the base's world signs read as a second HUD beside the cards (`docs/polish-later.md`).
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

@@ -222,13 +222,23 @@ function StageCases.Cases(): { any }
 				t.Wait(1)
 				retry = StageScreen.Parts().Retry :: TextButton?
 				t.Check("Retry still dim", retry ~= nil and retry:GetAttribute("Led") == false)
-				-- whole at home in the Festival, it's up on its own (FightService's playerHome)
+				-- whole at home in the Festival, it's up on its own (FightService's playerHome), and comes back at its place
+				-- beside its player, wherever they stand: never at the landing, between the camera and them (AR59's pass)
+				local me = Parts.Root(player.Character)
+				local away = if typeof(landing) == "Vector3" and me then Vector3.new(landing.X, me.Position.Y, landing.Z - 20) else nil -- up the street
+				if away then
+					t.Server("TestStandAt", away, away - Vector3.new(0, 0, 10))
+					t.Wait(0.3)
+				end
 				t.Server("FightHealth", 1)
 				t.Check("its lead up, Retry lights by itself", waitFor(t, REPLICATE + HudConfig.Stages.Card.Fall.Lit + 1, function(): boolean
 					return retry ~= nil and retry:GetAttribute("Led") == true
 				end))
 				local up = HudController.Lead()
 				t.Check("the lead rose on its own", up ~= nil and up:GetAttribute("State") ~= "Home" and up:GetAttribute("State") ~= "Down", tostring(up and up:GetAttribute("State")))
+				me = Parts.Root(player.Character)
+				local apart = if up and me then ((up:GetPivot().Position - me.Position) * Vector3.new(1, 0, 1)).Magnitude else -1
+				t.Check("at its place beside its player, 20 studs from the landing (within the follow distance)", away ~= nil and apart >= 0 and apart <= 6, string.format("%.1f studs", apart))
 				t.Wait(HudConfig.Stages.Card.Fall.Lit + 0.1)
 				local lit = if retry then retry:FindFirstChild("Lit", true) :: CanvasGroup? else nil
 				t.Check("its lit face shows", lit ~= nil and lit.GroupTransparency < 0.01)

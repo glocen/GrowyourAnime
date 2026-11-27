@@ -1588,6 +1588,13 @@ local function thinkHome(f: Fighter, at: number, dt: number)
 	local share = Carry.Mend(if most > 0 then f.Health / most else 0, dt, FightService.HomeOf(f.Owner).Fallen)
 	setHealth(f, share * most)
 	if Carry.Fallen(f.State, 0, playerHome(f.Owner), Combat.Lead.Leave, share >= 1) == "Idle" then
+		-- In the Festival it comes back at its place beside its player, never at the landing, where it stood between the
+		-- camera and them (AR59's pass, 2026-11-28). On a plot it rises on its pad and walks over.
+		local avatar = if PlaceRole.Is("Festival") then avatarRoot(f) else nil
+		if avatar then
+			f.Root.AssemblyLinearVelocity = Vector3.zero
+			f.Root.CFrame = besideAvatar(avatar, f.Owner, f)
+		end
 		setState(f, "Idle")
 		FightService.Rose:Fire(f)
 	end

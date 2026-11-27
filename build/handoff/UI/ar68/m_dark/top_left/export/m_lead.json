@@ -1,0 +1,270 @@
+{
+ "about": "AR68 M, the top-left: A, the card and the blade (research's pick, 2026-11-27, 14:29), for the game's plate. Points are the 568 frame's, in the lead group's: the frame's less group.offset. Each image is laid at its box as it is (Pad 0, no slices). Z orders the plate's parts from 1. MLeadPlate, MHealthFill and MLevelTab replace today's images of those names; MHealthLag and MLeadBustRook are new.",
+ "group": {
+  "offset": [
+   0.0,
+   57.5
+  ],
+  "note": "the group's top left in the frame's points, from the old plate's top edge in m_day_fight (to half a point)"
+ },
+ "pixelsPerPoint": 4,
+ "images": {
+  "MLeadPlate": {
+   "file": "images/MLeadPlate.png",
+   "Pixels": [
+    800,
+    224
+   ],
+   "Points": [
+    200,
+    56
+   ],
+   "Pad": 0
+  },
+  "MLeadBustRook": {
+   "file": "images/MLeadBustRook.png",
+   "Pixels": [
+    264,
+    248
+   ],
+   "Points": [
+    66,
+    62
+   ],
+   "Pad": 0
+  },
+  "MHealthLag": {
+   "file": "images/MHealthLag.png",
+   "Pixels": [
+    480,
+    48
+   ],
+   "Points": [
+    120,
+    12
+   ],
+   "Pad": 0
+  },
+  "MHealthFill": {
+   "file": "images/MHealthFill.png",
+   "Pixels": [
+    480,
+    48
+   ],
+   "Points": [
+    120,
+    12
+   ],
+   "Pad": 0
+  },
+  "MLevelTab": {
+   "file": "images/MLevelTab.png",
+   "Pixels": [
+    132,
+    80
+   ],
+   "Points": [
+    33,
+    20
+   ],
+   "Pad": 0
+  }
+ },
+ "lays": [
+  {
+   "image": "MLeadPlate",
+   "box": [
+    -2.0,
+    7.5,
+    200,
+    56
+   ],
+   "Z": 1,
+   "note": "the card and the blade, their shadow and ink, the health's and the experience's troughs"
+  },
+  {
+   "image": "MLeadBustRook",
+   "box": [
+    1.0,
+    -4.5,
+    66,
+    62
+   ],
+   "Z": 2,
+   "note": "the lead's bust, MLeadBust<Name> at its own box (Rook's here): held by the card's sides and foot, the hair free over the card's top"
+  },
+  {
+   "image": "today's portrait art (CardFace<Name> and CardHead<Name>, or CardFaceUnknown<Rarity>)",
+   "box": [
+    15.0,
+    10.5,
+    46,
+    46
+   ],
+   "Z": 2,
+   "when": "the lead has no MLeadBust<Name>",
+   "note": "square, clipped to this box, inside the card's slant"
+  },
+  {
+   "image": "MHealthLag",
+   "box": [
+    67.0,
+    40.5,
+    120,
+    12
+   ],
+   "Z": 3,
+   "note": "the last hit's chip: the image whole inside a clipping frame at this box, the frame Root + Span times the chip's share wide (see live.health). On a hit it holds at the old share, then drains to the new one a beat after the fill; on a heal it moves with the fill"
+  },
+  {
+   "image": "MHealthFill",
+   "box": [
+    67.0,
+    40.5,
+    120,
+    12
+   ],
+   "Z": 4,
+   "note": "the health: the image whole (never stretched: its grain stays still) inside a clipping frame at this box, the frame Root + Span times the share wide, at least Least while any is left; its moving end is straight"
+  },
+  {
+   "image": "MLevelTab",
+   "box": [
+    -4.0,
+    48.5,
+    33,
+    20
+   ],
+   "Z": 7,
+   "note": "the level's tab on the card's foot"
+  }
+ ],
+ "live": {
+  "health": {
+   "Root": 0.3,
+   "Span": 119.12,
+   "Least": 2.8,
+   "note": "the clip's width from its box's left: Root + Span x share (Root: where the trough's slanted foot starts; Span: to its top right corner, so all health fills it all)"
+  },
+  "edge": {
+   "z": 5,
+   "width": 0.8,
+   "colour": "#FFF4EC",
+   "transparency": 0.1,
+   "top": 40.5,
+   "height": 12.0,
+   "note": "a Frame, its right edge at the fill's clip's right; shown while 0 < share < 0.99"
+  },
+  "xp": {
+   "z": 6,
+   "box": [
+    65.68,
+    54.1,
+    116,
+    1.6
+   ],
+   "colour": "#F2C35A",
+   "lit": "#FFE7A6",
+   "note": "a Frame, the share to the next level of the box wide, a gradient from lit at its top to colour"
+  },
+  "marks": {
+   "z": 8,
+   "centreY": 32.1,
+   "gem": {
+    "size": 8.0,
+    "after": 6.0
+   },
+   "mark": {
+    "size": 8.6,
+    "after": 11.0
+   },
+   "note": "the kit's gem (the type) and class mark: the gem's centre `after` past the name's right (TextBounds), the mark's centre `after` past the gem's. The target paints them lacquered (the finish's)"
+  },
+  "texts": [
+   {
+    "what": "the lead's name, upper case",
+    "x": 70.0,
+    "baseline": 37.7,
+    "anchor": "left",
+    "size": 16.5,
+    "tracking": 1.2,
+    "colour": "#F2EADB",
+    "edge": "the dark Edge: a UIStroke #0B0C10, opaque, 1.3 pt, and the same word again 1 pt lower in #0B0C10 under it",
+    "fit": "its room is 97 wide from x: a name wider steps its size down to fit (by TextBounds), never under 12; never cut short (names: each name's size as measured here)"
+   },
+   {
+    "what": "health: the share, two spaces, a slash, two spaces, the most ('2,518  /  4,061'), one weight",
+    "x": 126.86,
+    "baseline": 50.1,
+    "anchor": "centre",
+    "size": 9.4,
+    "tracking": 0.3,
+    "colour": "#FFFFFF",
+    "edge": "the dark Edge: a UIStroke #0B0C10, opaque, 1.2 pt, and the same word again 1 pt lower in #0B0C10 under it"
+   },
+   {
+    "what": "the level",
+    "x": 14.5,
+    "baseline": 61.5,
+    "anchor": "centre",
+    "size": 11.5,
+    "colour": "#FFFFFF",
+    "edge": "the dark Edge: a UIStroke #0B0C10, opaque, 1.2 pt, and the same word again 1 pt lower in #0B0C10 under it"
+   },
+   {
+    "what": "the last hit's damage, rising as today",
+    "x": 188.0,
+    "baseline": 22.0,
+    "anchor": "right",
+    "size": 12,
+    "colour": "#FF6B6B",
+    "edge": "the dark Edge: a UIStroke #0B0C10, opaque, 1.1 pt, and the same word again 1 pt lower in #0B0C10 under it",
+    "note": "not in the picked target: placed over the blade's right end, on the world, clear of the name's row; research's eye in the game"
+   }
+  ],
+  "font": "Montserrat (rbxasset://fonts/families/Montserrat.json), Heavy, every word; sizes are the frame's em: set over the build's measured scale for Montserrat as for Oswald (Em)"
+ },
+ "names": {
+  "ROOK": 16.5,
+  "KIRRA": 16.5,
+  "PIP": 16.5,
+  "WATT": 16.5,
+  "PATCH": 16.5,
+  "TUMBLE": 16.5,
+  "BRICK": 16.5,
+  "SABLE": 16.5,
+  "CINDER": 16.5,
+  "GANTRY": 16.5,
+  "MALLOW": 16.5,
+  "RILL": 16.5,
+  "DIRGE": 16.5,
+  "JUNO": 16.5,
+  "LYRIC": 16.5,
+  "MIRAGE": 16.5,
+  "BULWARK": 15.85,
+  "SLIPTAIL": 16.5,
+  "GAUGE": 16.5,
+  "WREN": 16.5,
+  "HALCYON": 16.5,
+  "ASHEN": 16.5,
+  "IRONHYMN": 14.7,
+  "NOCT": 16.5,
+  "MARIGOLD": 14.93,
+  "STELLANE": 15.95,
+  "CRANE": 16.5,
+  "SHIOMARU": 14.85,
+  "AEGIR": 16.5,
+  "UMBRIEL": 16.5,
+  "SOLKAR": 16.5
+ },
+ "colours": {
+  "ember": "#E8622A",
+  "emberHot": "#FFB070",
+  "slate": "#343A44",
+  "ink": "#0B0C10",
+  "text": "#F2EADB",
+  "health": "#E3283F",
+  "lag": "#FFE4C4",
+  "xp": "#F2C35A"
+ }
+}

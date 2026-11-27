@@ -12,9 +12,8 @@ plate's words as live type would draw them (Montserrat, a fill, an outer stroke,
   py tools/ui/hud_m_lead_targets.py <out> day=build/captures/ar68/m/m_day_fight.png dusk=build/captures/ar68/m/m_dusk_awake.png
 
 Writes, for each light, <out>/<light>/<A|B|C>_phone.png (the whole frame at the capture's size), <A|B|C>_zoom.png (the
-top-left at 4 px a point) and today_zoom.png; then <out>/lead_sheet.png. The ground is Faber's same frame with the lead
-plate hidden (noplate_<light>.png beside the capture) when there is one; else the old plate's area is filled by
-normalised convolution, and the sheet says so."""
+top-left at 4 px a point) and today_zoom.png; then <out>/lead_sheet.png. The old plate's area is filled by normalised
+convolution, and the sheet says so. A, picked, is drawn from the game's layers that tools/ui/hud_m_lead_export.py cuts."""
 import math
 import struct
 import subprocess
@@ -47,6 +46,13 @@ FACES = {"MontBlack": "Montserrat-Black.ttf", "MontBold": "Montserrat-Bold.ttf",
 
 # the painted canvas's grid, in the frame's points (pixel centres)
 GX, GY = np.meshgrid(CX0 + (np.arange(CW * PPP) + 0.5) / PPP, CY0 + (np.arange(CH * PPP) + 0.5) / PPP)
+
+
+def set_grid(x0, y0, w, h):
+    """Paint on another canvas of the frame's points (whole points): every shape and texture follows."""
+    global CX0, CY0, CW, CH, GX, GY
+    CX0, CY0, CW, CH = x0, y0, w, h
+    GX, GY = np.meshgrid(CX0 + (np.arange(CW * PPP) + 0.5) / PPP, CY0 + (np.arange(CH * PPP) + 0.5) / PPP)
 
 
 def rgb(h):
@@ -194,10 +200,12 @@ def unpremul(img):
 HAIR_TOP, CHIN, FACE_X = 287, 500, 362
 
 
-def bust(head_pts, face_x, hair_y, rim_k=0.9, key=True, tilt=0.0):
-    """Rook's portrait placed by the head's height, the face's centre and the hair's top, turned `tilt` degrees
-    (clockwise) about the face; a warm key from the upper right, the far side cooler, an ember rim toward the light."""
-    src = read_png(BUST)
+def bust(head_pts, face_x, hair_y, rim_k=0.9, key=True, tilt=0.0, portrait=BUST, marks=(HAIR_TOP, CHIN, FACE_X)):
+    """A portrait (Rook's unless named) placed by the head's height, the face's centre and the hair's top, turned
+    `tilt` degrees (clockwise) about the face; a warm key from the upper right, the far side cooler, an ember rim toward
+    the light. `marks`: the portrait's hair top and chin rows and the face's centre column, in its pixels."""
+    HAIR_TOP, CHIN, FACE_X = marks
+    src = read_png(portrait)
     pm = src.copy()
     pm[..., :3] *= pm[..., 3:4]
     s = head_pts * PPP / (CHIN - HAIR_TOP)              # canvas pixels a source pixel
@@ -287,16 +295,44 @@ def mark(cx, cy, r):
 
 
 # ---------------------------------------------------------------------------------------------------------------- A
-def option_a():
-    """The card and the blade: a tall ember card holds the bust, his hair breaking its top; a slate blade carries the
-    name and the bars from the card's side."""
-    k = 0.26                                            # the slant, points across a point down
-    yb = 115.0                                          # the shared foot
+# The card and the blade (research's pick, 2026-11-27, 14:29), drawn as the game's layers so the export
+# (tools/ui/hud_m_lead_export.py) cuts the same pixels: the plate under the bust, the bust, the health's fill and lag
+# chip (whole, revealed to their shares), its leading edge, the experience, the level's tab, the marks, the words.
+A_K, A_YB = 0.26, 115.0                 # the slant (points across a point down) and the shared foot
+A_HP = (66, 182, 98.0, 110.0)           # the health's trough: x0, x1 at its foot before the slant, its top, its foot
+A_XP = (111.6, 113.2)                   # the experience's trough, top and foot
+A_NAME = dict(x=70, y=95.2, size=16.5, track=1.2)
+A_BUST = dict(head=44, face_x=34, hair_y=56, tilt=5)
 
-    def sl(x, y):
-        return (x + (yb - y) * k, y)
-    card_sd = convex([sl(2, yb), sl(2, 67), sl(62, 67), sl(62, yb)])
-    blade = convex([sl(50, yb), sl(50, 81), sl(186, 81), sl(186, yb)])
+
+def a_sl(x, y):
+    """A point on A's slant: `x` at the foot, leaning right as it rises."""
+    return (x + (A_YB - y) * A_K, y)
+
+
+def a_shapes():
+    sl = a_sl
+    hx0, hx1, hy0, hy1 = A_HP
+    xy0, xy1 = A_XP
+    return dict(
+        card=convex([sl(2, A_YB), sl(2, 67), sl(62, 67), sl(62, A_YB)]),
+        blade=convex([sl(50, A_YB), sl(50, 81), sl(186, 81), sl(186, A_YB)]),
+        hp=convex([sl(hx0, hy1), sl(hx0, hy0), sl(hx1, hy0), sl(hx1, hy1)]),
+        xp=convex([sl(hx0 - 1, xy1), sl(hx0 - 1, xy0), sl(hx1 - 1, xy0), sl(hx1 - 1, xy1)]),
+        lv=convex([sl(0.5, 122), sl(0.5, 108), sl(25, 108), sl(25, 122)]),
+        hold=convex([sl(1.2, A_YB), sl(1.2, 30), sl(62.8, 30), sl(62.8, A_YB)]))
+
+
+def a_hp_span():
+    """The health's reveal runs from the trough's lowest left to its highest right: none shows none, all shows all."""
+    hx0, hx1, hy0, hy1 = A_HP
+    return a_sl(hx0, hy1)[0], a_sl(hx1, hy0)[0]
+
+
+def a_plate():
+    """Everything under the bust: the card and the blade, their shadow and ink, the bars' troughs."""
+    sh = a_shapes()
+    card_sd, blade = sh["card"], sh["blade"]
     info = np.maximum(blade, -card_sd)
     img = np.zeros(GX.shape + (4,))
     img = over(img, shadow(np.maximum(cov(blade), cov(card_sd)), 1.8, 1.6, 0.6))
@@ -318,39 +354,93 @@ def option_a():
     img = over(img, layer(rgb(EMBER_DEEP) * 0.55, halftone(1.6, 0.62, r * 1.5 - 0.35) * cov(card_sd) * 0.65))
     img = over(img, layer(rgb("#FFF1DC"), speedlines(card_sd, 20, 5, ang=-75, alpha=0.5)))
     # the card's hot edge where the blade leaves it
-    div = np.maximum(np.maximum(blade, card_sd - 0.0), np.abs(GX - (62 + (yb - GY) * k)) - 0.9)
+    div = np.maximum(np.maximum(blade, card_sd - 0.0), np.abs(GX - (62 + (A_YB - GY) * A_K)) - 0.9)
     img = over(img, layer(rgb(EMBER_HOT), cov(div)))
-    # the bust: turned into the strike, held by the card's sides and foot; the hair breaks the card's top
-    b = bust(44, 34, 56, tilt=5)
-    hold = cov(np.maximum(convex([sl(1.2, yb), sl(1.2, 30), sl(62.8, 30), sl(62.8, yb)]), GY - yb + 0.2))
+    # the troughs: the health's well with its ink, the experience's
+    img = over(img, layer(INK, cov(sh["hp"] - 1.0)))
+    img = over(img, trough(sh["hp"]))
+    return over(img, layer(rgb("#07080A"), cov(sh["xp"])))
+
+
+def a_bust(portrait=BUST, marks=(HAIR_TOP, CHIN, FACE_X)):
+    """A lead's bust: turned into the strike, held by the card's sides and foot, the hair free above the card's top;
+    an ink edge round it inside the hold."""
+    b = bust(A_BUST["head"], A_BUST["face_x"], A_BUST["hair_y"], tilt=A_BUST["tilt"], portrait=portrait, marks=marks)
+    hold = cov(np.maximum(a_shapes()["hold"], GY - A_YB + 0.2))
     b = b * hold[..., None]
-    img = over(img, layer(INK, np.clip(ink_of(b[..., 3], 1.1) * hold - b[..., 3], 0, 1)))
-    img = over(img, b)
-    # the bars
-    hx0, hx1, hy0, hy1 = 66, 182, 98.0, 110.0
-    hp = convex([sl(hx0, hy1), sl(hx0, hy0), sl(hx1, hy0), sl(hx1, hy1)])
-    img = over(img, layer(INK, cov(hp - 1.0)))
-    img = over(img, trough(hp))
-    img = over(img, bar_fill(hp, hx0 + (yb - hy1) * k, hx1 + (yb - hy1) * k, HP_SHARE, LAG_SHARE))
-    xp = convex([sl(hx0 - 1, 113.2), sl(hx0 - 1, 111.6), sl(hx1 - 1, 111.6), sl(hx1 - 1, 113.2)])
-    img = over(img, layer(rgb("#07080A"), cov(xp)))
-    img = over(img, xp_fill(xp, hx0, hx1))
-    # the level: a hot tab on the card's foot
-    lv = convex([sl(0.5, 122), sl(0.5, 108), sl(25, 108), sl(25, 122)])
-    img = over(img, shadow(cov(lv), 1.2, 1.0, 0.5))
+    return over(layer(INK, np.clip(ink_of(b[..., 3], 1.1) * hold - b[..., 3], 0, 1)), b)
+
+
+def a_health():
+    """The health's fill, whole: red lit from the top, a gloss line, a fine leaning grain."""
+    hp = a_shapes()["hp"]
+    out = layer(vgrad(hp, RED_TOP, RED_BOT), cov(hp))
+    rows = np.nonzero((hp < 0).any(axis=1))[0]
+    ytop = CY0 + rows.min() / PPP
+    out = over(out, layer(rgb(RED_LIT), cov(np.abs(GY - (ytop + 1.6)) - 0.35) * cov(hp + 0.8) * 0.55))
+    hatch = cov(np.abs(((GX + GY * 0.58) / 3.2) % 1 - 0.5) * 3.2 - 0.45)
+    return over(out, layer(rgb("#FF9A9A"), hatch * cov(hp) * 0.16))
+
+
+def a_lag():
+    """The last hit's chip, whole: cream in the trough."""
+    return layer(rgb(LAG), cov(a_shapes()["hp"]) * 0.92)
+
+
+def reveal(img, x):
+    """An image shown left of `x` only (a clipping frame's right edge)."""
+    return img * cov(GX - x)[..., None]
+
+
+def a_edge(x):
+    """The fill's leading edge: a light line 0.8 wide at the reveal's end."""
+    return layer(rgb("#FFF4EC"), cov(np.abs(GX - x + 0.4) - 0.4) * cov(a_shapes()["hp"]) * 0.9)
+
+
+def a_xp(share=0.42):
+    return xp_fill(a_shapes()["xp"], A_HP[0], A_HP[1], share)
+
+
+def a_tab():
+    """The level's slate tab on the card's foot, its shadow and ink."""
+    lv = a_shapes()["lv"]
+    img = shadow(cov(lv), 1.2, 1.0, 0.5)
     img = over(img, layer(INK, cov(lv - 1.1)))
-    img = over(img, layer(grain(lacquer(vgrad(lv, "#3A404B", "#15181D"), lv, rim="#D9DEE6", rim_k=0.6, band=1.4)), cov(lv)))
-    nx, ns, nt = 70, 16.5, 1.2
-    gx = nx + name_w(ns, nt) + 6
-    img = over(img, gem(gx, 89.6, 4.0, "#E3283F"))
-    img = over(img, mark(gx + 11, 89.6, 4.3))
-    texts = [
-        dict(t=NAME, x=nx, y=95.2, size=ns, face="MontBlack", fill=CREAM, stroke=1.3, track=nt),
-        dict(t=f"{HP}  /  {HP_MAX}", x=(hx0 + hx1) / 2 + (yb - 104) * k, y=107.6, size=9.4, face="MontBlack",
+    return over(img, layer(grain(lacquer(vgrad(lv, "#3A404B", "#15181D"), lv, rim="#D9DEE6", rim_k=0.6, band=1.4)),
+                           cov(lv)))
+
+
+def a_marks(name_width):
+    """The type's gem and the class's mark after the name (the target's own drawing of the kit's two icons)."""
+    gx = A_NAME["x"] + name_width + 6
+    return over(gem(gx, 89.6, 4.0, "#E3283F"), mark(gx + 11, 89.6, 4.3))
+
+
+def a_texts(name=NAME, hp=HP, most=HP_MAX, level=LEVEL, name_size=None):
+    hx0, hx1 = A_HP[:2]
+    return [
+        dict(t=name, x=A_NAME["x"], y=A_NAME["y"], size=name_size or A_NAME["size"], face="MontBlack", fill=CREAM,
+             stroke=1.3, track=A_NAME["track"]),
+        dict(t=f"{hp}  /  {most}", x=(hx0 + hx1) / 2 + (A_YB - 104) * A_K, y=107.6, size=9.4, face="MontBlack",
              fill="#FFFFFF", stroke=1.2, anchor="middle", track=0.3),
-        dict(t=LEVEL, x=14.5, y=119.0, size=11.5, face="MontBlack", fill="#FFFFFF", stroke=1.2, anchor="middle"),
+        dict(t=level, x=14.5, y=119.0, size=11.5, face="MontBlack", fill="#FFFFFF", stroke=1.2, anchor="middle"),
     ]
-    return img, texts
+
+
+def option_a(share=HP_SHARE, lag=LAG_SHARE):
+    """The card and the blade: a tall ember card holds the bust, his hair breaking its top; a slate blade carries the
+    name and the bars from the card's side. Composed from the game's layers."""
+    x0, x1 = a_hp_span()
+    xs, xl = x0 + (x1 - x0) * share, x0 + (x1 - x0) * max(lag, share)
+    img = over(a_plate(), a_bust())
+    img = over(img, reveal(a_lag(), xl))
+    img = over(img, reveal(a_health(), xs))
+    if 0 < share < 0.99:
+        img = over(img, a_edge(xs))
+    img = over(img, a_xp())
+    img = over(img, a_tab())
+    img = over(img, a_marks(name_w(A_NAME["size"], A_NAME["track"])))
+    return img, a_texts()
 
 
 # ---------------------------------------------------------------------------------------------------------------- B
@@ -554,14 +644,12 @@ LABELS = {"today": "Today's plate, as built (13:42's images)",
 
 
 def render(cap, out):
-    """One light: today's top-left and the three options, zoomed and whole. The ground is the same frame with the lead
-    plate hidden (noplate_<light>.png beside the capture) when there is one; else the capture, its old plate's area
-    filled."""
+    """One light: today's top-left and the three options, zoomed and whole, over the capture with the old plate's
+    area filled."""
     out.mkdir(parents=True, exist_ok=True)
     work = out / "work"
     work.mkdir(exist_ok=True)
-    noplate = cap.parent / ("noplate_" + cap.name.split("_")[1] + ".png")
-    bg = noplate if noplate.exists() else clean_capture(cap, work / "capture_filled.png")
+    bg = clean_capture(cap, work / "capture_filled.png")
     zx, zy, zw, zh = ZOOM
     crop(cap, out / "today_zoom.png", int(zx * 1.5), int(zy * 1.5), int(zw * 1.5), int(zh * 1.5), scale=f"{PPP}/1.5")
     for key, fn in (("A", option_a), ("B", option_b), ("C", option_c)):
@@ -573,10 +661,9 @@ def render(cap, out):
         big = work / f"{key}_big.png"
         sf.shoot(html, big, W, H, scale=PPP)
         crop(big, out / f"{key}_zoom.png", zx * PPP, zy * PPP, zw * PPP, zh * PPP)
-    return noplate.exists()
 
 
-def sheet(out, lights, caps, grounds):
+def sheet(out, lights, caps):
     """The review sheet: the zooms (day and dusk side by side, today first), then the whole frames at the phone's size."""
     def img(p, w):
         return f'<img src="{Path(p).as_uri()}" style="width:{w}px;display:block">'
@@ -589,9 +676,7 @@ def sheet(out, lights, caps, grounds):
         cells = [img(caps[l], 852)] + [img(out / l / f"{k}_phone.png", 852) for k in "ABC"]
         phones.append(f'<tr><td colspan="2" class="l">The whole frame at the capture\'s size, {l}: today, A / B, C</td></tr>'
                       f'<tr><td>{cells[0]}</td><td>{cells[1]}</td></tr><tr><td>{cells[2]}</td><td>{cells[3]}</td></tr>')
-    note = "".join(f" {l.capitalize()}: the options lie on Faber’s same frame with the lead plate hidden." if grounds[l] else
-                   f" {l.capitalize()}: where the old plate stood, the world is filled by hand; the smudge there is that, not the plate."
-                   for l in lights)
+    note = " Where the old plate stood, the world is filled by hand; the smudge there is that, not the plate."
     html = (f'<!doctype html><html><head><meta charset="utf-8"><style>{css()} body{{margin:0;background:#101216;color:#E8E2D6;'
             f'font-family:Builder;font-size:22px}} td{{padding:6px;vertical-align:top}} .l{{padding-top:16px}} h1{{font-size:28px;margin:18px 12px 4px}}'
             f' p{{margin:0 12px 8px;color:#B9B2A6}}</style></head><body><h1>AR68 M: the top-left, overhauled. Three compositions beside today’s.</h1>'
@@ -604,8 +689,9 @@ def sheet(out, lights, caps, grounds):
 def main(out, caps):
     out = Path(out).resolve()
     caps = {k: Path(v).resolve() for k, v in caps.items()}
-    grounds = {l: render(c, out / l) for l, c in caps.items()}
-    sheet(out, list(caps), caps, grounds)
+    for l, c in caps.items():
+        render(c, out / l)
+    sheet(out, list(caps), caps)
     print("done")
 
 

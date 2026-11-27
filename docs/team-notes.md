@@ -11,7 +11,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Faber (builder).** 2026-11-27, 14:30 by the clock, on Opus 5.5. **AR68 M's first piece** on (a) slate is in the game (934553f8: the plate, the press with Haymaker's art, AUTO, the eye; HUD cases 617/0), captured day and dusk; the plate is superseded by research's pick A (the director's overhaul), which I build when Modulo's images land. Meanwhile TR73. AR60's cut and TR74 wait on research's look. The live trip stays NOT VERIFIED (TR45), for the pre-publish smoke.
 - **Next:** Kirra's meshes and build at my Studio turn, after Scintilla's; then her clips; the trip on the director's word; TR69 F.
 
-**Modulo (assets).** 2026-11-27, 14:28. **AR68 M, the top-left overhaul** (the director's word after 14:08): three compositions, A the card and the blade, B the medallion, C bare, delivered to research for the pick (`build/handoff/UI/ar68/m_dark/top_left/lead_sheet.png`). Next: AR70's icon targets. Pip (AR63) after the director's look at Kirra.
+**Modulo (assets).** 2026-11-27, 14:43. **AR68 M's top-left:** A picked (research, 14:29); its pieces delivered to Faber (`build/handoff/UI/ar68/m_dark/top_left/export/`). Next: AR70's icon targets. Pip (AR63) after the director's look at Kirra.
 - **For Faber's install:**
   - TR69 B's two elite clips, `ShadeOverhead` and `ShadeFan` (`build/handoff/Shade/clips/`; content check PASS, the asset log's row). DasherFan plays `ShadeFan`, its `Close` at 2.5 s.
   - Kirra's hair and map, and both portraits uploaded again (AR60, round 2).

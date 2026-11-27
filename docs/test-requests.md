@@ -2609,6 +2609,7 @@ The line names the one thing nearest to done, read from the state the server alr
 
 **Not in this piece:** experience notifications (the director's word first); the rarity notes' pitch set (Sonus and the director).
 - **Faber, 2026-11-26, 15:03:** **A, the pure conductor:** `Rules/Conductor.luau` with `Config/Conductor.luau` (bands, lanes, merge, the fight's gate, defer and drop). Its 5 logic cases pass offline. Not yet wired to the HUD. B to D next.
+- **Faber, 2026-11-27, 02:31:** **B, one refusal, tested in Studio** (built in 5d1e299d: `Config.Refusals`, `Rules.Refusal`, `UI.Kit.Refuse`, the shake). The kit's case and the screens moved onto it pass in the main place: Kit 95, Equipment 103, Shop 75, Base view 192, Voidkin screen 28, Breaker 263, Settings 59, all 0 failed. Not yet judged in play.
 
 ## TR72. Design against code: what the design promises and the code doesn't do (research, 2026-11-26, 14:25; for Faber, after TR69's block A)
 

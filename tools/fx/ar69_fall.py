@@ -237,8 +237,8 @@ def puff(tone, near, why):
 def ring():
     """The kit's hoop as a flat band of light on the floor. Round 1 (research's must-fix 2): a Ground row is set down to
     the foot exactly, so the hoop's floor band lay in the floor and only its lip showed, a thin gold line in the engine;
-    it stands on its At now, a little over the floor. The band is the hoop's own, 0.3 of its radius: 0.3 to 0.7 studs
-    while it's bright, to 1.5 as it fades (the target's 0.55 to 1.1, to 1.45). Its run and fade are the target's: out
+    it stands on its At now, a little over the floor. The band is the hoop's own, 0.3 of its radius: 0.3 to 1.0 studs
+    while it's bright (to 0.2 s), to 1.5 as it fades (the target's 0.55 to 1.1, to 1.45). Its run and fade are the target's: out
     with an ease near Cubic Out over 0.35 s, its fade u^1.5 in two straight pieces."""
     return {
         "Kind": "Mesh",

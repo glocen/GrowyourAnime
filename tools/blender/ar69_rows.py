@@ -11,8 +11,11 @@ How the rows are drawn (Rows.luau's rules): a track's value by its keys and ease
 key; a row's frame its parent's times At, then Spin about Y, then Tilt (X, Y, Z); a Beam from Low to High, facing the
 camera, as wide as Width times the scale, its picture's top row at Low; a Mesh the kit's mesh at Size times Scale, its
 look's picture tinted by Color and lit by Glow; an emitter's particles from its Emit frames (Lifetime, Speed, Drag,
-Size, Transparency). Not modelled: Roblox's own blending (LightEmission between laid-over and added) and bloom, which
-ar69_sheets.py approximates for every layer alike.
+Size, Transparency, Acceleration; EmissionDirection Top or Front; a VelocityParallel needle as a streak along its
+flight, its Squash's stretch approximate). Round 1 (2026-11-27): a beam's Taper, FootFade, Reach and Color, and its
+LightEmission as a share of added light over laid-over (Roblox's own blend, approximated). A Ground row at the foot,
+lifted by its At's Y, as Rows.luau does since Faber's fix (2026-11-27, 23:5x; before it, the engine dropped the lift). Not
+modelled: bloom, which ar69_sheets.py approximates for every layer alike.
 """
 import json
 import math
@@ -31,7 +34,7 @@ ROOT = Path(__file__).resolve().parents[2]
 ROWS = ROOT / "src" / "shared" / "Config" / "EffectRows"
 KIT = ROOT / "build" / "handoff" / "FxKit"
 PICTURES = {"fx_lick_Flame": ROOT / "build" / "handoff" / "ShadeFire" / "pictures" / "fx_lick_Flame.png",
-            "fx_rise_Flame": KIT / "images" / "fx_rise_Flame.png"}
+            "fx_rise_Flame": KIT / "images" / "fx_rise_Flame.png", "fx_beam": KIT / "images" / "fx_beam.png"}
 KIT_SIZE = {"FxShell": (2, 2, 2), "FxHoop": (2, 0.3, 2), "FxChip1": (1, 0.1424, 0.3469), "FxChip2": (1, 0.1435, 0.3142),
             "FxChip3": (1, 0.1578, 0.3694)}  # Config.FxKit.Meshes' Size
 LEAD = 4
@@ -101,8 +104,9 @@ def angles(rx, ry, rz):
 
 # --- drawing (Roblox's axes in, Blender's out) ------------------------------------------------------------------------
 
-def picture_mat(name, image, tint, strength, opacity, cull=False):
-    """A picture's light, laid over: colour = picture x tint x strength, alpha = picture's x opacity."""
+def picture_mat(name, image, tint, strength, opacity, cull=False, added=0.0, foot=0.0):
+    """A picture's light: colour = picture x tint x strength, alpha = picture's x opacity; `added` of it added light
+    (LightEmission), the rest laid over; `foot` the share of a beam's length (UV v from 1 at Low) it fades in over."""
     m = bpy.data.materials.new(name)
     m.use_nodes = True
     m.surface_render_method = "BLENDED"
@@ -127,17 +131,48 @@ def picture_mat(name, image, tint, strength, opacity, cull=False):
     alpha.operation = "MULTIPLY"
     alpha.inputs[1].default_value = opacity
     L(tex.outputs["Alpha"], alpha.inputs[0])
+    if foot > 0:  # (1 - v) / foot, clamped: clear at Low, whole past the fade
+        coords = nt.nodes.new("ShaderNodeTexCoord")
+        sep = nt.nodes.new("ShaderNodeSeparateXYZ")
+        L(coords.outputs["UV"], sep.inputs[0])
+        ramp = nt.nodes.new("ShaderNodeMapRange")
+        ramp.inputs["From Min"].default_value, ramp.inputs["From Max"].default_value = 1.0, 1.0 - foot
+        ramp.clamp = True
+        L(sep.outputs["Y"], ramp.inputs["Value"])
+        faded = nt.nodes.new("ShaderNodeMath")
+        faded.operation = "MULTIPLY"
+        L(alpha.outputs[0], faded.inputs[0])
+        L(ramp.outputs["Result"], faded.inputs[1])
+        alpha = faded
+    over = nt.nodes.new("ShaderNodeMath")
+    over.operation = "MULTIPLY"
+    over.inputs[1].default_value = 1 - added
+    L(alpha.outputs[0], over.inputs[0])
     tr = nt.nodes.new("ShaderNodeBsdfTransparent")
     mix = nt.nodes.new("ShaderNodeMixShader")
-    L(alpha.outputs[0], mix.inputs[0])
+    L(over.outputs[0], mix.inputs[0])
     L(tr.outputs[0], mix.inputs[1])
     L(em.outputs[0], mix.inputs[2])
-    L(mix.outputs[0], out.inputs["Surface"])
+    if added > 0:  # the added share: emission over the clear, by the alpha
+        lit = nt.nodes.new("ShaderNodeMath")
+        lit.operation = "MULTIPLY"
+        lit.inputs[1].default_value = added * strength * T.SCALE
+        L(alpha.outputs[0], lit.inputs[0])
+        em2 = nt.nodes.new("ShaderNodeEmission")
+        L(tint_node.outputs["Vector"], em2.inputs["Color"])
+        L(lit.outputs[0], em2.inputs["Strength"])
+        add = nt.nodes.new("ShaderNodeAddShader")
+        L(mix.outputs[0], add.inputs[0])
+        L(em2.outputs[0], add.inputs[1])
+        L(add.outputs[0], out.inputs["Surface"])
+    else:
+        L(mix.outputs[0], out.inputs["Surface"])
     return m
 
 
-def beam(name, low, high, width, image, tint, strength, opacity, col):
-    """A camera-facing ribbon from low (its picture's top row) to high, `width` studs across."""
+def beam(name, low, high, width, image, tint, strength, opacity, col, taper=1.0, foot=0.0, added=0.0, n=8):
+    """A camera-facing ribbon from low (its picture's top row) to high, `width` studs across at low, `width * taper` at
+    high, in n pieces along (so a tapered picture isn't sheared)."""
     a, b = T.to_bl(low), T.to_bl(high)
     axis = b - a
     if axis.length < 1e-4 or width <= 0 or opacity <= 0.002:
@@ -148,11 +183,16 @@ def beam(name, low, high, width, image, tint, strength, opacity, col):
     side = side.normalized() * (width / 2)
     bm = bmesh.new()
     uv = bm.loops.layers.uv.new("UVMap")
-    vs = [bm.verts.new(p) for p in (a - side, a + side, b + side, b - side)]
-    f = bm.faces.new(vs)
-    for loop, co in zip(f.loops, ((0, 1), (1, 1), (1, 0), (0, 0))):
-        loop[uv].uv = co
-    T.mesh_object(name, bm, col, picture_mat(name, image, tint, strength, opacity))
+    strip = []
+    for i in range(n + 1):
+        u = i / n
+        c, w = a + axis * u, 1 + (taper - 1) * u
+        strip.append((bm.verts.new(c - side * w), bm.verts.new(c + side * w), 1 - u))
+    for (l0, r0, v0), (l1, r1, v1) in zip(strip, strip[1:]):
+        f = bm.faces.new((l0, r0, r1, l1))
+        for loop, co in zip(f.loops, ((0, v0), (1, v0), (1, v1), (0, v1))):
+            loop[uv].uv = co
+    T.mesh_object(name, bm, col, picture_mat(name, image, tint, strength, opacity, added=added, foot=foot))
 
 
 _KIT = {}
@@ -243,8 +283,15 @@ def draw_rows(rows, anchor, t, scale, col, lights, light_scale=180.0, night=Fals
             ref = lambda r: points[r.split(".")[0]][0 if r.endswith(".Low") else 1]  # noqa: E731
             width = (value(tr.get("Width"), t) or 0) * scale
             fade = value(tr.get("Transparency"), t) or 0
-            beam(name, ref(row["Low"]), ref(row["High"]), width, row["Image"], (1, 1, 1),
-                 row["Beam"].get("Brightness", 1), 1 - fade, col)
+            low, high = ref(row["Low"]), ref(row["High"])
+            reach = value(tr.get("Reach"), t)
+            if reach is not None:
+                high = low + (high - low) * reach
+            length = (high - low).length
+            foot = min(0.998, row.get("FootFade", 0) * scale / length) if length > 1e-3 else 0
+            tint = decode(row["Color"]) if "Color" in row else Vector((1, 1, 1))
+            beam(name, low, high, width, row["Image"], tuple(tint), row["Beam"].get("Brightness", 1), 1 - fade, col,
+                 taper=row.get("Taper", 1), foot=foot, added=row["Beam"].get("LightEmission", 0))
         elif kind == "Mesh":
             if t < first:
                 continue
@@ -271,7 +318,9 @@ def draw_rows(rows, anchor, t, scale, col, lights, light_scale=180.0, night=Fals
             emits = row.get("Emit") or []
             rnd = random.Random(name)
             fr0 = frame_of(anchor, row, first, scale)
-            up = (fr0.to_3x3() @ Vector((0, 1, 0))).normalized()
+            facing = {"Top": (0, 1, 0), "Front": (0, 0, -1)}[em.get("EmissionDirection", "Top")]
+            up = (fr0.to_3x3() @ Vector(facing)).normalized()
+            pull = decode(em["Acceleration"]) * scale if "Acceleration" in em else Vector((0, 0, 0))
             radius = (value(tr.get("Radius"), first) or 0) * scale
             for frame0, count in emits:
                 for k in range(count):
@@ -287,7 +336,7 @@ def draw_rows(rows, anchor, t, scale, col, lights, light_scale=180.0, night=Fals
                     s = age / 60
                     dist = speed * ((1 - math.exp(-drag * s)) / drag if drag else s)
                     way = (Matrix.Rotation(spread, 3, Vector((math.cos(turn), 0, math.sin(turn))).cross(up)) @ up)
-                    centre = fr0.translation + offset + way * dist
+                    centre = fr0.translation + offset + way * dist + pull * (0.5 * s * s)
                     u = age / life
                     size = sequence(em["Size"], u) * scale
                     opacity = 1 - sequence(em["Transparency"], u)
@@ -297,6 +346,13 @@ def draw_rows(rows, anchor, t, scale, col, lights, light_scale=180.0, night=Fals
                         shade = sum(colour) / 3 / (150 / 255)
                         tones = tuple(tuple(c * shade for c in tone) for tone in tones)
                         particle(f"{name}_{frame0}_{k}", centre, size, colour, opacity, 0, True, col, tones)
+                    elif em.get("Orientation") == "VelocityParallel":  # a needle along its flight
+                        flight = way * speed * math.exp(-drag * s) + pull * s
+                        if flight.length > 1e-3:
+                            stretch = 1 + abs(min(0, sequence(em.get("Squash", [[0, 0], [1, 0]]), u)))
+                            half = flight.normalized() * size * stretch * 0.5
+                            beam(f"{name}_{frame0}_{k}", centre - half, centre + half, size * 0.35, "fx_beam",
+                                 tuple(colour), em.get("Brightness", 1), opacity, col, taper=0.2, added=1.0, n=1)
                     else:
                         particle(f"{name}_{frame0}_{k}", centre, size, colour,
                                  opacity * em.get("Brightness", 1), em.get("ZOffset", 0), False, col)

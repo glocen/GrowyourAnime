@@ -18,7 +18,7 @@ An answer to ChatGPT's review of 2026-11-27 (pasted by the director). It's resea
 | 2 | **2D art below the genre:** the icon, the UI art, the portraits | Code-drawn vectors and 3D renders by an AI without an eye on the canvas. AI 2D art (the director's yes, 2026-11-27) is the technique change |
 | 3 | **Effects read as flat stickers** (the fire) | Outlined flame pictures on flat cards and Beams (OBSERVED in the engine, AR69) |
 | 4 | **The cast isn't whole:** Pip's new make is unfinished, and Rook's face and his Haymaker aren't verified | Seven-plus rounds on hair, and makes rejected as corny or as sketches before the current make |
-| 5 | **The first ten minutes are unproven as a whole** | Retry after a fall and the Move prompt are NOT VERIFIED, and seven first-session sounds are missing |
+| 5 | **The first ten minutes are unproven as a whole** | Retry after a fall is NOT VERIFIED, and seven first-session sounds are missing |
 | 6 | **The HUD's left cluster** | Rejected by the director (AR74) |
 
 **Causes under all six:**
@@ -41,7 +41,7 @@ Everything else waits until after launch unless the director names it.
 | The base: its three lifts | Tessera, Faber | the pick | 4 to 6 |
 | The HUD's left (AR74) | Modulo, Faber | — | 2 to 3 |
 | The seven missing sounds | Sonus, Faber | a Studio turn | 2 |
-| Retry after a fall, the Move prompt | Faber | — | 1 to 2 |
+| Retry after a fall, and Rook's respawn place | Faber | — | 1 |
 | **The gate:** a recorded first ten minutes at phone size, beside a shipped game's | Faber (capture), research and a blind reader, then the director | all of the above | 1 to 2 |
 
 Total: about 30 to 45 active hours of making, spread over four makers and gated by the Studio queue (HYPOTHESIS).

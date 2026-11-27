@@ -31,6 +31,7 @@ from mathutils import Matrix, Vector
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import anime_make as am  # noqa: E402
+from anime_make import tone  # noqa: E402
 import blcommon as bl  # noqa: E402
 import kirra_make_takes as kt  # noqa: E402
 import kirra_sheet as ks  # noqa: E402
@@ -101,6 +102,237 @@ def blade(piece, grip_colour):
 
 def pieces(colour, ends, guards):
     return [kt.scarf(colour, ends, long_tail=False), *(blade(p, guards) for p in BLADES), *tail_chain(colour, ends)]
+
+
+# --- her blades as gear (AR60 reopened, the director, 2026-11-27, 12:47: "what are those toy sword like behind kirra") --
+# The toy read: flat grey slabs with a white edge, too long and thin for her, no hilt, wrap, guard or sheath. Each
+# option is a blade (its hilt, guard and steel, on the blade's own joint, its grip's middle where it always was, so
+# her clips still draw it) and a sheath on the Torso it rests in, in her clothes' colours. Measured along the blade's
+# line from the pommel's end, studs.
+
+PEWTER, IRON, TEAL, NIGHT = "#A3AAB8", "#343947", "#1FA39A", "#1B1F2B"
+LIGHT_DIR = Vector((0.3, -0.7, 0.65)).normalized()   # from behind her and above, where the game's camera mostly is
+
+
+def axes(side):
+    """The blade's line at rest: the pommel's end, the way along, across its width, through its thickness."""
+    top, d, _ = sheath_line(side)
+    n = Vector((0, 1, 0))
+    n = (n - d * n.dot(d)).normalized()
+    return top, d, d.cross(n).normalized(), n
+
+
+def turned(b, side, rings, colour, sides=8, offset=22.5, caps=True):
+    """A piece turned along the blade's line: `rings` (how far along, half its width, half its thickness, and a shift
+    through its thickness); `colour(i, k)` for the stretch `i` between two rings and its side `k` round, or one colour a
+    stretch. Each face takes a little of the light's fall, as the kit's built pieces do."""
+    top, d, s, n = axes(side)
+    angles = [math.radians(offset + 360 / sides * k) for k in range(sides)]
+    pts = [[top + d * at + s * (w * math.cos(a)) + n * (t * math.sin(a) + sh) for a in angles] for at, w, t, sh in
+           ((r + (0.0,))[:4] for r in rings)]
+    base = colour if callable(colour) else (lambda i, k: colour[i])
+
+    def shade(i, k):
+        a = angles[k] + math.radians(180 / sides)
+        out = (s * math.cos(a) + n * math.sin(a)).normalized()
+        return tone(base(i, k), 0.62 + 0.48 * max(0.0, out.dot(LIGHT_DIR)))
+    b.tube(pts, shade, caps=(tone(base(0, 0), 0.7), tone(base(len(rings) - 2, 0), 0.7)) if caps else None, smooth=False)
+
+
+def ring_pommel(b, side, at, radius, tube_r, colour, segments=16):
+    """A ring at the pommel's end, in the plane of the blade's width."""
+    top, d, s, n = axes(side)
+    centre = top + d * at
+    rings = []
+    for j in range(segments + 1):
+        f = 2 * math.pi * j / segments
+        r = d * math.cos(f) + s * math.sin(f)
+        q = centre + r * radius
+        rings.append([q + r * tube_r * math.cos(a) + n * tube_r * math.sin(a) for a in (0.0, math.pi / 2, math.pi, 1.5 * math.pi)])
+    b.tube(rings, lambda i, k: tone(colour, (1.0, 0.8, 0.6, 0.8)[k]), smooth=False)
+
+
+def steel(b, side, start, end, half_w, point, thick=0.022):
+    """The steel from the collar to its point: a ridge down the middle, its two bevels lit and dark."""
+    turned(b, side, [(start, half_w, thick), (end - point, half_w, thick), (end, 0.004, 0.003)],
+           lambda i, k: "#E6EAF0" if k in (0, 3) else "#8A92A3", sides=4, offset=0.0, caps=False)
+
+
+def bound_grip(b, side, a, b_, w, t, base, cord, turns, cw=0.022, rise=0.01):
+    """A grip from `a` to `b_` in `base`, bound by `turns` thin raised turns of `cord`: one colour with fine lines,
+    never equal stripes (round 1's banded grips read as candy, and so did teal turns on dark)."""
+    step = (b_ - a) / turns
+    rings, cols = [(a, w, t)], []
+    for i in range(turns):
+        c = a + step * (i + 0.5)
+        rings += [(c - cw, w, t), (c - cw, w + rise, t + rise), (c + cw, w + rise, t + rise), (c + cw, w, t)]
+        cols += [base, cord, cord, cord]
+    rings.append((b_, w, t))
+    cols.append(base)
+    turned(b, side, rings, cols)
+
+
+def lacquer(guards):
+    """1, the lacquered pair: a pewter cap, a grip in teal cord bound with fine dark turns, a round iron guard with a pewter rim,
+    a pewter collar; each in a slim black lacquer sheath with a pewter mouth and tip, one teal cord, and a dark
+    leather loop on the strap. 1.75 studs, the first was 2.3. (Round 1's navy lacquer sank into her navy top.)"""
+    sheath_col = "#12151D"
+
+    def blade_(piece):
+        side = BLADES[piece]
+        b = am.Built(piece)
+        turned(b, side, [(0.0, 0.05, 0.05), (0.012, 0.082, 0.078), (0.06, 0.082, 0.078)], [PEWTER, PEWTER])
+        bound_grip(b, side, 0.06, 0.555, 0.074, 0.066, tone(TEAL, 0.78), NIGHT, 6, cw=0.01, rise=0.006)
+        turned(b, side, [(0.555, 0.15, 0.13), (0.565, 0.172, 0.15), (0.615, 0.172, 0.15), (0.625, 0.15, 0.13)], [PEWTER, IRON, PEWTER])
+        turned(b, side, [(0.625, 0.1, 0.05), (0.68, 0.1, 0.05)], [PEWTER])
+        steel(b, side, 0.68, 1.75, 0.1, 0.2)
+        return b
+
+    def sheaths():
+        b = am.Built("Sheaths")
+        for side in BLADES.values():
+            r = [(0.63, 0.128, 0.072), (0.72, 0.128, 0.072), (0.72, 0.124, 0.068), (0.9, 0.124, 0.068), (0.9, 0.134, 0.078),
+                 (0.94, 0.134, 0.078), (0.94, 0.124, 0.068), (1.7, 0.112, 0.062), (1.7, 0.118, 0.066), (1.82, 0.09, 0.05),
+                 (1.86, 0.05, 0.03)]
+            cols = [PEWTER, sheath_col, sheath_col, TEAL, TEAL, sheath_col, sheath_col, PEWTER, PEWTER, PEWTER]   # a colour a
+            # stretch between two rings: the mouth, one cord (two, beside the grip's turns, read as stripes), the tip
+            turned(b, side, r, cols)
+            turned(b, side, [(1.24, 0.15, 0.088), (1.34, 0.15, 0.088)], [guards])   # the strap's loop
+        return b
+    return blade_, sheaths
+
+
+def knives(guards):
+    """2, the runner's knives: shorter and broader, a pewter ring at the pommel, a grip in the sheath's leather bound
+    with dark turns, a pewter crossbar; each in a dark leather sheath with a teal mouth, two buckled straps, a lighter stitched
+    edge and a rounded end, in a dark brown that stands off her navy. 1.5 studs."""
+    leather, stitch = "#4A3A32", "#A38C7A"
+
+    def blade_(piece):
+        side = BLADES[piece]
+        b = am.Built(piece)
+        ring_pommel(b, side, -0.07, 0.07, 0.022, PEWTER)
+        bound_grip(b, side, 0.0, 0.48, 0.07, 0.064, leather, NIGHT, 4, cw=0.012, rise=0.006)
+        turned(b, side, [(0.48, 0.26, 0.07), (0.54, 0.26, 0.07)], [PEWTER], sides=4, offset=45.0)
+        steel(b, side, 0.54, 1.5, 0.13, 0.26, thick=0.026)
+        return b
+
+    def sheaths():
+        b = am.Built("Sheaths")
+        for side in BLADES.values():
+            r = [(0.545, 0.16, 0.078), (0.63, 0.16, 0.078), (0.63, 0.152, 0.072), (0.78, 0.152, 0.072), (0.78, 0.166, 0.084),
+                 (0.85, 0.166, 0.084), (0.85, 0.152, 0.072), (1.13, 0.15, 0.07), (1.13, 0.164, 0.082), (1.2, 0.164, 0.082),
+                 (1.2, 0.148, 0.07), (1.46, 0.13, 0.064), (1.54, 0.08, 0.044), (1.57, 0.03, 0.02)]
+            body = {0: TEAL, 3: guards, 4: guards, 7: guards, 8: guards}   # the mouth, the two straps
+
+            def col(i, k, body=body):
+                if i in body:
+                    return body[i]
+                return stitch if k in (3, 7) and i != 12 else leather   # the stitched edges, along its two sides
+            turned(b, side, r, col)
+            for at in (0.815, 1.165):   # the two buckles, on the strap's outside
+                turned(b, side, [(at - 0.03, 0.04, 0.012, -0.09), (at + 0.03, 0.04, 0.012, -0.09)], [PEWTER], sides=4, offset=45.0)
+        return b
+    return blade_, sheaths
+
+
+def gear_pieces(option):
+    def make(colour, ends, guards):
+        blade_, sheaths = option(guards)
+        return [kt.scarf(colour, ends, long_tail=False), *(blade_(p) for p in BLADES), sheaths(), *tail_chain(colour, ends)]
+    return make
+
+
+TARGET_WORDS = dict(
+    stem="kirra_gear",
+    beside="AR60 reopened: Kirra today, the cut with the lacquered pair, the still with the runner's knives, square on between two "
+           "Anime Vanguards units at the same height. Internal: the two are reference.",
+    title="AR60 REOPENED: KIRRA'S BLADES AS GEAR, AND HER OWN FACE",
+    about="The director, 12:47: the blades on her back read as toys, and the Voidkin share one face. Two targets, each a face "
+          "and a set of gear; research may pick a face from one and the gear from the other. Rook first, his face the kit's.",
+    row="Rook, Kirra today, 1 and 2, and a Brawler",
+)
+
+
+def targets_run(out, keys):
+    """The two targets beside today's Kirra and Rook: the takes' sheet (its beside part internal), then the gear from
+    behind beside an Anime Vanguards unit, and the faces with Pip's (internal: build/reference/takes/)."""
+    rmt.TAKES = {"Rook": kt.TAKES["Rook"], "A": lambda j, f: kt.take_a(j, f, pieces=pieces),
+                 "B": lambda j, f: kt.take_a(j, f, pieces=gear_pieces(lacquer), face_draw=kt.face_cut),
+                 "C": lambda j, f: kt.take_a(j, f, pieces=gear_pieces(knives), face_draw=kt.face_still)}
+    rmt.SAID = {"Rook": ("Rook", ("in the game: the kit's face",)),
+                "A": ("Kirra today", ("in the game: the kit's face recoloured,", "bare blades 2.3 studs, no hilt")),
+                "B": ("1, the cut", ("the lacquered pair: cord-bound grips,", "round guards, black lacquer sheaths, 1.75 studs")),
+                "C": ("2, the still", ("the runner's knives: ring pommels, crossbars,", "buckled brown leather sheaths, 1.5 studs"))}
+    rmt.VIEWS.update(back=(0, 6), back34=(326, 6))
+    if "takes" in keys:
+        rmt.takes_run(out, [k for k in keys if k in rmt.WHO] or list(rmt.WHO), finish=kt.measured)
+        if not (out / "layers" / "Shade_foe.npz").exists():
+            rmt.shade_run(out)
+    if "sheet" in keys:
+        rmt.sheet_run(out, TARGET_WORDS, list(kt.BESIDE))
+        gear_sheet(out)
+
+
+def gear_sheet(out):
+    shots = out / "shots"
+    k_ = 0.46
+    per = rmt.SHOT / rmt.SPAN * k_
+    gap, W = 24, 2400
+    ink, soft, paper, pale = "#EDE6D6", "#B4AC9C", "#101117", "#DFE1E6"
+    av = rmt.reference(kt.BESIDE[0][0], per, kt.BESIDE[0][1])
+    views = (("back", "from behind"), ("back34", "from behind her left"), ("game", "the game's camera"))
+    full = {(k, v): rs.trim(rs.load(shots / f"{k}_{v}.png")) for k in "ABC" for v, _ in views}
+    tiles = {key: rs.shrink(t, k_) for key, t in full.items()}
+    tall = max(t.shape[0] for t in tiles.values())
+    close_h = 420
+    page = rs.canvas(W, 70 + tall + 60 + 36 + close_h + 50, rs.rgb(paper))
+    text = [(gap, 16, 20, "Her gear from behind, at the same pixels a stud as an Anime Vanguards unit (reference, a front view: "
+                         "the reference holds none from behind). Today, then 1 and 2.", ink)]
+    rs.fill(page, 0, 56, W, tall + 14, rs.rgb(pale))
+    x = gap
+    rs.paste(page, av, x, 56 + tall - av.shape[0])
+    x += av.shape[1] + gap
+    for k in "ABC":
+        for v, said in (views[0], views[2]):   # from behind her left is in the close-ups below
+            t = tiles[(k, v)]
+            rs.paste(page, t, x, 56 + tall - t.shape[0])
+            text.append((x, 56 + tall + 22, 14, f"{rmt.SAID[k][0]}, {said}", soft))
+            x += t.shape[1] + 10
+        x += gap
+    # the hilts up close: each back view's top at its own size, twice the size above
+    y = 56 + tall + 60
+    text.append((gap, y, 18, "The hilts and sheaths up close: from behind and from behind her left, twice the size above.", ink))
+    x = gap
+    for k, v in ((k, v) for k in "ABC" for v in ("back", "back34")):
+        t = full[(k, v)]
+        mid = t.shape[1] // 2
+        close = t[: close_h, max(0, mid - 190): mid + 190]
+        rs.paste(page, close, x, y + 36)
+        text.append((x, y + 36 + close.shape[0] + 8, 14, rmt.SAID[k][0], soft))
+        x += close.shape[1] + 12
+    rs.paste(page, rs.text_layer(W, page.shape[0], text), 0, 0)
+    rs.save(page, rmt.internal("kirra_gear_back_beside.png"))
+    # the faces: Rook's, Kirra's today and her two, and Pip's take (its own face comes with AR63's make)
+    busts = [(rmt.SAID[k][0], shots / f"{k}_bust.png") for k in ("Rook", "A", "B", "C")]
+    pip = rmt.REPO / "build" / "scratch" / "modulo" / "pip" / "shots" / "A_bust.png"
+    if pip.exists():
+        busts.append(("Pip, take A (the kit's face)", pip))
+    imgs = [(name, rs.load(p)) for name, p in busts]
+    bw = imgs[0][1].shape[1]
+    face_page = rs.canvas(W, 700, rs.rgb(paper))
+    text = [(gap, 16, 20, "The faces in the lead card's pose: half size, then at the card's size on the smallest phone and twice it.", ink)]
+    x = gap
+    for name, img in imgs:
+        half = rs.shrink(img, 0.5)
+        rs.paste(face_page, half, x, 56)
+        small, twice = rs.shrink(img, rmt.CARD), rs.shrink(img, rmt.CARD * 2)
+        rs.paste(face_page, small, x, 56 + half.shape[0] + 12)
+        rs.paste(face_page, twice, x + small.shape[1] + 10, 56 + half.shape[0] + 12)
+        text.append((x, 56 + half.shape[0] + 12 + twice.shape[0] + 8, 14, name, soft))
+        x += half.shape[1] + gap
+    rs.paste(face_page, rs.text_layer(W, face_page.shape[0], text), 0, 0)
+    rs.save(face_page, (out / "kirra_faces.png").resolve())
 
 
 def recipe_joints(recipe):
@@ -194,4 +426,7 @@ if __name__ == "__main__":
     rmt.SAID[TAKE] = ("Kirra, the finish", ("A, the night runner, with research's three must-fixes",))
     OUT = rs.OUT = bl.out_dir()
     rest = sys.argv[sys.argv.index("--") + 2:]
-    {"model": model_run, "sheet": sheet_run}[rest[0] if rest else "model"](OUT)
+    if rest and rest[0] == "targets":
+        targets_run(OUT, rest[1:] or ("takes", "sheet"))
+    else:
+        {"model": model_run, "sheet": sheet_run}[rest[0] if rest else "model"](OUT)

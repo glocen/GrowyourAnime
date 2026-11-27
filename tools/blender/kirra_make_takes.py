@@ -83,6 +83,82 @@ def face(head, look):
         p.lay(p.stroke([(x - s * 0.02, y - 0.02), (x + s * 0.012, y - 0.012), (x + s * 0.03, y + 0.0)], (0.014, 0.008, 0.0)), INK, 0.8)
 
 
+def face_skin(p, skin):
+    """The skin's own shade under a drawn face (the kit's, am.draw_face): under the hair, and round toward the ears."""
+    p.lay(p.rise(0.86, 1.12), tone(skin, 0.78), 0.55)
+    p.lay(np.clip((np.abs(p.X) - 0.5) / 0.3, 0, 1), tone(skin, 0.86), 0.5)
+
+
+# Her own face, never the kit's recoloured (the director, 2026-11-27, 12:47: "voidkin shouldnt have the same face"):
+# two options for research's pick, each its own eye, lash, brows, nose and mouth. The kit's (Rook's) is a rounded lid
+# over a round iris with two lights, a crease, a lower lash, a ticked nose.
+
+def face_cut(p, skin, iris="#79C4EA", lid="#2A2F45", brow="#5E6478"):
+    """1, the cut: narrow almond eyes lifted at the outer corner, the lid low over a tall iris, a narrow pupil and one
+    hard square light; one flat lash bar running out into a wing, no crease, a lower lash on the outer third only;
+    short, straight, low brows set inward; a shade for the nose, no ink; a small set mouth; a mark under her left eye."""
+    face_skin(p, skin)
+    ew, eh, ex, ey, tilt = 0.31, 0.15, 0.262, 0.515, 0.055
+    for s in (-1, 1):
+        def at(lx, ly):
+            return (s * (ex + lx), ey + ly)
+        upper = [at(-ew / 2, -0.02 * eh), at(-0.24 * ew, 0.3 * eh), at(0.16 * ew, 0.42 * eh + 0.4 * tilt), at(ew / 2, 0.36 * eh + tilt)]
+        lower = [at(ew / 2, 0.36 * eh + tilt), at(0.3 * ew, -0.26 * eh + 0.5 * tilt), at(-0.12 * ew, -0.46 * eh), at(-ew / 2, -0.02 * eh)]
+        shape = p.poly(np.vstack([am.smooth2(upper, 16), am.smooth2(lower, 16)[1:-1]]))
+        p.lay(shape, "#F4F3F2")
+        cx, cy = s * (ex + 0.03 * ew), ey - 0.04 * eh
+        rx, ry = 0.27 * ew, 0.66 * eh
+        ir = np.minimum(p.ellipse(cx, cy, rx, ry), shape)
+        p.lay(ir, iris)
+        p.lay(ir * p.rise(cy + 0.05 * ry, cy + 0.75 * ry), tone(iris, 0.3), 0.95)        # the lid's shadow across its top
+        p.lay(np.minimum(p.ellipse(cx, cy - 0.45 * ry, rx * 0.7, ry * 0.32), ir), mix(iris, "#FFFFFF", 0.5), 0.8)
+        p.lay(np.clip(ir - p.ellipse(cx, cy, rx * 0.86, ry * 0.9), 0, 1), tone(iris, 0.28), 0.9)
+        p.lay(np.minimum(p.ellipse(cx, cy + 0.02 * ry, rx * 0.24, ry * 0.5), shape), tone(iris, 0.12))
+        p.lay(np.minimum(p.ellipse(cx - s * 0.32 * rx, cy + 0.3 * ry, rx * 0.2, ry * 0.2, turn=45), shape), "#FFFFFF")
+        p.lay(shape * p.rise(ey + 0.1 * eh, ey + 0.42 * eh + tilt), lid, 0.35)
+        wing = upper + [at(ew / 2 + 0.07, 0.36 * eh + tilt + 0.05)]
+        p.lay(p.stroke(wing, (0.01, 0.026, 0.042, 0.04, 0.0), n=40), INK)
+        p.lay(p.stroke([at(0.18 * ew, -0.36 * eh + 0.3 * tilt), at(0.4 * ew, -0.12 * eh + 0.6 * tilt), at(ew / 2 + 0.01, 0.3 * eh + tilt)],
+                       (0.0, 0.012, 0.016)), INK, 0.85)
+        p.lay(p.stroke([at(-0.42 * ew, 0.142), at(0.05 * ew, 0.158), at(0.52 * ew, 0.166)], (0.026, 0.02, 0.004)), brow)
+    p.lay(p.ellipse(ex + 0.11, ey - 0.105, 0.011, 0.011), tone(skin, 0.42))
+    p.lay(p.soft(p.poly([(0.004, 0.395), (0.03, 0.345), (-0.012, 0.34)]), 0.003), tone(skin, 0.74), 0.9)
+    p.lay(p.stroke([(-0.038, 0.236), (0.006, 0.233), (0.034, 0.226)], (0.008, 0.012, 0.004)), tone(skin, 0.38))
+    p.lay(p.stroke([(-0.018, 0.206), (0.016, 0.206)], (0.0, 0.01, 0.0)), tone(skin, 0.55), 0.4)
+
+
+def face_still(p, skin, iris="#7FB9DE", brow="#6A7086"):
+    """2, the still: long, low eyes under a heavy straight lid, the iris small and high against it with the white
+    under it; the lash ending in two short flicks; a faint full lower lid; long thin brows arched high at their outer
+    third; a dot of shade for the nose; a small mouth turned down at its ends."""
+    face_skin(p, skin)
+    ew, eh, ex, ey, tilt = 0.35, 0.13, 0.27, 0.52, 0.02
+    for s in (-1, 1):
+        def at(lx, ly):
+            return (s * (ex + lx), ey + ly)
+        upper = [at(-ew / 2, -0.1 * eh), at(-0.3 * ew, 0.3 * eh), at(0.2 * ew, 0.5 * eh + tilt), at(ew / 2, 0.3 * eh + tilt)]
+        lower = [at(ew / 2, 0.3 * eh + tilt), at(0.26 * ew, -0.46 * eh), at(-0.22 * ew, -0.5 * eh), at(-ew / 2, -0.1 * eh)]
+        shape = p.poly(np.vstack([am.smooth2(upper, 16), am.smooth2(lower, 16)[1:-1]]))
+        p.lay(shape, "#F5F4F2")
+        cx, cy = s * ex, ey + 0.14 * eh
+        rx, ry = 0.21 * ew, 0.6 * eh
+        ir = np.minimum(p.ellipse(cx, cy, rx, ry), shape)
+        p.lay(ir, iris)
+        p.lay(ir * p.rise(cy - 0.2 * ry, cy + 0.7 * ry), tone(iris, 0.35), 0.9)
+        p.lay(np.clip(ir - p.ellipse(cx, cy, rx * 0.84, ry * 0.86), 0, 1), tone(iris, 0.3), 0.9)
+        p.lay(np.minimum(p.ellipse(cx, cy - 0.05 * ry, rx * 0.36, ry * 0.34), shape), tone(iris, 0.12))
+        p.lay(np.minimum(p.ellipse(cx + s * 0.38 * rx, cy + 0.22 * ry, rx * 0.2, ry * 0.18), shape), "#FFFFFF")
+        p.lay(shape * p.rise(ey + 0.2 * eh, ey + 0.5 * eh), "#3A3F55", 0.3)
+        p.lay(p.stroke(upper, (0.012, 0.036, 0.04, 0.028)), INK)
+        for d in (0.0, 0.03):   # two flicks off the outer end
+            o = at(ew / 2 - d, 0.3 * eh + tilt - 0.004)
+            p.lay(p.stroke([o, (o[0] + s * 0.03, o[1] + 0.022 - d * 0.3), (o[0] + s * 0.05, o[1] + 0.03 - d * 0.5)], (0.016, 0.008, 0.0)), INK)
+        p.lay(p.stroke(lower[1:], (0.008, 0.006, 0.0)), tone(skin, 0.55), 0.7)
+        p.lay(p.stroke([at(-0.46 * ew, 0.13), at(0.05 * ew, 0.168), at(0.34 * ew, 0.18), at(0.62 * ew, 0.152)], (0.012, 0.018, 0.014, 0.002)), brow)
+    p.lay(p.soft(p.ellipse(0.008, 0.352, 0.012, 0.009), 0.004), tone(skin, 0.7), 0.9)
+    p.lay(p.stroke([(-0.036, 0.228), (-0.014, 0.236), (0.014, 0.236), (0.036, 0.228)], (0.004, 0.012, 0.012, 0.004)), tone(skin, 0.4))
+
+
 def strap(p, a, b, colour, wide=0.1):
     """A strap across a picture from `a` to `b`, its two edges drawn."""
     edge = tone(colour, 0.5)
@@ -190,8 +266,9 @@ def bare_arm(a, skin, guard_colour, top, trim):
 
 # --- A, the night runner -----------------------------------------------------------------------------------------------
 
-def take_a(joints, folder, pieces=None):
-    """`pieces(scarf colour, its ends, the guards' colour)`: the built pieces, in place of the takes' (the finish's)."""
+def take_a(joints, folder, pieces=None, face_draw=None):
+    """`pieces(scarf colour, its ends, the guards' colour)`: the built pieces, in place of the takes' (the finish's);
+    `face_draw(paint, skin)`: her face, in place of the kit's (face_cut, face_still)."""
     skin, top_, guard_, trouser, teal = "#F2CDB2", "#26345F", "#1B1F2B", "#8F97AA", "#1FA39A"
     edge, trim = tone(top_, 0.5), mix(top_, "#8E9CC8", 0.4)
     b = blocks_of({"torso": top_, "rs": skin, "ls": skin, "rh": trouser, "lh": trouser})
@@ -240,8 +317,11 @@ def take_a(joints, folder, pieces=None):
         grain(g, seed=24 + i)
 
     head = am.Head(skin)
-    face(head, dict(skin=skin, iris="#5BA6D6", eye_w=0.32, eye_h=0.19, eye_x=0.268, eye_y=0.52, tilt=0.03, shut=0.3,
-                    brow_y=0.7, brow_tilt=0.03, brow="#7A8092", mouth=[(-0.045, 0.232), (0.0, 0.228), (0.045, 0.232)]))
+    if face_draw:
+        face_draw(head.paint, skin)
+    else:
+        face(head, dict(skin=skin, iris="#5BA6D6", eye_w=0.32, eye_h=0.19, eye_x=0.268, eye_y=0.52, tilt=0.03, shut=0.3,
+                        brow_y=0.7, brow_tilt=0.03, brow="#7A8092", mouth=[(-0.045, 0.232), (0.0, 0.228), (0.045, 0.232)]))
     # on a scalp fitted to her head: on the kit's wide egg it stood off her head's sides and crown (the director,
     # 2026-11-27, "the hair being detached from the head", "from the sides and even abit top")
     hair = am.Hair("#848CA3", "#EEF1F7", seed=31, band=(0.5, 0.1, 0.3), scalp=am.HEAD_EGG)

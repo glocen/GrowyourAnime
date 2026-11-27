@@ -4925,6 +4925,43 @@ From the new sheet, the Reveal's poses and the portrait. It judges the fix and w
 - **Watch, not a must-fix:** the outline now follows the head's squared shape. If it reads as a helmet in the game, the crown's volume is the lever. The darker tip at each cheek lock is for `docs/polish-later.md`.
 - **Next:** Faber installs the hair, the tie and the map, and uploads both portraits again. The director judges it in the game.
 
+### Modulo: her eight clips keyed again on the make, for the upload (2026-11-27, 12:32)
+
+- **Why:** Faber's install of the make; AR66 asked whether its tail clips used the old tail.
+- **Made** with `tools/blender/kirra_clips.py` on the make's model, in `build/handoff/Kirra/make/clips/` (efea5760): the eight clips (Idle, Combo, ScarfStep, Reveal, Work, Hit, Down, Up), `Kirra.clips.json`, and a pack and a bare strip for each. The bare strips now keep the scarf on.
+  - Hit and Down: a tail key at frame 2, so the shorter tail rises beside her head instead of through it. Nearest the head: Hit 0.03 studs, Down 0.14 (before: -0.17 and -0.23).
+  - Work's scarf tip now buckles to the other side from 11-24's take.
+- **AR66:** yes, TailHit, TailDown and TailUp were keyed on the old 10-stud tail. They're removed; Hit, Down and Up replace them.
+- **Checks:** all eight audits PASS. Content check PASS (a fresh agent): the tail never crosses her face (Combo 9 to 21, 54 to 66), and the Reveal's tip ends as cloth. Its note: log each clip in `docs/asset-log.md` at upload.
+- **Four facts:** made; self-reviewed on the bare strips; delivered to Faber at 12:32 for the upload; not in the game, research's look at Hit, Down and Up asked, not accepted.
+
+### Modulo: reopened, the gear and her own face, two targets for the pick (2026-11-27, 13:03; first render 12:56)
+
+- **Why:** the director, 12:47 (`docs/decisions.md`): the blades on her back read as toys, and the Voidkin share one face. Research reopened AR60 ahead of AR68's fixes: real gear sized to her, sheathed, with a hilt and a wrap, in her clothes' family; her own drawn face; two options at the game's camera, from behind and from behind three-quarter, beside a shipped unit at the same size.
+- **Made** with `tools/blender/kirra_make.py targets` (the gear, the sheets) and `kirra_make_takes.py` (`face_cut`, `face_still`; `take_a` takes a face), in `build/handoff/Kirra/gear/`:
+  - `kirra_gear_takes.png` and its parts: Rook, Kirra today, 1 and 2, from the front and from behind; the head from six sides; the bust at the card's sizes; the fight at the game's camera; the row; 64 px.
+  - `kirra_faces.png`: the four busts and Pip's take A, at half, the card's size and twice it.
+  - Internal (`build/reference/takes/`, gitignored): `kirra_gear_back_beside.png` holds the gear from behind, at the game's camera and up close, beside an Anime Vanguards unit at the same pixels a stud. The unit is a front view: the reference holds none from behind.
+- **1, the cut:**
+  - The lacquered pair, 1.75 studs (today's bare blades: 2.3). A pewter cap, a teal cord grip bound with six fine dark turns, a round iron guard with a pewter rim, a pewter collar, ridged steel.
+  - Slim black lacquer sheaths with a pewter mouth and tip, one teal cord, and a leather loop on her strap.
+  - Face: narrow almond eyes lifted at the outer corner, a slit pupil under the lid's shadow, one square light, a lash bar running out into a wing, short low straight brows, a mark under her left eye, a set mouth.
+- **2, the still:**
+  - The runner's knives, 1.5 studs. A pewter ring pommel, a brown leather grip with four dark turns, a pewter crossbar, broad steel.
+  - Brown leather sheaths with a teal mouth, two straps with pewter buckles, and stitched edges.
+  - Face: long low eyes under a heavy lid, a small high iris, two lash flicks, a faint full lower lid, long arched brows, a dot nose, a mouth turned down at its ends.
+- **Both:** a face and a gear can be picked from different options. The blades keep their pivot (the grip's middle, on today's line), so the eight clips stay valid. The sheaths are one new piece on the torso, and stay on her back when the Combo draws the blades. About 6,250 triangles (today 5,214).
+- **My rounds, inside the cap:** round 1's banded grips read as candy stripes, and its navy lacquer sank into her navy top. Now each grip is one colour with fine turns, the lacquer is black, the leather brown, and the lacquer's two cords are one.
+- **Self-review**, at full size and 2x crops:
+  - At the game's camera, both read as a hilt, a guard and a sheath, not the grey X of today.
+  - At the smallest phone, 2's brown leather stands off her navy top more than 1's black lacquer, which reads as a dark X.
+  - The faces at twice the card's size read as three different people. At the card's size on the smallest phone, the eye shapes still part (1's wing, 2's flat lid), but the slit and the mark don't read.
+  - The game's camera sees her from behind, so her face reads on the cards, at Home and in the turn, not in the fight.
+  - From the front, 2's ring pommels show either side of her head and can read as earrings (the content check's note). 1's caps show there too, darker and smaller.
+- **Not in this piece:** Pip's own face comes with AR63's make (take A carries the kit's face, shown for comparison). Rook keeps the kit's face as his own.
+- **Checks:** content check PASS (a fresh agent, on the three shared sheets and the internal one). Its conditions for the build: the guards stay round or crossbars, never a four-pointed star, and the scarf stays at the neck, never a sash holding the blades; face 1 with gear 2 keeps the navy and teal and the knives short; the picked option gets its own check before upload, with the gear at 64 px over dark.
+- **Four facts:** made; self-reviewed as above; delivered to research at 13:03 for the pick in pairs; not accepted. After the pick: the picked gear and face built into the make, re-exported, then Faber's install.
+
 ## AR61. The hit sparks: the shared kit's landed hit, by rung (Scintilla, then Faber's hook)
 
 Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit first", `docs/decisions.md`; `docs/briefs/effects.md`, "Your queue", 1). Research hadn't written this request when the seat opened (2026-11-24, 10:44), so Scintilla wrote it from the brief, AR8 A and the study's rules; research confirms or corrects it at the blockout's verdict.
@@ -6388,6 +6425,39 @@ Research, 2026-11-27, 02:40.
 - **Deliver:** per system, the fight at 568 and 852, by day and at dusk; one sheet with today's game, the four and the shipped frame at the same size; the four motion strips. Home waits until after the pick.
 - **Cap:** 3 hours for all four (AGENTS.md, "A target before the hours").
 - **Then:** the content check, research's check against the three tests, Gemini's blind read, and the director's pick with no recommendation from research (03:35; "The pick", above).
+
+### Modulo: round 4, the four systems composed and finished (2026-11-27, 12:41; started 12:10)
+
+- **Made** with `tools/ui/hud_compositions.py`, in `build/handoff/UI/ar68/round4/`:
+  - each system at 568 and 852, by day (the press awake) and at dusk (filling, 62%);
+  - `<X>_wake.png`: the press waking, in three frames (96%, the wake's flash, awake with its name);
+  - `four_day.png` and `four_dusk.png`: the four side by side at 568.
+  - Internal, in `build/reference/ar68/round4/` (gitignored): `compose_grey.png` holds the four's layouts in grey beside g05 and Dragon Hunter's arena frame. `sheet_day.png` and `sheet_dusk.png` hold today's game, g05 and the four, all at the same size.
+  - The world is AR57's Lantern Row crops, standing in for Faber's clean capture.
+- **Compositions:**
+  - P: a brass relay pin down the left edge links the dial (the bust in a ceramic face), the level chip, the eye's knob and the press's dial. The collar holds the health with its digits inside. The foe's tag hangs from the top edge on two pins.
+  - S: the lead is one shard broken into three facets (bust, gauges, readout), lit along its top edge. The foe is a smaller shard leaning the other way. The press is a hexagonal prism whose rim lights round as it fills.
+  - M: one broadcast band from the corner. Portrait, name card, the health strip with its digits, the persimmon cut with the edge arrow, then the foe's slate side, its strip filling from its own end.
+  - R: no plate. The bust sits in open brackets on a feathered scrim, the health is the sight's line, the foe is a lighter reticle, and the press is an open ring of four arcs.
+- **Grey check:** beside the two shipped frames, all four hold. Each lead is a compact top-left cluster, with a shaped portrait mount and its level chip, thin bars with their digits, the foe a lighter copy of the lead's tag, and the press's row at the thumb. R groups the loosest, by design. None was redrawn.
+- **Finish:** the materials come from SVG lighting filters, not strokes:
+  - P: a glaze (lit, with a glint and tooth) and banded brass;
+  - S: glass over the blurred world, with a veil, a sheen and lit facet edges;
+  - M: printed card, with grain and a hard cel shadow;
+  - R: the scrim and the brackets' bloom.
+- **Numbers:** each system sets them in its own face, with a thin edge and a cast shadow, one "565" only. The critical is in the director's gold, slanted.
+- **My calls:**
+  - The eye moved beside Auto, at the press. P's sits on the pin, just above it.
+  - The press is quiet while it fills and wakes in its own colour, and only an awake press glows: P's label tab turns brass, S's shard cyan, M's card persimmon, and R's ring blooms.
+  - M's press lost round 3's slash across the art, which read as a "no" sign in the wake strip.
+- **Measured:**
+  - The permanent fight HUD, the press aside, covers 6.1 to 6.3% of the screen at 568 and 4.2 to 4.3% at 852. The direction's gate is about 6%; round 3 sat at 10.3 to 10.9% with the press included.
+  - The smallest word is 14 pt in every frame.
+  - Each lead reaches about 35% of the width, so it sits in the centre band's top strip, above the fighters' heads. M's band runs on into the foe's side at the top centre.
+- **Checks:** content check PASS (a fresh agent, all 22 files). Its notes:
+  - the picked system's cut-out images get their own check before any upload;
+  - the 64 px look wasn't judged.
+- **Four facts:** made; self-reviewed at 568 with 2x crops, on both grounds, and on the wake strips; delivered to research for its check against the three tests, Gemini's blind read and the director's pick; not accepted.
 
 **Research, 2026-11-27, 12:43: round 4 checked** (R2 and R3; Gemini is out of quota, so the blind reader was a fresh Claude reader on `four_day` and `four_dusk`).
 - **Measured, passed:** the permanent HUD covers 6.1 to 6.3% at 568 (gate about 6%; round 3 was 10.3 to 10.9%). The 14 pt floor holds. Content check PASS.

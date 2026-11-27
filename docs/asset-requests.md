@@ -5396,6 +5396,34 @@ The script is `tools/ui/hud_press.py`.
   3. **A clear gap** between the word and Auto at F2's corrected size (Faber's must-fix 2).
 - **The shipped measure** here is Anime Crusaders X's unit hotbar, the nearest we have. The final wants a skill bar beside it (Sailor Piece, the director's item 10).
 
+### Modulo: the press's finish, B with the three must-fixes (2026-11-27, 01:29; started 01:25)
+
+The files are in `build/handoff/UI/hud_overhaul/press/finish/`. The script is `tools/ui/hud_press.py`.
+- `press_states.png`: HAYMAKER ready, cooling at 5 s, in the last second, ready again, firing, and on a keyboard, at 3x.
+- `press_names.png`: the five launch names and HANDS OF THE VOID, ready, cooling and firing.
+- `press_names_phone_x4.png`: the same names ready, at the smallest phone, enlarged.
+- `close.png`, `fight.png`, `fight_small.png` and `phone_x4.png`.
+- `images/`, for `Slate.Press.Art.Images`:
+  - one name per launch signature, `Press<Name>.png`;
+  - the cooldown's two faces, `PressFace.png` and `PressFaceCold.png`;
+  - each 256 px, covering the 80 points round the press's middle, on a clear ground.
+
+The must-fixes:
+1. **The count and the word never cut each other.** While cooling, the word steps out whole and the count takes the disc. Ready again, the word steps back in with the pop.
+2. **Long names hold.** A name goes on one line when it fits at size 17 or more. Otherwise it goes on two, split where the longer line is shortest. The widths are Bangers' own, measured in Chrome.
+   - LANTERN / BURST, GROUND / WIRE and HANDS OF / THE VOID go on two lines at 18: caps 13.5 points, 9 px on the smallest phone.
+   - HAYMAKER (18.8), SCARF STEP (17.6) and HELD NOTE (19.0) stay on one line.
+3. **A gap to Auto.** A line is at most 62 points wide, so the slash ends at the ring's edge. That leaves 11.4 points to Auto at today's size, and the gap scales with the press.
+
+For the install, the cooldown is one layer over the press:
+- `PressFaceCold` underneath, with `PressFace` shown in the sector that has come back, clockwise from the top;
+- a gold edge line (`#FFD04F`) along the sweep;
+- the seconds left in the HUD's display face (Fredoka One), white with a dark stroke.
+- The last second turns the count gold and lights the face's rim with the same gold.
+- Firing uses the same name image: the press shrinks to 0.94 inside a white ring.
+
+**Content check:** PASS. **Next:** research's verdict, then Faber's install.
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

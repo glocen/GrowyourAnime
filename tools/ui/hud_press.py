@@ -1,29 +1,38 @@
-"""AR62, the press reopened on the director's word (2026-11-27, by 01:00): "that cooling CD is bad and that fist art is
-very bad i want a unique cool art for skills or just the name but make it much better". Research's ask: both directions in
-the same fight frame at phone size, each beside a shipped game's skill buttons, and the cooldown as a strip of states.
+"""AR62, the signature press: the skill's name, lettered (the director, 2026-11-27, by 01:00: "that cooling CD is bad and
+that fist art is very bad i want a unique cool art for skills or just the name but make it much better").
 
-A, the skill's own art: the Haymaker's own shape, the square of chiselled ember bars that forms round the ram and is
-   thrown open on the strike (tools/blender/rook_haymaker_art.py: a cream core, Rook's ember, an ink rim), drawn round a
-   white-hot strike, one corner flung open, its chips flying. Each skill's art comes from its own effect's hero shape.
-B, the name alone: HAYMAKER lettered as a title card, in Bangers (one of Roblox's faces), white into ember, a heavy ink
-   line and a hard shadow, on one ember slash across the press.
-Both lay their art on a dark ember face inside the gold ring, so it holds at the smallest phone.
+Research picked B, the name alone (1a516afc), over A, the skill's own art (948e7269; the pair's pictures stay in
+build/handoff/UI/hud_overhaul/press/, A's code in git). This is B's finish, with the pick's three must-fixes:
+    1. cooling, the count and the word never cut each other: the word steps out whole and the count takes the disc;
+    2. the same lettering holds the long names, on two lines at a readable height (LANTERN BURST, the longest at launch;
+       HANDS OF THE VOID, the roster's longest);
+    3. a clear gap between the word and Auto.
 
-The cooldown, both: the face comes back in its colour, clockwise from the top, behind a gold edge; what is still to
-come stays dark and grey. The seconds left stand big in the middle, stroked. The last second turns the count gold and
-lights the face's rim. Ready again, the press pops: it swells, flashes and throws a ring. The drained art under a small
-count and the thin ring round the outside are gone.
+The name is set in Bangers (one of Roblox's faces), white into gold, a heavy ink line and a hard shadow, on one ember slash
+across a dark ember face inside the gold ring. A name goes on one line when it fits the line at size 17 or more, and
+otherwise on two, split where the longer line is shortest, at 18 at most. The widths are Bangers' own, measured in Chrome.
+
+The cooldown: the word steps out, and the face comes back in its ember, clockwise from the top, behind a gold edge, over
+a grey face. The seconds left stand big in the middle, stroked. The last second turns the count gold and lights the face's
+rim. Ready again, the word steps back in as the press swells, flashes and throws a ring.
 
     py tools/ui/hud_press.py <out_dir> <fight plate>
 
-Writes press_states.png (A and B: ready, cooling at 5 s, the last second, the pop, firing, at three times), and for each
-of A and B: <k>_close.png (the press's corner at three times), <k>_fight_small.png (F2 on the smallest phone) and
-<k>_fight.png (1920 wide); then phone_pair_x4.png, the press's corner of both phone frames side by side, enlarged
-four times by ffmpeg (nearest pixel), to judge them at the smallest phone.
+Writes, into <out_dir>:
+- press_states.png: HAYMAKER ready, cooling at 5 s, in the last second, ready again, firing and on a keyboard, at 3x;
+- press_names.png: each launch signature and HANDS OF THE VOID, ready, cooling and firing, at 3x; and
+  press_names_phone_x4.png, the same ready at the smallest phone, enlarged four times (nearest pixel, by ffmpeg);
+- close.png (the press's corner at 3x), fight.png (1920 wide), fight_small.png (the smallest phone) and phone_x4.png
+  (its corner, enlarged four times);
+- images/, for the game (Slate.Press.Art.Images): each launch signature's name as one transparent picture,
+  Press<Name>.png, and the face, PressFace.png and PressFaceCold.png, each 256 px for the press's 80 points.
+It prints each name's lines and size, and the narrowest gap between a name and Auto.
 """
+import json
 import math
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -32,12 +41,20 @@ import hud_finish as hf  # noqa: E402
 
 COOL = 10                                       # seconds (src/shared/Definitions/Actions.luau, RookHaymaker.Cooldown)
 INK = hf.GOLD["ink"]
-BAR_INK = "#1E1B22"                             # the Haymaker bar's ink rim (rook_sheet.PALETTE["Ink"])
-CREAM, EMBER, EMBER_SHADE = "#FFF1CC", "#FFA630", "#C2410E"
+BAR_INK = "#1E1B22"                             # the Haymaker bar's ink (rook_sheet.PALETTE["Ink"])
 FACE = ((0, "#9A3414"), (0.55, "#4E140A"), (1, "#1C0604"))       # the press's face: an ember glow to near-black at its rim
 FACE_COLD = ((0, "#4C4442"), (0.55, "#2A2423"), (1, "#110E0D"))
-SWEEP = "#07090D"
 EDGE = "#FFD04F"
+
+FONT = ("Bangers", "Bangers-Regular.ttf")
+CAP = 0.75            # Bangers' caps over its em (measured in Chrome: 75 of 100)
+LINE = 62             # the widest a line may be, in the face's units (its radius 27): the slash stops well short of Auto
+SQUEEZE = 0.94        # a line may be drawn down to 94% of its own width
+ONE = (17, 19)        # a one-line name's size: at least, at most
+TWO = 18              # a two-line name's size, at most
+LAUNCH = {"Haymaker": "Rook", "Scarf Step": "Kirra", "Lantern Burst": "Pip", "Ground Wire": "Watt", "Held Note": "Lyric"}
+LONGEST = "Hands of the Void"                   # Umbriel's (docs/roster.md), the roster's longest
+BOX = 80                                        # the points round the press's middle each game picture covers
 
 
 def radial(P, stops, cx, cy, r):
@@ -48,122 +65,90 @@ def radial(P, stops, cx, cy, r):
     return f"url(#{gid})"
 
 
-def once(P, key, d):
-    if key not in "".join(P.defs):
-        P.defs.append(d)
-
-
 def pts(q):
     return " ".join(f"{x:.2f},{y:.2f}" for x, y in q)
 
 
-# ---- A, the Haymaker's square, in a box where the face's radius is 27 ------------------------------------------------
-# A first try cut the bars with the chisel's slits: at the press's size they read as a window's grid, the strike as its
-# broken pane. The bars are clean brush strokes now, pointed at their far ends, and the strike breaks out of the square.
-CORNERS = [(-19.0, -10.5), (12.5, -19.0), (19.5, 12.5), (-11.5, 19.0)]   # the square's corners, tilted and leaning back
-OPEN = 1                                                                 # the corner flung open (top right)
-BAR_W = 6.4
+# ---- the name's lines, by Bangers' own widths -------------------------------------------------------------------------
+def measure(texts):
+    """Each text's width in Bangers at one em, from Chrome's own layout of the face."""
+    font = (sf.FONTS / FONT[1]).as_uri()
+    page = (f'<!doctype html><html><head><meta charset="utf-8"><style>@font-face{{font-family:"M";src:url("{font}")}}'
+            f'</style></head><body><pre id="out"></pre><script>document.fonts.load(\'100px "M"\').then(() => {{'
+            f'const c = document.createElement("canvas").getContext("2d"); c.font = \'100px "M"\'; const r = {{}};'
+            f'for (const t of {json.dumps(sorted(texts))}) r[t] = c.measureText(t).width;'
+            f'document.getElementById("out").textContent = JSON.stringify(r);}});</script></body></html>')
+    with tempfile.TemporaryDirectory() as tmp:
+        p = Path(tmp) / "measure.html"
+        p.write_text(page, encoding="utf-8")
+        dom = subprocess.run([sf.CHROME, "--headless=new", "--disable-gpu", "--allow-file-access-from-files",
+                              f"--user-data-dir={Path(tmp) / 'profile'}", "--virtual-time-budget=4000", "--dump-dom",
+                              p.as_uri()], capture_output=True, text=True, timeout=120, check=True).stdout
+    got = json.loads(dom[dom.index('<pre id="out">') + 14:dom.index("</pre>")].replace("&quot;", '"'))
+    return {t: w / 100 for t, w in got.items()}
 
 
-def bar_shape(a, b, w, over=(3.0, 3.0), trim=(0.0, 1.0), point=3.6):
-    """A brush stroke from `a` to `b`, `w` wide, running `over` past each end, drawn to a point at its far end."""
-    dx, dy = b[0] - a[0], b[1] - a[1]
-    n = math.hypot(dx, dy)
-    ux, uy = dx / n, dy / n
-    nx, ny = -uy, ux
-    t0, t1 = -over[0] + trim[0] * n, n * trim[1] + over[1]
-    p = lambda t, s: (a[0] + ux * t + nx * s, a[1] + uy * t + ny * s)
-    return [p(t0, -w / 2), p(t1 - point, -w / 2), p(t1, w * 0.1), p(t1 - point * 0.6, w / 2), p(t0, w / 2)], (t0, t1), p
+def splits(name):
+    words = name.upper().split()
+    return [(" ".join(words[:i]), " ".join(words[i:])) for i in range(1, len(words))]
 
 
-def square(P):
-    sides = []
-    for i in range(4):
-        a, b = CORNERS[i], CORNERS[(i + 1) % 4]
-        trim = (0.0, 0.66) if i == OPEN - 1 else (0.36, 1.0) if i == OPEN else (0.0, 1.0)
-        over = (3.6, 0.0) if i == OPEN - 1 else (0.0, 3.6) if i == OPEN else (3.6, 3.6)
-        sides.append(bar_shape(a, b, BAR_W, over=over, trim=trim))
-    for q, *_ in sides:   # the ink under them all, so the overlaps share one rim
-        P.add(f'<polygon points="{pts(q)}" fill="{BAR_INK}" stroke="{BAR_INK}" stroke-width="3.2" stroke-linejoin="round"/>')
-    for q, (t0, t1), p in sides:
-        P.add(f'<polygon points="{pts(q)}" fill="{EMBER}"/>')
-        # lit toward the strike, shaded away from it: a hard step each side of the ember (the corners run clockwise)
-        P.add(f'<polygon points="{pts([p(t0, -BAR_W / 2), p(t1 - 4, -BAR_W / 2), p(t1 - 4, -1.4), p(t0, -1.4)])}" '
-              f'fill="{EMBER_SHADE}"/>')
-        P.add(f'<polygon points="{pts([p(t0, 0.5), p(t1 - 3.4, 0.5), p(t1 - 1.2, 1.6), p(t0, 2.4)])}" fill="{CREAM}"/>')
-    # its chips, flung from the open corner
-    cx, cy = CORNERS[OPEN]
-    for (dx, dy, s, turn) in ((5.0, -2.0, 3.0, 20), (9.6, -5.6, 2.3, -15)):
-        x, y = cx + dx, cy + dy
-        q = [(x - s, y - s * 0.6), (x + s, y - s * 0.8), (x + s * 0.8, y + s * 0.7), (x - s * 0.9, y + s * 0.5)]
-        P.add(f'<g transform="rotate({turn} {x:.2f} {y:.2f})"><polygon points="{pts(q)}" fill="{EMBER}" '
-              f'stroke="{BAR_INK}" stroke-width="1.3" stroke-linejoin="round"/></g>')
+def layout(name, widths):
+    """The name's lines and size: one line at 17 or more, else two, split where the longer line is shortest."""
+    up = name.upper()
+    one = min(ONE[1], LINE / (widths[up] * SQUEEZE))
+    if one >= ONE[0] or " " not in up:
+        return [up], one
+    w, lines = min((max(widths[a], widths[b]), [a, b]) for a, b in splits(name))
+    return lines, min(TWO, LINE / (w * SQUEEZE))
 
 
-def strike(P, hot=False):
-    """The ram's strike: the punch's line in from the lower left, and a white-hot burst that breaks out of the square
-    through its open corner, ink-rimmed, its rays uneven."""
-    k = 1.12 if hot else 1.0
-    for (x0, y0, x1, y1, w) in ((-30, 22, -4, 3, 3.2), (-30, 12, -7, -1, 2.0), (-24, 30, -2, 8, 2.0)):
-        # each streak tapers from its tail to its head, under the burst
-        dx, dy = x1 - x0, y1 - y0
-        n = math.hypot(dx, dy)
-        nx, ny = -dy / n, dx / n
-        q = [(x0, y0), (x1 + nx * w / 2, y1 + ny * w / 2), (x1 + dx / n * 2, y1 + dy / n * 2), (x1 - nx * w / 2, y1 - ny * w / 2)]
-        P.add(f'<polygon points="{pts(q)}" fill="{CREAM}" stroke="{BAR_INK}" stroke-width="1.6" stroke-linejoin="round"/>')
-    rays = [(10, 19.0), (48, 9.0), (80, 13.0), (118, 7.5), (158, 11.0), (200, 7.5), (240, 10.5), (282, 8.0), (318, 12.5)]
-
-    def star(scale, inner=5.2):
-        q = []
-        for i, (deg, out) in enumerate(rays):
-            a = math.radians(deg - 90)
-            nxt = rays[(i + 1) % len(rays)][0] + (360 if i == len(rays) - 1 else 0)
-            m = math.radians((deg + nxt) / 2 - 90)
-            q += [(math.cos(a) * out * scale * k, math.sin(a) * out * scale * k),
-                  (math.cos(m) * inner * scale * k, math.sin(m) * inner * scale * k)]
-        return q
-    P.add(f'<circle r="{17 * k:.1f}" fill="{radial(P, ((0, "#FFF6D8"), (0.4, "#FFB848"), (1, "#FF7A1E")), 0, 0, 17 * k)}" '
-          f'fill-opacity="0.6" filter="url(#glow)"/>')
-    P.add(f'<polygon points="{pts(star(1.0))}" fill="{EMBER}" stroke="{BAR_INK}" stroke-width="2.6" stroke-linejoin="round"/>')
-    P.add(f'<polygon points="{pts(star(0.7, 4.2))}" fill="{CREAM}"/>')
-    P.add(f'<circle r="{4.6 * k:.2f}" fill="#FFFFFF"/>')
+def slash_shape(lines, size, widths):
+    """The ember slash under the lines: as wide as the widest line and a little more, its ends brushed on a slant."""
+    wide = max(min(widths[t] * size, LINE) for t in lines)
+    hw = min(wide / 2 + 3.5, LINE / 2 + 3)
+    hh = 6.4 if len(lines) == 1 else 10.6
+    return [(-hw - 2, -hh + 1), (hw - 2, -hh - 2), (hw + 2, hh - 1), (-hw + 2, hh + 1)], hw, hh
 
 
-def art_a(P, cx, cy, ri, state):
+TURN = -9   # the name's slant, degrees
+
+
+def lettering(P, cx, cy, ri, name, widths, hot=False):
+    lines, size = layout(name, widths)
     k = ri / 27
-    cid = P.uid("c")
-    P.defs.append(f'<clipPath id="{cid}"><circle cx="{cx}" cy="{cy}" r="{ri:.2f}"/></clipPath>')
-    P.add(f'<g clip-path="url(#{cid})"><g transform="translate({cx},{cy}) scale({k:.4f})">')
-    square(P)
-    P.add('<g transform="translate(0.5,-0.5)">')
-    strike(P, hot=state == "firing")
-    P.add("</g></g></g>")
-
-
-# ---- B, the name, lettered ------------------------------------------------------------------------------------------------
-NAME = "HAYMAKER"
-B_FACE = ("Bangers", "Bangers-Regular.ttf")
-
-
-def art_b(P, cx, cy, ri, state):
-    k = ri / 27
-    P.add(f'<g transform="translate({cx},{cy}) scale({k:.4f}) rotate(-9)">')
-    # one ember slash behind the word, brushed: its ends cut on a slant
-    slash = [(-38, -3.5), (35, -9.5), (39, 4.5), (-35, 9.0)]
+    P.add(f'<g transform="translate({cx},{cy}) scale({k:.4f}) rotate({TURN})">')
+    slash, hw, hh = slash_shape(lines, size, widths)
     P.add(f'<polygon points="{pts(slash)}" fill="{BAR_INK}" stroke="{BAR_INK}" stroke-width="2.6" stroke-linejoin="round"/>')
     P.add(f'<polygon points="{pts(slash)}" fill="{P.lin(("#FF8A2A", "#D2380F"))}"/>')
-    P.add(f'<polygon points="{pts([(-36, -2.2), (34.5, -8.2), (35, -6.2), (-35.5, -0.6)])}" fill="#FFC46A"/>')
-    hot = state == "firing"
+    P.add(f'<polygon points="{pts([(-hw - 0.5, -hh + 2.3), (hw - 1.6, -hh - 0.6), (hw - 1.3, -hh + 1.4), (-hw, -hh + 4.0)])}" '
+          f'fill="#FFC46A"/>')
+    cap, lead = CAP * size, 0.2 * size
+    bases = [cap / 2] if len(lines) == 1 else [-lead / 2, cap + lead / 2]
     fill = P.lin(("#FFFFFF", "#FFFFFF", "#FFF0B0") if hot else ("#FFFFFF", "#FFF2C2", "#FFC845"))
-    common = (f'x="0" y="7.6" font-family="{B_FACE[0]}" font-size="21" text-anchor="middle" textLength="70" '
-              f'lengthAdjust="spacingAndGlyphs" stroke-linejoin="round"')
-    P.add(f'<text {common} dx="1.4" dy="2.0" fill="{BAR_INK}" stroke="{BAR_INK}" stroke-width="4.4">{NAME}</text>')
-    P.add(f'<text {common} fill="{fill}" stroke="{BAR_INK}" stroke-width="3.6" paint-order="stroke">{NAME}</text>')
+    for text, y in zip(lines, bases):
+        natural = widths[text] * size
+        fit = f' textLength="{LINE}" lengthAdjust="spacingAndGlyphs"' if natural > LINE else ""
+        common = (f'x="0" y="{y:.2f}" font-family="{FONT[0]}" font-size="{size:.2f}" text-anchor="middle"{fit} '
+                  f'stroke-linejoin="round"')
+        P.add(f'<text {common} dx="{0.067 * size:.2f}" dy="{0.095 * size:.2f}" fill="{BAR_INK}" stroke="{BAR_INK}" '
+              f'stroke-width="{0.21 * size:.2f}">{sf.esc(text)}</text>')
+        P.add(f'<text {common} fill="{fill}" stroke="{BAR_INK}" stroke-width="{0.171 * size:.2f}" '
+              f'paint-order="stroke">{sf.esc(text)}</text>')
     P.add("</g>")
 
 
-# ---- the press, with the new cooldown -----------------------------------------------------------------------------------
-def press(P, art, state="ready", left=None, key=False):
+def reach(name, widths):
+    """The farthest right, in the frame's points, the name's slash comes: its corners turned with it."""
+    cx, cy, r = hf.SIG
+    k = (r - 6.1) / 27
+    lines, size = layout(name, widths)
+    t = math.radians(TURN)
+    return max(cx + k * (x * math.cos(t) - y * math.sin(t)) for x, y in slash_shape(lines, size, widths)[0]) + 1.3 * k
+
+
+# ---- the press, with its cooldown -------------------------------------------------------------------------------------
+def press(P, name, widths, state="ready", left=None, key=False):
     cx, cy, r = hf.SIG
     ri = r - 6.1
     cooling = state in ("cooling", "last")
@@ -185,41 +170,28 @@ def press(P, art, state="ready", left=None, key=False):
         fam = dict(hf.GOLD, rim=("#FFFFFF", "#FFF0B0"))
     else:
         fam = hf.GOLD
-    face = radial(P, FACE_COLD if cooling else FACE, cx - 3, cy - 4, ri * 1.15)
-    P.press(cx - r, cy - r, 2 * r, 2 * r, r, fam, face, rings=(1.2, 2.0, 0.9, 2.0), grain=0.1)
-    if cooling:
-        once(P, 'id="cold"', '<filter id="cold"><feColorMatrix type="saturate" values="0.1"/></filter>')
-        share = 1 - left / COOL                  # the charge back, clockwise from the top
-        a = 2 * math.pi * share
+    P.press(cx - r, cy - r, 2 * r, 2 * r, r, fam, radial(P, FACE_COLD if cooling else FACE, cx - 3, cy - 4, ri * 1.15),
+            rings=(1.2, 2.0, 0.9, 2.0), grain=0.1)
+    if cooling:   # the word steps out; the face's ember comes back, clockwise from the top, behind a gold edge
+        a = 2 * math.pi * (1 - left / COOL)
         R1 = ri + 1
-        ex, ey = cx + ri * math.sin(a), cy - ri * math.cos(a)
-        fx, fy = cx + R1 * math.sin(a), cy - R1 * math.cos(a)
-        face_clip, back, still = P.uid("c"), P.uid("c"), P.uid("c")
-        # cooling, everything stays on the face, the name's ends too; what has come back, and what is still to come
-        P.defs.append(f'<clipPath id="{face_clip}"><circle cx="{cx}" cy="{cy}" r="{ri:.2f}"/></clipPath>')
+        back = P.uid("c")
         P.defs.append(f'<clipPath id="{back}"><path d="M{cx},{cy} L{cx},{cy - R1:.2f} A{R1:.2f} {R1:.2f} 0 '
-                      f'{1 if share > 0.5 else 0} 1 {fx:.2f},{fy:.2f} Z"/></clipPath>')
-        P.defs.append(f'<clipPath id="{still}"><path d="M{cx},{cy} L{fx:.2f},{fy:.2f} A{R1:.2f} {R1:.2f} 0 '
-                      f'{1 if share < 0.5 else 0} 1 {cx},{cy - R1:.2f} Z"/></clipPath>')
-        P.add(f'<g clip-path="url(#{face_clip})"><g clip-path="url(#{still})"><g filter="url(#cold)" opacity="0.4">')
-        art(P, cx, cy, ri, state)
-        P.add(f'</g><circle cx="{cx}" cy="{cy}" r="{ri:.2f}" fill="{SWEEP}" fill-opacity="0.35"/></g>')
-        P.add(f'<g clip-path="url(#{back})" opacity="0.8">')
-        art(P, cx, cy, ri, state)
-        P.add("</g>")
-        P.add(f'<line x1="{cx}" y1="{cy}" x2="{ex:.2f}" y2="{ey:.2f}" stroke="{EDGE}" stroke-width="1.8" '
-              f'stroke-linecap="round"/></g>')
+                      f'{1 if a > math.pi else 0} 1 {cx + R1 * math.sin(a):.2f},{cy - R1 * math.cos(a):.2f} Z"/></clipPath>')
+        P.add(f'<g clip-path="url(#{back})"><circle cx="{cx}" cy="{cy}" r="{ri:.2f}" '
+              f'fill="{radial(P, FACE, cx - 3, cy - 4, ri * 1.15)}" fill-opacity="0.9"/></g>')
+        P.add(f'<line x1="{cx}" y1="{cy}" x2="{cx + ri * math.sin(a):.2f}" y2="{cy - ri * math.cos(a):.2f}" stroke="{EDGE}" '
+              f'stroke-width="1.8" stroke-linecap="round"/>')
         if state == "last":   # the last second: the face's rim lit, the count gold
-            P.add(f'<circle cx="{cx}" cy="{cy}" r="{ri - 0.9:.2f}" fill="none" stroke="{EDGE}" stroke-width="1.8" '
-                  f'stroke-opacity="0.95"/>')
+            P.add(f'<circle cx="{cx}" cy="{cy}" r="{ri - 0.9:.2f}" fill="none" stroke="{EDGE}" stroke-width="1.8"/>')
             P.add(f'<circle cx="{cx}" cy="{cy}" r="{ri - 0.9:.2f}" fill="none" stroke="{EDGE}" stroke-width="4" '
                   f'stroke-opacity="0.5" filter="url(#glow)"/>')
         count = P.lin(("#FFFFFF", "#FFE27A", "#FFB43C")) if state == "last" else "#FFFFFF"
         P.word(cx, cy + 10.8, str(left), 31, fill=count, stroke=INK, anchor="middle", ratio=0.2)
     else:
-        art(P, cx, cy, ri, state)
+        lettering(P, cx, cy, ri, name, widths, hot=firing)
         if pop:
-            P.add(f'<circle cx="{cx}" cy="{cy}" r="{ri:.2f}" fill="#FFFFFF" fill-opacity="0.3"/>')
+            P.add(f'<circle cx="{cx}" cy="{cy}" r="{ri:.2f}" fill="#FFFFFF" fill-opacity="0.22"/>')
     if scale != 1:
         P.add("</g>")
     if key:   # on a keyboard: the key on a chip at the press's top left
@@ -229,60 +201,108 @@ def press(P, art, state="ready", left=None, key=False):
         P.word(kx + ks / 2, ky + 11.7, "R", 10.5, anchor="middle", stroke=T["steel"]["ink"], ratio=0.2)
 
 
-TARGETS = {"A": ("A, the skill's own art", art_a), "B": ("B, the name alone", art_b)}
-CELLS = [("ready", "ready", None), ("cooling, 5 s left", "cooling", 5), ("the last second", "last", 1),
-         ("ready again: the pop", "pop", None), ("firing", "firing", None), ("ready, on a keyboard", "ready", None)]
-
-
-def states(T, plate):
-    cw, ch, gap, side, top = 128, 104, 6, 120, 20
+# ---- the sheets -----------------------------------------------------------------------------------------------------------
+def grid(T, plate, rows, cols, widths):
+    """Rows (label, name); columns (label, state, seconds left, on a keyboard); each cell the press over the same ground."""
+    cw, ch, gap, side, top = 128, 104, 6, 168, 20
     P = hf.Page(T)
     uri = Path(plate).resolve().as_uri()
-    sw, sh = side + len(CELLS) * (cw + gap) + gap, top + len(TARGETS) * (ch + gap) + gap
+    sw, sh = side + len(cols) * (cw + gap) + gap, top + len(rows) * (ch + gap) + gap
     P.add(f'<rect width="{sw}" height="{sh}" fill="#15191F"/>')
-    for j, (name, *_) in enumerate(CELLS):
+    for j, (label, *_) in enumerate(cols):
         P.add(f'<text x="{side + gap + j * (cw + gap) + cw / 2}" y="{top - 6}" font-family="Builder Sans" font-size="10" '
-              f'fill="#E8EDF4" text-anchor="middle">{sf.esc(name)}</text>')
-    for i, (label, art) in enumerate(TARGETS.values()):
+              f'fill="#E8EDF4" text-anchor="middle">{sf.esc(label)}</text>')
+    for i, (label, name) in enumerate(rows):
         y = top + gap + i * (ch + gap)
         P.add(f'<text x="{side - 4}" y="{y + ch / 2 + 3}" font-family="Builder Sans" font-size="10" fill="#E8EDF4" '
               f'text-anchor="end">{sf.esc(label)}</text>')
-        for j, (name, state, left) in enumerate(CELLS):
+        for j, (_, state, left, key) in enumerate(cols):
             keep, P.parts = P.parts, []
             P.add(f'<image href="{uri}" x="0" y="0" width="{hf.W}" height="{hf.H}"/>')
-            press(P, art, state, left, key="keyboard" in name)
+            press(P, name, widths, state, left, key)
             inner, P.parts = "".join(P.parts), keep
             P.add(f'<svg x="{side + gap + j * (cw + gap)}" y="{y}" width="{cw}" height="{ch}" viewBox="-17 108 {cw} {ch}">'
                   f'{inner}</svg>')
     return P.svg(sw, sh), sw, sh
 
 
+def enlarge(src, out, crop=None):
+    vf = (f"crop={crop}," if crop else "") + "scale=iw*4:ih*4:flags=neighbor"
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(src), "-vf", vf, str(out)], check=True)
+
+
+def shoot_clear(svg, css, out, w, h, scale):
+    """A picture with a clear ground, for the game."""
+    page = (f'<!doctype html><html><head><meta charset="utf-8"><style>{css} html,body{{margin:0;background:transparent}}'
+            f' svg{{display:block;width:{w}px;height:{h}px}}</style></head><body>{svg}</body></html>')
+    with tempfile.TemporaryDirectory() as tmp:
+        p = Path(tmp) / "page.html"
+        p.write_text(page, encoding="utf-8")
+        subprocess.run([sf.CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars", "--allow-file-access-from-files",
+                        "--default-background-color=00000000", f"--force-device-scale-factor={scale}",
+                        f"--user-data-dir={Path(tmp) / 'profile'}", f"--window-size={w},{h}", "--virtual-time-budget=4000",
+                        f"--screenshot={out}", p.as_uri()], check=True, capture_output=True, timeout=120)
+
+
+def images(T, css, out, widths):
+    """Slate.Press.Art.Images: each name alone, and the two faces, each over BOX points round the press's middle."""
+    cx, cy, r = hf.SIG
+    ri = r - 6.1
+    out.mkdir(parents=True, exist_ok=True)
+    view = f'viewBox="{cx - BOX / 2} {cy - BOX / 2} {BOX} {BOX}"'
+    for name in LAUNCH:
+        P = hf.Page(T)
+        lettering(P, cx, cy, ri, name, widths)
+        shoot_clear(P.svg(BOX, BOX).replace(f'viewBox="0 0 {BOX} {BOX}"', view), css,
+                    out / f"Press{name.replace(' ', '')}.png", BOX, BOX, 256 / BOX)
+    for stem, stops in (("PressFace", FACE), ("PressFaceCold", FACE_COLD)):
+        P = hf.Page(T)
+        P.add(f'<circle cx="{cx}" cy="{cy}" r="{ri:.2f}" fill="{radial(P, stops, cx - 3, cy - 4, ri * 1.15)}"/>')
+        shoot_clear(P.svg(BOX, BOX).replace(f'viewBox="0 0 {BOX} {BOX}"', view), css, out / f"{stem}.png", BOX, BOX,
+                    256 / BOX)
+
+
 def main():
     out, plate = Path(sys.argv[1]).resolve(), sys.argv[2]
     out.mkdir(parents=True, exist_ok=True)
     T = hf.TAKES["F2"]       # research's pick (d11942a3)
-    css = hf.faces() + f'@font-face{{font-family:"{B_FACE[0]}";src:url("{(sf.FONTS / B_FACE[1]).as_uri()}")}}'
-    svg, sw, sh = states(T, plate)
+    css = hf.faces() + f'@font-face{{font-family:"{FONT[0]}";src:url("{(sf.FONTS / FONT[1]).as_uri()}")}}'
+    names = [*LAUNCH, LONGEST]
+    widths = measure({t for n in names for t in [n.upper(), *[s for pair in splits(n) for s in pair]]})
+    for n in names:
+        lines, size = layout(n, widths)
+        print(f"{n}: {' / '.join(lines)} at {size:.1f} (caps {CAP * size:.1f} points; at the smallest phone "
+              f"{CAP * size * (hf.SIG[2] - 6.1) / 27 * 568 / hf.W:.1f} px)")
+    print(f"the narrowest gap to Auto: {hf.AUTO[0] - max(reach(n, widths) for n in names):.1f} points")
+
+    cols = [("ready", "ready", None, False), ("cooling, 5 s left", "cooling", 5, False), ("the last second", "last", 1, False),
+            ("ready again: the pop", "pop", None, False), ("firing", "firing", None, False),
+            ("ready, on a keyboard", "ready", None, True)]
+    svg, sw, sh = grid(T, plate, [("HAYMAKER (Rook)", "Haymaker")], cols, widths)
     sf.shoot(sf.html(svg, css, sw, sh), out / "press_states.png", sw, sh, scale=3)
+    rows = [(f"{n} ({who})", n) for n, who in LAUNCH.items()] + [(f"{LONGEST} (the longest)", LONGEST)]
+    svg, sw, sh = grid(T, plate, rows, [cols[0], cols[1], cols[4]], widths)
+    sf.shoot(sf.html(svg, css, sw, sh), out / "press_names.png", sw, sh, scale=3)
+    svg, sw, sh = grid(T, plate, rows, [cols[0]], widths)
+    small = round(sw * 568 / hf.W), round(sh * 568 / hf.W)
+    sf.shoot(sf.html(svg, css, sw, sh, zoom=568 / hf.W), out / "names_small.png", *small, scale=1)
+    enlarge(out / "names_small.png", out / "press_names_phone_x4.png")
+    (out / "names_small.png").unlink()
+
     keep = hf.signature
     try:
-        for k, (_, art) in TARGETS.items():
-            hf.signature = lambda P, state="ready", key=False, art=art: press(P, art, state, key=key)
-            svg = hf.fight(T, plate)
-            close = svg.replace(f'viewBox="0 0 {hf.W} {hf.H}"', 'viewBox="0 36 560 176"').replace(
-                f'width="{hf.W}" height="{hf.H}"', 'width="560" height="176"', 1)
-            sf.shoot(sf.html(close, css, 560, 176), out / f"{k}_close.png", 560, 176, scale=3)
-            sf.shoot(sf.html(svg, css, hf.W, hf.H), out / f"{k}_fight.png", hf.W, hf.H, scale=hf.SCALE)
-            sf.shoot(sf.html(svg, css, hf.W, hf.H, zoom=568 / hf.W), out / f"{k}_fight_small.png", 568,
-                     round(hf.H * 568 / hf.W), scale=1)
-            print("drew", k)
+        hf.signature = lambda P, state="ready", key=False: press(P, "Haymaker", widths, state, key=key)
+        svg = hf.fight(T, plate)
     finally:
         hf.signature = keep
-    corner = "crop=150:110:0:58,scale=600:440:flags=neighbor"   # the press and Auto on the 568-wide frame, x4
-    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(out / "A_fight_small.png"), "-i", str(out / "B_fight_small.png"),
-                    "-filter_complex", f"[0]{corner}[a];[1]{corner}[b];[a][b]hstack", str(out / "phone_pair_x4.png")],
-                   check=True)
-    print("drew phone_pair_x4")
+    close = svg.replace(f'viewBox="0 0 {hf.W} {hf.H}"', 'viewBox="0 36 560 176"').replace(
+        f'width="{hf.W}" height="{hf.H}"', 'width="560" height="176"', 1)
+    sf.shoot(sf.html(close, css, 560, 176), out / "close.png", 560, 176, scale=3)
+    sf.shoot(sf.html(svg, css, hf.W, hf.H), out / "fight.png", hf.W, hf.H, scale=hf.SCALE)
+    sf.shoot(sf.html(svg, css, hf.W, hf.H, zoom=568 / hf.W), out / "fight_small.png", 568, round(hf.H * 568 / hf.W), scale=1)
+    enlarge(out / "fight_small.png", out / "phone_x4.png", crop="150:110:0:58")
+    images(T, css, out / "images", widths)
+    print("drew the press")
 
 
 if __name__ == "__main__":

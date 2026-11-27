@@ -56,7 +56,11 @@ return {
 			-- two to one list, and never one of ours'.
 			local ids: { [number]: string } = {}
 			for layer, takes in Cues.Takes do
-				t.Check(`{layer}: a layer plays it`, used[layer] == true)
+				-- or it's a TR64 moment's spare (Back<Moment>), there to swap in for its played pick (Pick<Moment>) if a claim
+				-- silences the pick
+				local spare = string.match(layer, "^Back(.+)$")
+				local spareOf = spare ~= nil and table.find(Cues.Moments, spare) ~= nil and used[`Pick{spare}`] == true
+				t.Check(`{layer}: a layer plays it, or it's a played moment pick's spare`, used[layer] == true or spareOf)
 				local inList: { [number]: boolean } = {}
 				for k, take in takes do
 					t.Check(`{layer} {k}: an asset id`, take.Id > 0 and take.Id % 1 == 0)

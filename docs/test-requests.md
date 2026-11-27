@@ -1220,6 +1220,11 @@ The director, 2026-11-19, 02:05 to 02:07 by the clock, then yes to the restateme
 - **Tested:** offline 28,938/0 at that commit; the type check 0 new, 11 known.
 - **NOT VERIFIED:** a real trip between the published places, and the Festival place's self-test.
 
+**The director's bug, 2026-11-27: no trip to Lantern Row from the live game.** The cause, the director's word by 12:31: the published Festival place was older than the save's version, which moved on 2026-11-24 (5cb0b9fc), so its server turned the save away (`DataService`: "This server is older than your save"). The director published both places from today's code. The director, 12:31: "i published both place. just work no need for me to test".
+- **Fixed:** by the publish. The save's version is unchanged since 5cb0b9fc, so the trip home loads the save as well.
+- **NOT VERIFIED:** a live trip there and back (the profile's load, progress kept, the way home). Nobody has played one; it closes on the first.
+- **For later publishes:** both places always go out together, from the same code.
+
 ## TR46. The Tower's follow-up: Retry and Home, the heal cap told once, the week's board, the week's foes (Faber, the follow-up's item 7)
 
 Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-plan.md`, "The design review's follow-up"; the seed research's tier 2, taken). Research's answers to Faber's four questions came at 03:43 and are recorded below as research gave them.

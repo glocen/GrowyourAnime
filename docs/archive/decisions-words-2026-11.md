@@ -440,6 +440,9 @@ The director's words from 2026-11-27, 14:30 on, newest on top, in the table's ow
 
 | Date | The words | They cover |
 |---|---|---|
+| 2026-11-27, by 23:15 | "1) yes 2) new model. work with codex and gemini" | Rook's new make (AR59) installed tonight; Pip ships in her new make (AR63); Codex and Gemini work on the launch |
+| 2026-11-27, by 23:15 | "if we rly cant do art we  will use gemini and/or chatgpt they can imagine art we js need to prompt it well and you will do it" | PROPOSED change to rule 2: AI-generated art from research's prompts where our own tools can't reach the bar. Waits on the director's yes to research's restatement |
+| 2026-11-27, by 23:15 | "and we will launch whenever it ready" | the launch date: no fixed Sunday; the game launches when it's ready at the bar (Lantern Row, the keeper's zone and the main map overhauled included) |
 | 2026-11-27, by 23:13 | "why it lantern row is still the old map it should be changed and overhauled and the lantern boss dont have a boss zone for him it plain same for the main map" | Lantern Row's map, the keeper's fight zone and the main map: each overhauled (the keeper today fights on a plain disc) |
 | 2026-11-27, by 23:13 | "we also need to improve the hud left" | the HUD's left cluster under the lead plate (the signature dial, AUTO, the eye): AR74 |
 | 2026-11-27, by 23:13 | "fuck  those old model why old rook and pip i thought we changed" | the game page images: no old Rook or Pip; asked why their redesigns aren't in the game |

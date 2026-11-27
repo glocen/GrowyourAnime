@@ -33,14 +33,20 @@ CARD = (400, 225)                     # about the store's card on a phone (resea
 GRADE = dict(exposure=1.08, contrast=1.18, sat=1.28, bloom=0.35, cool=0.0, warm=0.06, vignette=0.32, violet=0.3)
 LOGO = dict(size=1.45, margin=(64, 58), grow=("Bangers", 60, 3, 0.86), bright_i=True)
 # the takes, once Faber's captures are in build/captures/ar70/: key -> capture, crop (cx, cy, w), corner, grade changes
+# the staged shot 1 is lit by day, so its grade holds the light and takes more colour (`DAY`)
+DAY = dict(exposure=0.98, sat=1.45, contrast=1.25)
 TAKES = {
-    # shot 1 (Faber, 2026-11-27, 21:36): Pip's Lantern Burst held at its peak (1.1 s), on Lantern Row at dusk
-    "fight": dict(capture="build/captures/ar70/shot1_pip_lanternburst_peak_a_00.png", box=(0.5, 0.5, 1.0), corner="br"),
-    "fight_close": dict(capture="build/captures/ar70/shot1_pip_lanternburst_peak_b_00.png", box=(0.5, 0.5, 1.0),
-                        corner="br"),
+    # the staged shot 1 (Faber, 2026-11-27, 21:57): a scripted camera on the foes' side, low, at the brightest dusk
+    # or day; the game's own camera (21:36) was read WORSE by research at 21:44 (no face, no readable hit, black sky)
+    "fight_hit": dict(capture="build/captures/ar70/shot1_staged_rook_hit_dusk00.png", box=(0.46, 0.47, 0.72),
+                      corner="br", grade=DAY),
+    "fight_face": dict(capture="build/captures/ar70/shot1_staged_rook_step_dusk00.png", box=(0.5, 0.575, 0.75),
+                       corner="br", grade=dict(DAY, exposure=1.15, contrast=1.15)),
+    "fight_pip": dict(capture="build/captures/ar70/shot1_staged_pip_burst_day00.png", box=(0.5, 0.5, 1.0),
+                      corner="br", grade=DAY),
 }
-TITLES = {"fight": "the fight, the street", "fight_close": "the fight, close", "shard": "the shard",
-          "bays": "the bays at work"}
+TITLES = {"fight_hit": "Rook, the hit", "fight_face": "Rook, the face", "fight_pip": "Pip, the burst",
+          "shard": "the shard", "bays": "the bays at work"}
 
 
 def read(path):
@@ -159,7 +165,7 @@ def sheet(out, refs, beside_out):
              "king_legacy"]
     others = sorted(f.stem for f in refs.glob("*.png") if f.stem not in anime)
     order = [(refs / f"{n}.png", n.replace("_", " ").title()) for n in anime + others]
-    for i, k in zip((3, 9, 16, 22), keys):
+    for i, k in zip((3, 9, 16, 22, 27), keys):
         order.insert(i, (out / f"thumb_{k}.png", f"Grow your Anime: {TITLES[k]}"))
     beside_out.mkdir(parents=True, exist_ok=True)
     cols = 6

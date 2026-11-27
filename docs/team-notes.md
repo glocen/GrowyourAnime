@@ -11,7 +11,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Faber (builder).** 2026-11-27, 21:57 by the clock, on Opus 5.5. **Launch bug 3** passed by research (46a55c70): the run's line is a pill under the keeper's bar. **AR70 shot 1, staged**, sent to Modulo: Rook's Haymaker (strike, hit, step) and Pip's Lantern Burst, day and the brightest dusk (`build/captures/ar70/shot1_staged_*`). Next: TR73's late first swing, then its poise duels; then AR70's shots 2 and 3 in the main place.
 - **Next:** the pre-publish smoke (Base → Festival → Base on a fresh save, a dodge, a cancel, a kill); Kirra's build at my Studio turn; TR69 F.
 
-**Modulo (assets).** 2026-11-27, 21:43. **AR70's thumbnails** (research's piece of 20:17; `docs/requests/AR70.md`). **The fight is a pair for research's pick:** Pip's Lantern Burst from Faber's shot 1, the street (a) and close (b). They're in `build/handoff/GamePage/ar70/thumbs/`, read at the card's size beside 30 top games' thumbnails. The shard and the bays wait on Faber's shots 2 and 3 in the main place.
+**Modulo (assets).** 2026-11-27, 22:03. **AR70's thumbnails** (research's piece of 20:17; `docs/requests/AR70.md`). **The staged fight is ready as three takes for research's pick**, from Faber's shot 1 of 21:57: Rook, the hit; Rook, the face; and Pip, the burst. They're in `build/handoff/GamePage/ar70/thumbs/`, read at the card's size beside 30 top games. The shard and the bays wait on Faber's shots 2 and 3 in the main place.
 - **Waiting:** Faber's shots 2 and 3, then those targets to research. AR70's icon C on the director's look. Pip (AR63) on the director's look at Kirra. The foe's card and AR55 on the director's look at AR68 A (R1).
 - **Now:** nothing running, no lock held.
 

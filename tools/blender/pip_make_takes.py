@@ -291,7 +291,9 @@ def glowing(obj, strength):
 
 # --- A, the first-year -------------------------------------------------------------------------------------------------
 
-def take_a(joints, folder):
+def take_a(joints, folder, face_draw=None, fitted=False, lamp=None):
+    """`face_draw(paint, skin)`: his own face, in place of the kit's; `fitted`: the hair laid on a scalp fitted to his
+    head (Kirra's, AR60), its rim tucked in; `lamp()`: the lantern's pieces, in place of the takes' (pip_make.py)."""
     skin, cream, green, ochre, brown, boot = "#F3D2B8", "#EEE4CD", "#2F5D49", "#D69A3C", "#4A3428", "#5A3E2E"
     edge = tone(cream, 0.55)
     b = blocks_of({"torso": cream, "rs": cream, "ls": cream, "rh": brown, "lh": brown})
@@ -333,16 +335,19 @@ def take_a(joints, folder):
     legs(b, brown, boot, 44)
 
     head = am.Head(skin)
-    face(head, dict(skin=skin, iris="#E08A2A", eye_w=0.34, eye_h=0.25, eye_x=0.27, eye_y=0.5, tilt=-0.01, shut=0.0,
-                    brow_y=0.74, brow_tilt=-0.02, brow="#8A3E1C", mouth=[(-0.04, 0.236), (0.0, 0.226), (0.045, 0.24)]))
-    hair = am.Hair("#8E3A1B", "#F2A260", seed=47, band=(0.42, 0.1, 0.25))
+    if face_draw:
+        face_draw(head.paint, skin)
+    else:
+        face(head, dict(skin=skin, iris="#E08A2A", eye_w=0.34, eye_h=0.25, eye_x=0.27, eye_y=0.5, tilt=-0.01, shut=0.0,
+                        brow_y=0.74, brow_tilt=-0.02, brow="#8A3E1C", mouth=[(-0.04, 0.236), (0.0, 0.226), (0.045, 0.24)]))
+    hair = am.Hair("#8E3A1B", "#F2A260", seed=47, band=(0.42, 0.1, 0.25), **({"scalp": am.HEAD_EGG} if fitted else {}))
     # the mass under the hat, its own points spilling below the brim: a fringe across the brow, locks at the temples
     hair.mass(am.hairline(front=4.92, temple=4.56, nape=4.28), (0, 4), opening=0.1, seed=47,
               tips=((180, 20, 12), (152, 14, 14), (208, 14, 14), (124, 14, 12), (236, 14, 12), (84, 18, 18), (-84, 18, 18),
                     (0, 13, 19), (-26, 12, 17), (24, 12, 18), (-50, 11, 13), (48, 11, 13)),
-              lift=0.05, off=(0.04, 0.1))
+              lift=0.05, off=(0.04, 0.1), **(dict(ease=2.0, tuck=0.09) if fitted else {}))
     top = hat((0.0, -0.06, 5.0), 0.8, 1.22, 1.3, green, ochre, tip_back=0.95, pitch=9.0)
-    return figure(joints, folder, b, head, hair, [top, *lantern()])
+    return figure(joints, folder, b, head, hair, [top, *(lamp() if lamp else lantern())])
 
 
 # --- B, the prodigy ----------------------------------------------------------------------------------------------------

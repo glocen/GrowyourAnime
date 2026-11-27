@@ -296,7 +296,7 @@ Written by `tools/fx/shade_tells.py`, from the kit's uploaded meshes and images 
 - [AR60](requests/AR60.md) · Kirra, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after) · 301 lines · see the piece
 - [AR61](requests/AR61.md) · The hit sparks: the shared kit's landed hit, by rung (Scintilla, then Faber's hook) · 133 lines · 
 - [AR62](requests/AR62.md) · The screens' redo: their colours, their light and their art (research's audit, then Modulo's directions, then Faber, a screen at a time) · 683 lines · see the piece
-- [AR63](requests/AR63.md) · Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after) · 28 lines · see the piece
+- [AR63](requests/AR63.md) · Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after) · 47 lines · see the piece
 - [AR64](requests/AR64.md) · The Voidkin's hair, a new way (Modulo, for research's pick and the director's look; then Rook, Kirra and Pip) · 61 lines · see the piece
 - [AR65](requests/AR65.md) · The base, simpler: a redo (research's direction on the director's freedom; Faber's cut pass, then Modulo's targets, then the build) · 161 lines · implemented, tested (Faber's case, 92 of 92), and visually reviewed, research's pass included. Not director-accepted.
 - [AR66](requests/AR66.md) · Clips follow the model (Modulo's audit and targets, research's feel line and pick, then Faber's install) · 144 lines · made and self-reviewed (the audit, the probe, and the build beside the targets). Content check before upload: PASS. The reach after the stand while she lies fl…

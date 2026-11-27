@@ -5633,6 +5633,7 @@ Sheet: `build/handoff/Pip/takes/pip_takes.png` (sha1 `0e3bfd08`), with its parts
 - **Not B:** the sharpest anime face, but at 64 px a white jacket with no class read, and it drops the hat. **Not C:** reads as a delivery boy, a job costume.
 - **Must-fix at the finish:** the lantern and its flame read at 64 px, beside the hat (class: what the row names reads at the game's size).
 - The director's look comes next. They can overrule.
+- **Released** (research's call, on the director's word of 2026-11-27, 03:47, `docs/decisions.md`): AR62's style-frame hold no longer holds Pip. Modulo starts it once Kirra's hair passes the director's look, with that fitted hair.
 
 ## AR64. The Voidkin's hair, a new way (Modulo, for research's pick and the director's look; then Rook, Kirra and Pip)
 

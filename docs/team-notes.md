@@ -45,9 +45,9 @@ For Faber:
 8. **The slam's rule (TR44) and tap to move** are played together: tap to move is on the pad (Faber, 728b88e0), and A's walk-out no longer pulls the lead off while it's on. Judge both in one sitting.
 9. **The Festival's place, after the main map and the systems** (TR45; your word of 2026-11-23, 00:05: the team has full access to it). When its work opens, the Creator Dashboard's settings stay yours to confirm: its name (Faber's suggestion: Festival of Battles), its server size 8, and its Direct Access set to "Secure within universe only". Then the id goes into `CLAUDE.md`'s "Places".
 10. **Sailor Piece's UI, for the UI's complete overhaul:** 10 to 20 screenshots in `build/reference/inbox/` (its fight HUD, menus, an inventory, a reward screen, a few buttons up close), or 15 minutes live with Faber on your account. Anime Crusaders X's study is in (`docs/research/anime-crusaders-ui-surface.md`).
-11. **Turing v0's restatement** (research's 12 lines in chat, 2026-11-27; `build/scratch/quaestor/turing/turing_v0.md`): yes or no. Nothing goes into AGENTS.md before it.
-12. **The power timeouts** set to "never" on 2026-11-23: keep them or put them back.
-13. **Pip's finish (AR63):** AGENTS.md's style-frame rule holds every new Voidkin piece until AR62's pick, and AR62 is stopped. Release Pip in Rook's and Kirra's make, or keep it held until AR68's pick?
+11. ~~Turing v0's restatement~~: answered, research's call (03:47): yes, written in tomorrow after Gemini's u3 check (`docs/decisions.md`).
+12. ~~The power timeouts~~: answered, they stay "never" (03:47).
+13. ~~Pip's finish~~: answered, research's call (03:47): released, and it starts once Kirra's hair passes the director's look (AR63).
 
 ### Notices
 

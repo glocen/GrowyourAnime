@@ -142,7 +142,7 @@ Seeds for how long each ground takes a player who keeps a 70% build ("on budget"
 - **The rewards** (research's fit, TR29), with only hard floors paying, but for floor 5's chest, sure on the account's first win of it (a7cbd28, 2026-11-18):
   - **Credits:** half Lantern Row's an hour at levels 10 to 15, and a third at level 5. The Tower pays the gear; the grounds pay the Credits and experience, so neither is the only place worth playing.
   - **Chests:** about 15 an hour of runs at level 10 and 18 at 15. The chest has its own rarity row (`Config.Chests`), since Lantern Row's foes would read only row 2.
-  - **The windows at launch,** if the Tower takes half of play after the first hour (a guess): Rare 3.5 h, Epic 12.5 h, Legendary 39.9 h. A quarter gives 6.0, 24.1 and 78.8 h; all of play in the Tower gives 2.3, 6.8 and 20.5 h.
+  - **The windows at launch** (TR29's six-ground rows, before TR48), if the Tower takes half of play after the first hour (a guess): Rare 3.5 h, Epic 12.5 h, Legendary 39.9 h. A quarter gives 6.0, 24.1 and 78.8 h; all of play in the Tower gives 2.3, 6.8 and 20.5 h.
   - **Past launch,** the Tower's Credits fall to 7% to 26% of a ground's at the lead's level, and its chests stay at 20 to 40 an hour. Its rewards are refit when Drum Court opens.
 
 ## Chests

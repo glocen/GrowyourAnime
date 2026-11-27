@@ -178,7 +178,7 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
 
 **No new date is worked out** (the director, 2026-11-18: "no new launch date let not waste time and grind no more wasting time just planning and action"). The estimate below stays as it was written.
 
-**Research's estimate, 2026-11-17, 02:31.** It's read from the commit clock, not measured.
+**Research's estimate, 2026-11-17, 02:31, kept as the record.** It's read from the commit clock, not measured.
 - **The pace so far:** phases 0 to 2 and the first half of phase 3's blocks took the team about 76 hours with commits in them, 2026-11-12 to 17, about 15 a day.
 - **What's left for the launch line** (phases 0 to 4, the Tower, one ground, Lantern Row's eight Voidkin):
   - phase 2's tail;

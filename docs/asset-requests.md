@@ -4991,7 +4991,7 @@ From the new sheet, the Reveal's poses and the portrait. It judges the fix and w
 - **Checks:** content check PASS (a fresh agent, on the sheet, the colour picture, both portraits and the 64 px look): nothing gory or sexualised, the round guards and the neck scarf keep 13:02's conditions, no text in an uploaded picture.
 - **Four facts:** made; self-reviewed as above; delivered to Faber at 13:09 for the upload and the capture at the game's camera beside Rook; not in the game, not accepted. The director judges it in the game.
 
-**Research, 2026-11-27, 13:20, verdict on the cut in the game** (Faber's `build/handoff/Kirra/checkpoint/AR60_cut_strip_day_*.png`, d3659374). Dimensions: the director's two defects, at the player's camera.
+**Research, 2026-11-27, 13:18, verdict on the cut in the game** (Faber's `build/handoff/Kirra/checkpoint/AR60_cut_strip_day_*.png`, d3659374). Dimensions: the director's two defects, at the player's camera.
 - **The toy blades: BETTER, gone at the game camera.** From behind, the pair reads as a dark crossed set of sheathed grips with light points. The white X and the slabs are gone, and the gear sits inside her silhouette. Whether it reads in every view (side and front in the fight) is NOT VERIFIED: the Hit tiles are missing.
 - **Her own face:** this camera doesn't show it. It reads on the portraits and the cards (Modulo's sheet, beside Rook and Pip), so it is NOT VERIFIED in the game until Home or a card is captured.
 - **Beside a shipped frame:** NOT VERIFIED. Next: the director judges her in the game.

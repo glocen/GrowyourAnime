@@ -303,7 +303,7 @@ Written by `tools/fx/shade_tells.py`, from the kit's uploaded meshes and images 
 - [AR67](requests/AR67.md) · The Generator's new model, and any machine that needs one (Modulo's targets, research's pick, then Faber's install) · 94 lines · made and self-reviewed (0 open edges, the audit, the sheet). Content check before upload: PASS by 21:18, on the sheet, the core's code and the manifest. Delive…
 - [AR68](requests/AR68.md) · The UI's complete overhaul: three directions (research's brief, Modulo's targets, the director's pick) · 285 lines · see the piece
 - [AR69](requests/AR69.md) · A Shade's fall and the burn, overhauled (Scintilla's targets, research's pick, then Scintilla's install) · 10 lines · see the piece
-- [AR70](requests/AR70.md) · The game page's icon and thumbnails (Modulo's targets, the director's pick) · 354 lines · see the piece
+- [AR70](requests/AR70.md) · The game page's icon and thumbnails (Modulo's targets, the director's pick) · 378 lines · see the piece
 - [AR71](requests/AR71.md) · The game page's words and the content rating (research's drafts, the director's hand) · 43 lines · see the piece
 - [AR72](requests/AR72.md) · The Guard's mask, one more paper detail (Modulo's targets, research's pick, then the build) · 62 lines · see the piece
 - [AR73](requests/AR73.md) · The Guard elite's second mask takes the turned corner (Modulo, tier 1) · 43 lines · see the piece

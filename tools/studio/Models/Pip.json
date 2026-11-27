@@ -1,20 +1,20 @@
 {
- "Why": "Pip's install (AR4): his meshes and maps as published under the group on 2026-11-12 (docs/asset-log.md). Neither the hat nor the lamp casts a shadow: the brim would put his face in the dark, and the lamp is a light (the recipe's motors).",
+ "Why": "Pip's finish (AR63, research's pass for the install, 2026-11-28): his nine meshes and three maps, published under the group on 2026-11-28 (docs/asset-log.md). The hair is a piece of its own; no Metalness. Neither the hat nor the lamp casts a shadow: the brim would put his face in the dark, and the lamp is a light (the recipe's motors). The first Pip's ids (AR4) are in git before this commit.",
  "Meshes": {
-  "Pip_Torso": 132821437900914,
-  "Pip_Head": 77540985870712,
-  "Pip_RightArm": 112482368647212,
-  "Pip_LeftArm": 125703091531387,
-  "Pip_RightLeg": 126706877495280,
-  "Pip_LeftLeg": 85810112763498,
-  "Pip_Hat": 95717361174280,
-  "Pip_Lamp": 130403422448641
+  "Pip_Torso": 81091061875523,
+  "Pip_Head": 101987619310416,
+  "Pip_Hair": 119773739371977,
+  "Pip_RightArm": 134172034784792,
+  "Pip_LeftArm": 106212129366911,
+  "Pip_RightLeg": 87993767836929,
+  "Pip_LeftLeg": 106112745851463,
+  "Pip_Hat": 109073699447857,
+  "Pip_Lamp": 87394795703632
  },
  "Maps": {
-  "Color": "rbxassetid://104901338746427",
-  "Roughness": "rbxassetid://124493734704925",
-  "Metalness": "rbxassetid://140165200687600",
-  "Emissive": "rbxassetid://118382160224793"
+  "Color": "rbxassetid://100108520560780",
+  "Roughness": "rbxassetid://84023465000723",
+  "Emissive": "rbxassetid://118578717911561"
  },
  "NoShadow": [
   "Pip_Hat",

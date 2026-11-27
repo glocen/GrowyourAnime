@@ -1,87 +1,62 @@
 {
  "name": "Pip",
  "frame": "Roblox studs: Y up, the model on y = 0 facing -Z, HumanoidRootPart at (0, 3, 0)",
- "rig": "R6. Every piece carries the body's own surface: the six rig parts are hidden (Transparency 1), and the Head's face decal is removed. His face is on the Head piece.",
+ "rig": "R6. Every piece carries the body's own surface: the six rig parts are hidden (Transparency 1).",
+ "make": "tools/blender/anime_make.py and pip_make.py: R6's own blocks and round head with the clothes and the face drawn on them, the hair one mesh; built pieces: the hat and the lantern, each on a joint of its own (the first Pip's).",
  "maps": {
   "Color": "Pip_Color.png",
   "Roughness": "Pip_Roughness.png",
-  "Metalness": "Pip_Metalness.png",
   "Emissive": "Pip_Emissive.png"
  },
- "texels_per_stud": 58,
- "emissive": {
-  "tint": "#FFFFFF",
-  "cold": 1.2,
-  "hot": 3.0,
-  "pieces": [
-   "Pip_Lamp"
-  ],
-  "note": "The mask covers the lantern's flame and nothing else. It burns at cold as it floats and goes to hot through Lantern Burst's send. The face and the eyes take no glow, ever. The tint is white because Roblox multiplies the glow by the colour map, which already holds the flame's orange: an orange tint over it turns the flame red."
- },
+ "texels_per_stud": 96,
  "pieces": [
   {
    "name": "Pip_Torso",
    "mesh": "Pip_Torso.json",
    "on": "Torso",
    "centre": [
-    0.00583,
-    2.62402,
-    0.00253
-   ],
-   "size": [
-    2.756,
-    3.012,
-    2.153
-   ],
-   "tris": 3112
-  },
-  {
-   "name": "Pip_Head",
-   "mesh": "Pip_Head.json",
-   "on": "Head",
-   "centre": [
     0.0,
-    4.5125,
-    -0.00246
+    3.0,
+    0.0
    ],
    "size": [
-    1.32,
-    1.275,
-    1.325
+    2.0,
+    2.0,
+    1.0
    ],
-   "tris": 580
+   "tris": 12
   },
   {
    "name": "Pip_RightArm",
    "mesh": "Pip_RightArm.json",
    "on": "Right Arm",
    "centre": [
-    1.6,
-    2.73,
+    1.5,
+    3.0,
     0.0
    ],
    "size": [
-    1.55,
-    2.58,
-    1.55
+    1.0,
+    2.0,
+    1.0
    ],
-   "tris": 716
+   "tris": 12
   },
   {
    "name": "Pip_LeftArm",
    "mesh": "Pip_LeftArm.json",
    "on": "Left Arm",
    "centre": [
-    -1.6,
-    2.73,
+    -1.5,
+    3.0,
     0.0
    ],
    "size": [
-    1.55,
-    2.58,
-    1.55
+    1.0,
+    2.0,
+    1.0
    ],
-   "tris": 716
+   "tris": 12
   },
   {
    "name": "Pip_RightLeg",
@@ -90,14 +65,14 @@
    "centre": [
     0.5,
     1.0,
-    -0.095
+    0.0
    ],
    "size": [
-    1.1,
+    1.0,
     2.0,
-    1.31
+    1.0
    ],
-   "tris": 544
+   "tris": 12
   },
   {
    "name": "Pip_LeftLeg",
@@ -106,35 +81,67 @@
    "centre": [
     -0.5,
     1.0,
-    -0.095
+    0.0
    ],
    "size": [
-    1.1,
+    1.0,
     2.0,
-    1.31
+    1.0
    ],
-   "tris": 544
+   "tris": 12
+  },
+  {
+   "name": "Pip_Head",
+   "mesh": "Pip_Head.json",
+   "on": "Head",
+   "centre": [
+    0.0,
+    4.5,
+    0.0
+   ],
+   "size": [
+    1.25,
+    1.25,
+    1.25
+   ],
+   "tris": 476
+  },
+  {
+   "name": "Pip_Hair",
+   "mesh": "Pip_Hair.json",
+   "on": "Head",
+   "centre": [
+    0.0,
+    4.59577,
+    0.0213
+   ],
+   "size": [
+    1.471,
+    1.348,
+    1.448
+   ],
+   "tris": 2736
   },
   {
    "name": "Pip_Hat",
    "mesh": "Pip_Hat.json",
    "on": "Head",
    "centre": [
-    -0.0979,
-    5.75225,
-    -0.03571
+    -0.0483,
+    5.30706,
+    0.01814
    ],
    "size": [
-    4.128,
-    3.229,
-    3.827
+    2.435,
+    1.297,
+    2.418
    ],
-   "tris": 1392,
+   "tris": 668,
    "motor": "Hat",
    "pivot": [
-    0,
+    0.0,
     4.95,
-    0
+    -0.0
    ]
   },
   {
@@ -143,15 +150,15 @@
    "on": "Torso",
    "centre": [
     2.75,
-    4.18764,
+    4.56717,
     -0.3
    ],
    "size": [
-    0.74,
-    1.805,
-    0.74
+    0.772,
+    1.722,
+    0.891
    ],
-   "tris": 604,
+   "tris": 720,
    "motor": "Lamp",
    "pivot": [
     2.75,
@@ -160,14 +167,6 @@
    ]
   }
  ],
- "motors": {
-  "Hat": {
-   "note": "Turns about its pivot on the head: it lags every move and lifts on the send. Its rest tilt is in the mesh. CastShadow off on this piece, or the brim puts his face in the dark."
-  },
-  "Lamp": {
-   "note": "Floats beside his right shoulder, held by nothing. Its joint is on the Torso, and the clips move and turn it; Lantern Burst sends it. CastShadow off: it's a light. A light in the tint around it is the builder's call, tuned in the engine."
-  }
- },
  "points": [
   {
    "name": "Lantern",
@@ -183,8 +182,8 @@
    "name": "Sleeve",
    "on": "Right Arm",
    "at": [
-    1.6,
     1.5,
+    2.0,
     -0.0
    ],
    "note": "the right cuff's opening: the send's line starts here"
@@ -193,16 +192,33 @@
    "name": "Chest",
    "on": "Torso",
    "at": [
-    0,
+    0.0,
     3.2,
     -0.6
    ],
    "note": "where a hit lands"
   }
  ],
+ "tris": 4660,
+ "emissive": {
+  "tint": "#FFFFFF",
+  "cold": 1.2,
+  "hot": 3.0,
+  "pieces": [
+   "Pip_Lamp"
+  ],
+  "note": "The mask covers the lantern's panes, the flame seen through them, and nothing else. It burns at cold as it floats and goes to hot through Lantern Burst's send. The face and the eyes take no glow, ever. The tint is white because Roblox multiplies the glow by the colour map, which already holds the flame's orange."
+ },
+ "motors": {
+  "Hat": {
+   "note": "Turns about its pivot on the head: it lags every move and lifts on the send. Its rest tilt is in the mesh. CastShadow off on this piece, or the brim puts his face in the dark."
+  },
+  "Lamp": {
+   "note": "Floats beside his right shoulder, held by nothing. Its joint is on the Torso, and the clips move and turn it; Lantern Burst sends it. CastShadow off: it's a light. A light in the tint around it is the builder's call, tuned in the engine."
+  }
+ },
  "stride": {
   "degrees": 25,
-  "note": "each leg's widest swing that stays inside the robe's hem"
- },
- "tris": 8208
+  "note": "the clips keep the first Pip's 25 degrees a leg; his trousers would allow more"
+ }
 }

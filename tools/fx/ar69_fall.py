@@ -52,6 +52,15 @@ def mix(a, b, u):
     return tuple(round(x + (y - x) * u) for x, y in zip(a, b))
 
 
+PICTURE = (250, 184, 110)  # fx_rise_Flame.png's mean colour (2026-11-27): the look's own colour, baked in
+
+
+def on_picture(colour):
+    """The Color that brings the flame look to `colour`: a look's Color multiplies its picture, which is already flame
+    coloured (B1's coil wears it untinted), so the target's colour is divided by the picture's."""
+    return tuple(min(255, round(255 * c / q)) for c, q in zip(colour, PICTURE))
+
+
 def ball():
     """The ball and its rim: the kit's shell swelling round the body from LEAD frames before the marker."""
     rows = {}
@@ -72,7 +81,8 @@ def ball():
                 "Scale": [[f, v3(round(k, 3), round(k * 0.95, 3), round(k, 3)), EASE_OUT] for f, k in r],
                 "Transparency": [[-LEAD, 0.4, EASE_OUT], [-2, fade], [10, fade, EASE_IN], [22, 1]],
                 # cooling toward the rim's brown-orange, never deep red (the content check of 14:33)
-                "Color": [[-LEAD, c3(colour)], [5, c3(colour)], [19, c3(mix(colour, RIM, 0.6))]],
+                "Color": [[-LEAD, c3(on_picture(colour))], [5, c3(on_picture(colour))],
+                          [19, c3(on_picture(mix(colour, RIM, 0.6)))]],
                 "Glow": [[-LEAD, 2.5], [5, 2.5], [19, 1.2]],
             },
             "Why": why,
@@ -80,8 +90,9 @@ def ball():
     return rows
 
 
-def glow(name, frame, life, sizes, fades, colours, near, why):
-    """One additive particle of fx_glow at the ball's middle, drawn `near` studs toward the camera."""
+def glow(name, frame, life, sizes, fades, colours, near, why, bright=1):
+    """One additive particle of fx_glow at the ball's middle, drawn `near` studs toward the camera, `bright` times its
+    colour at its middle."""
     return {
         "Kind": "Emitter",
         "From": "Burst",
@@ -89,7 +100,7 @@ def glow(name, frame, life, sizes, fades, colours, near, why):
         "Emitter": {
             "Lifetime": [life, life], "Speed": [0.01, 0.01], "LockedToPart": True,
             "Size": sizes, "Transparency": fades, "Color": colours,
-            "LightEmission": 1, "LightInfluence": 0, "ZOffset": near,
+            "LightEmission": 1, "LightInfluence": 0, "ZOffset": near, "Brightness": bright,
         },
         "Emit": [[frame, 1]],
         "Tracks": {"At": [[-LEAD, v3(*MIDDLE)]]},
@@ -239,6 +250,7 @@ def ring():
         "Part": ["FxHoop"],
         "Ground": True,
         "Color": c3(GOLD),
+        "Tint": True,  # a typed Shade's colour in place of the gold (the Hard Shade's Shades.Hard.Burst), the fire untinted
         "Tracks": {
             "At": [[1, v3(0, 0.03, 0)]],
             "Scale": [[f, v3(r, 0.3, r), "Quart Out" if f == 1 else None] for f, r in keys],
@@ -264,7 +276,8 @@ def fall():
     rows = {}
     rows.update(ball())
     rows["Heart"] = glow("Heart", -2, 0.25, [[0, 4.2], [1, 2.8]], [[0, 0], [0.3, 0.1], [1, 1]],
-                         [[0, c3(CORE)], [1, c3(GOLD)]], 2.8, "its white-hot middle, added light before the ball")
+                         [[0, c3(CORE)], [1, c3(GOLD)]], 2.8, "its white-hot middle, added light before the ball",
+                         bright=2.4)  # the target's heart, 2.4 times its colour (ar69_targets.py, fall_a)
     rows["Flash"] = glow("Flash", 0, 0.1, [[0, 6.6], [1, 7.2]], [[0, 0.3], [1, 1]], [[0, c3(CORE)], [1, c3(CORE)]],
                          3.0, "one flash as the body goes")
     rows.update(licks())

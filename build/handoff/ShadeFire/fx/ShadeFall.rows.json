@@ -19,7 +19,9 @@
      [8, {"Vector3": [2.35, 2.232, 2.35]}, "Quad Out"], [25, {"Vector3": [2.867, 2.724, 2.867]}, "Quad Out"]
     ],
     "Transparency": [[0, 0.4, "Quad Out"], [2, 0.05], [14, 0.05, "Quad In"], [26, 1]],
-    "Color": [[0, {"Color3": [248, 134, 56]}], [9, {"Color3": [248, 134, 56]}], [23, {"Color3": [211, 100, 37]}]],
+    "Color": [
+     [0, {"Color3": [253, 186, 130]}], [9, {"Color3": [253, 186, 130]}], [23, {"Color3": [215, 139, 86]}]
+    ],
     "Glow": [[0, 2.5], [9, 2.5], [23, 1.2]]
    },
    "Why": "the hero: a ball of fire on the body, swelling round it as it comes apart"
@@ -38,7 +40,7 @@
      [8, {"Vector3": [2.679, 2.545, 2.679]}, "Quad Out"], [25, {"Vector3": [3.268, 3.105, 3.268]}, "Quad Out"]
     ],
     "Transparency": [[0, 0.4, "Quad Out"], [2, 0.45], [14, 0.45, "Quad In"], [26, 1]],
-    "Color": [[0, {"Color3": [210, 99, 37]}], [9, {"Color3": [210, 99, 37]}], [23, {"Color3": [196, 86, 30]}]],
+    "Color": [[0, {"Color3": [214, 137, 86]}], [9, {"Color3": [214, 137, 86]}], [23, {"Color3": [200, 119, 70]}]],
     "Glow": [[0, 2.5], [9, 2.5], [23, 1.2]]
    },
    "Why": "its outline, deeper and fainter, a little over it"
@@ -55,7 +57,8 @@
     "Color": [[0, {"Color3": [255, 246, 219]}], [1, {"Color3": [255, 197, 84]}]],
     "LightEmission": 1,
     "LightInfluence": 0,
-    "ZOffset": 2.8
+    "ZOffset": 2.8,
+    "Brightness": 2.4
    },
    "Emit": [[2, 1]],
    "Tracks": {"At": [[0, {"Vector3": [0.0, 3.36, 0.0]}]]},
@@ -73,7 +76,8 @@
     "Color": [[0, {"Color3": [255, 246, 219]}], [1, {"Color3": [255, 246, 219]}]],
     "LightEmission": 1,
     "LightInfluence": 0,
-    "ZOffset": 3.0
+    "ZOffset": 3.0,
+    "Brightness": 1
    },
    "Emit": [[4, 1]],
    "Tracks": {"At": [[0, {"Vector3": [0.0, 3.36, 0.0]}]]},
@@ -986,6 +990,7 @@
    "Part": ["FxHoop"],
    "Ground": true,
    "Color": {"Color3": [255, 197, 84]},
+   "Tint": true,
    "Tracks": {
     "At": [[5, {"Vector3": [0, 0.03, 0]}]],
     "Scale": [[5, {"Vector3": [1.0, 0.3, 1.0]}, "Quart Out"], [26, {"Vector3": [6.5, 0.3, 6.5]}]],

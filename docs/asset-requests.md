@@ -6541,6 +6541,24 @@ Faber holds the light first piece; its nine uploads stay unused. **Modulo's roun
 - **In both:** orange only on the press ring and the level tab, and health stays red. No purple, and no pure black. Each must still separate from the night street at dusk, so judge the dusk frame first.
 Research picks one, then Faber builds the first piece and the director judges it in the game.
 
+### Modulo: M goes dark, (a) and (b) (2026-11-27, 13:38; started 13:31)
+
+- **Study first** (the director, by 13:32: "just study if u struggle"): Anime Crusaders' fight HUD (`g05_full`, `hud_left`, `hud_bottom`) and Dragon Hunter's arena HUD, in `build/reference/`. OBSERVED: every plate has two edges, a dark outer line that cuts it from the world and a light inner rim lit from the top. The number sits in a darker inset well. The text is heavy near-white with a dark edge. Colour lives in the icons, rings and bars, never the plates.
+- **Made** with `tools/ui/hud_compositions.py`, M's looks (`py tools/ui/hud_compositions.py <out> M look=a`; `light` draws as before, PSNR inf against the delivered frames). In `build/handoff/UI/ar68/m_dark/`:
+  - **(a) slate:** `#23272E` at 90%, a light rim lit from the top, a dark outer line, the health in a darker well, a faint sheen.
+  - **(b) warm graphite:** `#2A2622` at 92%, a faint orange inner edge, the same line and well.
+  - **Both:** warm off-white text `#F2EADB` with a dark edge; orange only on the press ring, its glow and the level tab; health red.
+  - The frames are `a/` and `b/` (`M_568_day`, `M_568_dusk`, `M_wake`), plus `m_light_then_a_b.png` (the corner: today's M, a, b; dusk over day; ffmpeg crops of those frames, 720 by 400 from the top left, side by side). The whole frames beside a shipped frame at the same size: `build/reference/ar68/m_dark/sheet_dusk.png`, `sheet_day.png`.
+- **Self-review, dusk first:**
+  - Both separate from the night street by their outer line, and (a)'s top rim holds each plate's shape against the lanterns.
+  - (b)'s orange edge reads as a rust border round every plate: orange leaves the ring and the tab, and the graphite looks muddy beside (a).
+  - In the whole frame, both sit back and the fight's numbers lead, as in the shipped frame.
+  - Still below that bar: the press's stand-in "ART" (its art waits for this pick) and the drawn bust.
+  - Premium is NOT VERIFIED: the director's to judge.
+- **Paused:** the press's art, Rook's Haymaker rendered in two takes (`tools/blender/press_art.py`, `tools/ui/hud_m_press_art.py`, uncommitted); it goes on the picked plate.
+- **Checks:** content check PASS (rules 2, 3, 4; the corner sheet's command named here).
+- **Four facts:** made; self-reviewed as above; delivered to research for the pick at 13:38; not in the game, not accepted.
+
 ## AR69. A Shade's fall and the burn, overhauled (Scintilla's targets, research's pick, then Scintilla's install)
 
 **The director, 2026-11-27, by 13:37:** "the fire effect when enemy die is so bad it still that old 2d vfx.." and "the burning effect is also bad". Both are overhauls, not another round, under the director's rule of 13:36 ("if you take an idea and it turn bad no matter the iterations > overhaul"). Today's: `ShadeBurst` (the sky lantern, a flat 2D flipbook picture on a billboard, `Config/Effects.luau`) and `StateBurn` (`Config/EffectRows/StateBurn.json`).

@@ -456,21 +456,91 @@ def s_frame(P, charge, flash=False):
 
 # ---- M, Match-Card: the broadcast match card ----------------------------------------------------------------------------
 M_PAPER, M_EDGE = "#D9D1C3", "#9E9585"   # AR68's pick, M, research's round (13:10): the plates a warm off-white at 85%
+M_TEXT = "#F2EADB"                       # the dark looks' warm off-white text
+
+# M's looks. `light`: research's round of 13:10, as delivered. `a` and `b`: the dark round's two targets (research, 13:30,
+# on the director's "i want a darker ui for the HUD btw", by 13:29, and "this white orange is so bad ... make an
+# premium", by 13:32): (a) slate plates with a thin light rim, (b) warm graphite with a faint orange inner edge. Both
+# take what the study of shipped dark HUDs found (AR68, 13:35): a dark outer line on every plate that cuts it from the
+# world, the health in a darker inset well, heavy near-white text with a dark edge, colour only in the rings and icons.
+# A card's fill may name a role (paper, slate, well, face), which the look colours.
+M_LOOKS = {
+    "light": dict(paper=M_PAPER, slate=hs.M_["slate"], well=hs.M_["slate"], face=M_PAPER, op=1.0, trough="#1C222C",
+                  on_paper=hs.M_["ink"], on_slate=hs.M_["ivory"], arrow=M_PAPER, mark=hs.M_["slate"], edge=M_EDGE,
+                  outline=None, rim=None, inner=None, sheen=0.0, grain=0.06, printed=True, text=""),
+    "a": dict(paper="#23272E", slate="#23272E", well="#16191E", face="#2C313A", op=0.9, trough="#0F1115",
+              on_paper=M_TEXT, on_slate=M_TEXT, arrow=M_TEXT, mark=M_TEXT, edge=None,
+              outline="#090B0E", rim="#C6CDD7", inner=None, sheen=0.09, grain=0.035, printed=False, text="mText"),
+    "b": dict(paper="#2A2622", slate="#2A2622", well="#1B1916", face="#34302B", op=0.92, trough="#110F0D",
+              on_paper=M_TEXT, on_slate=M_TEXT, arrow=M_TEXT, mark=M_TEXT, edge=None,
+              outline="#0B0908", rim=None, inner="#E8622A", sheen=0.07, grain=0.035, printed=False, text="mText"),
+}
+M_LOOK = M_LOOKS["light"]
+ROLES = ("paper", "slate", "well", "face")
+
+
+def m_defs(P):
+    """The dark looks' shared paints, once a page: the rim lit from the top, the sheen, the text's dark edge."""
+    if any('id="mRim"' in d for d in P.defs):
+        return
+    L = M_LOOK
+    P.defs += [
+        f'<linearGradient id="mRim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{L["rim"] or "#FFFFFF"}" '
+        f'stop-opacity="0.85"/><stop offset="0.5" stop-color="{L["rim"] or "#FFFFFF"}" stop-opacity="0.32"/>'
+        f'<stop offset="1" stop-color="{L["rim"] or "#FFFFFF"}" stop-opacity="0.18"/></linearGradient>',
+        f'<linearGradient id="mSheen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF" '
+        f'stop-opacity="{L["sheen"]}"/><stop offset="0.55" stop-color="#FFFFFF" stop-opacity="0"/><stop offset="1" '
+        f'stop-color="#000000" stop-opacity="{L["sheen"] * 1.4:.3f}"/></linearGradient>',
+        '<filter id="mText" x="-20%" y="-40%" width="140%" height="190%"><feMorphology in="SourceAlpha" operator="dilate" '
+        'radius="0.75" result="d"/><feFlood flood-color="#08090C" flood-opacity="0.92"/><feComposite in2="d" '
+        'operator="in" result="o"/><feOffset in="o" dy="0.9" result="s"/><feMerge><feMergeNode in="s"/>'
+        '<feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter>',
+    ]
+
+
+def m_text(P, x, y, spans, anchor="start", extra=""):
+    """M's words: in a dark look, each with its dark edge."""
+    L = M_LOOK
+    if L["text"] and not P.flat and "filter" not in extra:
+        extra += f' filter="url(#{L["text"]})"'
+    tag_text(P, x, y, spans, anchor, extra)
 
 
 def card(P, d, fill, print_=True, shadow=True, soft=False):
     """A printed card: its soft cast shadow (the round of 13:10 took the hard cel shadow off: M was louder than the
-    fight), the print's light and grain; `soft`: an off-white card's edge falls off inward."""
-    T = hs.M_
+    fight), the print's light and grain; `soft`: an off-white card's edge falls off inward. In a dark look: the plate at
+    the look's opacity, its sheen, the light rim or the orange inner edge, and the dark outer line."""
+    T, L = hs.M_, M_LOOK
+    role = fill in ROLES
+    colour = L[fill] if role else fill
+    op = L["op"] if role else 1.0
+    if L["outline"]:
+        m_defs(P)
     f = ' filter="url(#mShadow)"' if shadow and not P.flat else ""
-    P.add(f'<path d="{d}" fill="{fill}"{f}/>')
+    if op < 1:
+        P.add(f'<g opacity="{op}">')
+    P.add(f'<path d="{d}" fill="{colour}"{f}/>')
     if not P.flat and print_:
-        P.add(f'<path d="{d}" fill="{fill}" filter="url(#printed)"/>')
-        grain(P, d, "paper", 0.06)
-    if soft and not P.flat:
+        if L["printed"]:
+            P.add(f'<path d="{d}" fill="{colour}" filter="url(#printed)"/>')
+        if L["sheen"]:
+            P.add(f'<path d="{d}" fill="url(#mSheen)"/>')
+        grain(P, d, "paper", L["grain"])
+    if soft and not P.flat and L["edge"]:
         P.clipped(d)
-        P.add(f'<path d="{d}" fill="none" stroke="{M_EDGE}" stroke-width="3.4" stroke-opacity="0.6" '
+        P.add(f'<path d="{d}" fill="none" stroke="{L["edge"]}" stroke-width="3.4" stroke-opacity="0.6" '
               f'filter="url(#edgeBlur)"/></g>')
+    if not P.flat and L["inner"]:
+        P.clipped(d)
+        P.add(f'<path d="{d}" fill="none" stroke="{L["inner"]}" stroke-width="3.2" stroke-opacity="0.42" '
+              f'filter="url(#edgeBlur)"/></g>')
+    if not P.flat and L["rim"]:
+        P.clipped(d)
+        P.add(f'<path d="{d}" fill="none" stroke="url(#mRim)" stroke-width="1.5"/></g>')
+    if op < 1:
+        P.add("</g>")
+    if not P.flat and L["outline"]:
+        P.add(f'<path d="{d}" fill="none" stroke="{L["outline"]}" stroke-width="1.1" stroke-linejoin="round"/>')
     if P.flat:
         P.add(f'<path d="{d}" fill="none" stroke="{T["ink"]}" stroke-width="1"/>')
 
@@ -479,13 +549,13 @@ def card(P, d, fill, print_=True, shadow=True, soft=False):
 def m_lead_plate(P, T):
     """The static plate under the lead's portrait, name and health: the portrait's slate mount, the off-white name card,
     the slate health card, the health's trough and the experience's."""
-    card(P, rect(6, 6, 44, 44), T["slate"])
-    card(P, poly([(50, 6), (196, 6), (192, 24), (50, 24)]), M_PAPER, soft=True)
-    card(P, poly([(50, 24), (192, 24), (188, 40), (50, 40)]), T["slate"], print_=False)
+    card(P, rect(6, 6, 44, 44), "slate")
+    card(P, poly([(50, 6), (196, 6), (192, 24), (50, 24)]), "paper", soft=True)
+    card(P, poly([(50, 24), (192, 24), (188, 40), (50, 40)]), "well", print_=False)
     tr, _ = hbar(52, 26, 133, 12, 0, k=-0.25)
-    trough(P, tr, None, "#1C222C", T["ally"], T["ally_lit"])
+    trough(P, tr, None, M_LOOK["trough"], T["ally"], T["ally_lit"])
     tr, _ = hbar(50, 41, 138, 2.2, 0)
-    trough(P, tr, None, "#1C222C", T["xp"], "#FFE7A6")
+    trough(P, tr, None, M_LOOK["trough"], T["xp"], "#FFE7A6")
 
 
 def lit_fill(P, d, fill, lit):
@@ -509,12 +579,14 @@ def m_level_tab(P, T):
 
 
 PRESS = (38, 142, 30)   # the press's centre and radius, in the lead's points
+PRESS_ART = None        # the skill's own art: a function (P, cx, cy, radius, awake) drawing it in the press's face
+                        # (tools/ui/hud_m_press_art.py sets it); unset, the labelled slot stands in
 
 
 def m_press_disc(P, T):
     cx, cy, r = PRESS
-    card(P, circle(cx, cy, r), T["slate"])
-    card(P, circle(cx, cy, r - 7), M_PAPER, shadow=False, soft=True)
+    card(P, circle(cx, cy, r), "slate")
+    card(P, circle(cx, cy, r - 7), "face", shadow=False, soft=True)
 
 
 def m_press_ring(P, T, charge, colour=None):
@@ -538,7 +610,7 @@ def slant(x, y, w, h=19, k=4):
 
 
 def m_frame(P, charge, flash=False):
-    T = hs.M_
+    T, L = hs.M_, M_LOOK
     full = charge >= 1
     P.begin("lead")                       # the band is one piece: its foe side rides with the lead's from the corner
     # the lead's side: the portrait on slate, the off-white name card, the health strip under it with its digits inside
@@ -548,33 +620,33 @@ def m_frame(P, charge, flash=False):
     P.add("</g>")
     m_health_fill(P, T, LEAD["hp"] / LEAD["max"])
     m_xp_fill(P, T, LEAD["xp"])
-    tag_text(P, 58, 21, [(LEAD["name"].upper(), 16, "OswB", T["ink"], 1.0)])
-    ov.gem(P, 108, 15, 10, TYPES[LEAD["type"]], rim=T["ink"], width=0.8)
-    ov.blade(P, 119, 15, 11, T["ink"])
-    tag_text(P, 184, 21, [(TAKEN, 15, "OswB", T["ally"])], anchor="end")
-    tag_text(P, 119, 37, [(f'{LEAD["hp"]:,}', 14, "OswB", T["ivory"]),
+    m_text(P, 58, 21, [(LEAD["name"].upper(), 16, "OswB", L["on_paper"], 1.0)])
+    ov.gem(P, 108, 15, 10, TYPES[LEAD["type"]], rim=L["on_paper"], width=0.8)
+    ov.blade(P, 119, 15, 11, L["on_paper"])
+    m_text(P, 184, 21, [(TAKEN, 15, "OswB", T["ally"])], anchor="end")
+    m_text(P, 119, 37, [(f'{LEAD["hp"]:,}', 14, "OswB", L["on_slate"]),
                           (f' / {LEAD["max"]:,}', 14, "Osw", "#F3E6D6")],
              anchor="middle", extra=' filter="url(#lift)"')
     # the level: the one orange tab, on the portrait's corner
     m_level_tab(P, T)
-    tag_text(P, 39, 49.6, [(str(LEAD["level"]), 14, "OswB", T["ivory"])], anchor="middle")
+    m_text(P, 39, 49.6, [(str(LEAD["level"]), 14, "OswB", L["on_slate"])], anchor="middle")
     P.hud(6, 6, 44, 44)
     P.hud(50, 6, 146, 37.2)
     P.hud(24, 50, 30, 2)
     P.hud(50, 43.2, 4, 8.8)
     # the cut between the two sides, carrying the edge's arrow: slate now, its arrow in the paper
-    card(P, poly([(196, 6), (212, 6), (204, 36), (188, 36)]), T["slate"])
-    ov.arrow(P, 200, 20, 11, True, M_PAPER)
+    card(P, poly([(196, 6), (212, 6), (204, 36), (188, 36)]), "slate")
+    ov.arrow(P, 200, 20, 11, True, L["arrow"])
     P.hud(188, 6, 24, 30)
     # the foe's side, mirrored and lighter: no portrait, a smaller face, its strip filling from its own end
-    card(P, poly([(214, 6), (326, 6), (326, 24), (209.2, 24)]), T["slate"])
+    card(P, poly([(214, 6), (326, 6), (326, 24), (209.2, 24)]), "slate")
     ov.skull(P, 216, 9.5, 10, T["skulls"][FOE["tier"]])
-    tag_text(P, 231, 20, [(str(FOE["level"]), 14, "OswB", T["ivory"]), (FOE["name"].upper(), 14, "Osw", T["ivory"], 0.8, 5)])
-    ov.gem(P, 316, 15, 9, TYPES[FOE["type"]], rim=T["ivory"], width=0.7)
+    m_text(P, 231, 20, [(str(FOE["level"]), 14, "OswB", L["on_slate"]), (FOE["name"].upper(), 14, "Osw", L["on_slate"], 0.8, 5)])
+    ov.gem(P, 316, 15, 9, TYPES[FOE["type"]], rim=L["on_slate"], width=0.7)
     tr, fl = hbar_right(209, 25, 117, 5, FOE["hp"] / FOE["max"])
-    trough(P, tr, fl, "#1C222C", T["foe"], "#E86A80")
+    trough(P, tr, fl, L["trough"], T["foe"], "#E86A80")
     for i in (1, 2, 3):
-        P.add(f'<rect x="{209 + 117 * i / 4 - 0.5:.2f}" y="25" width="1" height="5" fill="{T["slate"]}"/>')
+        P.add(f'<rect x="{209 + 117 * i / 4 - 0.5:.2f}" y="25" width="1" height="5" fill="{L["slate"]}"/>')
     P.hud(209, 6, 117, 24)
     # the press: a slate disc with an off-white face; only its ring is orange, filling, then whole and glowing awake
     cx, cy, r = PRESS
@@ -584,20 +656,23 @@ def m_frame(P, charge, flash=False):
         P.add(f'<circle cx="{cx}" cy="{cy}" r="{r + 6}" fill="{T["hue"]}" opacity="0.5" filter="url(#bloomWide)"/>')
     m_press_disc(P, T)
     m_press_ring(P, T, charge)
-    hs.art_slot(P, cx, cy, r - 10, T["ink"], M_PAPER, opacity=1 if full else 0.55)
+    if PRESS_ART:
+        PRESS_ART(P, cx, cy, r - 6, full)
+    else:
+        hs.art_slot(P, cx, cy, r - 10, L["on_paper"], L["face"], opacity=1 if full else 0.55)
     if flash and not P.flat:
         P.add(f'<circle cx="{cx}" cy="{cy}" r="{r - 1}" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.9"/>')
     P.hud(cx - r, cy - r, 2 * r, 2 * r, press=True)
-    label = (SKILL.upper(), 15, "OswB", T["ivory"], 1.2) if full else (f"{round(charge * 100)}%", 15, "OswB", T["ivory"])
+    label = (SKILL.upper(), 15, "OswB", L["on_slate"], 1.2) if full else (f"{round(charge * 100)}%", 15, "OswB", L["on_slate"])
     lw = 90 if full else 50
-    card(P, slant(74, cy - 18, lw), T["slate"])
-    tag_text(P, 76 + lw / 2, cy - 3, [label], anchor="middle")
-    card(P, slant(70, cy + 7, 60), M_PAPER, soft=True)
-    P.add(f'<rect x="80" y="{cy + 13}" width="8" height="8" fill="{T["slate"]}"/>')
-    tag_text(P, 93, cy + 22.5, [("AUTO", 14, "OswB", T["ink"], 1)])
+    card(P, slant(74, cy - 18, lw), "slate")
+    m_text(P, 76 + lw / 2, cy - 3, [label], anchor="middle")
+    card(P, slant(70, cy + 7, 60), "paper", soft=True)
+    P.add(f'<rect x="80" y="{cy + 13}" width="8" height="8" fill="{L["mark"]}"/>')
+    m_text(P, 93, cy + 22.5, [("AUTO", 14, "OswB", L["on_paper"], 1)])
     # the eye: a small off-white card beside Auto
-    card(P, slant(136, cy + 7, 32), M_PAPER, soft=True)
-    hs.eye_icon(P, 154, cy + 16.5, 16, T["ink"], T["ink"], sw=1.4)
+    card(P, slant(136, cy + 7, 32), "paper", soft=True)
+    hs.eye_icon(P, 154, cy + 16.5, 16, L["on_paper"], L["on_paper"], sw=1.4)
     P.hud(74, cy - 18, lw + 4, 19, press=True)
     P.hud(70, cy + 7, 102, 19, press=True)
     P.end()
@@ -721,6 +796,9 @@ def main():
     dest = Path(args[0]).resolve()
     grey = "grey" in args
     keys = [k for k in args[1:] if k in DRAW] or list(DRAW)
+    global M_LOOK
+    look = next((a[5:] for a in args[1:] if a.startswith("look=")), "light")
+    M_LOOK = M_LOOKS[look]
     for d in (dest, WORK, REFOUT):
         d.mkdir(parents=True, exist_ok=True)
     runs = [(568, "day", 1.0)] if grey else [(568, "day", 1.0), (568, "dusk", 0.62), (852, "day", 1.0), (852, "dusk", 0.62)]

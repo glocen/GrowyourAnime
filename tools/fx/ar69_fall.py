@@ -23,9 +23,10 @@ LEAD frames later (0.067 s), not at the marker; no row rides the body, so the se
 
 The technique, from the kit: the ball and its rim are the kit's shell (FxShell) in the flame's rise look, alpha-blended,
 so its white-hot middle is one additive particle (fx_glow) drawn toward the camera; the licks and spikes are the burn's
-flame picture (fx_lick_Flame) on camera-facing beams, each drawn from its tip down to its foot along an unseen guide
-(the picture is stored tip-up, as the burn's); the chips are the kit's chips in a flat light; the puff is soft grey
-particles, lit by the scene so it darkens at night; the ring is the kit's hoop laid on the floor.
+soft tapered streak (round 1: an opaque orange body and an added white-gold core, in the kit's fx_beam) along an unseen
+guide, foot to tip; sparks of light (fx_streak) drawn out along their flight; the chips are the kit's chips in a flat
+light; the puff is soft grey particles, lit by the scene so it darkens at night; the ring is the kit's hoop, a flat
+band a little over the floor.
 
 Written at a body of scale 1 (R6, 5 studs, the root 3 over the foot): Area 1, so a Shade's scale scales it.
 """
@@ -34,7 +35,7 @@ import random
 import sys
 from pathlib import Path
 
-from ar69_burn import CORE, DRAWN, GOLD, ORANGE, RIM, SHOWN, angles
+from ar69_burn import BEAM_WIDE, CORE, GOLD, ORANGE, RIM, angles, streak
 from element_states import compact
 from hit_sparks import c3, v3
 
@@ -79,11 +80,13 @@ def ball():
                 "At": [[-LEAD, v3(MIDDLE[0], y, MIDDLE[2])], [4, v3(MIDDLE[0], y, MIDDLE[2]), EASE_OUT],
                        [24, v3(MIDDLE[0], y + 1.1, MIDDLE[2])]],
                 "Scale": [[f, v3(round(k, 3), round(k * 0.95, 3), round(k, 3)), EASE_OUT] for f, k in r],
-                "Transparency": [[-LEAD, 0.4, EASE_OUT], [-2, fade], [10, fade, EASE_IN], [22, 1]],
+                # it thins from 0.16 s (research's must-fix 3), near linear as the target's: half gone by 0.27 s
+                "Transparency": [[-LEAD, 0.4, EASE_OUT], [-2, fade], [10, fade], [22, 1]],
                 # cooling toward the rim's brown-orange, never deep red (the content check of 14:33)
                 "Color": [[-LEAD, c3(on_picture(colour))], [5, c3(on_picture(colour))],
                           [19, c3(on_picture(mix(colour, RIM, 0.6)))]],
-                "Glow": [[-LEAD, 2.5], [5, 2.5], [19, 1.2]],
+                # round 1: 2.5 washed the ball to pale yellow under the Heart in the engine (the take, 23:5x)
+                "Glow": [[-LEAD, 1.4], [5, 1.4], [19, 0.8]],
             },
             "Why": why,
         }
@@ -108,11 +111,11 @@ def glow(name, frame, life, sizes, fades, colours, near, why, bright=1):
     }
 
 
-def lick(name, frame, foot, d, length, width, grow, hold, gone, why, rise=0.0):
-    """A flame lick off the ball: its guide from the foot along d (unseen), and the flame from the guide's tip down to
-    its foot, in the burn's picture. It grows over `grow` frames, holds to `hold`, and is gone by `gone`."""
+def lick(name, frame, foot, d, length, width, grow, hold, gone, why, rise=0.0, bright=1.2):
+    """A flame lick off the ball: its guide from the foot along d (unseen), and the flame on it, the burn's streak (its
+    body and core, round 1) from foot to tip. It grows over `grow` frames, holds to `hold`, and is gone by `gone`."""
     ax, az = angles(d)
-    beam_width = width * SHOWN / DRAWN
+    beam_width = width * BEAM_WIDE
     top = [[frame, 0.05, EASE_OUT], [frame + grow, length], [gone, length * (1 + rise)]]
     guide = {
         "Kind": "Beam",
@@ -128,24 +131,13 @@ def lick(name, frame, foot, d, length, width, grow, hold, gone, why, rise=0.0):
         },
         "Why": f"{name}'s guide, unseen: its foot on the ball and its tip",
     }
-    flame = {
-        "Kind": "Beam",
-        "From": "Burst",
-        "On": f"{name}Guide",
-        "Low": f"{name}Guide.High",
-        "High": f"{name}Guide.Low",
-        "Image": "fx_lick_Flame",
-        "Color": c3((255, 255, 255)),
-        "Beam": {"FaceCamera": True, "LightEmission": 0.3, "LightInfluence": 0, "Brightness": 1.8,
-                 "TextureMode": "Stretch", "TextureLength": 1, "TextureSpeed": 0, "Segments": 1},
-        "Tracks": {
-            "Width": [[frame, round(beam_width * 0.4, 3), EASE_OUT], [frame + grow, round(beam_width, 3)],
-                      [gone, round(beam_width * 0.6, 3)]],
-            "Transparency": [[frame, 0], [hold, 0, EASE_IN], [gone, 1]],
-        },
-        "Why": why,
-    }
-    return {f"{name}Guide": guide, name: flame}
+    widths = [[frame, round(beam_width * 0.4, 3), EASE_OUT], [frame + grow, round(beam_width, 3)],
+              [gone, round(beam_width * 0.6, 3)]]
+    flame = streak(name, f"{name}Guide", widths, [[frame, 0], [hold, 0, EASE_IN], [gone, 1]], length * (1 + rise), why,
+                   bright=bright)
+    for row in flame.values():
+        row["From"] = "Burst"
+    return {f"{name}Guide": guide, **flame}
 
 
 def blender(x, y, z):
@@ -177,7 +169,7 @@ def licks():
         foot = [[delay, v3(*(round(CENTRE[i] + d[i] * 1.6, 3) for i in range(3))), EASE_OUT],
                 [12, v3(*(round(CENTRE[i] + d[i] * 3.6, 3) for i in range(3)))]]
         rows.update(lick(f"Spike{n + 1}", delay, foot, d, length, width, 4, 4 + delay, 11 + delay,
-                         "a thin spike of flame thrown along the blow, quick"))
+                         "a thin spike of flame thrown along the blow, quick", bright=1.3))
     return rows
 
 
@@ -243,20 +235,53 @@ def puff(tone, near, why):
 
 
 def ring():
-    keys = [(1, 1.0), (22, 6.5)]
+    """The kit's hoop as a flat band of light on the floor. Round 1 (research's must-fix 2): a Ground row is set down to
+    the foot exactly, so the hoop's floor band lay in the floor and only its lip showed, a thin gold line in the engine;
+    it stands on its At now, a little over the floor. The band is the hoop's own, 0.3 of its radius: 0.3 to 0.7 studs
+    while it's bright, to 1.5 as it fades (the target's 0.55 to 1.1, to 1.45). Its run and fade are the target's: out
+    with an ease near Cubic Out over 0.35 s, its fade u^1.5 in two straight pieces."""
     return {
         "Kind": "Mesh",
         "From": "Burst",
         "Part": ["FxHoop"],
-        "Ground": True,
         "Color": c3(GOLD),
         "Tint": True,  # a typed Shade's colour in place of the gold (the Hard Shade's Shades.Hard.Burst), the fire untinted
         "Tracks": {
-            "At": [[1, v3(0, 0.03, 0)]],
-            "Scale": [[f, v3(r, 0.3, r), "Quart Out" if f == 1 else None] for f, r in keys],
-            "Transparency": [[1, 0, EASE_IN], [22, 1]],
+            "At": [[1, v3(0, 0.06, 0)]],
+            "Scale": [[1, v3(1.0, 0.3, 1.0), "Cubic Out"], [22, v3(6.5, 0.3, 6.5)]],
+            "Transparency": [[1, 0], [11, 0.35], [22, 1]],
         },
         "Why": "a ring of light running out over the floor",
+    }
+
+
+def sparks():
+    """Gemini's stretched sparks (research, round 1): a burst of thin streaks of light thrown along the blow, drawn out
+    along their flight, slowing and falling, gone in a quarter second."""
+    return {
+        "Kind": "Emitter",
+        "From": "Burst",
+        "Image": "fx_streak",
+        "Emitter": {
+            "EmissionDirection": "Front",  # the effect's Front (-Z) is the blow
+            "SpreadAngle": [70, 45],
+            "Lifetime": [0.16, 0.3],
+            "Speed": [22, 34],
+            "Drag": 5,
+            "Acceleration": v3(0, -14, 0),
+            "Orientation": "VelocityParallel",
+            "Size": [[0, 0.32], [0.6, 0.24], [1, 0]],
+            "Squash": [[0, -1.6], [1, -0.7]],  # drawn out along their flight, less as they slow
+            "Transparency": [[0, 0], [0.6, 0.1], [1, 1]],
+            "Color": [[0, c3(CORE)], [0.4, c3(GOLD)], [1, c3(ORANGE)]],
+            "LightEmission": 1,
+            "LightInfluence": 0,
+            "Brightness": 2,
+            "ZOffset": 0.4,
+        },
+        "Emit": [[0, 18]],
+        "Tracks": {"At": [[-LEAD, v3(*CENTRE)]]},
+        "Why": "sparks of light thrown along the blow as the body goes, drawn out along their flight",
     }
 
 
@@ -285,6 +310,7 @@ def fall():
     rows["PuffDark"] = puff(SMOKE[0], -0.3, "the puff's shade, under it")
     rows["Puff"] = puff(SMOKE[1], 0, "the puff: soft grey lumps rising off the top as the fire goes")
     rows["Ring"] = ring()
+    rows["Sparks"] = sparks()
     rows["Light"] = light()
     for name, row in rows.items():
         del row["From"]  # no action: its frames count from the effect's start, LEAD before the body goes

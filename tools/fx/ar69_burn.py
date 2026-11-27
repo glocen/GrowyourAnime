@@ -15,12 +15,12 @@ Hero shape: a flame tongue, wide and round at its foot on the body, narrowing as
 tip curling to one side and breaking off in two pieces, embers rising off it. Its life is a lick, again and again on
 its own beat: it stretches up and thins, then sinks and swells, while its lean sways on a slower beat of its own.
 
-The technique: each tongue is one Beam facing the camera (so it reads as flame from every side), from its tip down to its
-foot on the body, along an unseen guide that carries its lick and its sway. Its picture, fx_lick_Flame, is the
-target's fire across a ribbon (tools/blender/ar69_targets.py, across_mat): hard steps from a deep red rim through
-orange and gold to a white-gold core, the core short at the foot; the tongue's outline, its S-curl and its broken tip
-are drawn in it, so the beam is as wide as the picture. A row of embers rides each tongue's tip (On its guide: they
-lean with it). A warm light flickers on the body.
+The technique (round 1, 2026-11-27): each tongue is a soft tapered streak facing the camera (so it reads as flame
+from every side), along an unseen guide that carries its lick and its sway: two Beams in the kit's fx_beam (soft across,
+solid along), an opaque orange body (laid over, so it holds by day) wide at the foot, fading into the body there and
+narrowing to a point, and a narrow added white-gold core up its lower three quarters. Round 0's picture, fx_lick_Flame
+(the target's fire drawn with its outline), read as flat outlined cut-outs in the engine; it stays in Pictures, unused
+here. A row of embers rides each tongue's tip (On its guide: they lean with it). A warm light flickers on the body.
 
 Written at a body of scale 1 (R6, 5 studs, the root 3 over the foot): Area 1, so a foe's scale scales it. The tongues'
 places are the target's, measured on the Brawler at scale 1 from the torso's middle, 0.16 over the root.
@@ -112,14 +112,43 @@ def sway_keys(rng, beat, base):
     return keys
 
 
+# Round 1 on research's cause (Quaestor, 2026-11-27: the outlined picture reads as paper cut-outs; the engine take
+# agreed): every flame is a soft tapered streak in the kit's fx_beam (soft across, solid along), two layers on its
+# guide from foot to tip, its shape from its widths: wide at the foot, fading into the body there, to a point.
+BODY = (244, 108, 36)  # the streak's body, laid over (LightEmission 0.15): the orange that holds by day on a light floor
+HEAT = (255, 224, 150)  # its core, added light: white-gold, hottest low, the tip left orange
+BEAM_WIDE = 1.3  # a streak's beam width over the flame's: fx_beam shows about three quarters, and it tapers
+CORE_WIDE = 0.4  # the core's width, a share of the body's
+TAPER = 0.06  # the tip's width, a share of the foot's: near a point
+CORE_REACH = 0.72  # how far up the core runs, a share of the length
+FOOT_FADE = 0.22  # the foot's fade into the body, a share of the flame's length at its tallest
+
+
+def streak(name, guide, widths, fades, length, why, bright=1.1, taper=TAPER):
+    """Two rows on `guide` (a beam row, unseen, whose ends are the flame's foot and tip): the body and its core."""
+    first = widths[0][0]
+    base = {"Kind": "Beam", "On": guide,  # it rides the body through its guide: its scale, and gone with it
+            "Low": f"{guide}.Low", "High": f"{guide}.High", "Image": "fx_beam",
+            "FootFade": round(length * FOOT_FADE, 3)}
+    look = {"FaceCamera": True, "LightInfluence": 0, "TextureMode": "Stretch", "TextureLength": 1,
+            "TextureSpeed": 0, "Segments": 1}
+    body = dict(base, Taper=taper, Color=c3(BODY),
+                Beam=dict(look, LightEmission=0.15, Brightness=bright),
+                Tracks={"Width": widths, "Transparency": fades}, Why=why)
+    core = dict(base, Taper=round(min(1, taper * 2), 3), Color=c3(HEAT),
+                Beam=dict(look, LightEmission=1, Brightness=round(bright * 1.8, 2), ZOffset=0.05),
+                Tracks={"Width": [[k[0], round(k[1] * CORE_WIDE, 3)] + k[2:] for k in widths], "Transparency": fades,
+                        "Reach": [[first, CORE_REACH]]},
+                Why=f"{name}'s core: added white-gold heat down its middle, short of its tip")
+    return {name: body, f"{name}Core": core}
+
+
 def tongue(name, at, lean, length, width, beat, phase, seed):
-    """Two rows: the guide, unseen, from the foot up to the tip, carrying the lick and the sway; and the flame, a beam
-    from the guide's tip back down to its foot. The picture is stored tip-up (the content check of 2026-11-27, 17:00: a
-    foot-up flame reads as a drop with drops falling), and a beam lays the picture's top row at its first end, Low."""
+    """The guide, unseen, from the foot up to the tip, carrying the lick and the sway; and the flame on it, a streak
+    (its body and core) from the guide's foot to its tip."""
     rng = random.Random(seed)
     foot = v3(at[0], round(at[1] + TORSO_UP, 3), at[2])
-    beam_width = width * SHOWN / DRAWN
-    top, wide = lick_keys(rng, beat, phase, length, beam_width)
+    top, wide = lick_keys(rng, beat, phase, length, width * BEAM_WIDE)
     guide = {
         "Kind": "Beam",
         "Body": "HumanoidRootPart",
@@ -135,29 +164,8 @@ def tongue(name, at, lean, length, width, beat, phase, seed):
         "Why": f"{name}'s guide, unseen: the tongue's foot on the body and its tip, licking on its own beat ({beat} s), "
                "its lean swaying on a slower one",
     }
-    flame = {
-        "Kind": "Beam",
-        "On": f"{name}Guide",  # it rides the body through its guide: its scale, and gone with it when the body is let go
-        "Low": f"{name}Guide.High",
-        "High": f"{name}Guide.Low",
-        "Image": "fx_lick_Flame",
-        "Color": c3((255, 255, 255)),
-        "Beam": {
-            "FaceCamera": True,
-            "LightEmission": 0.3,  # mostly laid over: added light washes the rim and the orange to cream by day (rung 4)
-            "LightInfluence": 0,
-            "Brightness": 1.6,  # the core and the gold past 1, so they bloom at night as the target's do
-            "TextureMode": "Stretch",
-            "TextureLength": 1,
-            "TextureSpeed": 0,
-            "Segments": 1,
-        },
-        "Tracks": {
-            "Width": wide,  # taller is thinner
-            "Transparency": [[0, 1, "Quad Out"], [6, 0], [FAR, 0]],  # it catches in a tenth of a second
-        },
-        "Why": f"the hero: a flame tongue, {name}, drawn in fx_lick_Flame from its guide's tip down to its foot",
-    }
+    flame = streak(name, f"{name}Guide", wide, [[0, 1, "Quad Out"], [6, 0], [FAR, 0]], length * LICK[1],
+                   f"the hero: a flame tongue, {name}, a streak licking up from its foot; taller is thinner")
     return guide, flame
 
 
@@ -213,7 +221,9 @@ def light():
 def burn():
     rows = {}
     for n, (name, at, lean, length, width, beat, phase) in enumerate(TONGUES):
-        rows[f"{name}Guide"], rows[name] = tongue(name, at, lean, length, width, beat, phase, 70 + n)
+        guide, flame = tongue(name, at, lean, length, width, beat, phase, 70 + n)
+        rows[f"{name}Guide"] = guide
+        rows.update(flame)
         rows[f"{name}Embers"] = embers(f"{name}Guide", length)
     rows["Light"] = light()
     return {"Schema": "rows/1", "Effect": "StateBurn",

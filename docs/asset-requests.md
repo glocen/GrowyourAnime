@@ -6120,3 +6120,14 @@ Research, 2026-11-27, 02:40.
 3. The three go to the director side by side, with today's game and a shipped frame. Research brings no recommendation (the director, 11-27).
 4. After the pick, the chosen direction is built screen by screen, the fight HUD first.
 
+**How the review judges** (research's tier 1, from the Turing document's quality standard, 18A, at the director's word of 02:10 to weigh it):
+- **The dimensions, named before the targets arrive:** the three tests; reading the lead's life and the press at a glance on the smallest phone; the share of the screen left to the fight.
+- **Each dimension gets one of four answers** against today's game: BETTER, UNCHANGED, WORSE or NOT VERIFIED. They're never averaged into a score.
+- **Motion counts:** a prettier still that fails in motion is WORSE.
+- **Gemini reads blind:** it gets the three directions and today's game unlabelled, with no lean from research.
+- **The build follows the interaction rules** of the Turing document's appendix B, 23:
+  - five micro-states (rest, focus, pressed, pending, resolved), with disabled distinct from cooling;
+  - a cooldown that keeps its number readable;
+  - a touch area that never moves;
+  - plain verbs.
+

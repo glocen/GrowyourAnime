@@ -440,6 +440,7 @@ The director's words from 2026-11-27, 14:30 on, newest on top, in the table's ow
 
 | Date | The words | They cover |
 |---|---|---|
+| 2026-11-28, by 00:19 | "what is this childish baby hand holding talk hard: \"enemies are 10 level higher\" we dont need to mention it" | the Stages screen's line "Hard: enemies are 10 levels higher": removed |
 | 2026-11-27, by 23:58 | "ok skip grok" | no Grok subscription and no Grok helpers (research's, Gemini's and Codex's verdict: no) |
 | 2026-11-27, by 23:58 | "Stop iterating on  ahorrendous idea if it bad it bad it need an overhaul." | the game icon: the idea of a player smashing a shard with a light silhouette is dropped, not iterated; a new concept |
 | 2026-11-27, by 23:58 | "still bad" | Gemini's two painted takes of the player smashing the shard |

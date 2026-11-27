@@ -210,13 +210,20 @@ return {
 				for _, field in { "Rig", "Mask", "Type", "Action", "First", "Name" } do
 					t.Equal(`{id}: its kin's {field}`, (row :: any)[field], (of :: any)[field])
 				end
-				-- its own move (TR69 B), on its kin's signature's clip and beats
+				-- its own move (TR69 B), on its kin's signature's beats: on its kin's clip, or on a published clip of its own
+				-- whose recovery (Close) may run longer (the Dasher's fan, 1.5 s out of breath)
 				local mine, theirs = Actions.ById[row.Signature or ""], Actions.ById[of.Signature or ""]
 				t.Check(`{id}: a move of its own`, mine ~= nil and theirs ~= nil and mine ~= theirs)
 				if mine and theirs then
-					t.Equal(`{id}: its move's clip is its kin's`, mine.Clip, theirs.Clip)
+					local own = mine.Clip ~= theirs.Clip
+					t.Check(`{id}: its move's clip its kin's, or its own and published`, not own or (mine.Clip ~= nil and type(Animations.Ids[mine.Clip :: string]) == "number"),
+						tostring(mine.Clip))
 					for beat, second in theirs.Beats do
-						t.Equal(`{id}: its move's {beat}`, mine.Beats[beat], second)
+						if own and beat == "Close" then
+							t.Check(`{id}: its own clip's recovery no sooner than its kin's`, (mine.Beats[beat] or 0) >= second, tostring(mine.Beats[beat]))
+						else
+							t.Equal(`{id}: its move's {beat}`, mine.Beats[beat], second)
+						end
 					end
 					t.Equal(`{id}: aimed as its kin's`, mine.Aim, theirs.Aim)
 					t.Check(`{id}: guarded as its kin's`, (mine.Guard ~= nil) == (theirs.Guard ~= nil))
@@ -229,6 +236,7 @@ return {
 			local swing = Actions.ById[brawler.Action or ""]
 			t.Check("in the swing's reach", overhead ~= nil and swing ~= nil and overhead.Range <= swing.Range)
 			t.Check("its blow lands on the footprint laid on its first frame", overhead ~= nil and overhead.Aim ~= nil and overhead.Beats[overhead.Aim :: string] == 0)
+			t.Check("on its own clip, published", overhead ~= nil and overhead.Clip == "ShadeOverhead" and type(Animations.Ids.ShadeOverhead) == "number")
 			local swings, next = 0, false
 			local turns = {}
 			for _ = 1, 6 do

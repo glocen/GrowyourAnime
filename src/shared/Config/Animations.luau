@@ -27,6 +27,7 @@ return {
 		Guard = { In = 0.08, Out = 0.15 }, -- AR52's raise (Shade.clips.json)
 		Lunge = { In = 0.06, Out = 0.15 }, -- AR52's lunge
 		Cast = { In = 0.1, Out = 0.15 }, -- AR58's cast, the Support's (Shade_Support.clips.json)
+		Overhead = { In = 0.08, Out = 0.2 }, -- TR69 B's, the Brawler elite's overhead (Shade_Moves.clips.json)
 	},
 	-- The attack clips' snap, a live test beside today's fades (TR69 A, from TR66 row 12): On, every role here fades in
 	-- over In in place of its own (0.06 today). Off by default; NL_Debug:Invoke("Tune", "Animations.Snap.On", true).
@@ -43,6 +44,9 @@ return {
 		ShadeLungeElite = 104663452343076,
 		-- 2026-11-24: AR58's, the Support's
 		ShadeCast = 134130801801922,
+		-- 2026-11-27: TR69 B's, the Brawler elite's overhead and the Dasher elite's fan (Modulo's, 84b90151)
+		ShadeOverhead = 115853480810801,
+		ShadeFan = 113839312414722,
 		-- 2026-11-25: every other clip a shipped fighter plays, published under the group (docs/asset-log.md), so they move outside Studio (Cases/Clips)
 		RookCombo = 109507884509265, -- 2026-11-26: rebaked from Modulo's run beside the snap (TR66 row 13)
 		RookComboSnap = 135404826126237, -- 2026-11-26: the jab retimed, played by Swap (TR66 row 13)
@@ -178,6 +182,8 @@ return {
 		ShadeGuardElite = "Guard",
 		ShadeLungeElite = "Lunge",
 		ShadeCast = "Cast",
+		ShadeOverhead = "Overhead",
+		ShadeFan = "Lunge",
 		LamplighterIdle = "Idle",
 		LamplighterChallenge = "Challenge",
 		LamplighterWalk = "Walk",

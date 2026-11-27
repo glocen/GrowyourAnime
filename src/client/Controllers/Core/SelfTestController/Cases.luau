@@ -1687,11 +1687,17 @@ local cases = {
 		Stay = true,
 		Run = function(t: any)
 			-- The ga-action skill: the effect, the hit and the camera hang on the beat names, so the clip must carry them.
-			for _, action in Actions.List do
-				local base = action.Clip
+			for _, user in Actions.List do
+				local base = user.Clip
 				if base == nil then
 					continue
 				end
+				-- a block's lent clip carries its lender's beats (Definitions.Actions, Lent)
+				local lender = if user.Lent then Actions.ById[user.Lent] else nil
+				if user.Lent then
+					t.Check(`{user.Id}: its clip lent by {user.Lent}, which plays it`, lender ~= nil and lender.Clip == base)
+				end
+				local action = lender or user
 				-- a mirror plays in its clip's place (Config.Animations.Mirrors), so it carries the same beats
 				for _, clip in { base, Animations.Mirrors[base] } do
 					local sequence = Clips.Sequence(clip)

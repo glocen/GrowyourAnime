@@ -78,11 +78,12 @@ local HARD_WATCH = 14 -- seconds Hard's Shades are watched (TR69 E): a Guard's r
 
 type Start = { Id: string, At: number, End: number } -- server time; End math.huge while it runs
 type Watched = { Model: Model, Starts: { Start } }
--- each elite: its def, its own clip in place of its kin's and that kin's ("" for none)
+-- each elite: its def, its own clip in place of its kin's and that kin's ("" for none); TR69 B's moves are the Brawler's
+-- overhead and the Dasher's fan
 local ELITES = {
-	{ "brawler_elite", "", "" },
+	{ "brawler_elite", "ShadeOverhead", "" },
 	{ "guard_elite", "ShadeGuardElite", "ShadeGuard" },
-	{ "dasher_elite", "ShadeLungeElite", "ShadeLunge" },
+	{ "dasher_elite", "ShadeFan", "ShadeLunge" },
 }
 
 local player = Players.LocalPlayer
@@ -149,7 +150,7 @@ function ShadeCases.Cases(given: Given): { any }
 
 	return {
 		{
-			Name = "Shades (AR57): each elite swings Attack every time, wears its mask twice, and the Guard's and the Dasher's play their own raise and lunge",
+			Name = "Shades (AR57): each elite swings Attack every time, wears its mask twice, and plays its own move's clip (TR69 B: the Brawler's overhead, the Guard's raise, the Dasher's fan)",
 			Run = function(t: any)
 				for _, elite in ELITES do
 					local def, own, kin = elite[1], elite[2], elite[3]
@@ -204,7 +205,9 @@ function ShadeCases.Cases(given: Given): { any }
 					t.Check(`{def}: every swing is Attack`, right, table.concat(swings, ", "))
 					if own ~= "" then
 						t.Check(`{def}: it plays its own {own}`, played[own] == true)
-						t.Check(`{def}: never its kin's {kin}`, played[kin] ~= true)
+						if kin ~= "" then
+							t.Check(`{def}: never its kin's {kin}`, played[kin] ~= true)
+						end
 					end
 				end
 			end,

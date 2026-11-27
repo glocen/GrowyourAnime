@@ -474,17 +474,19 @@ local function start(f: Fighter, action: Actions.Action, at: number)
 		f.Model:SetAttribute("Ready", at + cooldown)
 	end
 	-- A row with Every (TR69 B): its signature comes once Every - 1 of its Action have started since the last, never by a clock.
+	-- An enemy's signature is its row's, first in its kit (f.Signature is a lead's).
 	local row = if f.Side ~= "Lead" then Enemies.ById[f.Def] else nil
 	local every = if row then row.Every else nil
-	if every and f.Signature then
-		if action.Id == f.Signature.Id then
+	local own = if row then row.Signature else nil
+	if every and own then
+		if action.Id == own then
 			f.Swings = 0
-			f.ReadyAt[action.Id] = math.huge
+			f.ReadyAt[own] = math.huge
 		elseif row and action.Id == row.Action then
 			local swings, next = Fight.Swung(f.Swings, every)
 			f.Swings = swings
 			if next then
-				f.ReadyAt[f.Signature.Id] = at -- next, once this one ends
+				f.ReadyAt[own] = at -- next, once this one ends
 			end
 		end
 	end

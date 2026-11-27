@@ -73,6 +73,9 @@ export type Move = {
 export type Action = {
 	Id: string,
 	Clip: string?, -- the clip a client plays (Config.Animations); nil: a box rig's stand-in motion on the same beats
+	-- A block's clip lent by another action (its Id) until its own is made: the clip carries the lender's beats, not
+	-- this action's.
+	Lent: string?,
 	-- Its effect on its beats: a Config.Effects.Rows entry (FighterController/Effects, Play), or one of the three older
 	-- signatures (Config.Effects.Older) until the finish pass; nil: a landed hit's spark only
 	Effect: string?,
@@ -485,9 +488,9 @@ local rows: { Action } = {
 		-- street on the first frame and held there (Aim at Wind), and lands on Strike on whoever stands inside the disc; then
 		-- 1.5 s spent. Its hit is its length's worth of the swing's rate, so an elite that lands it deals what its swings
 		-- would. Its look is its Effect's rows (Scintilla's O2, research's pick): the ring closing round the mask, the
-		-- footprint heating. A block: no clip of its own yet, so it stands through the wind-up (Modulo's, retimed). Seeds.
+		-- footprint heating. Its clip is Modulo's (ShadeOverhead, its markers Wind and Strike). Seeds.
 		Id = "ShadeOverhead",
-		Clip = nil,
+		Clip = "ShadeOverhead",
 		Effect = "ShadeOverhead",
 		Length = 2.7,
 		CancelFrom = 2.7,
@@ -507,14 +510,15 @@ local rows: { Action } = {
 	{
 		-- TR69 B, the Dasher elite's: DasherLunge's beats, its line a fan of three (research, 22:15): the middle lane at its
 		-- target and the others 25 degrees either side, drawn at once on Line and run in one lunge to Land, whoever stands
-		-- on any lane taken; then 1.5 s out of breath. Its look is its Effect's rows (Scintilla's F1). Seeds.
+		-- on any lane taken; then 1.5 s out of breath to Close. Its look is its Effect's rows (Scintilla's F1); its clip
+		-- Modulo's (ShadeFan, DasherLunge's markers, Close at 2.5). Seeds.
 		Id = "DasherFan",
-		Clip = "ShadeLunge",
+		Clip = "ShadeFan",
 		Effect = "DasherFan",
 		Length = 2.75,
 		CancelFrom = 2.75,
 		Cooldown = 6,
-		Beats = { Line = 0.2667, Lunge = 1.0, Land = 1.25, Close = 2.05 },
+		Beats = { Line = 0.2667, Lunge = 1.0, Land = 1.25, Close = 2.5 },
 		Aim = "Line",
 		Moves = {
 			Lunge = { Seconds = 0.25, Gap = 0, Most = 12, Along = true },
@@ -649,6 +653,7 @@ local rows: { Action } = {
 		-- KeeperLight's Sweep row. Its block clip is the swing's, whose strike meets the Sweep beat (0.8 against 0.9).
 		Id = "KeeperSweep",
 		Clip = "LamplighterSwing",
+		Lent = "KeeperSwing",
 		Length = 2.5,
 		CancelFrom = 2.5,
 		Cooldown = 0,

@@ -5033,7 +5033,7 @@ Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit firs
     - The Back, the lance, the needles and the ring are unchanged, so the bloom stays at this size.
     - The arm along the blow is the lance's, so the sheet's arms stand upright.
   - **The sheets and their look** on a pale and a night ground: `build/handoff/Hits/sheets/`, and `checkpoint/star_sheets_preview.png`.
-    - Uploaded under the group, moderation Reviewing (the asset log's row, with the ids).
+    - Uploaded under the group, Approved at 12:51 (the asset log's row, with the ids).
     - Content check PASS (12:45), with its conditions in that row.
   - **Tests:**
     - Taken: logic offline 10,676 passed, 0 failed.

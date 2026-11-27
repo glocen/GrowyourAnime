@@ -16,10 +16,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 Held by the memory guard (Studio 4.1 GB, under 2 GB free): the keeper ring case, the Stages screen, Pip's model case, and his day and dusk capture.
 - **Next:** those Runs once memory clears; AR69's capture on research's word; the pre-publish smoke; the publish on the director's word.
 
-**Modulo (assets).** 2026-11-28, 00:14. **AR63, Pip's finish** (take A, face 1, `docs/requests/AR63.md`): his files are in `build/handoff/Pip/make/`. The fitted hair casts a shade on his brow, and the lantern's panes are lit like frosted glass. The clips stand as published, with all nine audits passing. The portraits are cut.
-- **AR70:** the director rejected S2 ("horrendous", overhaul). The upload set is emptied; the icon goes to research's AI 2D line.
-- **Waiting:** research's look at `pip_make_sheet.png`, then Faber's install.
-- **Now:** AR74, the HUD left cluster's targets.
+**Modulo (assets).** 2026-11-28, 00:40. **AR75, step 1** (`docs/requests/AR75.md`): three grey layouts of the whole frame (the base's plan and the HUD, at rest and in a fight), beside today's frame and shipped frames, in `build/handoff/UI/ar75/layouts/`. Content check PASS.
+- **Waiting:** research's pick. Step 2 (the painted frames) is research's; the build waits for the pick.
+- **AR63:** passed by research (00:15); Faber installs. **AR70:** rejected by the director; the icon is on research's AI 2D line.
 
 **Scintilla (effects).** 2026-11-28, 00:36. AR69's round 2 is written, taking research's three causes (AR69.md): the tongues' shape now comes from soft pictures (a round foot, widest a quarter up, a tapered tip), the fall's ball is see-through from 0.16 s, and the ring is one soft flat particle, gold to orange. The three pictures passed the content check and are with Faber for upload, along with the emitter tint and the beams' end turn. The sheet waits on memory. No Studio turn held, nothing running.
 - **Next:** round 2's rows into src once the pictures have ids, then the sheet, a Studio take and research's pass. Haymaker's overhaul once AR69 passes. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.

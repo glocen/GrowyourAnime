@@ -688,6 +688,14 @@ ROOK_WORDS = dict(
 )
 
 
+def internal(name):
+    """Where a sheet holding the reference's pictures goes: build/reference/takes/ only (gitignored; the reference guard
+    refuses it anywhere else), never beside the shared output."""
+    home = REPO / "build" / "reference" / "takes"
+    home.mkdir(parents=True, exist_ok=True)
+    return home / name
+
+
 def sheet_run(out, words=ROOK_WORDS, beside=None):
     """The takes' sheet. `words` are its own (ROOK_WORDS's keys); `beside`, the two reference units as (file, its
     pixels a stud), BESIDE at BESIDE_PX if not given."""
@@ -814,7 +822,7 @@ def sheet_run(out, words=ROOK_WORDS, beside=None):
     for (name, page), text in zip(parts, text_of):
         rs.paste(page, rs.text_layer(W, page.shape[0], text), 0, 0)
         if name == "beside":
-            rs.save(page, out / f"{words['stem']}_beside.png")
+            rs.save(page, internal(f"{words['stem']}_beside.png"))
             continue
         rs.save(page, out / f"{words['stem']}_takes_{name}.png")
         whole[y:y + page.shape[0]] = page
@@ -887,7 +895,7 @@ def proof_run(out, key, title=None, about="Common / Red / Warrior / Fire.", whos
             rs.paste(page, shot, i * 400 + (400 - shot.shape[1]) // 2, 56 + feet - int(shot.shape[0] * 0.994))
     rs.paste(page, rs.text_layer(1200, page.shape[0], [(gap, 16, 18, f"{tag} square on, between two Anime Vanguards units at the "
                                                                     "same height. Internal: the two are reference.", ink)]), 0, 0)
-    rs.save(page, out / f"{stem}_beside.png")
+    rs.save(page, internal(f"{stem}_beside.png"))
 
 
 if __name__ == "__main__":

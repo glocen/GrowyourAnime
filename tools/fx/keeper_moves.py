@@ -27,6 +27,12 @@ back from its High end only.
 
 Written at the keeper's scale (Area 1.5, as KeeperSignature), so studs are as seen. KeeperSwing is grey: every colour
 its grey.
+
+F1's sizes are the target's times SEEN. The target was drawn at 66 px a stud (keeper_flare_targets.py, PX), but at the
+keeper's entrance the game draws about 26: the lantern, 3.5 to 4 studs across, is about 90 px wide in the target's own
+view and in today's take, and the lance's beam measures the same. Built at the target's studs, every layer stood at
+two fifths of its target and the lantern hid its halo (fix round 1, AR7, 2026-11-27). A card's light falls off at
+0.45 of its half-size (fx_glow), so a glow of the target's radius r is a card 2 r / 0.45 across.
 """
 import json
 import sys
@@ -43,7 +49,9 @@ GOLD = (255, 199, 107)  # F1's hot core, warm, never white (keeper_flare_targets
 AMBER = (255, 117, 23)  # F1's lance and pool
 WARM = (224, 122, 22)  # C4's band #E07A16: the glow round the lance and the lantern (the target's deep ember, kept
 # off red)
-OVER = 1.1  # studs over the lantern's middle the lance starts, out of its top (the target)
+SEEN = 2.5  # the target's stud in the game's, at the keeper's entrance (above)
+FALL = 0.45  # fx_glow's falloff: its light at e^-1 this share of its half-size out
+OVER = round(1.1 * SEEN, 3)  # studs over the lantern's middle the lance starts, out of its top (the target)
 HOLD, GONE = 6, 20  # frames from Stamp: the lance whole to HOLD, burnt down to the foot by GONE
 
 
@@ -105,6 +113,9 @@ def challenge():
         return [[0, round(1 - 0.35 * base, 3), "Linear"], [2, round(1 - base, 3), "Linear"],
                 [HOLD, round(1 - base, 3), "Quad Out"], [12, round(1 - 0.37 * base, 3), "Linear"], [GONE, 1]]
 
+    def glow(r):  # a card whose light reaches as far as the target's glow of radius r (target studs)
+        return round(2 * r * SEEN / FALL, 2)
+
     def thin(width):  # the lance thins to half from 4 to 16
         return [[0, width, "Linear"], [4, width, "Sine InOut"], [16, round(width / 2, 3)]]
 
@@ -128,17 +139,19 @@ def challenge():
             "Kind": "Beam", "From": "Stamp", "Body": "Lantern", "Low": "Wick.High", "High": "Foot.Low",
             "Taper": round(foot / top, 3), "Image": "fx_beam", "Grey": "", "Color": c3(colour),
             "Beam": {**beam, "Brightness": bright},
-            "Tracks": {"At": [[0, v3(0, 0, 0)]], "Width": thin(top), "Transparency": strength(base),
+            "Tracks": {"At": [[0, v3(0, 0, 0)]], "Width": thin(round(top * SEEN, 3)), "Transparency": strength(base),
                        "Reach": [[0, 0.12, "Quad In"], [3, 1]]},  # down the pole, speeding up: on the foot on 3
             "Why": why + ": drawn down from the lantern to the foot, speeding up, then burnt out from the top down"}
     rows["Halo"] = {"Kind": "Card", "From": "Stamp", "Body": "Lantern", "Image": "fx_glow", "Color": c3(WARM), "Tracks": {
-        "At": [[0, v3(0, 0, 0)]], "Size": [[0, 2.2, "Quad Out"], [HOLD, 2.6, "Linear"], [GONE, 2.0]],
+        "At": [[0, v3(0, 0, 0)]], "Size": [[0, glow(1.0), "Quad Out"], [HOLD, glow(1.2), "Linear"], [GONE, glow(0.9)]],
         "Transparency": [[0, 0.75, "Linear"], [2, 0.45, "Linear"], [HOLD, 0.45, "Quad In"], [GONE, 1]]},
-        "Why": "the lantern answers: a warm halo round it as the lance leaves, dying as it burns down"}
+        "Why": "the lantern answers: a warm halo round it as the lance leaves, dying as it burns down (the target's 1.2 "
+               "studs of radius: its light shows round the lantern, which hides its middle)"}
     rows["Flare"] = {"Kind": "Card", "From": "Stamp", "Body": "Lantern", "Image": "fx_glow", "Color": c3(AMBER), "Tracks": {
-        "At": [[0, v3(0, 0, 0)]], "Size": [[0, 0.8, "Quad Out"], [2, 1.1, "Linear"], [GONE, 0.8]],
+        "At": [[0, v3(0, 0, 0)]], "Size": [[0, glow(0.36), "Quad Out"], [2, glow(0.5), "Linear"], [GONE, glow(0.36)]],
         "Transparency": [[0, 0.5, "Linear"], [2, 0, "Linear"], [HOLD, 0, "Quad In"], [GONE, 1]]},
-        "Why": "the lantern's own flare, hot at its heart"}
+        "Why": "the lantern's own flare, hot at its heart (inside the lantern, only its rim shows: its heart needs a card "
+               "drawn toward the camera)"}
 
     def on_street(row):
         row.update({"From": "Stamp", "Body": "PoleFoot", "Ground": True, "Hold": True})
@@ -147,24 +160,24 @@ def challenge():
         "Lifetime": [round(17 / 60, 4), round(17 / 60, 4)], "Speed": [0.01, 0.01], "EmissionDirection": "Top",
         "Orientation": "VelocityPerpendicular",  # flat on the street, facing up
         "LockedToPart": False, "Rotation": [0, 0], "RotSpeed": [0, 0],
-        "Size": [[0, 0.8], [0.3, 2.2], [1, 2.4]],  # out over 5 frames, easing (the target: 0.6 to 1.8 studs across)
+        "Size": [[0, 0.8 * SEEN], [0.3, 2.2 * SEEN], [1, 2.4 * SEEN]],  # out over 5 frames, easing (the target: 0.6 to 1.8 studs across)
         "Transparency": [[0, 0], [0.35, 0.55], [1, 1]], "Color": c3(AMBER), "LightEmission": 1, "LightInfluence": 0,
         "Brightness": 1.6, "ZOffset": 0.3},
         "Emit": [[3, 1]], "Tracks": {"At": [[0, v3(0, 0, 0)]]},
         "Why": "where the lance strikes: a flat pool of light on the street at the pole's foot, spreading and dying"})
     rows["Point"] = on_street({"Kind": "Emitter", "Image": "fx_glow", "Grey": "", "Emitter": {
         "Lifetime": [round(14 / 60, 4), round(14 / 60, 4)], "Speed": [0.01, 0.01], "EmissionDirection": "Top",
-        "LockedToPart": False, "Rotation": [0, 0], "RotSpeed": [0, 0], "Size": [[0, 0.5], [0.3, 0.8], [1, 0.7]],
+        "LockedToPart": False, "Rotation": [0, 0], "RotSpeed": [0, 0], "Size": [[0, 0.5 * SEEN], [0.3, 0.8 * SEEN], [1, 0.7 * SEEN]],
         "Transparency": [[0, 0], [0.4, 0.3], [1, 1]], "Color": c3(GOLD), "LightEmission": 1, "LightInfluence": 0,
         "Brightness": 2, "ZOffset": 0.6},
-        "Emit": [[3, 1]], "Tracks": {"At": [[0, v3(0, 0.25, 0)]]},
+        "Emit": [[3, 1]], "Tracks": {"At": [[0, v3(0, 0.25 * SEEN, 0)]]},
         "Why": "the strike's gold point at the foot, facing the camera"})
-    sparks = needles(6, [9, 15], [0.12, 0.2], 65, 0.55, 3, direction="Top", colour=GOLD)
-    sparks["Tracks"]["At"] = [[0, v3(0, 0.1, 0)]]
+    sparks = needles(6, [9 * SEEN, 15 * SEEN], [0.12, 0.2], 65, 0.55 * SEEN, 3, direction="Top", colour=GOLD)
+    sparks["Tracks"]["At"] = [[0, v3(0, 0.1 * SEEN, 0)]]
     sparks["Why"] = "a fan of short sparks off the strike, up and out, fast then slow, never falling: light, not fire"
     rows["Sparks"] = on_street(sparks)
-    rows["Shine"] = on_street({"Kind": "Light", "Color": c3(AMBER), "Range": 9, "Tracks": {
-        "At": [[2, v3(0, 0.8, 0)]], "Brightness": [[2, 0, "Linear"], [3, 3, "Quad Out"], [GONE, 0]]},
+    rows["Shine"] = on_street({"Kind": "Light", "Color": c3(AMBER), "Range": 9 * SEEN, "Tracks": {
+        "At": [[2, v3(0, 0.8 * SEEN, 0)]], "Brightness": [[2, 0, "Linear"], [3, 3, "Quad Out"], [GONE, 0]]},
         "Why": "the strike lights the street and the keeper's legs"})
     return effect("KeeperChallenge", "The keeper's challenge, KeeperChallenge's own effect: research's lean F1, the drop "
                   "(Scintilla).",

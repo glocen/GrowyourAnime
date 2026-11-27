@@ -133,7 +133,7 @@
         "Top": [
           [
             0,
-            1.1
+            2.75
           ]
         ],
         "Reach": [
@@ -196,17 +196,17 @@
         "Width": [
           [
             0,
-            1.0,
+            2.5,
             "Linear"
           ],
           [
             4,
-            1.0,
+            2.5,
             "Sine InOut"
           ],
           [
             16,
-            0.5
+            1.25
           ]
         ],
         "Transparency": [
@@ -290,17 +290,17 @@
         "Width": [
           [
             0,
-            0.32,
+            0.8,
             "Linear"
           ],
           [
             4,
-            0.32,
+            0.8,
             "Sine InOut"
           ],
           [
             16,
-            0.16
+            0.4
           ]
         ],
         "Transparency": [
@@ -384,17 +384,17 @@
         "Width": [
           [
             0,
-            0.12,
+            0.3,
             "Linear"
           ],
           [
             4,
-            0.12,
+            0.3,
             "Sine InOut"
           ],
           [
             16,
-            0.06
+            0.15
           ]
         ],
         "Transparency": [
@@ -465,17 +465,17 @@
         "Size": [
           [
             0,
-            2.2,
+            11.11,
             "Quad Out"
           ],
           [
             6,
-            2.6,
+            13.33,
             "Linear"
           ],
           [
             20,
-            2.0
+            10.0
           ]
         ],
         "Transparency": [
@@ -500,7 +500,7 @@
           ]
         ]
       },
-      "Why": "the lantern answers: a warm halo round it as the lance leaves, dying as it burns down"
+      "Why": "the lantern answers: a warm halo round it as the lance leaves, dying as it burns down (the target's 1.2 studs of radius: its light shows round the lantern, which hides its middle)"
     },
     "Flare": {
       "Kind": "Card",
@@ -530,17 +530,17 @@
         "Size": [
           [
             0,
-            0.8,
+            4.0,
             "Quad Out"
           ],
           [
             2,
-            1.1,
+            5.56,
             "Linear"
           ],
           [
             20,
-            0.8
+            4.0
           ]
         ],
         "Transparency": [
@@ -565,7 +565,7 @@
           ]
         ]
       },
-      "Why": "the lantern's own flare, hot at its heart"
+      "Why": "the lantern's own flare, hot at its heart (inside the lantern, only its rim shows: its heart needs a card drawn toward the camera)"
     },
     "Pool": {
       "Kind": "Emitter",
@@ -594,15 +594,15 @@
         "Size": [
           [
             0,
-            0.8
+            2.0
           ],
           [
             0.3,
-            2.2
+            5.5
           ],
           [
             1,
-            2.4
+            6.0
           ]
         ],
         "Transparency": [
@@ -683,15 +683,15 @@
         "Size": [
           [
             0,
-            0.5
+            1.25
           ],
           [
             0.3,
-            0.8
+            2.0
           ],
           [
             1,
-            0.7
+            1.75
           ]
         ],
         "Transparency": [
@@ -733,7 +733,7 @@
             {
               "Vector3": [
                 0,
-                0.25,
+                0.625,
                 0
               ]
             }
@@ -760,8 +760,8 @@
           0.2
         ],
         "Speed": [
-          9,
-          15
+          22.5,
+          37.5
         ],
         "Drag": 9,
         "Acceleration": {
@@ -775,11 +775,11 @@
         "Size": [
           [
             0,
-            0.55
+            1.375
           ],
           [
             0.6,
-            0.385
+            0.9624999999999999
           ],
           [
             1,
@@ -834,7 +834,7 @@
             {
               "Vector3": [
                 0,
-                0.1,
+                0.25,
                 0
               ]
             }
@@ -856,7 +856,7 @@
           23
         ]
       },
-      "Range": 9,
+      "Range": 22.5,
       "Tracks": {
         "At": [
           [
@@ -864,7 +864,7 @@
             {
               "Vector3": [
                 0,
-                0.8,
+                2.0,
                 0
               ]
             }

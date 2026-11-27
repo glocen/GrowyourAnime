@@ -1398,6 +1398,23 @@ This is delivery 4, the block clip of section 5 polished, on research's open not
     - Tested in play: FAILED on the main read.
     - Visually reviewed by me only.
     - Not director-accepted.
+- **F1, fix round 1 (Scintilla, 2026-11-27, 12:41), for Faber's review:**
+  - **The cause, found from the dusk take at full size:** the rows were built at the target's studs, and the target's stud is too big.
+    - The target was drawn at 66 px a stud (`keeper_flare_targets.py`, `PX`, from "the keeper stands about 500 px tall").
+    - At the entrance the game draws about 26 px a stud:
+      - the lantern (3.5 to 4 studs across) is about 90 px wide, both in the target's own view and in the take;
+      - the lance's beam measures the same.
+    - So every layer stood at two fifths of its target: the lance 5 px where the target has 20.
+    - The halo and the flare were also smaller than the lantern. They sat at its middle, and cards are depth-tested, so the lantern hid them. That's why it never warmed.
+  - **The change:** in `tools/fx/keeper_moves.py`, every F1 size is the target's times 2.5 (`SEEN`): the beams' widths, the lance's top over the lantern, the pool, the point, the sparks and the light.
+    - The two cards now take the target's glow radius through fx_glow's own falloff (`FALL`). The halo is 11 to 13 studs, so its light shows round the lantern. The flare is 4 to 5.6.
+    - Timings and colours are unchanged. Taken: logic offline 10,736 passed, 0 failed.
+  - **Left, if the take shows it:** the flare's hot middle stays inside the lantern. Drawing it in front needs a card offset toward the camera, `BillboardGui.StudsOffset`, which a Card row can't carry yet (Faber's code, asked only if the take needs it).
+  - **Status:**
+    - Implemented.
+    - Not tested in play: the next Studio turn takes it at the entrance at dusk.
+    - Not visually reviewed.
+    - Not director-accepted.
 ## AR10. Kirra, the courier (Modulo, then Faber)
 
 Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three starters (`docs/roster.md`, her row: Common, Agility, Assassin, Zone 1). The four deliveries of AR1, measured against Rook, Pip and Lyric. Her install waits for "Content as data" (`docs/production-plan.md`); her art doesn't.

@@ -35,6 +35,8 @@
 --            motion, to where it was Lag frames before and Beyond studs further. Like: another Beam whose Width and
 --            Transparency it takes when it has none (footed on its top, the width there). FootFade: studs from Low over
 --            which it fades in. Taper: the width at High as a share of the width at Low.
+--            Both ends turn as the row Low names does (else as its own place), so Beam's CurveSize0 and CurveSize1
+--            bend along that row's X, not the world's (AR69 round 2).
 --   Bands    a Mesh row's tracks for one of its parts, over the row's own.
 -- Free (an effect's): the beat from which its rows run on the free clock, so a hold on its hit never stills them, and an
 -- early end lets what it left play out (FighterController/Effects, Play); none: the action's clock, and an early end

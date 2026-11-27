@@ -706,7 +706,11 @@ function Rows.Play(name: string, anchor: CFrame, scale: number, options: Options
 				local on = shown and not piece.Blank and width > 0 and fade < 1 and low ~= nil and high ~= nil
 				if low and high then
 					piece.Low, piece.High = low, high
-					ends[1].WorldPosition, ends[2].WorldPosition = low, high
+					-- Both ends turned as the row its Low names is (its guide), else as its own place: a CurveSize bends along
+					-- that frame's X, not the world's (AR69 round 2, Scintilla's tongues). The holder stands at identity.
+					local guideName = if row.Low then refRow(row.Low) else nil
+					local turn = (if guideName and pieces[guideName] then pieces[guideName].Frame else piece.Frame).Rotation
+					ends[1].WorldCFrame, ends[2].WorldCFrame = CFrame.new(low) * turn, CFrame.new(high) * turn
 					local v = math.clamp(fade, 0, 1)
 					local length = (high - low).Magnitude
 					local footFade = row.FootFade

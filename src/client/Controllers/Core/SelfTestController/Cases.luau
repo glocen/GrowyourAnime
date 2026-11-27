@@ -583,6 +583,70 @@ local cases = {
 		end,
 	},
 	{
+		Name = "Effects: a Beam's ends turn as the row its Low names, so a CurveSize bends along that row's X",
+		Stay = true,
+		Run = function(t: any)
+			-- AR69 round 2 (Scintilla's tongues): the ends were placed by position alone, the holder at identity, so a
+			-- CurveSize bent toward the world's X. A written Beam row copied twice into a scratch effect: a guide turned a
+			-- quarter about up, and a tongue footed on the guide's High.
+			local source: any = nil
+			for _, effect in EffectsConfig.Rows :: any do
+				for _, row in effect.Rows do
+					if row.Kind == "Beam" and not row.Trail and not effect.Grey then
+						source = row
+						break
+					end
+				end
+				if source then
+					break
+				end
+			end
+			t.Check("a written Beam row to copy", source ~= nil)
+			if source == nil then
+				return
+			end
+			local function bare(): any
+				local row = table.clone(source)
+				row.On, row.Body, row.From, row.Like, row.Low, row.High, row.Ground, row.Hold = nil, nil, nil, nil, nil, nil, nil, nil
+				local tracks = table.clone(source.Tracks or {})
+				tracks.At, tracks.Spin, tracks.Tilt, tracks.Reach = nil, nil, nil, nil
+				row.Tracks = tracks
+				return row
+			end
+			local guide, tongue = bare(), bare()
+			guide.Turn = Vector3.new(0, 90, 0)
+			tongue.Low = "Guide.High"
+			local NAME = "NL_TestBeamTurn"
+			local all = EffectsConfig.Rows :: any
+			all[NAME] = { Area = 1, Grey = false, Rows = { Guide = guide, Tongue = tongue } }
+			local root = t.Character():FindFirstChild("HumanoidRootPart") :: BasePart
+			local foot = root.Position + root.CFrame.LookVector * 20 - Vector3.new(0, 3, 0)
+			local anchor = CFrame.lookAt(foot, foot + root.CFrame.LookVector)
+			local want = (anchor * CFrame.Angles(0, math.rad(90), 0)).RightVector
+			local ok, problem = pcall(function()
+				local player = Rows.Play(NAME, anchor, 1)
+				player.Step(1)
+				local function axis(rowName: string): Vector3?
+					for _, made in player.Parts(rowName) do
+						local low = made:FindFirstChild("Low")
+						if low and low:IsA("Attachment") then
+							return low.WorldAxis
+						end
+					end
+					return nil
+				end
+				local own, footed = axis("Guide"), axis("Tongue")
+				t.Check("the guide's ends turn as its own place", own ~= nil and (own - want).Magnitude < 1e-3, tostring(own))
+				t.Check("the tongue's ends turn as its guide, not the world", footed ~= nil and (footed - want).Magnitude < 1e-3, tostring(footed))
+				player.Destroy()
+			end)
+			all[NAME] = nil
+			if not ok then
+				error(problem, 0)
+			end
+		end,
+	},
+	{
 		Name = "Effects: an Emitter row with Tint takes a given tint for its particles' colour, else its own",
 		Stay = true,
 		Run = function(t: any)

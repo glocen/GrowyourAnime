@@ -5433,6 +5433,35 @@ For the install, the cooldown is one layer over the press:
   3. **The slash ends at the ring,** clear of Auto. Pass.
 - **What the cases can't show:** the pop and the firing in motion, judged in play once Faber installs them. The final still wants a shipped skill bar beside it (Sailor Piece, the director's item 10).
 
+### Modulo: piece 2's finish, two takes for the pick (2026-11-27, 01:37; started 01:35)
+
+These are Rail and Tally as picked, in F2's construction and the painted set's icons. The files are in `build/handoff/UI/hud_overhaul/piece2_finish/`:
+- `K1_base.png` and `K2_base.png`, each with `_small` (568 wide) and `_close` (the strip and the names at 3x);
+- `K1_return.png` and `K2_return.png`, each with `_small`;
+- `dock_states.png`: the dock at the base, and a long press on Home.
+
+The script is `tools/ui/hud_base_finish.py`.
+
+- **One correction to Rail:** the dock's cells are icons with no word. The name shows on a long press, as a chip beside the cell. This follows the director's word of 2026-11-15 (`docs/decisions.md`: "All three icons"), which Rail's take had missed by printing BASE, HOME and PLAY.
+- **The icons, painted in the set's way:**
+  - Base is a house with the generator's bolt on its door.
+  - Home is its panel of cards, fanned, the front one gold.
+  - Play is a pennant.
+  - Credits' coin, Power's bolt and the battery.
+- **The dock:** one steel rail, with the cell you're on gold-rimmed and lit. Beside Anime Crusaders X's lobby (`build/scratch/modulo/piece2f/beside_shipped.png`, internal), the icons first filled half their cells and read sparse, so they now fill them (42 to 44 points in 58).
+- **The pair asks one question:** where do the systems' colours go? Research's adaptation leaves this open under "Hue per system".
+  - **K1, Steel:** one steel family on every plate. Colour sits only in the icons and the live bars, and the names are white.
+  - **K2, Hued:** each system's colour on its edge, never as a fill or a glow:
+    - gold under Credits and cyan under Power;
+    - the return panel's Credits card edged in gold, and its list in azure (yours);
+    - the machines' names in their job's hue, pale to full.
+- **Both:**
+  - Every display word is in Fredoka One with a dark stroke. The world's names have the heaviest stroke (24% of the cap), for the bright sky.
+  - The meta words ("made", "used", the panel's lines) are flat Builder Sans.
+  - The +1,240 is gold, pale to full. The close hint is a stroked word with its ring.
+- **Content check:** PASS.
+- **Next:** research's pick in pairs, then the finish of the one picked. Faber builds after piece 1 is judged in play, as research said.
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

@@ -5521,6 +5521,23 @@ K2's files replace the takes in `build/handoff/UI/hud_overhaul/piece2_finish/`: 
 - **Piece 2's finish passes, for Faber's build.**
 - **Outside piece 2:** the lead card fails rule 1 on the smallest phone (the level at 6.7 px, ROOK at 9.0, the health at 7.0). It joins Faber's piece 1 must-fixes now: size tokens per layout class.
 
+### Research's call after the director's 02:04 word: the finish made as painted images (Quaestor, 2026-11-27, 02:05)
+
+- **The diagnosis:**
+  - The game shows a block: F2's layout, built from Roblox's strokes and gradients.
+  - The surface study's recipe (`docs/research/anime-crusaders-ui-surface.md`, "What our finish should do") was never built at its craft. Ring stacks with painted light, gradient fills, an inner vignette, texture at a whisper, heavy stroked type and painted icons are what make the named games' panels read as art.
+  - Our SVG targets settled the layout only.
+- **The technique changes, not the layouts:** every plate becomes a painted image at 2x, sliced as a 9-slice, built to the study's recipe in our own style.
+- **Modulo's Blender kit of bevelled metal and glass** stays a candidate for one plate. The named bar is graphic and cel-lit, not rendered metal, and Blender waits on memory.
+- **The next step:**
+  - One whole frame, the fight HUD, in painted images, at phone size, beside a shipped frame.
+  - Two techniques have now missed, so it goes to the director with the images (AGENTS.md, "The checks").
+  - The press's art (T1, T2) joins the same frame.
+- **Meanwhile:**
+  - Faber keeps the size, 14 px, type and icon fixes, which hold under any surface.
+  - Faber stops the stroke kit's glow, grain and vignette.
+  - Piece 2's install waits for the frame's pick.
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

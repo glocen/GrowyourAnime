@@ -873,6 +873,8 @@ def hit(t):
     t.key(12, "back on it", ease="sine", T=(18, -6, 0), crouch=0.2, look=EYES, H=(0, 0, 0), RA=(20, 0, 14), LA=(-28, 0, -10))
     t.key(18, "settled", T=HUB["T"], crouch=HUB["crouch"], RA=HUB["RA"], LA=HUB["LA"])
     t.tail(0, phase=0.0)
+    # the make's short tail hangs where her head is thrown back: out to her left first, so it rises beside her head
+    t.tail(2, "sine", aim=0.5, curl=0.3, dir=(-0.7, -0.7, -0.1), fall=0.0)
     t.tail(4, "sine", aim=0.55, curl=0.5, dir=(-0.5, 0.6, 0.6), ripple=14.0, swing=8.0, fall=0.4, phase=0.7)
     t.tail(18, None, aim=0.0, curl=0.0, ripple=TAIL["ripple"], swing=TAIL["swing"], fall=0.0, phase=1.5)
     t.stand_ins.append(("shade", SHADE))
@@ -901,6 +903,7 @@ def down(t):
     t.key(52, "lying", ease="sine", **LYING)
     t.key(66, ease="hold", **LYING)
     t.tail(0, phase=0.0)
+    t.tail(2, "sine", aim=0.5, curl=0.3, dir=(-0.8, -0.5, 0.1), fall=0.0)  # beside her head as it's thrown back, as Hit's
     t.tail(16, "in", aim=0.55, curl=0.6, dir=(0.0, 0.8, 0.35), ripple=12.0, fall=0.5, phase=1.0)
     t.tail(34, "out", aim=0.8, curl=1.0, flat=0.0, dir=(-0.6, -0.5, -0.4), fall=0.0, phase=1.8)
     t.tail(48, "sine", aim=1.0, ripple=2.0, swing=9.0, dir=(-0.4, -1.0, -0.3), phase=2.4)
@@ -1029,8 +1032,9 @@ def arc_sheet(scene, rig, cams, take, rest, drawn, out):
 
 
 def bare_sheet(scene, rig, take, undress, out, tiles=20):
-    """What the content check asks of every clip: stepped through on the bare rig, the costume off, from her side and
-    the three-quarter."""
+    """What the content check asks of every clip: stepped through on the bare rig, the costume off but the scarf on (its
+    knot and the tail's eight links: where the tail passes her face, and how its tip ends), from her side and the
+    three-quarter."""
     step = max(1, math.ceil((take.end + 1) / tiles))
     frames = list(range(0, take.end + 1, step))
 
@@ -1046,6 +1050,8 @@ def bare_sheet(scene, rig, take, undress, out, tiles=20):
         return r6.fixed_camera(scene, eye, focus, 38.0, name)
 
     undress(True)
+    for name in ("Kirra_Scarf", *SCARF):
+        bpy.data.objects[name].hide_render = False
     shots = [(camera(take.start + f, az, el, f"bare {view} {f}"), take.start + f, f"{f}")
              for view, (az, el) in (("side", SIDE), ("quarter", QUARTER)) for f in frames]
     scene.render.resolution_x, scene.render.resolution_y = 190, 230

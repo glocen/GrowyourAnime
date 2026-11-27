@@ -4817,6 +4817,28 @@ From the new sheet, the Reveal's poses and the portrait. It judges the fix and w
 - **Where it's first seen in the game:** the hair riding the head through every clip, and the tail at rest in the Idle at the install. Faber's install checks in "Modulo's finish" cover both.
 - Visually reviewed: yes, research's pass. Director-accepted: not yet. Rook and Kirra wait on the director's acceptance together before their install.
 
+### Modulo: the hair fitted to her head (2026-11-27, 03:37)
+
+- **The ask:** the director, shortly before 01:00, with a screenshot of her make sheet's bust: "fix this issue", then "take a close look at the hair being detached from the head zoom in", and "from the sides and even abit top".
+- **The cause:** the kit's egg, which the hair is laid over, stood 0.16 studs off the head's sides and 0.18 over its top, before the hair's own offset.
+- **The fix** (commit 9848ecec):
+  - `anime_make.HEAD_EGG` is a squared egg, 0.67 wide and tall at power 5.7, that clears Roblox's head by 0.025 to 0.045 studs all round.
+  - Kirra's take uses it. The default egg is unchanged, so Rook's and Pip's hair stay as they are.
+- **Delivered** over the files in `build/handoff/Kirra/make/`:
+  - the recipe, the hair, the tie, `Kirra_Color.png` (sha1 `2d6d5d86`);
+  - the sheet (`19ec932b`);
+  - the portraits (`7d292318`, `4f38d1bb`).
+  - The body, the scarf, the blades and the clips are unchanged.
+- **For Faber's install:**
+  - the hair, the tie and the map, which replace their installed copies;
+  - both portraits, uploaded again under the group, which replace `PortraitKirra` and `PortraitKirraSmall` in `Config.UIKit`.
+- **Content check: PASS** at 01:21, on the bust and turnaround. The sheet and portraits are renders of that same model.
+- **Four facts:**
+  - Made: yes.
+  - Self-reviewed: yes. I checked the head from six sides, the bust, the 64 px shots, and the old and new portraits side by side. The hair now meets the head at the sides and over the crown.
+  - Delivered: yes.
+  - Not in the game, not research-reviewed, not accepted.
+
 ## AR61. The hit sparks: the shared kit's landed hit, by rung (Scintilla, then Faber's hook)
 
 Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit first", `docs/decisions.md`; `docs/briefs/effects.md`, "Your queue", 1). Research hadn't written this request when the seat opened (2026-11-24, 10:44), so Scintilla wrote it from the brief, AR8 A and the study's rules; research confirms or corrects it at the blockout's verdict.

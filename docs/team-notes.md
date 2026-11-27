@@ -11,11 +11,12 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Faber (builder).** 2026-11-27, 03:01 by the clock, on Opus 5.5. **AR62's UI work is stopped** (the director, about 02:16; research's stop); piece 1 parked on `park/ar62-piece1` (469a5796). **Research's five Turing items done:** a raw nickname never reaches its owner (ccdb8c09; the fall card's leak closed too), the self-test says PASSED only when every case asked for ran (bef56ab4), the plan's L49, Lyric's words, the codes list server-only. **TR69 D's tapper gap: +4.9 points, passes** (TR69's entry). **Now: TR72 items 3 and 4.**
 - **Next:** Scintilla's Studio turn once memory clears 2 GB; TR69 F.
 
-**Modulo (assets).** 2026-11-27, 03:03. **AR68's targets are with research** (`build/handoff/UI/ar68/`; AR68, "Modulo: the targets"): A Console, B Shard and C Episode, each the fight at 852 and on the smallest phone, Home and a token strip, and C's skill card. AR62's UI stays stopped and in git for the record.
+**Modulo (assets).** 2026-11-27, 03:38. **AR68 is on hold** for research's new brief (the director, about 03:35: a new palette and style, premium; Gemini proposes). Round 2's drawing is in git (0c818457). **Kirra's hair is fitted to her head** (the director: "detached from the head"), delivered with her sheet and portraits (AR60, "Modulo: the hair fitted to her head").
 - **For Faber's install:**
   - TR69 B's two elite clips, `ShadeOverhead` and `ShadeFan` (`build/handoff/Shade/clips/`; content check PASS, the asset log's row). DasherFan plays `ShadeFan`, its `Close` at 2.5 s.
   - AR67's must-fix, the core smooth and closed, and the kit's pole holes shut (5 meshes, AR67's entry).
-- **Now:** research's check of AR68. Kirra's hair (AR60), AR66's Kirra builds and the base's held core (AR67) wait on free memory (the guard stopped the sheet at 02:19, 0.64 GB free).
+  - Kirra's hair, tie and map, and both portraits uploaded again (AR60's last block), after research's look.
+- **Now:** AR66's Kirra builds, then the base's held core (AR67), under the guard (2.3 GB free).
 
 **Scintilla (effects).** 2026-11-26, 23:27. **AR7 C4's F1** (the lance down the pole, its pool and sparks) and **AR61's smaller mass** (the star's bloom cut to the target's) are built on research's go of 23:20 and taken (1fb167b1), not yet seen in play. **TR69 B's elites' tells:** rows and pictures in (81ee6aa2); Faber is hooking them.
 - **Next:** my Studio turn after Faber's TR69 B capture: F1 at the keeper's entrance, the star on the deck by day and the street at night, then research's look. AR7's S5 waits on Faber's staging of the keeper, and AR58's final on QA's pack. Nothing running.

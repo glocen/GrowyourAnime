@@ -18,8 +18,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
   - Kirra's hair, tie and map, and both portraits uploaded again (AR60's last block), after research's look.
 - **Now:** AR66's Kirra builds, then the base's held core (AR67), under the guard (2.3 GB free).
 
-**Scintilla (effects).** 2026-11-26, 23:27. **AR7 C4's F1** (the lance down the pole, its pool and sparks) and **AR61's smaller mass** (the star's bloom cut to the target's) are built on research's go of 23:20 and taken (1fb167b1), not yet seen in play. **TR69 B's elites' tells:** rows and pictures in (81ee6aa2); Faber is hooking them.
-- **Next:** my Studio turn after Faber's TR69 B capture: F1 at the keeper's entrance, the star on the deck by day and the street at night, then research's look. AR7's S5 waits on Faber's staging of the keeper, and AR58's final on QA's pack. Nothing running.
+**Scintilla (effects).** 2026-11-27, 01:29. **AR7 C4's F1** (the lance down the pole, its pool and sparks) and **AR61's smaller mass** (the star's bloom cut to the target's) are built on research's go of 23:20 and taken (1fb167b1), not yet seen in play. **TR69 B:** all three tells are in the game (894b0fa5), and **GuardScreenBreak** is taken (f06b40f3) and anchored at the Guard's root (728b88e0).
+- **Next:** my Studio turn, handed back unused at 01:29 for lack of memory (526 MB available; AppXSvc holds 20 GB): F1 at the keeper's entrance, the star by day and at night, O2 in a real fight, then research's look. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack. Nothing running.
 
 **Sonus (sound).** 2026-11-26, 21:35 by the clock. **In the game, unheard:** my 22 picks (the director, 20:48: "i wont listen js add everything"), TR42's 11, TR64's 10 and TR57's plate, installed by Faber (b75b6978, Sound 119 of 119; TR42, "The picks, unheard"). No Studio turn held, nothing running.
 - **Next:** the director judges them in play; a sound they name as bad takes the next on its tab.

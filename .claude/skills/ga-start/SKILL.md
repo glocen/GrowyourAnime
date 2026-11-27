@@ -18,7 +18,7 @@ The other teammates don't run this: their briefs say how they start, and only th
    - Read the Now board's "Turns": one Studio open at a time (Turing), and one timing test at a time.
    - Never playtest a place another teammate holds: a playtest locks its Edit DataModel.
 4. **State, not history.**
-   - Read the "Now" board and the newest 3 entries of `docs/team-notes.md`, then the status line and the piece's own block in `docs/production-plan.md`.
+   - Read the "Now" board of `docs/team-notes.md` (there are no entries after a piece: git log says what changed), then the status line and the piece's own block in `docs/production-plan.md`.
    - Read the spec section the piece touches, nothing more.
 5. **Baseline.** If the piece changes code, run the self-test once before editing (`/ga-studio-test`), so you know what was already failing. Skip it when the last full pass already covers HEAD's `src/`.
 6. **Tell the director in 3 to 5 lines:** the piece for this session, its acceptance checks, and anything you need from them (approvals, Studio clicks, publishing).

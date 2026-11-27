@@ -35,7 +35,7 @@ You are also this game's engineer of record (the directive, sections 8 to 10 and
 
 ## Done means
 
-- While iterating, the type check, the touched self-test and the logic cases pass after each code change. At `/ga-finish`, every case passes. Every new mechanic or rule adds a case.
+- While iterating, the type check, the touched self-test and the logic cases pass after each code change. At `/ga-finish`, the cases the change can affect pass; the full suite runs when a phase closes or shared code changes (the director, 2026-11-15). Every new mechanic or rule adds a case.
 - Anything players see gets a player-camera review, QA's evidence pack once QA has joined, and research's artistic pass. Then run `/ga-finish`.
 
 ## Context

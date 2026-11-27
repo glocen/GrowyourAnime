@@ -5,16 +5,16 @@ description: Close the builder's finished Grow your Anime piece. Run the checks,
 
 # Finish a piece (builder only)
 
-The other teammates close their pieces as their briefs say. Step 7 pushes, and only the builder pushes for the team.
+The other teammates close their pieces as their briefs say. Step 7 pushes. The builder pulls and pushes for the team; research may push too, plainly (AGENTS.md, "Shared folder and git").
 
 1. **Checks, all passing.**
-   - The type check, the logic tests and the self-test, in each place that has them (`/ga-studio-test`).
+   - The type check, the offline logic cases, and the self-test cases the change can affect, in each place that has them (`/ga-studio-test`). The full suite runs once when a phase closes, or when code many systems share changes (the director, 2026-11-15, night, `docs/decisions.md`). A case that can't run here says NOT VERIFIED, never PASSED.
    - The world report if markers or world code changed.
    - A purchase in the published game, if the store changed. The first session played from a new save, if anything a new player meets changed: the aim is a premium first session.
    - Add a self-test or logic case for every new mechanic or rule.
 2. **What players see goes through "The checks, in order"** (AGENTS.md):
    - **Your own review:** player-camera captures at 1920×1080 and 1366×768, in the place's real lighting, then a harsh self-critique against the bar. World pieces are also seen at the player's distance, in the place's real lighting, with a backup of what they replaced.
-   - **QA's evidence pack:** file a test request in `docs/test-requests.md`. Until QA runs it, your captures stand in.
+   - **QA's evidence pack:** file a test request as its own file in `docs/requests/TR<n>.md`, with its line in `docs/test-requests.md`. Until QA runs it, your captures stand in.
    - **Research's artistic pass:** close only after it passes. If research is off, close, and note it on the Now board's research line. Research reviews the piece on its return, and reopens it if it's below the bar.
 3. **Status, once.**
    - Update the status line and the milestone table in `docs/production-plan.md`, the only status home.

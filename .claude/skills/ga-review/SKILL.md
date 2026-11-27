@@ -44,4 +44,4 @@ The director, 2026-11-24, 20:52: a look passes against its picked target and the
 - **A second look judges what changed:** the fixes, and anything they broke. An older problem seen then is raised only if it's a must-fix, and said to be older. A finding is never raised twice.
 - **Accepting on cases** names what the cases can't show, and where it will first be seen.
 
-**Where it goes:** once, in the piece's request entry, with the pair image's path. Nothing is written twice; link instead. Under eight lines, and no new document. Each word the director gives on a look adds a row to `docs/research/examples.md`, with the image the director saw.
+**Where it goes:** once, in the piece's own file in `docs/requests/`, with the pair image's path. Nothing is written twice; link instead. Under eight lines, and no new document. Each word the director gives on a look adds a row to `docs/research/examples.md`, with the image the director saw.

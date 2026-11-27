@@ -499,6 +499,10 @@ local Effects = {
 		hit_star6_ink = "rbxassetid://128394657850290",
 		hit_star9_light = "rbxassetid://129249816428485",
 		hit_star9_ink = "rbxassetid://82313747404878",
+		-- AR69's burn and fall, research's pick A (tools/fx/ar69_burn.py; the content check of 2026-11-27, 17:00): a
+		-- flame tongue, its colours baked in, stored tip-up, so its beam runs from the tongue's tip down to its foot (a
+		-- beam lays the picture's top row at its first end); its TextureSpeed stays 0.
+		fx_lick_Flame = "rbxassetid://75951793042168",
 	} :: { [string]: string },
 
 	-- The effects as rows (the header), and those in a rows file (Config.EffectRows), merged below. Tuned live:

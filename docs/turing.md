@@ -8,7 +8,7 @@ Research, 2026-11-27, 12:24. Written in on the director's word of 12:24 ("write 
 
 - **Look verdicts overturned as a whole:** research's pass of the press I1, its pick and pass of B, its pick of F2 ("a sketch"), its recommendation of the painted HUD, and AR65 and AR67 passed piece by piece ("a prototype"). AR64's hair took seven rejected rounds. Sources: `docs/research/examples.md` and the register.
 - **False greens:** the self-test said PASSED when it had run no case (fixed, bef56ab4).
-- **Reading load:** about 1,200 lines at each session's start, registers of 1.4 MB, and 45% of 11-26's commits docs-only.
+- **Reading load:** about 1,200 lines at each session's start, registers of 1.4 MB, and 236 of 520 commits docs-only since 11-20.
 - **One PC with 15.5 GB:** Gemini's runs were reaped for low memory twice.
 
 ## The rules, where they sit
@@ -30,14 +30,15 @@ Research, 2026-11-27, 12:24. Written in on the director's word of 12:24 ("write 
 | Tool | What it does | Owner | State |
 |---|---|---|---|
 | The self-test verdict | FAILED, then NOT VERIFIED, then PASSED; frames counted on RenderStepped | Faber | done (bef56ab4) |
-| The reference guard | Takes scripts write their beside sheets into `build/reference/`; a pre-commit check refuses any `*_beside*` image, or a reference game's folder name, outside it | Modulo (scripts), Faber (the check) | to build |
-| The memory guard | Before a Studio playtest or a Blender render, it reads free memory and the locks; below 2 GB, or with a render running, it refuses and names the holder | Faber (from the handbook's `studio_lock_guard.py`) | to build |
-| The lint freeze | `luau_check.py --freeze` only shrinks | Faber | to fix |
+| The reference guard | Takes scripts write their beside sheets into `build/reference/`; a pre-commit check refuses any `*_beside*` image, or a reference game's folder name, outside it. It exempts `_beside_target` | Modulo (scripts), Faber (the check) | done (f1e8f437) |
+| The memory guard | Before a Studio playtest or a Blender render, it reads free memory and the locks; below 2 GB, or with a render running, it refuses and names the holder. If the hook itself errors, it warns and lets the call through. Still to fix: it refuses a Blender launch when the lock is the launcher's own | Faber | done (28d93e06), one fix open |
+| The lint freeze | `luau_check.py --freeze` only shrinks | Faber | done (1589991e) |
+| The logic runner's verdict | The server's logic runner says PASSED only with assertions run, like the client's `Verdict.Of` | Faber | to fix (Codex, 13:21) |
 | One Studio at a time | Replaces "at most two Studios" | everyone | in force |
 
 ## Less to read: the lean initiative, under Turing
 
-Turing adopts the direction now: the registers hold open work, closed entries and old words move to archive files no session loads, the Now board holds rows and live notices only, and the briefs hold only what differs for their role. The exact cuts come in their own restatement, for the director's yes, once the lean audit is complete. Done: parts 1 to 4 (`build/scratch/quaestor/gemini/transcripts/`, lean-l1 to l4). Waiting for Gemini's weekly reset: parts 5 to 7, then Gemini's check of these written rules (u3), then the tools audit (`program/RESUME.txt`).
+Turing adopts the direction now: the registers hold open work, closed entries and old words move to archive files no session loads, the Now board holds rows and live notices only, and the briefs hold only what differs for their role. The exact cuts come in their own restatement, for the director's yes, once the lean audit is complete. Done: parts 1 to 4 by Gemini (`build/scratch/quaestor/gemini/transcripts/`, lean-l1 to l4), and 5 to 7 plus a check of these rules by Codex, on the director's word of 12:41 (`build/scratch/quaestor/codex/transcripts/`, lean-c5 to c7, turing-c8). Gemini comes back after its weekly reset to say what to add or remove. **The order:** before Sunday's early access, only the release fixes (the Hard keeper, the logic verdict, the live round trip). The cuts come after, in their restatement.
 
 Gemini's draft numbers are the starting proposal: `decisions.md` live at 16 KB or less with the words kept whole in a monthly log; one file per open piece, 55 lines or less; the Now board at 70 lines or less; about 63% less read at each session's start.
 
@@ -45,7 +46,7 @@ Gemini's draft numbers are the starting proposal: `decisions.md` live at 16 KB o
 
 - **Owner:** research.
 - **Baseline:** the last five look verdicts on the UI and the base, all overturned as a whole.
-- **Measure:** of the next three look decisions under the gate (AR68's direction pick, AR68's first fight-HUD piece, the next look piece), how many the director overturns as a whole ("horrendous", "a prototype", "redo it").
+- **Measure:** of the next three look pieces under the gate, counted at the director's first view in the game (AR68's first fight-HUD piece, Kirra's AR60 cut, the next look piece), how many the director overturns as a whole ("horrendous", "a prototype", "redo it"). The picks are logged apart: AR68's system was research's, on the director's "you choice" (13:08). With no such view within five days, the pilot is NOT VERIFIED.
 - **Stop:** two of three overturned. Then the gate is redesigned: the director picks anchor frames before any research pick. Also stop if a specimen needs more than two rounds, or more than six team hours, to reach a phone capture.
 - **Length:** three decisions or five days, whichever comes first. Everything is in git.
 

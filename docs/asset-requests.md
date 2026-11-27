@@ -5388,6 +5388,8 @@ The script is `tools/ui/hud_press.py`.
 
 ### Research's pick: B, the name alone (Quaestor, 2026-11-27, 01:23; alone, with Gemini stopped at its limit; `press/phone_pair_x4.png` in both orders, `press_states.png`, and `build/scratch/modulo/press2/beside_shipped.png`)
 
+- **Superseded** by the director, 2026-11-27, 01:39 (the register): "haymaker style is horrendous maybe it need to be an art". The press carries art. The next targets go to the director with the images, since two rounds have now missed (AGENTS.md, "The checks").
+
 - **Why B:** at phone size it says the move at once, in the heavy stroked lettering that every label in the shipped frame uses. A's art reads as an abstract orange square and star there, and stays short of the shipped hotbar's illustrated craft, as the rejected fist did. The director offered both directions (the register, 01:00).
 - **The cooldown** (both): colour comes back clockwise behind a gold edge, with a big stroked count, a gold last second and a pop. It reads in every state.
 - **Must-fixes for the finish:**
@@ -5425,6 +5427,8 @@ For the install, the cooldown is one layer over the press:
 **Content check:** PASS. **Next:** research's verdict, then Faber's install.
 
 ### Research's verdict: B's finish passes (Quaestor, 2026-11-27, 01:29; `press/finish/press_states.png`, `press_names_phone_x4.png`, `phone_x4.png`)
+
+- **Superseded** by the director, 2026-11-27, 01:39 (the register): "haymaker style is horrendous maybe it need to be an art". The press carries art. The next targets go to the director with the images, since two rounds have now missed (AGENTS.md, "The checks").
 
 - **Felt:** the press says its move in the HUD's own heavy, stroked lettering, and it turns plainly into a countdown while it cools.
 - **The second look, at the three must-fixes:**
@@ -5474,6 +5478,23 @@ The script is `tools/ui/hud_base_finish.py`.
   2. **The largest gain is the one big number,** as Tally was picked: +1,240 reads first at the squint, bigger than WELCOME BACK.
   3. **The hue reaches each large panel's ground, not only its rim.** The return's two cards are slate tinted gold and azure, as the shipped frame tints a panel by its system.
   4. **The dock takes the same rule:** each tile's rim is in its icon's hue.
+
+### Research's study before the third round: what "an art" is on a shipped skill button (Quaestor, 2026-11-27, 01:41; internal, `build/reference/dragon-hunter/2026-11-12_arena-normal-damage.png`, the director's own HUD reference since 11-12)
+
+- **OBSERVED:**
+  - Each skill button is a round disc filled edge to edge with a painted, rendered picture of the move itself: the weapon or the strike in motion, dark and metallic, with one hot accent.
+  - A thin metal ring frames it. There's no gold field and no word.
+  - Cooling, the art greys under a dark sweep, with a big white count on it, and the rim's arc lights as it comes back.
+  - The summons are square portraits of painted creature art.
+- **Where we missed:**
+  - I1 put a small flat emblem on a big gold field.
+  - A was a flat geometric symbol.
+  - B was words.
+  - None was a rendered picture of the move filling the disc.
+- **DESIGN, for the third round:**
+  - The disc is the art, and the gold drops to a thin ring.
+  - Each signature's own moment is rendered from its Voidkin's model and effect. For the Haymaker: Rook's fist and forearm driving at the camera through its ember burst.
+  - The shared cooldown stays.
 
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 

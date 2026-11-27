@@ -1,191 +1,251 @@
-"""AR68, M: the press's own art for Rook's Haymaker, three targets for research's pick (research, 2026-11-27, 13:22; its
-study of 01:41, AR62: the disc filled edge to edge with a rendered picture of the move, dark, one hot accent).
+"""AR68, M: the press's own art for Rook's Haymaker, the strike painted in 2D, never the fighter. Three takes for
+research's pick (research, 2026-11-27, 13:49: R6 up close stays boxes, so no body in the press; "one hero shape with a
+direction: the punch's shockwave cone or burst with speed lines, struck from lower left to upper right, hot white at
+its core falling to ember at its edge, on the dark plate").
 
-    py tools/ui/hud_m_press_art.py <renders> <out>
+    py tools/ui/hud_m_press_art.py <out> [G1 G2 G3]
 
-<renders> holds tools/blender/press_art.py's <take>.png, <take>_hot.png and <take>.json. Each take's art is Rook as
-made, posed in the move, under the Haymaker's own strike: the effect's square of chisel bars (cream core, ember, ink
-rim; Config.Effects' Haymaker, tools/blender/rook_haymaker_art.py) breaking open round the knuckles, its white-hot
-flash on them, the wraps' heat bloomed, rushing lines, on a dark ember ground. T3, the silhouette, inks the whole of
-him as one shape edged in ember, against the strike's own orange-white light (the impact frame). Writes:
-- <out>/<take>_art.png: the art alone in its circle, at the kit's 4 pixels a point, on alpha (for the upload);
+Each take is a field of heat, painted in numpy on the disc's own dark ground and coloured by the strike's ramp (a deep
+ember, the Haymaker's heat and ember, its cream core, white), with a bloom of ember round it and ink cuts through the
+light where the take has them. The takes:
+- G1, the cone: the punch's shockwave as a solid wedge of light, flaring from the lower left edge, white at its front;
+- G2, the burst: the impact, a star of uneven spikes stretched along the strike, a shock ring across it, the speed
+  lines rushing into it from the lower left;
+- G3, the square: the Haymaker's own bars (Config.Effects' Haymaker, tools/blender/rook_haymaker_art.py), a square
+  turned to lead with a corner and stretched along the strike, broken open behind, a white flash in it.
+Writes:
+- <out>/<take>_art.png: the art alone in its circle, 4 pixels a point, on alpha (for the upload);
 - <out>/M_568_<take>_day.png and _dusk.png: M's whole frame with it, awake by day, filling at dusk (the art greyed);
-- <out>/press_art_pair.png: the presses side by side (today's stand-in, T1, T2, T3), at 4x and at 568's own size,
-  awake by day over filling at dusk (delivered as build/handoff/UI/ar68/m_dark/press_art/m_press_today_T1_T2_T3.png;
-  its m_press_T3_corner.png is an ffmpeg crop, 720 by 400 from the top left, of M_568_T3_dusk beside _day).
+- <out>/press_sheet.png: the presses side by side (today's stand-in, G1, G2, G3), at 4x and at 568's own size, awake
+  by day over filling at dusk.
 """
-import json
 import math
+import struct
 import subprocess
 import sys
+import zlib
 from pathlib import Path
+
+import numpy as np
+from scipy import ndimage
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import hud_compositions as hc  # noqa: E402
-import hud_m_export as mx  # noqa: E402
 import hud_systems as hs  # noqa: E402
 
-CORE, EMBER, INK = "#FFF1CC", "#FFA630", "#1E1B22"    # the Haymaker's bar (rook_sheet.PALETTE, rook_haymaker_art.py)
-HEAT = "#FF6A1E"
-LOOK = "a"      # the plate it sits on: M's dark round, (a) slate (AR68, 13:38); the face art carries to (b)
-SIZE = 768
-
-# Each take's crop of its render (its middle, 0 to 1, and half its side) and its strike: the flash's size (of the
-# art's radius), the square's size and the corner it's broken at, and the rushing lines' way (radial from the
-# knuckles, or along the arm).
-TAKES = {
-    "T1": dict(name="the drive", centre=(0.47, 0.57), half=0.36, flash=0.5, square=0.36, open=-40, lines="along"),
-    "T2": dict(name="the charge", centre=(0.58, 0.62), half=0.34, flash=0.5, square=0.34, open=-20, lines="radial"),
-    # the whole of him in the punch, one dark shape against the strike's light, its edge toward the light lit ember
-    "T3": dict(name="the silhouette", centre=(0.6, 0.53), half=0.45, flash=0.5, square=0.3, open=-30, lines="radial",
-               silhouette=True),
-}
+LOOK = "a"      # the plate it sits on: M's dark round, (a) slate (research's pick, 13:38)
+INK = "#1E1B22"
+RAMP = ((0.0, "#5A1E10"), (0.22, "#B23A16"), (0.42, "#FF6A1E"), (0.62, "#FFA630"), (0.84, "#FFF1CC"), (1.0, "#FFFFFF"))
+GROUND_MID, GROUND_EDGE, WARM = "#2E333C", "#14171C", "#3A2722"
+PPP = 4                 # the kit's pixels a point
+SS = 5                  # painted at five times that, then averaged down
+HALF = 25 / 24          # the painting's half side, in the art's radius (the art is 24 pt, its page 50)
+ANGLE = 34              # the strike's way, degrees above level: from the lower left to the upper right
+D = (math.cos(math.radians(ANGLE)), -math.sin(math.radians(ANGLE)))   # y runs down
+TAKES = {"G1": "the cone", "G2": "the burst", "G3": "the square"}
 
 
-def star(cx, cy, r, points=4, inner=0.2, turn=0.0):
-    pts = []
-    for i in range(points * 2):
-        a = math.radians(turn) + math.pi * i / points
-        rr = r if i % 2 == 0 else r * inner
-        pts.append((cx + rr * math.sin(a), cy - rr * math.cos(a)))
-    return hc.poly(pts)
+def rgb(h):
+    return np.array([int(h[i:i + 2], 16) / 255 for i in (1, 3, 5)])
 
 
-def chisel(x0, y0, x1, y1, w):
-    """One of the Haymaker's bars: a stroke struck like a chisel's, square at its start, cut at a slant at its end."""
-    dx, dy = x1 - x0, y1 - y0
-    n = math.hypot(dx, dy)
-    ux, uy, px, py = dx / n, dy / n, -dy / n * w / 2, dx / n * w / 2
-    cut = w * 0.9
-    return hc.poly([(x0 + px, y0 + py), (x1 + px, y1 + py), (x1 - px - ux * cut, y1 - py - uy * cut), (x0 - px, y0 - py)])
+def ramp(H):
+    xs = [p for p, _ in RAMP]
+    cs = np.array([rgb(c) for _, c in RAMP])
+    h = np.clip(H, 0, 1)
+    return np.stack([np.interp(h, xs, cs[:, k]) for k in range(3)], -1)
 
 
-def bars(P, kx, ky, side, open_at, w):
-    """The strike's square round the knuckles, its corner at `open_at` degrees flung open: four bars in the effect's three
-    tones, the ink rim under, the ember, the cream core."""
-    h = side / 2
-    a = math.radians(open_at)
-    ca, sa = math.cos(a), math.sin(a)
-
-    def rot(x, y):
-        return kx + x * ca - y * sa, ky + x * sa + y * ca
-
-    gap = side * 0.16
-    segs = [((-h + gap, -h), (h, -h)), ((h, -h), (h, h)), ((h, h), (-h, h)), ((-h, h), (-h, -h + gap))]
-    for width, colour in ((w * 1.7, INK), (w * 1.15, EMBER), (w * 0.55, CORE)):
-        for (x0, y0), (x1, y1) in segs:
-            (X0, Y0), (X1, Y1) = rot(x0, y0), rot(x1, y1)
-            P.add(f'<path d="{chisel(X0, Y0, X1, Y1, width)}" fill="{colour}"/>')
-    # the flung corner's two chips, thrown out
-    for d, s in ((1.0, 0.5), (1.32, 0.34)):
-        X, Y = rot(-h * d - gap * 0.3, -h * d - gap * 0.3)
-        P.add(f'<path d="{star(X, Y, w * 1.6 * s * 2, 4, 0.35, 45)}" fill="{CORE}" stroke="{EMBER}" stroke-width="{w * 0.3}"/>')
+def frame_of(o, X, Y):
+    """The strike's own axes from the point `o`: s along it, t across it (down and to the right is +t)."""
+    dx, dy = X - o[0], Y - o[1]
+    return dx * D[0] + dy * D[1], -dx * D[1] + dy * D[0]
 
 
-def art(take, renders, cx, cy, ra, awake):
-    """The draw function for hud_compositions.PRESS_ART: the take's art in a circle of `ra` round cx, cy. The strike's
-    light is behind the fist, so the fist reads as its shape against it (the impact frame's read); nothing is drawn over
-    the fist but its own heat."""
-    t = TAKES[take]
-    info = json.loads((renders / f"{take}.json").read_text(encoding="utf-8"))
-    u0, v0 = t["centre"]
-    W = ra / t["half"]                         # the render's side in points
+def smooth(e0, e1, x):
+    k = np.clip((x - e0) / (e1 - e0), 0, 1)
+    return k * k * (3 - 2 * k)
 
-    def at(uv):
-        return cx + (uv[0] - u0) * W, cy + (uv[1] - v0) * W
 
-    face = [at(c) for c in info["corners"]]
-    kx, ky = sum(p[0] for p in face) / 4, sum(p[1] for p in face) / 4   # the fist's face, where the strike lands
-    fx, fy = at(info["forearm"])
+def streaks(s, t, rng, n, s_range, t_range, length, width, heat, taper=1.6):
+    """Speed lines along the strike: each a thin trace bright at its head, fading to its tail behind it."""
+    F = np.zeros_like(s)
+    for _ in range(n):
+        sc, tc = rng.uniform(*s_range), rng.uniform(*t_range)
+        L, w, a = rng.uniform(*length), rng.uniform(*width), rng.uniform(*heat)
+        ds = s - sc
+        along = np.where((ds <= 0) & (ds >= -L), np.clip(1 + ds / L, 0, 1) ** taper, 0.0)
+        along = np.where(ds > 0, np.exp(-(ds / (w * 2)) ** 2), along)
+        F = np.maximum(F, a * along * np.exp(-((t - tc) / w) ** 2))
+    return F
 
+
+def g1(X, Y, rng):
+    """The cone: a solid wedge of light from the lower left edge, flaring as it speeds, hottest along its axis, a
+    white rim on its rounded front (a thin crest alone read as a claw's slash at the press's size)."""
+    s, t = frame_of((-1.15 * D[0], -1.15 * D[1]), X, Y)
+    sf = 1.74
+    w = 0.05 + 0.6 * np.clip(s / sf, 0, 1.2) ** 1.4
+    front = sf - 0.75 * t ** 2
+    tt = np.abs(t) / w
+    inside = smooth(0.0, 0.05, s) * smooth(0.0, -0.035, s - front) * smooth(1.0, 0.86, tt)
+    body = inside * (0.4 + 0.66 * np.exp(-(tt / 0.5) ** 2)) * np.clip(s / sf, 0, 1) ** 0.75
+    edge = inside * np.exp(-((tt - 0.93) / 0.07) ** 2) * 0.45 * np.clip(s / sf, 0, 1)
+    # the front's white rim, rounded at its ends
+    span = np.clip(1 - (np.abs(t) / 0.64) ** 2.5, 0, 1)
+    crest = np.exp(-((s - front + 0.02) / 0.04) ** 2) * span ** 0.5 * 1.1
+    lines = streaks(s, t, rng, 16, (0.7, 1.6), (-0.4, 0.4), (0.4, 1.0), (0.008, 0.02), (0.35, 0.8)) * inside
+    H = np.maximum.reduce([body, edge, crest, lines])
+    out = streaks(s, t, rng, 10, (0.6, 1.5), (-0.95, 0.95), (0.3, 0.8), (0.006, 0.014), (0.25, 0.5))
+    H = np.maximum(H, out * (1 - inside) * smooth(1.0, 1.3, tt))
+    ink = streaks(s, t, rng, 4, (1.1, 1.5), (-0.22, 0.22), (0.5, 1.0), (0.01, 0.018), (0.75, 0.95)) * inside
+    return H, ink, crest
+
+
+def g2(X, Y, rng):
+    """The burst: the impact's star stretched along the strike, a shock ring across it, the lines rushing in."""
+    s, t = frame_of((0.16 * D[0], 0.16 * D[1]), X, Y)
+    sp = s / 1.3
+    r = np.hypot(sp, t)
+    phi = np.arctan2(t, sp)
+    spikes = [(0.0, 1.05, 0.2), (math.pi, 0.95, 0.16)]
+    for i in range(10):
+        a = (i + 0.5) / 10 * 2 * math.pi + rng.uniform(-0.18, 0.18)
+        if min(abs(math.remainder(a, 2 * math.pi)), abs(math.remainder(a - math.pi, 2 * math.pi))) < 0.35:
+            continue
+        spikes.append((a, rng.uniform(0.42, 0.72), rng.uniform(0.11, 0.17)))
+    star = np.zeros_like(r)
+    for a, ln, hw in spikes:
+        dphi = np.abs(np.angle(np.exp(1j * (phi - a))))
+        lim = hw * np.clip(1 - r / ln, 0, 1)
+        star = np.maximum(star, smooth(0.0, 0.025, lim - dphi) * (0.42 + 0.5 * np.clip(1 - r / ln, 0, 1) ** 0.8))
+    core = np.exp(-(r / 0.2) ** 2) * 1.2
+    e = (np.hypot((s - 0.1) / 0.13, t / 0.66) - 1) * 0.2
+    ring = np.exp(-(e / 0.022) ** 2) * 0.85 * smooth(-0.9, -0.2, -np.abs(t))
+    lines = streaks(s, t, rng, 16, (-0.45, -0.12), (-0.45, 0.45), (0.5, 1.1), (0.008, 0.02), (0.35, 0.75))
+    H = np.maximum.reduce([star, core, ring, lines])
+    ink = np.zeros_like(r)
+    for i in range(4):
+        a = (i + 0.25) / 4 * 2 * math.pi + 0.4
+        dphi = np.abs(np.angle(np.exp(1j * (phi - a))))
+        ink = np.maximum(ink, smooth(0.0, 0.012, 0.03 * np.clip(1 - r / 0.62, 0, 1) - dphi) * smooth(0.16, 0.24, r))
+    return H, ink * 0.9, core
+
+
+def chisel(s, t, a, b, w):
+    """One of the Haymaker's bars from a to b (in the strike's axes), square at its start, cut at a slant at its end:
+    its heat (a cream core in an ember body) and the ink rim round it."""
+    (s0, t0), (s1, t1) = a, b
+    L = math.hypot(s1 - s0, t1 - t0)
+    ux, uy = (s1 - s0) / L, (t1 - t0) / L
+    u = (s - s0) * ux + (t - t0) * uy
+    v = -(s - s0) * uy + (t - t0) * ux
+    end = L - 0.9 * (v + w / 2)
+    k = smooth(0.0, 0.012, u) * smooth(0.0, -0.012, u - end) * smooth(w / 2, w / 2 - 0.012, np.abs(v))
+    heat = k * (0.5 + 0.55 * np.exp(-(v / (0.2 * w)) ** 2))
+    pad = 0.42 * w
+    rim = (smooth(0.0, 0.012, u + pad * 0.5) * smooth(0.0, -0.012, u - end - pad * 0.5)
+           * smooth(w / 2 + pad, w / 2 + pad - 0.012, np.abs(v)))
+    return heat, rim
+
+
+def g3(X, Y, rng):
+    """The square: the Haymaker's bars, turned to lead with a corner, broken open behind, a white flash in it."""
+    s, t = frame_of((0.04 * D[0], 0.04 * D[1]), X, Y)
+    s, t = s / 1.32, t / 0.84             # stretched along the strike: the square in flight
+    R, w, gap = 0.56, 0.13, 0.2
+    lead, top, back, foot = (R, 0.0), (0.0, -R), (-R, 0.0), (0.0, R)
+
+    def toward(p, q, f):
+        return p[0] + (q[0] - p[0]) * f, p[1] + (q[1] - p[1]) * f
+    segs = [(toward(back, top, gap), top), (top, lead), (lead, foot), (foot, toward(foot, back, 1 - gap))]
+    H = np.zeros_like(s)
+    rim = np.zeros_like(s)
+    for a, b in segs:
+        h, r_ = chisel(s, t, a, b, w)
+        H, rim = np.maximum(H, h), np.maximum(rim, r_)
+    flash = np.exp(-(np.hypot(s / 1.2, t) / 0.24) ** 2) * 1.15
+    chips = np.zeros_like(s)
+    for f, size in ((1.32, 0.07), (1.6, 0.045)):
+        d = np.abs(s - back[0] * f * 0.86) + np.abs(t - back[1] * f) * 1.4
+        chips = np.maximum(chips, smooth(size, size - 0.012, d) * 0.85)
+    lines = streaks(s, t, rng, 14, (-0.7, -0.2), (-0.55, 0.55), (0.4, 0.9), (0.008, 0.018), (0.3, 0.65))
+    H = np.maximum.reduce([H, flash, chips, lines * (1 - rim)])
+    ink = rim * (1 - smooth(0.02, 0.15, H)) * 0.95
+    return H, ink, flash
+
+
+def paint(take, seed=7):
+    """The take on the disc's own ground at PPP*SS pixels a point over the art's page: RGB 0 to 1, and each pixel's
+    distance from the middle in the art's radius."""
+    n = int(round(2 * 25 * PPP * SS))
+    a = ((np.arange(n) + 0.5) / n * 2 - 1) * HALF
+    X, Y = np.meshgrid(a, a)
+    rng = np.random.default_rng(seed)
+    H, ink, hot = {"G1": g1, "G2": g2, "G3": g3}[take](X, Y, rng)
+    # the dark plate: the face's slate, darker to its edge, warmed a little where the strike's light falls
+    r = np.hypot(X, Y)
+    g = smooth(0.15, 1.05, r)[..., None]
+    plate = rgb(GROUND_MID) * (1 - g) + rgb(GROUND_EDGE) * g
+    spill = ndimage.gaussian_filter(H, n * 0.08)
+    spill = (spill / max(spill.max(), 1e-6))[..., None]
+    plate = plate * (1 - 0.55 * spill) + rgb(WARM) * 0.55 * spill
+    # the light: coloured by its heat, opaque where it's hot, and its ember bloom round it
+    al = np.clip(H / 0.3, 0, 1)[..., None] ** 0.85
+    img = plate * (1 - al) + ramp(H) * al
+    img = (img + rgb("#FF6A1E") * 0.42 * ndimage.gaussian_filter(H, n * 0.03)[..., None]
+           + rgb("#FFF1CC") * 0.25 * ndimage.gaussian_filter(hot, n * 0.012)[..., None])
+    # the ink cuts through it, and a little grain
+    img = img * (1 - ink[..., None]) + rgb(INK) * ink[..., None]
+    img = img + rng.normal(0, 0.012, img.shape[:2])[..., None]
+    return np.clip(img, 0, 1), r
+
+
+def down(img, k):
+    h, w = img.shape[:2]
+    return img.reshape(h // k, k, w // k, k, -1).mean(axis=(1, 3))
+
+
+def write_png(path, arr):
+    a = (np.clip(arr, 0, 1) * 255 + 0.5).astype(np.uint8)
+    h, w, c = a.shape
+    raw = b"".join(b"\x00" + a[y].tobytes() for y in range(h))
+
+    def chunk(kind, data):
+        return struct.pack(">I", len(data)) + kind + data + struct.pack(">I", zlib.crc32(kind + data) & 0xFFFFFFFF)
+    png = (b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", w, h, 8, 6 if c == 4 else 2, 0, 0, 0))
+           + chunk(b"IDAT", zlib.compress(raw, 9)) + chunk(b"IEND", b""))
+    Path(path).write_bytes(png)
+
+
+def art(face_png, cx, cy, ra, awake):
+    """The draw function for hud_compositions.PRESS_ART: the painted face laid in its circle, its inner shade and ink
+    hairline; greyed while the press fills."""
     def draw(P, *_):
         clip = P.clip(hc.circle(cx, cy, ra))
-        cold = P.uid("cold")
-        grade = "" if awake else f' filter="url(#{cold})"'
+        grade = ""
         if not awake:
+            cold = P.uid("cold")
             P.defs.append(f'<filter id="{cold}" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" '
                           f'values="0.12"/><feComponentTransfer><feFuncR type="linear" slope="0.62"/><feFuncG type="linear" '
                           f'slope="0.62"/><feFuncB type="linear" slope="0.66"/></feComponentTransfer></filter>')
-        P.add(f'<g clip-path="url(#{clip})"><g{grade}>')
-        g = P.uid("ground")
-        if t.get("silhouette"):   # the impact frame: the light behind the whole of him, hot at the fist
-            P.defs.append(f'<radialGradient id="{g}" gradientUnits="userSpaceOnUse" cx="{kx:.2f}" cy="{ky:.2f}" '
-                          f'r="{ra * 2.3:.2f}"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.16" stop-color="{CORE}"/>'
-                          f'<stop offset="0.45" stop-color="{EMBER}"/><stop offset="0.8" stop-color="#D8531E"/>'
-                          f'<stop offset="1" stop-color="#7A2A14"/></radialGradient>')
-        else:
-            P.defs.append(f'<radialGradient id="{g}" gradientUnits="userSpaceOnUse" cx="{kx:.2f}" cy="{ky:.2f}" '
-                          f'r="{ra * 1.9:.2f}"><stop offset="0" stop-color="#5A2412"/><stop offset="0.3" stop-color="#2A1514"/>'
-                          f'<stop offset="1" stop-color="#121014"/></radialGradient>')
-        P.add(f'<circle cx="{cx}" cy="{cy}" r="{ra}" fill="url(#{g})"/>')
-        # the rushing lines: along the strike, or out from the fist
-        dx, dy = kx - fx, ky - fy
-        n = math.hypot(dx, dy)
-        ux, uy = dx / n, dy / n
-        if t["lines"] == "radial":
-            for i in range(22):
-                a = 2 * math.pi * i / 22 + 0.11 * (i % 3)
-                r0, r1, wd = ra * 0.5, ra * 2.4, 0.035 + 0.03 * (i % 2)
-                p = [(kx + r0 * math.cos(a), ky + r0 * math.sin(a)),
-                     (kx + r1 * math.cos(a - wd), ky + r1 * math.sin(a - wd)),
-                     (kx + r1 * math.cos(a + wd), ky + r1 * math.sin(a + wd))]
-                ink = "#3A1408" if t.get("silhouette") else "#FF9A4A"
-                P.add(f'<path d="{hc.poly(p)}" fill="{ink}" fill-opacity="{0.16 if i % 2 else 0.08}"/>')
-        else:
-            for i in range(16):
-                off = (i - 7.5) * ra * 0.13
-                back = ra * (0.5 + 0.45 * (i % 3))
-                sx, sy = kx - uy * off - ux * back, ky + ux * off - uy * back
-                ln = ra * (1.0 + 0.4 * (i % 4))
-                P.add(f'<path d="M {sx:.2f},{sy:.2f} L {sx - ux * ln:.2f},{sy - uy * ln:.2f}" stroke="#FF9A4A" '
-                      f'stroke-opacity="{0.22 if i % 2 else 0.1}" stroke-width="{0.5 + 0.35 * (i % 2):.2f}" '
-                      f'stroke-linecap="round"/>')
-        # the strike's light, behind the fist: its ember halo, the Haymaker's square broken open round it, its white core
-        fr = ra * t["flash"]
-        h = P.uid("halo")
-        P.defs.append(f'<radialGradient id="{h}"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.22" stop-color="{CORE}"/>'
-                      f'<stop offset="0.5" stop-color="{EMBER}" stop-opacity="0.8"/><stop offset="1" stop-color="{HEAT}" '
-                      f'stop-opacity="0"/></radialGradient>')
-        P.add(f'<circle cx="{kx:.2f}" cy="{ky:.2f}" r="{fr:.2f}" fill="url(#{h})"/>')
-        bars(P, kx, ky, ra * t["square"] * 2, t["open"], ra * 0.07)
-        # Rook in the move, dark against it
-        x, y = cx - u0 * W, cy - v0 * W
-        sil = ""
-        if t.get("silhouette"):
-            sil = P.uid("sil")
-            gx, gy = (cx - kx), (cy - ky)
-            gn = math.hypot(gx, gy) or 1.0
-            ox, oy = gx / gn * ra * 0.05, gy / gn * ra * 0.05      # the edge facing the light
-            P.defs.append(f'<filter id="{sil}" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">'
-                          f'<feFlood flood-color="#120F13"/><feComposite in2="SourceAlpha" operator="in" result="ink"/>'
-                          f'<feOffset in="SourceAlpha" dx="{ox:.2f}" dy="{oy:.2f}" result="o"/><feComposite in="SourceAlpha" '
-                          f'in2="o" operator="out" result="edge"/><feFlood flood-color="{EMBER}"/><feComposite in2="edge" '
-                          f'operator="in" result="rim"/><feMerge><feMergeNode in="ink"/><feMergeNode in="rim"/></feMerge>'
-                          f'</filter>')
-            sil = f' filter="url(#{sil})"'
-        P.add(f'<image href="{(renders / f"{take}.png").resolve().as_uri()}" x="{x:.2f}" y="{y:.2f}" width="{W:.2f}" '
-              f'height="{W:.2f}"{sil}/>')
-        # the wraps' own heat, bloomed: the one hot thing on him
-        b = P.uid("bloom")
-        P.defs.append(f'<filter id="{b}" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur '
-                      f'stdDeviation="{ra * 0.07:.2f}"/></filter>')
-        hot = (renders / f"{take}_hot.png").resolve().as_uri()
-        P.add(f'<image href="{hot}" x="{x:.2f}" y="{y:.2f}" width="{W:.2f}" height="{W:.2f}" filter="url(#{b})" '
-              f'style="mix-blend-mode:screen"/>')
-        # the disc's own edge: an inner shade, an ink hairline
+            grade = f' filter="url(#{cold})"'
+        side = 2 * ra * HALF
+        P.add(f'<g clip-path="url(#{clip})"><g{grade}><image href="{face_png.resolve().as_uri()}" x="{cx - side / 2:.2f}" '
+              f'y="{cy - side / 2:.2f}" width="{side:.2f}" height="{side:.2f}" preserveAspectRatio="none"/>')
         v = P.uid("vig")
-        P.defs.append(f'<radialGradient id="{v}" gradientUnits="userSpaceOnUse" cx="{cx}" cy="{cy}" r="{ra}"><stop offset="0.66" '
-                      f'stop-color="#0B0A0D" stop-opacity="0"/><stop offset="1" stop-color="#0B0A0D" stop-opacity="0.6"/>'
+        P.defs.append(f'<radialGradient id="{v}" gradientUnits="userSpaceOnUse" cx="{cx}" cy="{cy}" r="{ra}"><stop offset="0.7" '
+                      f'stop-color="#0B0A0D" stop-opacity="0"/><stop offset="1" stop-color="#0B0A0D" stop-opacity="0.55"/>'
                       f'</radialGradient>')
         P.add(f'<circle cx="{cx}" cy="{cy}" r="{ra}" fill="url(#{v})"/></g></g>')
         P.add(f'<circle cx="{cx}" cy="{cy}" r="{ra - 0.3}" fill="none" stroke="{INK}" stroke-width="0.6"/>')
     return draw
 
 
-def frame(take, renders, size, ground, charge):
+def frame(face_png, size, ground, charge):
     hc.M_LOOK = hc.M_LOOKS[LOOK]
     P = hc.Page(size, ground)
-    hc.PRESS_ART = (lambda P_, cx, cy, ra, awake: art(take, renders, cx, cy, ra, awake)(P_)) if take else None
+    hc.PRESS_ART = (lambda P_, cx, cy, ra, awake: art(face_png, cx, cy, ra, awake)(P_)) if face_png else None
     try:
         hc.m_frame(P, charge)
     finally:
@@ -197,51 +257,54 @@ def ff(args):
     subprocess.run(["ffmpeg", "-v", "error", "-y", *args], check=True)
 
 
-def main(renders, out):
+def main(out, only=None):
     out.mkdir(parents=True, exist_ok=True)
     work = out / "work"
     work.mkdir(exist_ok=True)
     cx, cy, r = hc.PRESS
     ra = r - 6
+    takes = [k for k in TAKES if not only or k in only]
     tiles = []
-    for take in (None, "T1", "T2", "T3"):
+    for take in (None, *takes):
         tag = take or "today"
+        face = None
+        if take:
+            img, rr = paint(take)
+            face = work / f"{take}_face.png"
+            write_png(face, img)
+            # the upload's image: 4 px a point, alpha outside the art's circle
+            edge = 0.5 / (ra * PPP)
+            alpha = smooth(1.0 + edge, 1.0 - edge, rr)[..., None]
+            write_png(out / f"{take}_art.png", down(np.concatenate([img, alpha], -1), SS))
         for ground, charge in (("day", 1.0), ("dusk", 0.62)):
-            P = frame(take, renders, 568, ground, charge)
-            if take:
-                hs.shoot(P, out / f"M_568_{take}_{ground}.png")
-                src = out / f"M_568_{take}_{ground}.png"
-            else:
-                hs.shoot(P, work / f"today_{ground}.png")
-                src = work / f"today_{ground}.png"
+            P = frame(face, 568, ground, charge)
+            src = (out / f"M_568_{take}_{ground}.png") if take else (work / f"today_{ground}.png")
+            hs.shoot(P, src)
             # the press at its own size (its 2x shoot halved) and at 4x, nearest
             box = (2 * (cx - r - 6), 2 * (cy - r - 6), 2 * (2 * r + 12), 2 * (2 * r + 12))
             own, big = work / f"{tag}_{ground}_own.png", work / f"{tag}_{ground}_big.png"
             ff(["-i", str(src), "-vf", f"crop={box[2]}:{box[3]}:{box[0]}:{box[1]},scale=iw/2:ih/2:flags=area", str(own)])
             ff(["-i", str(own), "-vf", "scale=iw*4:ih*4:flags=neighbor", str(big)])
             tiles.append((tag, ground, own, big))
-        if take:
-            A = mx.bare_page(2 * ra + 2, 2 * ra + 2)
-            art(take, renders, ra + 1, ra + 1, ra, True)(A)
-            mx.transparent_shoot(A, out / f"{take}_art.png")
-    # the sheet: rows by day and at dusk; in each, today's, T1 and T2 at 4x, with their own size under each
+    # the sheet: in each column, by day over at dusk, each at 4x with its own size under it
     cols = []
-    for tag in ("today", "T1", "T2", "T3"):
-        ins = [t for t in tiles if t[0] == tag]
+    for tag in ("today", *takes):
         args = []
-        for _, _, own, big in ins:
+        for _, _, own, big in (x for x in tiles if x[0] == tag):
             args += ["-i", str(big), "-i", str(own)]
         f = (f"[1:v]pad=iw*4:ih:(ow-iw)/2:0:color=0x101117[a];[0:v][a]vstack[d];"
              f"[3:v]pad=iw*4:ih:(ow-iw)/2:0:color=0x101117[b];[2:v][b]vstack[k];[d][k]vstack,pad=iw+24:ih:12:0:color=0x101117")
         col = work / f"col_{tag}.png"
         ff([*args, "-filter_complex", f, str(col)])
         cols.append(col)
-    ff(["-i", str(cols[0]), "-i", str(cols[1]), "-i", str(cols[2]), "-i", str(cols[3]), "-filter_complex", "hstack=4",
-        str(out / "press_art_pair.png")])
+    ins = []
+    for c in cols:
+        ins += ["-i", str(c)]
+    ff([*ins, "-filter_complex", f"hstack={len(cols)}", str(out / "press_sheet.png")])
     for f in work.iterdir():
         f.unlink()
     work.rmdir()
 
 
 if __name__ == "__main__":
-    main(Path(sys.argv[1]).resolve(), Path(sys.argv[2]).resolve())
+    main(Path(sys.argv[1]).resolve(), sys.argv[2:])

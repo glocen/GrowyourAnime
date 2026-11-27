@@ -46,6 +46,10 @@ function DockCases.Cases(given: Given): { any }
 				local parts = HudController.Parts()
 				local dock = parts.Dock :: Frame
 				local layer = dock.Parent :: GuiObject
+				-- a fight the case before ended hides the dock for a moment more (Readout.Linger and the band's fade): wait it out
+				waitFor(t, HudConfig.Readout.Linger + 2, function(): boolean
+					return dock.Visible
+				end)
 				local middle = dock.AbsolutePosition.X + dock.AbsoluteSize.X / 2 - (layer.AbsolutePosition.X + layer.AbsoluteSize.X / 2)
 				t.Check("the dock shows at the foot's middle", dock.Visible and math.abs(middle) <= 1, string.format("%.1f off the middle", middle))
 				local scale = dock.AbsoluteSize.X / make.Box.X

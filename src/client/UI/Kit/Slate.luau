@@ -213,7 +213,7 @@ local function paintPlate(plate: Frame)
 		ring.BackgroundColor3 = WHITE
 		corner(ring, r - inset)
 		if name == "Fill" then
-			if plate:GetAttribute("Lit") == nil then -- a pop lifting it toward white paints it itself (LeadCard.Glow)
+			if plate:GetAttribute("Lit") == nil then -- a pop lifting it toward white paints it itself (LeadPlate.Glow)
 				paint(ring, fill, 90)
 			end
 			local light = ring:FindFirstChild("TopLight") :: Frame?

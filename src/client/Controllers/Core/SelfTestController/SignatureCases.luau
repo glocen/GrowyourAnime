@@ -24,7 +24,7 @@ local SignatureCases = {}
 local function says(button: Instance): string
 	local words = {}
 	for _, item in button:GetDescendants() do
-		if item:IsA("TextLabel") and item.Text ~= "" then
+		if item:IsA("TextLabel") and item.Text ~= "" and string.sub(item.Name, -4) ~= "Drop" then -- not its edge's drop (Edge.Wear)
 			table.insert(words, item.Text)
 		end
 	end
@@ -80,6 +80,19 @@ function SignatureCases.Cases(given: Given): { any }
 					t.Check("in a fight, Auto shows after the eye, on", waitFor(t, 1, function(): boolean
 						return auto.Visible and ring.Visible
 					end) and me:GetAttribute("SignatureAuto") ~= false)
+					-- AR68 M: the eye's chip beside Auto's at the frame's place, each touch box hanging from its chip's top
+					local m: any = HudConfig.M
+					local eye = parts.Spectate
+					local hud = Layers.Get("Hud")
+					local k = math.max(Layers.Scale(), 0.01)
+					local home = m.Art.Centre * m.Per
+					local function off(button: GuiObject, box: { number }): Vector2
+						local at = (button.AbsolutePosition - hud.AbsolutePosition) / k
+						return at - (home + Vector2.new(box[1] - m.Art.Centre.X, box[2] - m.Art.Centre.Y) * m.Per)
+					end
+					t.Check("and the eye beside it, both at the frame's place", waitFor(t, 1, function(): boolean
+						return off(eye, m.Eye).Magnitude < 1.5 and off(auto, m.Auto).Magnitude < 1.5
+					end), `eye {off(eye, m.Eye)}, auto {off(auto, m.Auto)}`)
 					-- Auto off, on its toggle; then a fresh ring (the lead stood up full) waits for the tap.
 					Button.Press(auto)
 					t.Check("its toggle turns Auto off", waitFor(t, 2, function(): boolean

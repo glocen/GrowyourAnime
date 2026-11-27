@@ -174,6 +174,23 @@ local chests: { [string]: Image } = {
 	ChestCrate = { Id = "rbxassetid://78027845046436", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 }
 
+-- AR68 M, its first piece on (a) slate (Config.Hud.M; build/handoff/UI/ar68/m_dark/a/export/m_pieces.json): the lead's
+-- plate and the signature's press, Modulo's, under the group. Joined into Images below, as the equipment's are. The health
+-- fill is cut through its middle row: with no top or bottom cut, Roblox drew only its top row's colour (seen 2026-11-27).
+local hudM: { [string]: Image } = {
+	MLeadPlate = { Id = "rbxassetid://111657507849090", Pixels = Vector2.new(808, 200), Points = Vector2.new(202, 50), Pad = 6 },
+	MLevelTab = { Id = "rbxassetid://87612167685084", Pixels = Vector2.new(168, 104), Points = Vector2.new(42, 26), Pad = 6 },
+	MHealthFill = { Id = "rbxassetid://139822441121388", Pixels = Vector2.new(544, 48), Points = Vector2.new(136, 12), Cut = { 4, 6, 4, 6 }, Pad = 0 },
+	MPressDisc = { Id = "rbxassetid://102004651769383", Pixels = Vector2.new(288, 288), Points = Vector2.new(72, 72), Pad = 6 },
+	MPressRing = { Id = "rbxassetid://73690327035879", Pixels = Vector2.new(288, 288), Points = Vector2.new(72, 72), Pad = 6 },
+	MPressGlow = { Id = "rbxassetid://95716092192754", Pixels = Vector2.new(368, 368), Points = Vector2.new(92, 92), Pad = 0 },
+	MLabelCard = { Id = "rbxassetid://134212425289107", Pixels = Vector2.new(264, 124), Points = Vector2.new(66, 31), Cut = { 12, 9, 12, 9 }, Pad = 6 },
+	MChip = { Id = "rbxassetid://131052858431023", Pixels = Vector2.new(304, 124), Points = Vector2.new(76, 31), Cut = { 12, 9, 12, 9 }, Pad = 6 },
+	MEye = { Id = "rbxassetid://113465437034121", Pixels = Vector2.new(80, 44), Points = Vector2.new(20, 11), Pad = 1 },
+	PressArtHaymaker = { Id = "rbxassetid://83913963977281", Pixels = Vector2.new(200, 200), Points = Vector2.new(50, 50), Pad = 0 },
+	PressArtHaymakerCold = { Id = "rbxassetid://135812470036781", Pixels = Vector2.new(200, 200), Points = Vector2.new(50, 50), Pad = 0 },
+}
+
 local UIKit = {
 	PixelsPerPoint = 4,
 	SliceScale = 0.25,
@@ -1110,6 +1127,10 @@ for name, image in equipment do
 end
 
 for name, image in chests do
+	UIKit.Images[name] = image
+end
+
+for name, image in hudM do
 	UIKit.Images[name] = image
 end
 

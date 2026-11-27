@@ -117,10 +117,10 @@ function NoticeCases.Cases(): { any }
 						string.format("its middle at %.1f px, the block's %.1f", middleAt, want))
 					local hud = HudController.Parts()
 					local card = hud.Lead
-					-- AR62, B: under the press's ring, wherever the press stands
-					local signature = hud.Signature :: GuiObject
-					local press: any = HudConfig.Slate
-					local corner = signature.AbsolutePosition.Y + signature.AbsoluteSize.Y + ((press.Press.Cooldown.Ring + math.max(press.Press.Cooldown.Line, press.Press.Cooldown.Ink) / 2) / press.Page + LOOK.Below) * scale -- Slate.Reach
+					-- AR68 M: under the corner's row (the press's disc and Auto's chip at their home), wherever the press stands
+					local hudM: any = HudConfig.M
+					local rowFoot = math.max((hudM.Disc[2] + hudM.Disc[4]) * hudM.Per, hudM.Auto[2] * hudM.Per + math.max(hudM.Auto[4] * hudM.Per, HudController.Parts().SignatureAuto.Size.Y.Offset))
+					local corner = Layers.Get("Hud").AbsolutePosition.Y + (rowFoot + LOOK.Below) * scale
 					t.Check("at the card's left edge", math.abs(holder.AbsolutePosition.X - card.AbsolutePosition.X) < 1,
 						string.format("%.1f, the card's %.1f", holder.AbsolutePosition.X, card.AbsolutePosition.X))
 					t.Check("under the lead's corner, Below its press's ring", math.abs(holder.AbsolutePosition.Y - corner) < 1 + scale, -- whole points

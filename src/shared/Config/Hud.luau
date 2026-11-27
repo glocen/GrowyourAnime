@@ -1188,6 +1188,64 @@ return {
 		Eye = { Size = 26, Gap = 7, Down = 2, Icon = 17 },
 		Tap = 66, -- every control's tap area (never under Theme.Size.Tap)
 	},
+	-- AR68 M, its first piece on (a) slate (research's pick, 2026-11-27, 13:38; build/handoff/UI/ar68/m_dark/a/export/
+	-- m_pieces.json): the lead's plate and the signature's press as Modulo's images (Config.UIKit's M*), laid from the
+	-- 568 frame. A point is the smallest phone's pixel: Per turns one into authored points (the layer draws at Theme.Scale.
+	-- Floor there), so the frame's sizes hold on that phone and every screen scales them as the rest of the HUD. Boxes are
+	-- { x, y, w, h } from the layer's top left, without the image's pad (UI.Kit.Skin's rule). Text: Oswald, its size in
+	-- points, Baseline its line's foot; Rise how far over the baseline the box's top stands, of its size; each wears the
+	-- dark Edge (a stroke, and the same again Drop lower, under it).
+	M = {
+		Per = 1 / 0.85,
+		Plate = { 6, 6, 190, 38 },
+		Health = { 49, 26, 136, 12, Least = 8, Root = 3 }, -- its light Root + (W - Root) of the share wide, Least at least
+		Tab = { 24, 38, 30, 14 },
+		Portrait = { 6, 6, 44, 44 },
+		Xp = { 50, 41, 138, 2.2 },
+		Glow = { -8, 96, 92, 92 },
+		Disc = { 8, 112, 60, 60 },
+		-- Filling: its opacity while the ring fills. Glyph: today's stand-in art (a mark, not a drawn disc) of the circle wide.
+		-- The skill's own art at Box over the disc (Modulo's 14:02 export): Awake while it's ready, Cold (greyed in the image)
+		-- while it fills; a skill with none shows its mark or its class's glyph, Radius × Glyph across, Filling opaque.
+		Art = {
+			Centre = Vector2.new(38, 142),
+			Radius = 20,
+			Filling = 0.55,
+			Glyph = 0.85,
+			Box = { 13, 117, 50, 50 },
+			Own = { RookHaymaker = { Awake = "PressArtHaymaker", Cold = "PressArtHaymakerCold" } } :: { [string]: { Awake: string, Cold: string } },
+		},
+		Label = { 74, 124, 94, 19, Filling = 54 }, -- 94 wide awake (the skill's name), Filling wide while it fills
+		Auto = { 70, 149, 64, 19 },
+		Eye = { 136, 149, 36, 19 },
+		EyeMark = { 145, 154, 18, 9 },
+		AutoMark = { 80, 155, 8, 8 },
+		Marks = { Gap = 5, Gem = 10, Class = 11, Step = 11, Y = 15 }, -- the gem Gap after the name, the class's mark Step on
+		Texts = {
+			Name = { X = 58, Baseline = 21, Size = 16, Bold = true },
+			Taken = { X = 184, Baseline = 21, Size = 15, Bold = true }, -- its right edge at X
+			Health = { X = 119, Baseline = 37, Size = 14 }, -- centred; the share bold, " / most" regular in Most
+			Level = { X = 39, Baseline = 49.6, Size = 14, Bold = true }, -- centred
+			Label = { Baseline = 139, Size = 15, Bold = true }, -- centred on its card
+			Auto = { X = 93, Baseline = 164.5, Size = 14, Bold = true },
+		},
+		Rise = 0.86,
+		-- Oswald's drawn size in Roblox against the frame's at one size: the name, the digits and the level measured at
+		-- 0.71, 0.77 and 0.78 of the mock's cap height (2026-11-27, the phone box), so each size is set over this
+		Em = 0.75,
+		Font = "rbxasset://fonts/families/Oswald.json",
+		Colours = {
+			Text = Color3.fromHex("#F2EADB"),
+			Most = Color3.fromHex("#F3E6D6"),
+			Taken = Color3.fromHex("#E23B4E"),
+			Hue = Color3.fromHex("#E8622A"),
+			Xp = Color3.fromHex("#F2C35A"),
+			XpLit = Color3.fromHex("#FFE7A6"),
+			Shadow = Color3.fromHex("#0E131B"),
+		},
+		Edge = { Colour = Color3.fromHex("#08090C"), Clear = 0.08, Line = 0.75, Drop = 0.9 },
+		Shadow = { Down = 1, Clear = 0.45 }, -- the health's digits: a soft shadow, not the edge
+	},
 	-- The top right's pills (AR12, V2 Block): each wears its system's row (Config.UIKit.Systems). Widths, authored.
 	Pills = { Credits = 124, Power = 200 },
 	-- In a fight the pills, the dock and the next step's chip step out (AR62, B); a pill that gains peeks alone: shown up to

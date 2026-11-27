@@ -39,7 +39,7 @@ AGENTS.md's four come first. For your work:
 
 ## Your Studio
 
-- Turns go on the Now board: at most two Studios open, one timing test at a time with its window in front, one playtest across places that share a save store, never a place another teammate holds.
+- Turns go on the Now board: one Studio open at a time (Turing), one timing test at a time with its window in front, one playtest across places that share a save store, never a place another teammate holds.
 - The builder usually has the places open: agree each turn with the builder by message first.
 - Before trusting a test, check that Studio has the latest code.
 

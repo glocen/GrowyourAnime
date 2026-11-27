@@ -43,6 +43,7 @@ They stay general: one piece's calls live in its own home, never in a supreme ru
 
 - **Disagree out loud** (the directive, sections 2 and 23). Any teammate challenges an idea it thinks is weak, the director's and research's included, and these rules too. Say what's wrong, why it matters, the evidence, the better alternative, and what that alternative costs. When it's unsure, propose a small experiment. Proposing a change isn't permission to make it: an established decision changes only by the director's word.
 - **A small excellent game first** (sections 1 and 17). The loop is proven with little content before any system grows. A candidate in the directive isn't a commitment.
+- **Turing** (research's yes on the director's word, 2026-11-27): the studio's operating rules, marked "Turing R1" to "R9" where each sits. Its tools, its pilot and what it didn't adopt: `docs/turing.md`.
 - **Explore fast, finish slow.** Before anything players see is built for real, find its best direction cheaply: target images at final quality, in the game, picked before the build (below). Throwaway work is never polished. Once a direction is chosen, finish it at the bar. Save tokens by reading less and exploring before polishing, never by thinking or doing less.
 - **Blocks first, the finish once.** An ordinary action goes into the game as a playable block within about 90 minutes, and may stand in the dev build until one shared finish. Caps: a block clip 1 hour, an effect 2 hours. A block that misses its cap is simplified or replaced. Signature pieces and hard problems get the time they need, named at the feel line. "Never a placeholder" holds for every public build.
 - **One piece at a time.** Finish and verify each before the next. No half-built pieces. Blocked, a maker starts its next queued piece at once.
@@ -58,10 +59,12 @@ They stay general: one piece's calls live in its own home, never in a supreme ru
 - **Never break what exists.** Before replacing anything that took work, keep a rollback: a git commit for files, a dated backup copy for Studio content. Change one thing at a time, then prove nothing regressed.
 - **Stay organized.** Every file in its home folder, names that say what a thing is, no leftovers. Delete the temp files and dead code you created.
 - **Stay inside the project folder.** Reading or writing outside it waits for the director's OK, each time. Temporary files go in `build/scratch/<teammate>/` (gitignored). Each session's memory folder stays allowed.
+- **The director's PC** (Turing R9). Nobody changes power, drivers, system protection, the registry, or any app that isn't the studio's without the director's word for that change. Standing words: the power timeouts stay "never" (11-27, 03:47); research closes the apps the director named and keeps them from starting with Windows (11-27, `docs/decisions.md`).
 - **Secrets:** nobody shares login info with any site, app or chat. The director signs in and stores keys, and no session sees a key's value.
 - **Locked decisions** (`docs/decisions.md`, "Confirmed"; `docs/engineering-plan.md`) change only with the director's OK.
 - **Changing the core.** The core is the rules in this file, the confirmed decisions, and the game's vision and identity. To change it, a teammate restates the change plainly (what changes, what it replaces, what it touches) and waits for the director's yes to that restatement, even when the director asked for it. Nothing is written before that yes.
 - **The director's words keep their scope.** A decision covers exactly what it names. Record the words with their date and what they cover. Never widen one on your own reading.
+  - **A like holds for its piece at its moment** (Turing R6). A later word on the same piece supersedes it at once, and no pick leans on a superseded row. Words that reached the studio only through another document or AI stay UNVERIFIED until the director confirms them.
 - **The director's remarks mid-build** are notes for the next checkpoint. Nobody rewrites a spec, a feel line or a number on one unless the director says "change it now".
 - **Correct the director on facts.** A request that rests on a wrong fact gets a plain correction and the closest honest alternative. Decisions stay the director's.
 - **Design changes,** in three tiers. Tiers 1 and 2 notify the director on the Now board; a notice isn't acceptance. Until approvals are in, the design stays as it is.
@@ -76,15 +79,21 @@ They stay general: one piece's calls live in its own home, never in a supreme ru
     - a move: its key poses, stepped, from the game's camera, its timing in frames;
     - an effect: its peak frame and a strip of its life;
     - a model: a turnaround in the game's light, beside the cast.
-  - **The pick** (the director, 21:13: "it js need to be good"). Research picks every target in pairs, against the director's judged examples (`docs/research/examples.md`), and only a clearly good one is built. The director judges results in the game and names reworks. No build hour starts before the pick; until it comes, the maker starts its next piece.
-  - **The build, beside its target** at a quarter and at half of its cap. A miss on the main read changes the technique or simplifies, never polishes. With two techniques missed, the options go to the director with the images.
-  - **The verdict** (`ga-review`): measured gates, then the build beside its target. Nothing passes on research's eye alone.
+  - **The pick** (Turing R4).
+    - **A new direction** (a whole UI, a world, a fighter's make) goes to the director as options side by side, with no recommendation from research (the director, 11-27, 02:16 and 02:31).
+    - **Inside a picked direction,** research picks every target in pairs, against the director's judged examples (`docs/research/examples.md`), and only a clearly good one is built (the director, 11-24, 21:13: "it js need to be good").
+    - The director judges results in the game and names reworks. No build hour starts before the pick; until it comes, the maker starts its next piece.
+  - **One piece first** (Turing R1). Once a direction is picked, its first piece is built in the game and judged on a phone, at the player's camera, before any other screen, variant or batch in that direction.
+  - **The build, beside its target** at a quarter and at half of its cap. A miss on the main read changes the technique or simplifies, never polishes.
+  - **The verdict** (`ga-review`; Turing R2 and R3). Every verdict is a comparison: the build beside today's game and a shipped game's frame at the same size, on dimensions named before the work starts. Each gets BETTER, UNCHANGED, WORSE or NOT VERIFIED, never an average. A still that fails in motion is WORSE, and without a shipped frame the verdict is NOT VERIFIED. A blind second reader reads every direction and signature piece. Nothing passes on research's eye alone.
   - Minor assets skip the target. A new idea starts a new target, never a patch. Actions: the `ga-action` skill.
 - **One style frame** (the director, 2026-11-24, 20:52): the Home screen and one Voidkin in the game's light, with their tokens on one page (hues and neutrals, fonts and type scale, strokes and radii, one material family). Every UI and Voidkin piece derives from it, and none starts before it's picked (AR62).
 - **Scope at the feel line.** A piece's entry names what the block contains and what waits. Nothing joins a piece after it.
 - **When unsure how something should work,** research first, and label findings by evidence. Never present a guess as a measurement, or a simulation as a prediction of what players will do.
 - **Report four facts separately:** implemented, tested, visually reviewed (research's pass included), director-accepted. Silence is not acceptance.
-- **The checks, in order:** the content check before building; the maker's own checks, shown with their output; QA's evidence pack, once QA has joined; research's pass; the builder's review of code before it merges; the content check before any upload. After two fix rounds on one idea, the idea is reconsidered, not patched: research brings the director the options with the evidence.
+- **Evidence has a date** (Turing R7). A finding is about a path at a commit, and it expires when the path changes. A check's word is FAILED, NOT VERIFIED or PASSED. A check that ran nothing, or is missing its evidence, says NOT VERIFIED.
+- **The checks, in order:** the content check before building; the maker's own checks, shown with their output; QA's evidence pack, once QA has joined; research's pass; the builder's review of code before it merges; the content check before any upload.
+- **Two rounds, then the technique** (Turing R5). Each fix round names the cause of the failure and changes it, never the finish alone. After two rounds on one cause, the technique changes, or research brings the director the options with the images.
 - **One write per piece.** A piece's record is its request entry. Nothing is written twice; link instead. A doc-only commit happens at most once per piece boundary.
 - **Progress** is tested, integrated gameplay, never commits or documents. Research keeps one count on the board: pieces closed and playable this week, with hours.
 - **The director's break doesn't stop the team,** unless the director says so. A question waits under "Waiting on the director", and the next piece starts.
@@ -122,7 +131,7 @@ Every teammate is Claude Code on the director's PC. Change another teammate's ar
 - **Who pulls and pushes:** the builder pulls and pushes for the team. Before `git pull --rebase`, it compares any blocking local file with `origin/main` and removes only identical copies. Research may push too, with a plain push that carries teammates' local commits with its own (the director, 2026-11-12: "you can push yourself you know"), and never by force: if `origin/main` has moved ahead, the push is refused and the builder's next pull and push sorts it out. Everyone else commits by path and never pushes. Nobody but the builder pulls or switches branches. A pull also crashes Rojo.
 - Commit only your own work: `git add` your new files, then `git -c user.name=glocen -c user.email=92930182+glocen@users.noreply.github.com commit -m "<message>" -- <paths>`. The folder has one git index, so a plain `git commit` takes whatever another session staged.
 - **A file that also holds another session's edits:** `-- <paths>` commits it as it is on disk, so stage only your change: copy `git show HEAD:<file>` to your scratch folder, make the same edit there, run `git update-index --cacheinfo "100644,$(git hash-object -w --path <file> <copy>),<file>"`, compare HEAD's blob and `git diff --cached --name-only` in the commit's own command, then run a plain `git commit`.
-- **Turns:** Studio, timing tests and Blender's GPU go in turns, written on the Now board: at most two Studios open, one timing test at a time with its window in front, a Cycles render or a bake by `build/locks/blender.lock`. Never playtest a place another teammate holds.
+- **Turns:** Studio, timing tests and Blender's GPU go in turns, written on the Now board: one Studio open at a time (Turing; the memory guard checks free memory before a playtest or a render, once built), one timing test at a time with its window in front, a Cycles render or a bake by `build/locks/blender.lock`. Never playtest a place another teammate holds.
 - **Messages between sessions:** for a question, a review or a decision: one topic, name the file and section, no acknowledgements. A message wakes a tab at full context, so send one only when the receiver must act. Non-urgent asks wait until the receiver's piece is done, gathered in one message. What must last goes in its file.
 
 ## Where the truth lives: one fact, one home
@@ -130,6 +139,7 @@ Every teammate is Claude Code on the director's PC. Change another teammate's ar
 | Fact | Home | Read it |
 |---|---|---|
 | Rules | this file, `CLAUDE.md` | automatic |
+| Turing: its tools, the pilot, what it didn't adopt | `docs/turing.md` | when a rule cites Turing |
 | The director's founding word | `docs/archive/directive-2026-11-09.md` | the section a task touches |
 | Decisions: confirmed, proposed, open, rejected | `docs/decisions.md` | before designing or building anything |
 | The vision: the game, the loop, a premium first session, the bar | `docs/north-star.md` | before any piece players see |

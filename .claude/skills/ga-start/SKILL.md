@@ -15,7 +15,7 @@ The other teammates don't run this: their briefs say how they start, and only th
 2. **Rojo.** Make sure it's serving through `tools/rojo-serve.ps1` in a visible terminal. A pull crashes Rojo: if you pulled, ask the director to reconnect each Studio (Plugins → Rojo → Connect), then check Studio has the pulled code.
 3. **Studios and turns.**
    - Run `list_roblox_studios` (ids change on restart).
-   - Read the Now board's "Turns": at most two Studios open, and one timing test at a time.
+   - Read the Now board's "Turns": one Studio open at a time (Turing), and one timing test at a time.
    - Never playtest a place another teammate holds: a playtest locks its Edit DataModel.
 4. **State, not history.**
    - Read the "Now" board and the newest 3 entries of `docs/team-notes.md`, then the status line and the piece's own block in `docs/production-plan.md`.

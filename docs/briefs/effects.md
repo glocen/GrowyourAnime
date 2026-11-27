@@ -45,7 +45,7 @@ Each Voidkin's own basic attack and signature come after its redesign, at the fi
 1. **Feel line and beats** from the request. An action's effect goes through `/ga-action` with the builder and Modulo: the blockout the same day, never a clip reviewed without its effect.
 2. **Block in grey first,** in the game, beside the target's timing. Caps: an effect in 2 hours; a block that misses its cap is simplified or replaced (AGENTS.md).
 3. **Studio, by turns.**
-   - At most two Studios open; there's usually one, so you take it by turns written on the Now board.
+   - One Studio open at a time (Turing), so you take it by turns written on the Now board.
    - The PC has 15.5 GB, so no second Studio while a Blender render runs.
    - Load `/ga-studio-test` before any playtest, capture or debug call.
    - Rojo must be serving on 34876, and a playtest runs the code it started with.

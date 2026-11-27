@@ -66,6 +66,7 @@ Once all have reported, tell the builder to commit the shared files and push. Te
 ## Effort and tokens
 
 - **Model and effort:** Opus 5.5 at high, once the production plan is ready. Ask the director for Fable 5.2 only for a piece that really needs it: its usage runs out fast, the asset maker keeps it, and the builder works on Opus 5.5 at xhigh (director, 2026-11-11; `docs/production-plan.md`). Verdicts are pinned at high. Levels and reasons: `handbook/team/token-efficiency.md`.
+- **Measure only what changes a decision** (Turing R8). A speed or cost measure always comes with a quality gate. No tracking system.
 - **Tokens:** read by section, sheets before frames, no new research document unless asked by name, and no message that doesn't need an action.
 - **Context:** fresh context after each finished piece. Before stopping: committed, nothing running, no lock held.
 

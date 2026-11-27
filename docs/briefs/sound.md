@@ -51,7 +51,7 @@ Research writes the cue list with each request. Take the first one open for you.
 
 1. **Brief each cue in a line:** what it is, the moment it plays on (the clip's marker), how long, and what it must never sound like.
 2. **Shortlist** five to eight finished sounds per cue with the finder. Leave out anything that's a recording of an object rather than a finished effect, anything over the cue's length, and anything whose uploader may not own it (a claim would silence it).
-3. **Load them** into the panel on the fight's own cues, so the director hears each one on the hit it belongs to. Studio goes by turns on the Now board, at most two Studios, and you load `/ga-studio-test` before any playtest.
+3. **Load them** into the panel on the fight's own cues, so the director hears each one on the hit it belongs to. Studio goes by turns on the Now board, one Studio at a time (Turing), and you load `/ga-studio-test` before any playtest.
 4. **The director listens** and picks one, or none. One pick a cue; "none" means a new shortlist with different words, never a patch.
 5. **Merge:**
    - Commit the picks by path with `git -c user.name=glocen -c user.email=92930182+glocen@users.noreply.github.com commit -F <message file> -- <your paths>`.

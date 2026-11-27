@@ -1384,6 +1384,16 @@ local cases = {
 			for _, stop in WorldConfig.Row.Stops do
 				def = if stop.Kind == "Keeper" then stop.Def else def
 			end
+			-- The arena's plumbing (research, 2026-11-28): with the kit present, every copy still has its floor and its four
+			-- fences, wears the kit about its middle facing the gate, and a kit's piece lands where it was built, anchored.
+			local arena = t.Server("KeeperArena")
+			t.Check("the arena kit is in the templates", arena.Ok == true and arena.Kit == true, tostring(arena.Error))
+			if arena.Ok == true then
+				t.Check("every copy floored, fenced on four sides and dressed", arena.Copies > 0 and arena.Floored == arena.Copies and arena.Fenced == arena.Copies and arena.Dressed == arena.Copies, `{arena.Copies} copies: {arena.Floored} floored, {arena.Fenced} fenced, {arena.Dressed} dressed`)
+				t.Near("each dressing about its copy's middle, facing the gate (studs or unit off)", arena.Off, 0, 0.01)
+				t.Near("a kit's piece lands 10 studs toward the gate, 2 up (studs off)", arena.PieceOff, 0, 0.01)
+				t.Check("and is anchored", arena.PieceAnchored == true)
+			end
 			t.Server("KeeperRest", 0) -- TR10: a win earlier in the run rests the keeper five minutes; this case tries it now.
 			local before = t.Server("Keeper")
 			t.Check("no try yet", before.Ok == true and before.InTry == false)

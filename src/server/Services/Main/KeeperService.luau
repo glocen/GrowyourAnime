@@ -20,6 +20,7 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local ServerStorage = game:GetService("ServerStorage")
 
 local Shared = ReplicatedStorage.Shared
 local Net = require(Shared.Net)
@@ -68,6 +69,11 @@ local STAND = 3 -- an R6 root stands 3 studs over its floor
 local FENCE_HIGH = 24 -- the copy's unseen fence
 local MARGIN = 6 -- studs of floor round a copy's ring, inside its fence
 local REACH_SLACK = 4 -- studs past the prompt's reach the server still accepts: a moving avatar's lag
+-- The arena's dressing (ServerStorage.Templates.KeeperArenaKit), put on every private copy of the ring: a Model built
+-- about its pivot, the fight floor's middle, its front (-Z) toward the gate. Look only: the copy keeps its own floor,
+-- fences, spawns and return markers. Empty until the director picks the arena's target (research, 2026-11-28); with no
+-- kit at all a copy stands bare, as before.
+local ARENA = "KeeperArenaKit"
 
 type Try = {
 	Plot: number,
@@ -82,6 +88,27 @@ type Copy = { Centre: CFrame } -- its middle, where the keeper starts
 local tries: { [Player]: Try } = {}
 local copies: { [number]: Copy } = {}
 local ring: { Def: string, Level: number, Ground: string, Radius: number, ToGate: Vector3 }? = nil
+
+-- Dresses `copy` with the arena kit (or `given`, a test's), centred on `centre` and facing along `toGate`; the dressing, or
+-- nil with no kit.
+local function dress(copy: Instance, centre: CFrame, toGate: Vector3, given: Instance?): Model?
+	local templates = ServerStorage:FindFirstChild("Templates")
+	local kit = given or (if templates then templates:FindFirstChild(ARENA) else nil)
+	if kit == nil or not kit:IsA("Model") then
+		return nil
+	end
+	local arena = kit:Clone()
+	arena.Name = "Arena"
+	Markers.Unstamp(arena) -- a piece tagged by mistake never counts as one of the world's markers
+	for _, part in arena:GetDescendants() do
+		if part:IsA("BasePart") then
+			part.Anchored = true
+		end
+	end
+	arena:PivotTo(CFrame.lookAt(centre.Position, centre.Position + toGate))
+	arena.Parent = copy
+	return arena
+end
 
 local function folder(): Folder
 	local found = workspace:FindFirstChild(FOLDER)
@@ -237,6 +264,7 @@ local function lay()
 			local across = if offset.X ~= 0 then Vector3.new(1, FENCE_HIGH, side) else Vector3.new(side, FENCE_HIGH, 1)
 			wall(copy, across, CFrame.new(centre.Position + offset * (side / 2) + Vector3.new(0, FENCE_HIGH / 2, 0)))
 		end
+		dress(copy, centre, toGate)
 		copies[plot] = { Centre = centre }
 	end
 
@@ -473,6 +501,50 @@ function KeeperService.Start()
 	shortcut()
 	if RunService:IsStudio() then
 		DebugService.Register("Keeper", state)
+		-- The arena's plumbing (research, 2026-11-28): every copy dressed, floored and fenced, and a kit with a piece in it
+		-- set down about the floor's middle, its front toward the gate.
+		DebugService.Register("KeeperArena", function(): any
+			local into = workspace:FindFirstChild(FOLDER)
+			local r = ring
+			if into == nil or r == nil or copies[1] == nil then
+				return { Ok = false, Error = "NoRing" }
+			end
+			local out = { Ok = true, Copies = 0, Dressed = 0, Floored = 0, Fenced = 0, Off = 0, Kit = ServerStorage:FindFirstChild("Templates") ~= nil and (ServerStorage :: any).Templates:FindFirstChild(ARENA) ~= nil }
+			for plot, copy in copies do
+				local model = into:FindFirstChild(`Ring copy {plot}`)
+				if model == nil then
+					continue
+				end
+				out.Copies += 1
+				local arena = model:FindFirstChild("Arena")
+				if arena and arena:IsA("Model") then
+					out.Dressed += 1
+					out.Off = math.max(out.Off, (arena:GetPivot().Position - copy.Centre.Position).Magnitude, (arena:GetPivot().LookVector - r.ToGate).Magnitude)
+				end
+				out.Floored += if model:FindFirstChild("Floor") then 1 else 0
+				local fences = 0
+				for _, child in model:GetChildren() do
+					fences += if child.Name == "Fence" then 1 else 0
+				end
+				out.Fenced += if fences == 4 then 1 else 0
+			end
+			local kit = Instance.new("Model")
+			kit.WorldPivot = CFrame.identity
+			local piece = Instance.new("Part")
+			piece.Name = "Piece"
+			piece.Anchored = false
+			piece.CFrame = CFrame.new(0, 2, -10)
+			piece.Parent = kit
+			local scratch = Instance.new("Folder")
+			local centre = copies[1].Centre
+			local made = dress(scratch, centre, r.ToGate, kit)
+			local placed = if made then made:FindFirstChild("Piece") :: BasePart? else nil
+			out.PieceOff = if placed then (placed.Position - (centre.Position + r.ToGate * 10 + Vector3.new(0, 2, 0))).Magnitude else -1
+			out.PieceAnchored = placed ~= nil and placed.Anchored
+			scratch:Destroy()
+			kit:Destroy()
+			return out
+		end)
 		DebugService.Register("KeeperTry", function(who: any): any
 			local player = DebugService.ResolvePlayer(who)
 			return if player then KeeperService.Try(player) else { Ok = false, Error = "NoPlayer" }

@@ -27,9 +27,7 @@ return {
 	-- the first ten minutes stay as written (docs/north-star.md). The builder's reading of the seeds' "firstRunEnd".
 	ShowsAfter = "Want",
 	Codes = {
-		-- One an update, each typed once an account; the list ships with its update. Where codes are posted is the
-		-- director's. None yet: the first code's gift and end date come at the first update.
-		List = {} :: { Code },
+		-- The codes themselves are the server's (ServerScriptService.Server.Config.Codes), so none reaches a client.
 		-- What a code may give: a crate, an Emblem Case, a pouch or Standard shards (the seeds' "pays").
 		Pays = { Chests = { "crate", "pouch", "lanternrow_2_case" }, Shards = { "lanternrow_standard" } },
 		Tries = 5, -- wrong tries a minute,

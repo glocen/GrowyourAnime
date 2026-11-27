@@ -46,7 +46,7 @@ Made in TR1, 2026-11-12. Each is the builder's technical call (`AGENTS.md`, "Des
 
 The package's D04, and the heart of `docs/balance.md`.
 
-- `Stats.resolve(voidkin, preset, account)` returns the full stat block. It's the only place stats are added up: the Voidkin's row and stars, each slot's item and forge rank, emblems, jewels, research. It returns the breakdown too, so the stat screen shows where each point came from: the Voidkin's own figure as two lines, its base (the level-1 figure) and what its level adds, then its stars and each slot (`Rules.Stats`; the tap is `Rules.Sheet`).
+- `Stats.resolve(voidkin, preset, account)` returns the full stat block. It's the only place stats are added up: the Voidkin's row and stars, each slot's item with its Reinforce level, emblems and jewels, research. It returns the breakdown too, so the stat screen shows where each point came from: the Voidkin's own figure as two lines, its base (the level-1 figure) and what its level adds, then its stars and each slot (`Rules.Stats`; the tap is `Rules.Sheet`).
 - `Combat.resolveHit(attacker, defender, move, seed)` returns one hit's result: dodged or not, physical and elemental amounts, critical, blocked, lifesteal. It's the only place the two buckets and their ceilings exist. A critical multiplies outside them, with no ceiling (`Rules.Hit`, `CriticalFactor`).
 - Both are pure, both run on the server for truth, and the client may call the first for previews. Neither is copied: a second place that adds stats or computes damage is a bug.
 - A test fails the build if any stat source multiplies another (`docs/balance.md`, "The one rule").
@@ -176,6 +176,7 @@ The builder's, 2026-11-16, written before the systems (research's order, `docs/r
 | Combat: health, positions that matter, every hit | server, through the resolver | shows it, plays effects, predicts nothing that pays |
 | What a break gives | server, rolled when the break finishes, before the reveal | plays the reveal |
 | The Breaker, bays and battery | server, as progress and stamps | shows progress from the same values |
+| The promo codes: each code, its gift and its end | server, `ServerScriptService.Server.Config.Codes`, never in `Shared` (G2-029) | types one and reads the answer |
 | The Void Shop's stock | server, from world time and a seed that never reaches a client, the same in every server | shows it, asks to buy |
 | The Rift and the Calamity's schedule | server, from world time | shows the countdown |
 | The Calamity's health | each server its own | shows it |

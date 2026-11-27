@@ -6,7 +6,7 @@
 --   Act "WelcomeClaim" ()          today's gift: { Ok, Day, Gift } or refused Early, Done or Today
 --   Act "CodeTake" { Code }        a typed code: { Ok, Code, Gives } or refused Unknown, Used, Ended or Wait
 -- Studio only (NL_Debug): "Welcome" reads a player's week, codes and the day; "WelcomeSet" (taken, last, shown) sets
--- the week; "CodeList" (codes) stands a test list in for Config's, nil puts Config's back and clears the wrong tries.
+-- the week; "CodeList" (codes) stands a test list in for the server's, nil puts it back and clears the wrong tries.
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -18,6 +18,7 @@ local Goals = require(Shared.Rules.Goals)
 local Welcome = require(Shared.Rules.Welcome)
 local Codes = require(Shared.Rules.Codes)
 local Core = script.Parent.Parent.Core
+local CodeList = require(script.Parent.Parent.Parent.Config.Codes) -- the codes: the server's own, never replicated
 local DataService = require(Core.DataService)
 local DebugService = require(Core.DebugService)
 
@@ -26,7 +27,7 @@ local WelcomeService = {
 }
 
 local gates: { [Player]: Codes.Gate } = {}
-local testList: { Config.Code }? = nil -- Studio only: a test list in Config's place
+local testList: { Config.Code }? = nil -- Studio only: a test list in the server list's place
 
 local function registerDebug()
 	DebugService.Register("Welcome", function(who: any): any
@@ -82,7 +83,7 @@ function WelcomeService.Init()
 			gates[player] = gate
 		end
 		local typed = if type(args) == "table" then args.Code else nil
-		return Codes.Redeem(draft, typed, os.time(), testList or Config.Codes.List, gate :: Codes.Gate)
+		return Codes.Redeem(draft, typed, os.time(), testList or CodeList.List, gate :: Codes.Gate)
 	end)
 end
 

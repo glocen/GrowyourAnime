@@ -2476,6 +2476,12 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
 - **Research, 2026-11-26, 23:23, the gates after the director's word on tap to move** (`docs/decisions.md`): standing is the design point, ending on budget at 20 to 35%, and 25.8% passes.
   - A clean tapper ends at most 15 points above standing, measured with the tap block. It replaces the 50 to 70% dodging gate.
   - The keeper's numbers close on standing now. If the gap is over 15 points, damage moves from the tells into the ordinary swings.
+- **Faber, 2026-11-27, 02:55, the tapper gap: 4.9 points, the gate passes.** Lantern Row's keeper at level 9, phases on, against the level-9 on-budget sheet, on a grey pad off the plot, on today's code (the tap block in), three runs each:
+  - **Standing:** 25.6%, 19.7% and 42.8%, median **25.6%** (last night's 25.8% holds). 54 to 59 s.
+  - **A clean tapper:** 38.5%, 21.9% and 30.5%, median **30.5%**. 65 to 70 s. One tap 0.3 s after a tell covers the lead, to the nearest spot no live tell covers (2 studs clear), through the game's TapMove remote; every tap answered Ok. 8, 10 and 8 taps.
+  - **What it dodged:** 2, 3 and 2 of 6 or 7 slams. No sweep: it tapped for both sweeps each run and was hit by both anyway. Each tap costs swing time, so its fights run about 10 s longer, which takes back most of what it saves.
+  - The spread from run to run (19.7 to 42.8 standing) is wider than the gap.
+  - **Found on the way:** a fight on the player's own plot heals the lead at home (`Fight.HomeRate`, about 65 a second at this sheet), so a pad run from home ends near full. The runs here stood on a pad far from any plot. No fight spawns on a plot in play, so the game isn't affected.
 ## TR70. The break and its reveal, overhauled (research, 2026-11-26, 14:17; overhaul 2 of `docs/production-plan.md`, "The overhaul"; for Faber, with Scintilla's targets)
 
 - **Why** (`docs/research/cloud-2026-11-24/reveal-and-showcase.md`, MEASURED on our pools):

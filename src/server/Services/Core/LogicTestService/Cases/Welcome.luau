@@ -9,6 +9,7 @@ local Profile = require(Shared.Data.Profile)
 local Migrations = require(Shared.Data.Migrations)
 local Saveable = require(Shared.Data.Saveable)
 local Config = require(Shared.Config.Welcome)
+local CodeList = require(game:GetService("ServerScriptService").Server.Config.Codes) -- the server's own list
 local ChestRows = require(Shared.Definitions.Chests)
 local Shards = require(Shared.Definitions.Shards)
 local Welcome = require(Shared.Rules.Welcome)
@@ -140,7 +141,7 @@ return {
 				t.Check(`{id}: a chest that holds no gear`, row ~= nil and (row.Tier == ChestRows.Pouch or row.Tier == ChestRows.Crate or string.sub(id, -5) == "_case"))
 			end
 			t.Check("shards: Standard only", #pays.Shards == 1 and Shards.ById[pays.Shards[1]].Grade == "Standard")
-			for _, code in Config.Codes.List do
+			for _, code in CodeList.List do
 				t.Check(`{code.Id}: pays only what a code may`, Codes.Allowed(code))
 				t.Check(`{code.Id}: ends`, code.Until > 0)
 			end

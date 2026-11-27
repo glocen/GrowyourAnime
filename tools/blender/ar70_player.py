@@ -134,12 +134,12 @@ def spirit(name, colour, strength, fade, hot_colour=GOLD_HOT, paint=None, deep=N
         links.new(bw.outputs["Val"], val.inputs["Value"])
         tone = val.outputs["Result"]
         low = mix_rgb(srgb(deep), srgb(colour), op("MINIMUM", op("MULTIPLY", tone, 2.5), 1.0))
-        lit = mix_rgb(low, srgb(hot_colour), op("MAXIMUM", op("SUBTRACT", tone, 0.45), 0.0))
-        lit = mix_rgb(lit, srgb(hot_colour), op("MULTIPLY", rim, 0.45))
+        lit = mix_rgb(low, srgb(hot_colour), op("MULTIPLY", op("MAXIMUM", op("SUBTRACT", tone, 0.75), 0.0), 1.6))
+        lit = mix_rgb(lit, srgb(hot_colour), op("MULTIPLY", rim, 0.3))
         links.new(lit, em.inputs["Color"])
         # the strength: dark paint dim, pale paint bright, the outline a little brighter
-        k = op("MULTIPLY_ADD", tone, strength * 2.6, strength * 0.3)
-        links.new(op("MULTIPLY_ADD", rim, strength * 1.2, k), em.inputs["Strength"])
+        k = op("MULTIPLY_ADD", tone, strength * 1.25, strength * 0.5)
+        links.new(op("MULTIPLY_ADD", rim, strength * 0.7, k), em.inputs["Strength"])
     else:
         links.new(mix_rgb(srgb(colour), srgb(hot_colour), rim), em.inputs["Color"])
         links.new(op("MULTIPLY_ADD", rim, strength * 2.2, strength), em.inputs["Strength"])
@@ -471,33 +471,6 @@ def fighter_light(mats, fighter, at, scale, turn, pose):
     return root, neck
 
 
-def impact(mats, at, rng, count=11, reach=6.0):
-    """The smash on the ground: cracks of the shard's light running out from under it, each a few bent strokes, and a
-    low ring of light spreading."""
-    o = Vector((at[0], at[1], 0.02))
-    for i in range(count):
-        a = 2 * math.pi * i / count + rng.uniform(-0.25, 0.25)
-        p0, ln = o.copy(), rng.uniform(0.45, 1.0) * reach
-        for k in range(3):
-            a += rng.uniform(-0.45, 0.45)
-            step = ln / 3
-            p1 = p0 + Vector((math.cos(a), math.sin(a), 0)) * step
-            mid, d = (p0 + p1) / 2, p1 - p0
-            w = 0.1 * (1 - k / 3) + 0.03
-            crack = block(f"Crack{i}_{k}", (d.length + w, w, 0.03), (0, 0, 0), mats["ray"], 0.0)
-            crack.location = mid
-            crack.rotation_euler = (0, 0, math.atan2(d.y, d.x))
-            p0 = p1
-    bm = bmesh.new()
-    bmesh.ops.create_circle(bm, cap_ends=False, segments=64, radius=reach * 0.55)
-    ring = bl.object_from_bmesh("Ring", bm, mats["ray"])
-    ring.location = o + Vector((0, 0, 0.05))
-    mod = ring.modifiers.new("Skin", "SOLIDIFY")
-    mod.thickness = 0.06
-    wire = ring.modifiers.new("Wire", "WIREFRAME")
-    wire.thickness = 0.08
-
-
 # --- the place ---------------------------------------------------------------------------------------------------------
 
 def sky(scene, zenith, mid, horizon, sun_dir, strength=1.0):
@@ -629,16 +602,17 @@ SHOTS = {
         dolly=0.66, cam=(-0.4, -4.8, 3.5), aim=(0.1, 0.0, 5.3), lens=21, focus=(0.6, -0.2, 4.6), fstop=4.0,
         sky=("#2A55B0", "#79AEEE", "#FFC184"), sun=(0.6, 0.8, 0.16),
     ),
-    # C, the smash: he lunges and drives his fist down into the shard; it bursts and the ground cracks with its light;
-    # the Voidkin rises out of it behind him on the left, in her own Rare blue, against a warm evening.
+    # C, the smash: one line up the frame, from his face low on the right, to his fist driven up into the shard, the
+    # shard cracking with its pieces flying, to the Voidkin rising out of the crack, leaning up and away on the left,
+    # in her own Rare blue, against a warm evening seen from low.
     "C": dict(
-        light="rare", impact=True, core_k=12.0,
-        player=dict(hips=(0, 0, 0), waist=(-28, 0, -10), neck=(14, 0, 14), armR=(-58, 0, 16), armL=(40, 0, -30),
-                    legR=(-50, 0, 0), legL=(36, 0, 0)),
-        root=(1.0, 0.4, -0.45), turn=-58, shard_hand="R", shard_off=(0.0, -0.45, -0.5), shard_scale=0.86, part=0.36,
-        kin_screen=(0.3, 0.16), kin_far=25.0, kin_scale=2.8, kin_turn=14,
-        ray_up=(-0.5, -0.3, 1.0), ray_reach=2.6, rays=6, ray_thin=0.5,
-        dolly=0.66, cam=(-0.9, -4.4, 3.1), aim=(-0.4, 0.4, 1.75), lens=20, focus=(0.2, -0.4, 2.6), fstop=4.5,
+        light="rare", core_k=4.0, chips=22, chip_reach=4.2, kin_fade=(0.2, 1.9),
+        player=dict(hips=(0, 0, 0), waist=(-14, 0, -12), neck=(4, 0, 34), armR=(-140, 0, 6), armL=(70, 0, -4),
+                    legR=(-46, 0, 0), legL=(34, 0, 0)),
+        root=(1.0, 0.4, -0.45), turn=-66, shard_hand="R", shard_off=(-0.4, -0.28, 0.62), shard_scale=0.62, part=0.36,
+        kin_rise=(-0.25, 2.0, -0.5), kin_lean=-32, kin_scale=0.95, kin_turn=10,
+        ray_up=(-0.6, -0.2, 0.5), ray_reach=2.0, rays=4, ray_thin=0.5,
+        dolly=0.72, cam=(-0.9, -4.4, 2.0), aim=(-0.9, 0.4, 3.5), lens=20, focus=(0.2, -0.4, 2.6), fstop=9.0,
         sky=("#3F6FC4", "#F6B48A", "#FF9A5A"), sun=(-0.7, 0.7, 0.2),
     ),
 }
@@ -651,7 +625,7 @@ LIGHTS = {  # the shard's light, by shot: (the Voidkin's body, its white-hot, th
 }
 
 
-def materials(face_png, light="gold", core_k=24.0):
+def materials(face_png, light="gold", core_k=24.0, kin_fade=(0.3, 2.6)):
     body, hot, ray, _, body_k, deep = LIGHTS[light]
     mats = {k: cloth(k, LOOK[k]) for k in ("hoodie", "tee", "jeans", "shoe", "sole")}
     mats["hoodie_dark"] = cloth("hoodie_dark", "#B8301F")
@@ -662,7 +636,7 @@ def materials(face_png, light="gold", core_k=24.0):
     mats["core"] = glow("core", hot, core_k)
     mats["ray"] = glow("ray", ray, 6.0)
     mats["spark"] = glow("spark", hot, 10.0)
-    mats["kin"] = spirit("kin", body, body_k, fade=(0.3, 2.6), hot_colour=hot,
+    mats["kin"] = spirit("kin", body, body_k, fade=kin_fade, hot_colour=hot,
                          paint=HANDOFF / "Lyric" / "Lyric_Color.png", deep=deep)
     mats["paving"] = paving("paving", "#8C8A96")
     return mats
@@ -720,7 +694,8 @@ def run(out, name, samples, size):
     shot = SHOTS[name]
     scene = bl.reset_scene()
     rng = np.random.default_rng(7)
-    mats = materials(out / "face.png", shot.get("light", "gold"), shot.get("core_k", 24.0))
+    mats = materials(out / "face.png", shot.get("light", "gold"), shot.get("core_k", 24.0),
+                     shot.get("kin_fade", (0.3, 2.6)))
     neck, hands = player(mats, shot["player"], shot["root"], shot["turn"])
     bpy.context.view_layer.update()
     shot["shard_at"] = tuple(hands[shot["shard_hand"]].matrix_world.translation + Vector(shot["shard_off"]))
@@ -739,25 +714,26 @@ def run(out, name, samples, size):
         for key in ("cam", "aim", "focus"):
             shot[key] = tuple(Vector(shot[key]) + now - was)
     cam = camera(scene, shot, size)
-    chips(mats, shot["shard_at"], 14, 3.2, rng, avoid=((neck.matrix_world @ Vector((0, 0, 0.7)), 1.4),
+    chips(mats, shot["shard_at"], shot.get("chips", 14), shot.get("chip_reach", 3.2), rng, avoid=((neck.matrix_world @ Vector((0, 0, 0.7)), 1.4),
                                                        (neck.matrix_world @ Vector((0, 0, -1.0)), 1.3),
                                                        (cam.location, 2.6)))
     # the Voidkin turned to the lens, upright in the frame, so its shape reads whole
     bpy.context.view_layer.update()
     r = cam.matrix_world.to_3x3()
     face = Matrix((r.col[0], -r.col[2], r.col[1])).transposed() @ Matrix.Rotation(math.radians(shot["kin_turn"]), 3, "Z")
+    face = Matrix.Rotation(math.radians(shot.get("kin_lean", 0.0)), 3, -r.col[2]) @ face   # leaning along the frame
     kin_root.rotation_euler = face.to_euler()
-    # its head where the frame wants it (kin_screen, 0 to 1 from the top left), kin_far studs from the lens
     bpy.context.view_layer.update()
-    sx, sy = shot["kin_screen"]
-    tr, br, bl_, tl = cam.data.view_frame(scene=scene)
-    ray = (cam.matrix_world.to_3x3() @ (tl + (tr - tl) * sx + (bl_ - tl) * sy)).normalized()
-    want = cam.matrix_world.translation + ray * shot["kin_far"]
-    head = kin_neck.matrix_world @ Vector((0, 0, 0.6))
-    kin_root.location += want - head
+    if "kin_rise" in shot:  # her feet in the crack, offset in her own frame (x right, y away from the lens, z up)
+        kin_root.location = Vector(shot["shard_at"]) + face @ Vector(shot["kin_rise"])
+    else:  # its head where the frame wants it (kin_screen, 0 to 1 from the top left), kin_far studs from the lens
+        sx, sy = shot["kin_screen"]
+        tr, br, bl_, tl = cam.data.view_frame(scene=scene)
+        ray = (cam.matrix_world.to_3x3() @ (tl + (tr - tl) * sx + (bl_ - tl) * sy)).normalized()
+        want = cam.matrix_world.translation + ray * shot["kin_far"]
+        head = kin_neck.matrix_world @ Vector((0, 0, 0.6))
+        kin_root.location += want - head
     bpy.context.view_layer.update()
-    if shot.get("impact"):
-        impact(mats, shot["shard_at"], rng)
     ground(mats)
     sky(scene, *shot["sky"], shot["sun"])
     lights(scene, shot, shot["shard_at"])

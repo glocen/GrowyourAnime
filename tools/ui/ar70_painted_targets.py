@@ -41,20 +41,24 @@ def fonts_css():
     return "".join(f'@font-face{{font-family:"{f}";src:url("{(sf.FONTS / n).as_uri()}")}}' for f, n in faces.items())
 
 
-def shard_glyph(h, w):
+def shard_glyph(h, w, bright=False, depth=0.0):
     """The Void Shard as the I: a tall crystal, its point up, cut in facets, a crack across its middle with light in it.
-    Centred on x 0, its foot on y 0, `h` tall and `w` wide (points)."""
+    Centred on x 0, its foot on y 0, `h` tall and `w` wide (points). `bright` cuts it in pale facets, as light as the
+    letters beside it, so it reads as a letter and not as a gap; `depth` gives it the letters' extrusion."""
+    hi, mid, lo, low = (("#FFFFFF", "#E4DAFF", "#B49CFF", "#CDBDFF") if bright else (SHARD_HI, SHARD, SHARD_LO, "#7C5CF0"))
     t, m, b = -h, -h * 0.5, 0.0
     outline = [(0, t - h * 0.1), (w * 0.5, t + h * 0.18), (w * 0.44, b - h * 0.08), (0, b + h * 0.06),
                (-w * 0.5, b - h * 0.1), (-w * 0.46, t + h * 0.2)]
     pts = " ".join(f"{x:.1f},{y:.1f}" for x, y in outline)
     facets = [  # (polygon, fill): the lit face left, the shaded face right, a top bevel
-        ([(0, t - h * 0.1), (-w * 0.46, t + h * 0.2), (-w * 0.5, b - h * 0.1), (-w * 0.08, m + h * 0.04)], SHARD_HI),
-        ([(0, t - h * 0.1), (w * 0.5, t + h * 0.18), (w * 0.44, b - h * 0.08), (w * 0.06, m - h * 0.02)], SHARD_LO),
-        ([(0, t - h * 0.1), (-w * 0.08, m + h * 0.04), (0, b + h * 0.06), (w * 0.06, m - h * 0.02)], SHARD),
-        ([(-w * 0.08, m + h * 0.04), (-w * 0.5, b - h * 0.1), (0, b + h * 0.06)], "#7C5CF0"),
+        ([(0, t - h * 0.1), (-w * 0.46, t + h * 0.2), (-w * 0.5, b - h * 0.1), (-w * 0.08, m + h * 0.04)], hi),
+        ([(0, t - h * 0.1), (w * 0.5, t + h * 0.18), (w * 0.44, b - h * 0.08), (w * 0.06, m - h * 0.02)], lo),
+        ([(0, t - h * 0.1), (-w * 0.08, m + h * 0.04), (0, b + h * 0.06), (w * 0.06, m - h * 0.02)], mid),
+        ([(-w * 0.08, m + h * 0.04), (-w * 0.5, b - h * 0.1), (0, b + h * 0.06)], low),
     ]
-    out = [f'<polygon points="{pts}" fill="none" stroke="{INK}" stroke-width="{w * 0.36:.1f}" stroke-linejoin="round"/>']
+    out = [f'<polygon points="{pts}" transform="translate(0 {k * depth / 7:.1f})" fill="{DEPTH}" stroke="{DEPTH}" '
+           f'stroke-width="{w * 0.36:.1f}" stroke-linejoin="round"/>' for k in range(1, 8)] if depth else []
+    out.append(f'<polygon points="{pts}" fill="none" stroke="{INK}" stroke-width="{w * 0.36:.1f}" stroke-linejoin="round"/>')
     for poly, fill in facets:
         out.append(f'<polygon points="{" ".join(f"{x:.1f},{y:.1f}" for x, y in poly)}" fill="{fill}"/>')
     # facet lines, white, as the shard pictures draw them
@@ -72,12 +76,12 @@ def shard_glyph(h, w):
     return "".join(out)
 
 
-def logo_svg(cx, base, size=1.0, lean=-9, grow=("Sarpanch", 30, 5, 0.8)):
+def logo_svg(cx, base, size=1.0, lean=-9, grow=("Sarpanch", 30, 5, 0.8), bright_i=False):
     """The logotype, its ANIME's baseline at `base`, centred on `cx`, at `size` (1: ANIME 96 points tall). `grow` sets
     GROW YOUR: its face, its size and letter spacing at size 1, and its baseline above ANIME's, in ANIME's heights."""
     big = 104 * size
     gap = 17 * size                    # the shard's half-width with its air
-    sh, sw = big * 0.86, 26 * size     # the shard's height and width
+    sh, sw = big * 0.86, (32 if bright_i else 26) * size     # the shard's height and width
     defs = (f'<defs><linearGradient id="gold" x1="0" y1="{-big * 0.78:.1f}" x2="0" y2="0" gradientUnits="userSpaceOnUse">'
             f'<stop offset="0" stop-color="{GOLD_TOP}"/><stop offset="0.42" stop-color="{GOLD}"/>'
             f'<stop offset="1" stop-color="{EMBER_LO}"/></linearGradient>'
@@ -105,7 +109,8 @@ def logo_svg(cx, base, size=1.0, lean=-9, grow=("Sarpanch", 30, 5, 0.8)):
     ]
     shine = (f'<clipPath id="shine"><rect x="{-400 * size:.1f}" y="{-big * 0.74:.1f}" width="{800 * size:.1f}" '
              f'height="{big * 0.1:.1f}"/></clipPath>')
-    shard = f'<g transform="translate(0 {2 * size:.1f})">{shard_glyph(sh, sw)}</g>'
+    shard = (f'<g transform="translate(0 {2 * size:.1f})">'
+             f'{shard_glyph(sh, sw, bright_i, 7 * size if bright_i else 0.0)}</g>')
     face, small, spacing, lift = grow[0], grow[1] * size, grow[2] * size, grow[3]
     grow = (f'<g transform="translate({-gap * 0.2:.1f} {-big * lift:.1f})">'
             f'<text x="0" y="0" text-anchor="middle" font-family="{face}" font-size="{small:.1f}" letter-spacing="{spacing:.1f}" '

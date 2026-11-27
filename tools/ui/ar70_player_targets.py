@@ -26,7 +26,7 @@ import style_frames as sf  # noqa: E402
 GRADES = {  # per shot: exposure, saturation, bloom strength, the logotype's size and its baseline (on the 512 canvas)
     "A": dict(exposure=0.7, sat=1.45, bloom=0.5, logo=(0.96, 478)),
     "B": dict(exposure=0.7, sat=1.45, bloom=0.5, logo=(0.96, 478)),
-    "C": dict(exposure=0.56, sat=1.8, bloom=0.5, logo=(0.9, 482), grow=("Bangers", 60, 3, 0.86)),
+    "C": dict(exposure=0.6, sat=1.5, bloom=0.5, logo=(0.9, 482), grow=("Bangers", 60, 3, 0.86), bright_i=True),
 }
 TITLES = {"A": "A, the raise", "B": "B, the offer", "C": "C, the smash"}
 
@@ -79,8 +79,8 @@ def icons(renders, out, shots):
         flat = graded(renders, out, shot)
         size, base = GRADES[shot]["logo"]
         big = out / "work" / f"icon_{shot}_1024.png"
-        grow = GRADES[shot].get("grow")
-        pt.shoot(flat, pt.logo_svg(it.S / 2, base, size, **({"grow": grow} if grow else {})), big)
+        extra = {k: GRADES[shot][k] for k in ("grow", "bright_i") if k in GRADES[shot]}
+        pt.shoot(flat, pt.logo_svg(it.S / 2, base, size, **extra), big)
         made = it.sizes(big, out, shot)
         print(f"{shot}: {made[512]}")
 

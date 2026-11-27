@@ -440,6 +440,10 @@ The director's words from 2026-11-27, 14:30 on, newest on top, in the table's ow
 
 | Date | The words | They cover |
 |---|---|---|
+| 2026-11-27, by 23:58 | "ok skip grok" | no Grok subscription and no Grok helpers (research's, Gemini's and Codex's verdict: no) |
+| 2026-11-27, by 23:58 | "Stop iterating on  ahorrendous idea if it bad it bad it need an overhaul." | the game icon: the idea of a player smashing a shard with a light silhouette is dropped, not iterated; a new concept |
+| 2026-11-27, by 23:58 | "still bad" | Gemini's two painted takes of the player smashing the shard |
+| 2026-11-27, by 23:58 | "horrendous" | the GFX icon S2 (research's reading; the director said 'stop iterating' next) |
 | 2026-11-27, by 23:42 | "sure" | a standing OK: research copies the images Gemini generates from research's prompts out of Gemini's own folder (`.gemini/antigravity-cli/brain/` in the director's profile) into the project; nothing else from that folder |
 | 2026-11-27, by 23:42 | "your call for 2" | opening level design (Locus) and environment art (Tessera) for the maps' overhaul: research decides |
 | 2026-11-27, by 23:42 | "(pasted) ChatGPT's review to Quaestor: the gap between engineering and player-facing quality" | research assesses it critically and answers with a prioritized evaluation: weaknesses, causes, fixes, costs, launch-critical against later |

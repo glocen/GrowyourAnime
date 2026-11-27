@@ -32,10 +32,12 @@ GRADES = {  # per shot: exposure, saturation, bloom strength, the logotype's siz
     "C": dict(exposure=0.6, sat=1.5, bloom=0.5, logo=(0.9, 482), grow=("Bangers", 60, 3, 0.86), bright_i=True),
     "S1": dict(exposure=0.6, sat=1.4, bloom=0.6, logo=(0.9, 482), grow=("Bangers", 60, 3, 0.86), bright_i=True,
                paint="silhouette_hot"),
-    "S2": dict(exposure=0.6, sat=1.4, bloom=0.6, logo=(0.9, 482), grow=("Bangers", 60, 3, 0.86), bright_i=True,
-               paint="silhouette_hot"),
+    # S2, research's pick (23:38): the logotype a size smaller so the figure's legs and the crack show; the backdrop
+    # out of focus
+    "S2": dict(exposure=0.6, sat=1.4, bloom=0.6, logo=(0.76, 488), grow=("Bangers", 60, 3, 0.86), bright_i=True,
+               paint="silhouette_s2"),
     "T1": dict(exposure=0.6, sat=1.4, bloom=0.6, paint="silhouette_hot"),
-    "T2": dict(exposure=0.6, sat=1.4, bloom=0.6, paint="silhouette_hot"),
+    "T2": dict(exposure=0.6, sat=1.4, bloom=0.6, paint="silhouette_t2"),
     "S1h": dict(exposure=0.6, sat=1.4, bloom=0.6, logo=(0.9, 482), grow=("Bangers", 60, 3, 0.86), bright_i=True,
                 paint="silhouette_hot", render="S1"),
 }
@@ -48,6 +50,8 @@ PAINTS = {  # the GFX paint-overs (paint() above), by name
                            aura="#1FA4FF", aura_k=1.4, rim="#BDF2FF", rim_k=2.5, rim_w=0.006, lines=20, lines_clear=0.26,
                            lines_k=0.45, vignette=0.45, back_dark=0.4),
 }
+PAINTS["silhouette_s2"] = dict(PAINTS["silhouette_hot"], back_blur=0.012)
+PAINTS["silhouette_t2"] = dict(PAINTS["silhouette_s2"], core_w=0.11, back_dark=0.6)
 for _g in GRADES.values():
     if isinstance(_g.get("paint"), str):
         _g["paint"] = PAINTS[_g["paint"]]
@@ -87,6 +91,9 @@ def paint(rgb, light, ids, marks, g):
     n = h   # the paint's sizes are fractions of the frame's height
     P, K, E = (np.clip(ids[..., c], 0, 1) for c in range(3))
     K = np.clip(K + E, 0, 1)   # the eyes are the figure's too
+    # the shard, its chips and its light: neither the player nor the figure, but not the backdrop either (the alpha)
+    S = np.clip(ids[..., 3] - P - K, 0, 1) if ids.shape[2] > 3 else np.zeros_like(P)
+    B = np.clip((1 - P) * (1 - K) * (1 - S), 0, 1)   # the backdrop: the sky and the ground
     inside = ndimage.distance_transform_edt(ndimage.binary_fill_holes(K > 0.5)) / (n * p["core_w"])   # what
     # stands in front of it (the chips) cuts it, but makes no outline inside it
     t = np.clip(inside, 0, 1)[..., None] ** 0.8
@@ -102,6 +109,12 @@ def paint(rgb, light, ids, marks, g):
     rim = ndimage.gaussian_filter(np.clip(P - beyond, 0, 1), n * 0.0015)
     rgb = rgb + rim[..., None] * hexlin(p["rim"], p["rim_k"])
     yy, xx = np.mgrid[0:h, 0:w].astype(float)
+    if p.get("back_blur"):   # the backdrop out of focus: blurred where neither the player nor the figure stands,
+        # each part weighted by how much backdrop it holds, so no figure bleeds into it
+        r = n * p["back_blur"]
+        wsum = ndimage.gaussian_filter(B, r)[..., None]
+        soft = np.dstack([ndimage.gaussian_filter(rgb[..., c] * B, r) for c in range(3)]) / np.maximum(wsum, 1e-4)
+        rgb = rgb * (1 - B[..., None]) + soft * B[..., None]
     if p.get("lines"):
         sx, sy = marks["shard"]
         r = np.hypot(xx - sx, yy - sy)
@@ -114,11 +127,11 @@ def paint(rgb, light, ids, marks, g):
             width = n * 0.006 * w * np.clip(r / (n * 0.5), 0, 1.5)
             lines = np.maximum(lines, k * np.exp(-(off / np.maximum(width, 0.3)) ** 2))
         lines *= np.clip((r - n * p["lines_clear"]) / (n * 0.25), 0, 1)
-        rgb = rgb + (lines * (1 - P) * (1 - K))[..., None] * hexlin("#FFFFFF", p["lines_k"])
+        rgb = rgb + (lines * B)[..., None] * hexlin("#FFFFFF", p["lines_k"])
     if p.get("back_dark"):   # the backdrop deeper away from the contact, so the light and the faces carry the frame
         sx, sy = marks["shard"]
         near = np.exp(-(np.hypot(xx - sx, yy - sy) / (n * 0.3)) ** 2)
-        rgb = rgb * (1 - (p["back_dark"] * (1 - near) * (1 - P) * (1 - K)))[..., None]
+        rgb = rgb * (1 - (p["back_dark"] * (1 - near) * B))[..., None]
     far = np.hypot(xx / w - 0.5, yy / h - 0.5) / 0.7071
     rgb = rgb * (1 - p["vignette"] * np.clip((far - 0.35) / 0.65, 0, 1) ** 1.6)[..., None]
     return rgb, (light * (1 - K[..., None]) if light is not None else None)

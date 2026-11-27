@@ -35,7 +35,7 @@ CARD = (400, 225)                     # about the store's card on a phone (resea
 # `violet` takes that much of the saturation out of the blue-violet hues (230 to 300 degrees): the director's "too
 # purple" (said six times by 2026-11-24), on a dusk street whose sky and paving are violet
 GRADE = dict(exposure=1.08, contrast=1.18, sat=1.28, bloom=0.35, cool=0.0, warm=0.06, vignette=0.32, violet=0.3)
-LOGO = dict(size=1.45, margin=(64, 58), grow=("Bangers", 60, 3, 0.86), bright_i=True)
+LOGO = dict(size=1.25, margin=(64, 58), grow=("Bangers", 60, 3, 0.86), bright_i=True)   # a size down for T2 (research, 23:38)
 # the takes, once Faber's captures are in build/captures/ar70/: key -> capture, crop (cx, cy, w), corner, grade changes
 # the staged shot 1 is lit by day, so its grade holds the light and takes more colour (`DAY`)
 DAY = dict(exposure=0.98, sat=1.45, contrast=1.25)
@@ -51,10 +51,10 @@ TAKES = {
 }
 # the game page's set, in upload order (research, 2026-11-27: "the minimum is Pip's burst and Rook's hit"; the shard
 # and the bays join when they land), with icon C round 2 at 512
-# the captures are out: the GFX art replaces them (the director, 2026-11-27, 23:14 and 23:15), and its keys and icon
-# join here at research's pick, so the set can't carry an old make
-FINAL = []
-ICON = None
+# the captures are out: the GFX art replaces them (the director, 2026-11-27, 23:14 and 23:15). Research's pick, S2
+# (23:38), with its three fixes: the icon S2 and the thumbnail T2, its staging at 16:9
+FINAL = ["T2"]
+ICON = REPO / "build" / "handoff" / "GamePage" / "ar70" / "gfx" / "icon_S2_final.png"
 TITLES = {"fight_hit": "Rook, the hit", "fight_face": "Rook, the face", "fight_pip": "Pip, the burst",
           "shard": "the shard", "bays": "the bays at work"}
 

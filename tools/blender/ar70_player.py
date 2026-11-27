@@ -510,7 +510,19 @@ def silhouette(mats, at, scale, turn, pose=KIN_POSE):
         block(f"KinEye{e}", (0.3, 0.08, 0.1), (e * 0.24, -0.63, 0.66), hot, 0.02, neck)
     for side, e in (("R", -1), ("L", 1)):
         sh = pivot(f"KinShoulder{side}", (e * 1.5, 0, 1.5), torso, pose.get(f"arm{side}", (0, 0, 0)))
-        block(f"KinArm{side}", (1.0, 1.0, 2.0), (0, 0, -0.5), kin, 0.1, sh)
+        block(f"KinArm{side}", (1.0, 1.0, 1.1), (0, 0, -0.05), kin, 0.1, sh)          # the sleeve
+        block(f"KinFore{side}", (0.78, 0.78, 0.75), (0, 0, -0.9), kin, 0.08, sh)      # the forearm, to the wrist
+        if abs(pose.get(f"arm{side}", (0, 0, 0))[1]) > 90:   # raised: the hand open, the fingers spread
+            block(f"KinPalm{side}", (0.86, 0.42, 0.55), (0, 0, -1.5), kin, 0.1, sh)
+            for i, a in enumerate((-34, -12, 10, 32)):
+                f = pivot(f"KinFinger{side}{i}", (math.sin(math.radians(a)) * 0.3, 0, -1.72), sh, (0, -a, 0))
+                block(f"KinFingerBlock{side}{i}", (0.2, 0.3, 0.62 - abs(a) / 200), (0, 0, -0.28), kin, 0.07, f)
+            t = pivot(f"KinThumb{side}", (-e * 0.42, 0, -1.36), sh, (0, e * 62, 0))
+            block(f"KinThumbBlock{side}", (0.22, 0.3, 0.48), (0, 0, -0.22), kin, 0.07, t)
+        else:   # low: a fist, the knuckles a ridge, the thumb over
+            block(f"KinFist{side}", (0.95, 0.85, 0.66), (0, 0, -1.58), kin, 0.16, sh)
+            block(f"KinKnuckles{side}", (0.98, 0.5, 0.18), (0, -0.12, -1.93), kin, 0.07, sh)
+            block(f"KinThumbFist{side}", (0.26, 0.4, 0.42), (-e * 0.5, -0.1, -1.5), kin, 0.08, sh)
         hip = pivot(f"KinHip{side}", (e * 0.5, 0, 0.0), hips, pose.get(f"leg{side}", (0, 0, 0)))
         block(f"KinLeg{side}", (1.0, 1.0, 2.0), (0, 0, -1.0), kin, 0.08, hip)
     return root, pivot("KinHeadMark", (0, 0, 0.0), neck)
@@ -687,14 +699,15 @@ SHOTS = {
         kin_screen=(0.3, 0.2), kin_far=12.0, kin_scale=2.2, kin_turn=-10,
         ray_up=(-0.6, -0.2, 0.5), ray_reach=2.0, rays=4, ray_thin=0.5,
         dolly=0.72, cam=(-0.9, -4.4, 2.0), aim=(-0.9, 0.4, 3.5), lens=20, focus=(0.2, -0.4, 2.6), fstop=3.2,
-        sky=("#163C96", "#C77C66", "#FF7A3A"), sun=(-0.7, 0.7, 0.2), sky_k=0.55, kin_k=2.5,
+        # night-blue, no sunset (research's must-fix, 23:38): the light figure is the brightest field
+        sky=("#0C2266", "#1E3C88", "#3A5AA8"), sun=(-0.7, 0.7, 0.2), sky_k=0.4, kin_k=2.5,
         rim=("#FFD9A8", 6000), rim_at=(2.5, 2.5, 3.0),
     ),
 }
 # T1 and T2, the thumbnails (1920 x 1080): S1's and S2's staging on a wider lens, so the 16:9 frame keeps the
 # silhouette's hair and the player's shoulders
 SHOTS["T1"] = dict(SHOTS["S1"], lens=16, aim=(-0.9, 0.4, 4.4), kin_rise=(-2.0, 2.2, -2.2), kin_lean=-10)
-SHOTS["T2"] = dict(SHOTS["S2"], lens=16)
+SHOTS["T2"] = dict(SHOTS["S2"], lens=16, aim=(-0.9, 0.4, 4.0), kin_screen=(0.26, 0.4), kin_scale=2.0)
 
 
 LIGHTS = {  # the shard's light, by shot: (the Voidkin's body, its white-hot, the rays, the key light on the player,
@@ -786,8 +799,9 @@ def where(scene, cam, point, size):
 
 def ids_pass(scene, out, name, mats, size):
     """The paint-over's masks (gfx-technique.md: the rim line and the aura drawn in code from the figure's own mask): the
-    player red, the silhouette green (with its rise out of the light), its eyes blue, all else black, so what stands in
-    front of each still cuts it."""
+    player red, the silhouette green (with its rise out of the light), its eyes blue, the shard and its chips and light
+    black, so what stands in front of each still cuts it. The alpha is everything but the sky and the ground, so the
+    shard's black stays apart from the backdrop's: the backdrop's blur leaves it sharp."""
     def top(obj):
         while obj.parent:
             obj = obj.parent
@@ -800,10 +814,11 @@ def ids_pass(scene, out, name, mats, size):
     em.inputs["Color"].default_value, em.inputs["Strength"].default_value = (0, 1, 0, 1), 1.0
     ids = dict(player=glow("id_player", "#FF0000", 1.0), eye=glow("id_eye", "#0000FF", 1.0),
                none=glow("id_none", "#000000", 0.0))
+    scene.render.film_transparent = True
     for obj in scene.objects:
         if obj.type != "MESH":
             continue
-        obj.is_holdout = False
+        obj.is_holdout = obj.name.startswith("Ground")
         root = top(obj)
         mat = (ids["eye"] if obj.name.startswith("KinEye") else kin_id if root == "Kin"
                else ids["player"] if root == "Root" else ids["none"])

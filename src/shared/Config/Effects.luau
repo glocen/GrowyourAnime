@@ -186,7 +186,7 @@ local Effects = {
 		-- strength at 5 at most (above it, bloom haloes the ram) and never between 0 and 3 (there the cream band reads
 		-- deeper than cold): the effect keeps Peak at 5 and steps 0 to Step at Charge, Step to 0 at Vent.
 		Glow = {
-			Pieces = { "Rook_RightArm", "Rook_Piston" },
+			Pieces = { "Rook_RightArm" }, -- AR59: the right fist's wraps (no gauntlet)
 			Peak = 5, -- EmissiveStrength at the strike: research tunes it on the replay, up to the check's 5
 			Step = 3, -- where the heat starts at Charge and ends at Vent: the check's floor, held at 3 or above
 			Rise = 2, -- the wind-up's curve: it warms slowly, then fast into the strike

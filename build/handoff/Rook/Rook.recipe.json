@@ -2,23 +2,13 @@
  "name": "Rook",
  "frame": "Roblox studs: Y up, the model on y = 0 facing -Z, HumanoidRootPart at (0, 3, 0)",
  "rig": "R6. Every piece carries the body's own surface: the six rig parts are hidden (Transparency 1).",
+ "make": "tools/blender/anime_make.py: R6's own blocks and round head with the clothes and the face drawn on them, and the hair one mesh. Nothing rides a joint of its own.",
  "maps": {
   "Color": "Rook_Color.png",
   "Roughness": "Rook_Roughness.png",
-  "Metalness": "Rook_Metalness.png",
   "Emissive": "Rook_Emissive.png"
  },
- "texels_per_stud": 73,
- "emissive": {
-  "tint": "#FFA630",
-  "cold": 0,
-  "hot": 10.0,
-  "pieces": [
-   "Rook_RightArm",
-   "Rook_Piston"
-  ],
-  "note": "the mask covers the knuckles, the heat band and the piston's rod. Roblox draws the glow through the colour map, (mask x strength x tint + light) x colour, so the mask is encoded for hot: at that strength the ram shows the sheet's light. Change it and every glow scales with it."
- },
+ "texels_per_stud": 96,
  "pieces": [
   {
    "name": "Rook_Torso",
@@ -26,47 +16,31 @@
    "on": "Torso",
    "centre": [
     0.0,
-    3.445,
-    0.1
+    3.0,
+    0.0
    ],
    "size": [
-    2.1,
-    2.89,
-    1.6
+    2.0,
+    2.0,
+    1.0
    ],
-   "tris": 1512
-  },
-  {
-   "name": "Rook_Head",
-   "mesh": "Rook_Head.json",
-   "on": "Head",
-   "centre": [
-    0.0,
-    4.74426,
-    -0.02946
-   ],
-   "size": [
-    1.375,
-    1.739,
-    1.369
-   ],
-   "tris": 916
+   "tris": 12
   },
   {
    "name": "Rook_RightArm",
    "mesh": "Rook_RightArm.json",
    "on": "Right Arm",
    "centre": [
-    1.7425,
-    2.71875,
-    -0.03875
+    1.5,
+    3.0,
+    0.0
    ],
    "size": [
-    1.983,
-    3.002,
-    1.882
+    1.0,
+    2.0,
+    1.0
    ],
-   "tris": 2912
+   "tris": 12
   },
   {
    "name": "Rook_LeftArm",
@@ -74,15 +48,15 @@
    "on": "Left Arm",
    "centre": [
     -1.5,
-    3.01,
+    3.0,
     0.0
    ],
    "size": [
-    1.05,
-    2.02,
-    1.05
+    1.0,
+    2.0,
+    1.0
    ],
-   "tris": 648
+   "tris": 12
   },
   {
    "name": "Rook_RightLeg",
@@ -91,14 +65,14 @@
    "centre": [
     0.5,
     1.0,
-    -0.0725
+    0.0
    ],
    "size": [
-    1.05,
+    1.0,
     2.0,
-    1.215
+    1.0
    ],
-   "tris": 488
+   "tris": 12
   },
   {
    "name": "Rook_LeftLeg",
@@ -107,94 +81,78 @@
    "centre": [
     -0.5,
     1.0,
-    -0.0725
+    0.0
    ],
    "size": [
-    1.05,
+    1.0,
     2.0,
-    1.215
+    1.0
    ],
-   "tris": 488
+   "tris": 12
   },
   {
-   "name": "Rook_Piston",
-   "mesh": "Rook_Piston.json",
-   "on": "Right Arm",
+   "name": "Rook_Head",
+   "mesh": "Rook_Head.json",
+   "on": "Head",
    "centre": [
-    1.9525,
-    3.3,
-    0.64
+    0.0,
+    4.5,
+    0.0
    ],
    "size": [
-    0.585,
-    0.96,
-    0.6
+    1.25,
+    1.25,
+    1.25
    ],
-   "tris": 200,
-   "motor": "Piston",
-   "pivot": [
-    1.9525,
-    3.5,
-    0.64
-   ]
+   "tris": 476
   },
   {
-   "name": "Rook_Tape",
-   "mesh": "Rook_Tape.json",
-   "on": "Left Arm",
+   "name": "Rook_Hair",
+   "mesh": "Rook_Hair.json",
+   "on": "Head",
    "centre": [
-    -2.15802,
-    1.96115,
-    0.62581
+    0.0044,
+    4.82285,
+    0.15535
    ],
    "size": [
-    0.348,
-    1.007,
-    0.521
+    1.805,
+    1.582,
+    1.986
    ],
-   "tris": 72,
-   "motor": "Tape",
-   "pivot": [
-    -2.1091,
-    2.4646,
-    0.3956
-   ]
+   "tris": 3360
   }
  ],
- "motors": {
-  "Piston": {
-   "slides": [
-    0,
-    1,
-    0
-   ],
-   "travel": 0.65,
-   "note": "along the arm, toward the shoulder, through Haymaker's wind-up"
-  },
-  "Tape": {
-   "note": "swings about its pivot: the loose ends trail the arm"
-  }
- },
  "points": [
   {
    "name": "Knuckles",
    "on": "Right Arm",
    "at": [
-    1.72,
-    1.2175,
-    -0.06
+    1.5,
+    2.0,
+    -0.0
    ],
-   "note": "the ram's striking face"
+   "note": "the right fist's end: Haymaker's striking face"
   },
   {
    "name": "RamCentre",
    "on": "Right Arm",
    "at": [
-    1.72,
-    1.9375,
-    -0.06
-   ]
+    1.5,
+    2.2,
+    -0.0
+   ],
+   "note": "the right fist's middle (the first Rook's name for it, kept)"
   }
  ],
- "tris": 7236
+ "tris": 3896,
+ "emissive": {
+  "tint": "#FFA630",
+  "cold": 0,
+  "hot": 5.0,
+  "pieces": [
+   "Rook_RightArm"
+  ],
+  "note": "the mask is the light's shape, 0 to 1. Roblox draws the glow through the colour map, (mask x strength x tint + light) x colour; the strength is the game's to play."
+ }
 }

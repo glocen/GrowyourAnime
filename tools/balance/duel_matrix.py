@@ -49,6 +49,9 @@ def summarize(rows):
         health = row.get("Health") or 1
         if health != 1:  # TR73's narrowing: both sides' health multiplied
             off = f"health x{health:g}" + (f", {off}" if off else "")
+        poise = row.get("Poise") or 0
+        if poise:  # TR73's candidate: a pushed lead takes no new push for this many seconds
+            off = (f"{off}, " if off else "") + f"poise {poise:g} s"
         key = (row["LeadDef"], row["RivalDef"], row["LeadLevel"], row["RivalLevel"], off)
         groups.setdefault(key, []).append(row)
     lines = [

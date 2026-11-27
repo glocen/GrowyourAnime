@@ -22,20 +22,22 @@ local MESHES = {
 	Shade_RightLeg = 94957425237019,
 	Shade_LeftLeg = 89850488694412,
 	Shade_MaskBrawler = 92815305659174,
-	Shade_MaskGuard = 127743903192427,
+	Shade_MaskGuard = 102249703879938, -- AR72, the turned corner, 2026-11-27 (rollback 127743903192427)
 	Shade_MaskDasher = 74976108708708,
 	Shade_MaskSupport = 115032036320966, -- AR58's, the fringe, by ModelAssembly.PublishMesh, 2026-11-24
 	Shade_MaskBrawlerBare = 91378643616488, -- the elite's copy without its ties (AR2, section 7)
-	Shade_MaskGuardBare = 132200785533370, -- AR57's, by ModelAssembly.PublishMesh, 2026-11-24
+	Shade_MaskGuardBare = 115654294541064, -- AR73, 2026-11-27 (rollback AR57's 132200785533370)
 	Shade_MaskDasherBare = 108865181497087,
 }
 -- AR2, section 4 (2026-11-12): the colour map grey under the lit edges and near white under the masks' cuts, and the
 -- glow mask written for the recipe's two strengths over it. The two go up together and are never paired with the first
--- two (97770465927421, 104234918338692), nor AR2's (101466364915316, 102819316179447), which AR47 replaced.
+-- two (97770465927421, 104234918338692), nor AR2's (101466364915316, 102819316179447), which AR47 replaced. AR57's pick A
+-- (2026-11-27): the Normal masks' cuts in cyan, uploaded together; AR52's and AR58's pair before them, 139710228211756
+-- and 122098856371571, is the rollback.
 local MAPS = {
-	Color = "rbxassetid://139710228211756",
+	Color = "rbxassetid://87301471155813",
 	Roughness = "rbxassetid://139349513496154",
-	Emissive = "rbxassetid://122098856371571",
+	Emissive = "rbxassetid://96528115943913",
 }
 local BODY = {
 	{ Piece = "Shade_Torso", On = "Torso" },
@@ -66,7 +68,7 @@ local ELITE = {
 	},
 	Guard = {
 		Mesh = "Shade_MaskGuardBare",
-		Centre = Vector3.new(-2.0663, 3.5577, -0.6128),
+		Centre = Vector3.new(-2.0799, 3.5577, -0.6264), -- AR73, 2026-11-27
 		Right = Vector3.new(0.7002, -0.1392, -0.7002),
 		Up = Vector3.new(0.0984, 0.9903, -0.0984),
 		Facing = Vector3.new(-0.7071, 0, -0.7071),

@@ -41,12 +41,12 @@ return {
 		ShadeLunge = 102847424758672,
 		-- 2026-11-24: AR57's, the elites' own
 		ShadeGuardElite = 137199476410376,
-		ShadeLungeElite = 104663452343076,
+		ShadeLungeElite = 96914053255080, -- AR57 polish, 2026-11-27 (rollback 104663452343076)
 		-- 2026-11-24: AR58's, the Support's
 		ShadeCast = 134130801801922,
 		-- 2026-11-27: TR69 B's, the Brawler elite's overhead and the Dasher elite's fan (Modulo's, 84b90151)
 		ShadeOverhead = 115853480810801,
-		ShadeFan = 113839312414722,
+		ShadeFan = 117436743517366, -- AR57 polish, 2026-11-27 (rollback 113839312414722)
 		-- 2026-11-25: every other clip a shipped fighter plays, published under the group (docs/asset-log.md), so they move outside Studio (Cases/Clips)
 		RookCombo = 109507884509265, -- 2026-11-26: rebaked from Modulo's run beside the snap (TR66 row 13)
 		RookComboSnap = 135404826126237, -- 2026-11-26: the jab retimed, played by Swap (TR66 row 13)

@@ -78,6 +78,16 @@ local function mix(h: number): number
 	return bit32.bxor(h, bit32.rshift(h, 16))
 end
 
+-- The salt's store transform (ShopService): the stored salt when there is one, written back as it is, so every server
+-- draws with the first; else `fresh`. Never nil: UpdateAsync answers nil to a transform that cancels (measured in
+-- Studio, 2026-11-27), and a server that read nil would keep the Shop closed.
+function Shop.Salt(old: any, fresh: number): number
+	if type(old) == "number" and old == math.floor(old) and old >= 1 then
+		return old
+	end
+	return fresh
+end
+
 -- The `n`th draw of stock `stock` under `salt`, in [0, 1): the same three, the same draw.
 function Shop.Draw(salt: number, stock: number, n: number): number
 	local h = mix(bit32.bxor(salt % TWO32, mix(stock % TWO32)))

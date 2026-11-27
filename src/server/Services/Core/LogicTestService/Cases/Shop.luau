@@ -64,7 +64,32 @@ local function top(): number
 	return Growth.G(if row then row.LevelTo else 1)
 end
 
+-- UpdateAsync as the store runs it (measured in Studio, 2026-11-27): a nil from the transform cancels the write and
+-- answers nil; anything else is written and answered.
+local function update(store: { [string]: any }, key: string, transform: (any) -> any): any
+	local new = transform(store[key])
+	if new == nil then
+		return nil
+	end
+	store[key] = new
+	return new
+end
+
 return {
+	{
+		Name = "Shop: a second server gets the first server's salt, read from the store's answer, never nil",
+		Run = function(t: any)
+			local store = {}
+			local first = update(store, "Salt", function(old: any): any return Shop.Salt(old, 111) end)
+			t.Equal("the first server, an empty key: its fresh salt, written", first, 111)
+			local second = update(store, "Salt", function(old: any): any return Shop.Salt(old, 222) end)
+			t.Equal("a second server: the first's salt, in the store's answer", second, 111)
+			t.Equal("the store still holds the first's", store.Salt, 111)
+			t.Equal("a stored salt that isn't one (a string): a fresh one", Shop.Salt("x", 333), 333)
+			t.Equal("a stored fraction: a fresh one", Shop.Salt(1.5, 333), 333)
+			t.Equal("a stored zero: a fresh one", Shop.Salt(0, 333), 333)
+		end,
+	},
 	{
 		Name = "Shop: a stock every period on world time, its number the time over the period, floored",
 		Run = function(t: any)

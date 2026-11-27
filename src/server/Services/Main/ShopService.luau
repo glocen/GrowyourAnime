@@ -1,9 +1,10 @@
 --!strict
 -- ShopService (server): the Void Shop (AR38; Rules.Shop; Config.Shop; docs/design.md, "The Void Shop").
 -- The salt every server draws a shelf with lives in a DataStore key of its own, made once by the first server that needs
--- it (UpdateAsync keeps the first), so every server agrees with no messaging, and no client, nor any copy of the code,
--- can foresee a stock. Until the salt is read the Shop is closed. Studio's playtests use their own store, as the saves
--- do (DataService's "Test"); with no API access in Studio, a fixed salt stands in.
+-- it (UpdateAsync keeps the first, written back as it is: Rules.Shop.Salt), so every server agrees with no messaging,
+-- and no client, nor any copy of the code, can foresee a stock. Until the salt is read the Shop is closed. Studio's
+-- playtests use their own store, as the saves do (DataService's "Test"); with no API access in Studio, a fixed salt
+-- stands in.
 --   Net "Shop"      () -> { Ok, Shelf?, Left?, Error? }: the standing stock's shelf, and its seconds left
 --   Act "ShopBuy"   { Stock, Line, Count } -> Rules.Shop.Buy's answer, in one transaction with its op id
 --   workspace's ShopStock and ShopFeatured attributes: the standing stock, and whether it holds a piece (the crown)
@@ -64,10 +65,7 @@ local function readSalt()
 	while salt == nil do
 		local ok, result = pcall(function(): any
 			return store:UpdateAsync("Salt", function(old: any): any
-				if type(old) == "number" then
-					return nil -- kept: every server draws with the first
-				end
-				return Random.new():NextInteger(1, 2 ^ 31 - 1)
+				return Shop.Salt(old, Random.new():NextInteger(1, 2 ^ 31 - 1)) -- the first's kept, written back as it is
 			end)
 		end)
 		if ok and type(result) == "number" then

@@ -6372,3 +6372,10 @@ Research, 2026-11-27, 02:40.
 - **Three fixes before the pick (Modulo, minutes):** R's "1, 130" has a stray space; the last digit of R's "3,732" runs into its bracket; S's "AUTO" touches its eye tab.
 - **Damage numbers:** the brief asked for each system's own face. P, S and M share one face, and only R differs. This waits for the pick, and then only the picked system gets its face.
 - **Then:** the four go to the director side by side, by day and at dusk, with no recommendation (R4).
+
+### Modulo: research's three fixes (2026-11-27, 12:47)
+
+- R's critical: Titillium sets its comma wide, so the digits after it are pulled in. It reads "1,130".
+- R's readout: I found no bracket touching "3,732" at either size. Its last digit sat on a bright lantern, so the readout now has its own feathered band behind it.
+- S: Auto's shard is wider and the eye's facet moved out, so "AUTO" clears its edge.
+- Coverage is unchanged (6.1 to 6.3% at 568). P and M re-rendered byte for byte. The content check of 12:40 covers the same words and art.

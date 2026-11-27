@@ -199,20 +199,22 @@ def hbar_right(x, y, w, h, share):
     return rect(x, y, w, h), (rect(x + w - fw, y, fw, h) if fw > 0 else None)
 
 
-def numbers(P, face, plain, edge, crit_face, shadow="lift", edge_w=0.8):
+def numbers(P, face, plain, edge, crit_face, shadow="lift", edge_w=0.8, comma=0.0):
     """The damage numbers beside the struck Dasher: the critical heavy, slanted and larger in gold; the element's in its
-    colour; one plain hit before them; a thin edge and a cast shadow, no fat stroke, no double."""
+    colour; one plain hit before them; a thin edge and a cast shadow, no fat stroke, no double. `comma` pulls the digits
+    after the critical's comma in, for a face whose comma is set wide."""
     P.begin("world")
     ax, ay = 372, 176
 
-    def num(x, y, s, size, fill, f=face, op=1.0, sp=0.5, k=edge, w=edge_w):
+    def num(x, y, s, size, fill, f=face, op=1.0, sp=0.5, k=edge, w=edge_w, body=None):
         P.sizes.append((size, s))
         st = f' stroke="{k}" stroke-width="{w}" stroke-linejoin="round" paint-order="stroke"' if w else ""
         P.add(f'<text x="{x:.2f}" y="{y:.2f}" font-family="{f}" font-size="{size}" fill="{fill}" letter-spacing="{sp}"'
-              f'{st} opacity="{op}" filter="url(#{shadow})">{s}</text>')
+              f'{st} opacity="{op}" filter="url(#{shadow})">{body or s}</text>')
     num(ax + 52, ay - 34, "565", 16, plain, op=0.85)
     P.add(f'<g transform="translate({ax:.2f},{ay:.2f}) skewX(-10)">')
-    num(0, 0, "1,130", 27, "url(#critGold)", f=crit_face, sp=0.8, k=GOLD_EDGE, w=1.0)
+    num(0, 0, "1,130", 27, "url(#critGold)", f=crit_face, sp=0.8, k=GOLD_EDGE, w=1.0,
+        body=f'1,<tspan dx="{comma}">130</tspan>' if comma else None)
     P.add("</g>")
     num(ax + 88, ay + 15, "98", 16, ov.FIRE)
     P.end()
@@ -422,16 +424,16 @@ def s_frame(P, charge, flash=False):
     if full:
         P.add(f'<path d="{poly(L)}" fill="#7FD8F5" fill-opacity="0.5"/>')
     tag_text(P, 73 + lw / 2, cy - 3, [label], anchor="middle")
-    A = [(72, cy + 7), (136, cy + 7), (130, cy + 25), (66, cy + 25)]
+    A = [(72, cy + 7), (142, cy + 7), (136, cy + 25), (66, cy + 25)]
     glass(P, poly(A), "#E6EDF4", 0.7)
     P.add(f'<path d="{poly([(78, cy + 12), (85, cy + 12), (83, cy + 20), (76, cy + 20)])}" fill="#32B8EB"/>')
     tag_text(P, 90, cy + 21, [("AUTO", 14, "MontB", INK_S, 0.6)])
     # the eye: a small facet beside Auto
-    E = [(142, cy + 7), (172, cy + 7), (166, cy + 25), (136, cy + 25)]
+    E = [(148, cy + 7), (178, cy + 7), (172, cy + 25), (142, cy + 25)]
     glass(P, poly(E), "#F1F5FA", 0.7)
-    hs.eye_icon(P, 154, cy + 16, 15, INK_S, "#D92B45", sw=1.4)
+    hs.eye_icon(P, 160, cy + 16, 15, INK_S, "#D92B45", sw=1.4)
     P.hud(70, cy - 17, lw + 6, 18, press=True)
-    P.hud(66, cy + 7, 106, 18, press=True)
+    P.hud(66, cy + 7, 112, 18, press=True)
     P.end()
     # the foe: a smaller shard leaning the other way, no lit edge
     P.begin("foe")
@@ -566,6 +568,7 @@ def r_frame(P, charge, flash=False):
         P.add(f'<rect x="{x - 0.8}" y="24" width="1.6" height="12" fill="{T["hue_lit"]}"/>')
     tr, fl = hbar(66, 34.5, 126, 1.8, LEAD["xp"])
     trough(P, tr, fl, T["trough"], T["xp"], "#FFF0C4")
+    scrim(P, 108, 45.5, 64, 13)   # the readout's own band: its digits never sit on a bright lantern
     tag_text(P, 66, 50.5, [(f'{LEAD["hp"]:,}', 14, "TitB", T["ink"]), (f' / {LEAD["max"]:,}', 14, "Tit", T["sub"])],
              extra=lift)
     P.hud(8, 4, 48, 48)
@@ -615,7 +618,7 @@ def r_frame(P, charge, flash=False):
     trough(P, tr, fl, T["trough"], T["foe"], "#F59A5E")
     P.hud(223, 6, 122, 26)
     P.end()
-    numbers(P, "TitB", T["ink"], T["deep"], "TitB")
+    numbers(P, "TitB", T["ink"], T["deep"], "TitB", comma=-3.6)
 
 
 DRAW = {"P": (p_frame, "Porcelain Relay"), "S": (s_frame, "Smoked Prism"), "M": (m_frame, "Match-Card"),

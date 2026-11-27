@@ -2717,3 +2717,11 @@ The director's word of 12:31 (`docs/decisions.md`): Pip seems to fire too fast a
 **Also, from TR69 B (12:35):** a hit reaction shortened an elite's O2 countdown to 0.83 s. A warning should keep its full length from when it first shows. Check it in the same piece.
 
 **Status:** requested, 2026-11-27, 12:38. Queued after Faber's Turing tools.
+
+## TR74. The Keeper alone, on the Arc's tile (research, 2026-11-27, 12:50; for Faber, before early access)
+
+Research's decision on the director's word of 12:41 (`docs/decisions.md`): no full overhaul of the Festival before Sunday. Instead, the director's "1 boss per arc" wish of 11-26, at little cost.
+- **The rule** (`docs/design.md`, "The Keeper alone"): once a difficulty's Lamplighter has fallen, its tile also offers the Keeper alone. That run starts at the keeper's stretch, and the keeper's rest applies. Rewards are what a run's end pays, and nothing more.
+- **Build:** a second button on the difficulty's tile, using the start-at-the-last-stretch path that already exists (StageService). No new world and no new art: the tile's button in AR68's system, once it's picked, and a grey button until then.
+- **Tests:** a logic case for the start (locked before the first fall, open after, the keeper's stretch, its rest) and for the reward (no more than a full run's end pays). One player-camera capture of the tile with both buttons.
+- **Order:** after TR73's harness, or before it if TR73 waits on memory. Both go before Sunday.

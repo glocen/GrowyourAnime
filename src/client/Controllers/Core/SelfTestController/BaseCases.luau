@@ -1674,6 +1674,28 @@ function BaseCases.Cases(given: Given): { any }
 					t.Check("its CR over it, read from the Strip", board ~= nil and board:IsA("BillboardGui") and board.Adornee == root and board.MaxDistance == look.Far
 						and math.abs(board.StudsOffsetWorldSpace.Y - look.Above) < 1e-4) -- a Vector3 holds float32
 					t.Equal("the CR as the sheet writes it", if words and words:IsA("TextLabel") then words.Text else "none", `{Sheet.Said.Power} {Hud.Digits(power)}`)
+					-- AR68 A, research's must-fix 1 (2026-11-27): the CR fades while its box on the screen crosses the lead's
+					-- plate, from any camera, and comes back clear of it. Laid on the ray through the plate's middle, then back.
+					local lead = HudController.Parts().Lead :: GuiObject
+					local camera = workspace.CurrentCamera
+					if board and board:IsA("BillboardGui") and words and words:IsA("TextLabel") and camera then
+						local gui = lead:FindFirstAncestorOfClass("ScreenGui")
+						local middle = lead.AbsolutePosition + lead.AbsoluteSize / 2 + (if gui and not gui.IgnoreGuiInset then GuiService:GetGuiInset() else Vector2.zero)
+						local ray = camera:ViewportPointToRay(middle.X, middle.Y)
+						local offset = board.StudsOffsetWorldSpace
+						local depth = 20 -- studs from the camera, inside the label's reach: the suite's camera may stand far off
+						board.StudsOffsetWorldSpace = ray.Origin + ray.Direction * depth - root.Position
+						t.Check("laid under the lead's plate, it reads so", BaseController.UnderLead(board), `{lead:GetFullName()} shown {lead.Visible} at {lead.AbsolutePosition}, middle {middle}`)
+						t.Check("and its CR fades out", waitFor(t, look.Under.Fade + 1, function(): boolean
+							return board:GetAttribute("Shown") == 0 and words.TextTransparency == 1
+						end), `{tostring(board:GetAttribute("Shown"))}, {words.TextTransparency}`)
+						local clear = camera:ViewportPointToRay(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
+						board.StudsOffsetWorldSpace = clear.Origin + clear.Direction * depth - root.Position
+						t.Check("clear of it (the screen's middle), back whole", waitFor(t, look.Under.Fade + 1, function(): boolean
+							return board:GetAttribute("Shown") == 1 and words.TextTransparency == 0
+						end), `{tostring(board:GetAttribute("Shown"))}, {words.TextTransparency}`)
+						board.StudsOffsetWorldSpace = offset
+					end
 				else
 					t.Check("the plinth and its Voidkin", false, if made then "no stand" else "no figure")
 				end

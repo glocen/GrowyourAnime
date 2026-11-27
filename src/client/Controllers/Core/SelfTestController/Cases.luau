@@ -636,7 +636,15 @@ local cases = {
 			-- and an emitter of bursts alone has no rate to read.
 			local function shows(effect: EffectsConfig.Rows, row: EffectsConfig.Row): boolean
 				if row.Kind == "Beam" then
-					return not (effect.Grey and row.Grey == "") and row.Trail == nil
+					-- a beam drawn at no width and like no other is a measure: only its ends, for other rows to reach
+					-- (KeeperChallenge's Foot and Wick, Scintilla's 1fb167b1); Rows never enables it
+					local measure = (row :: any).Like == nil
+					for _, key in (row.Tracks :: any).Width or {} do
+						if key[2] > 0 then
+							measure = false
+						end
+					end
+					return not measure and not (effect.Grey and row.Grey == "") and row.Trail == nil
 				elseif row.Kind == "Emitter" then
 					return row.Tracks.Rate ~= nil
 				end
@@ -6137,6 +6145,39 @@ local cases = {
 			t.Check("a sliver left: Least wide at least", light.Visible and light.Size.X.Offset >= LeadPlate.Pt(a.Health.Least) - 1)
 			LeadPlate.Fill(bar, 0)
 			t.Check("none left: no light", not light.Visible)
+			card.Frame:Destroy()
+		end,
+	},
+	{
+		-- AR68 A, research's must-fix 2 (2026-11-27): the gem and the class mark each sit in a dark round socket with a light
+		-- rim, centred on it, under it, as the target paints them (Config.Hud.M.Lead.Marks).
+		Name = "HUD: AR68 A, the gem and the class mark in their sockets",
+		Run = function(t: any)
+			local marks: any = HudConfig.M.Lead.Marks
+			local card = LeadPlate.new(Layers.Get("Hud"))
+			card.Frame.Name = "NL_TestLead"
+			card.Name.Text = "Rook"
+			t.Check("the class drawn as its glyph from the start, never the tile (it vanishes on the blade)",
+				card.Class.Image == UIKit.Images.ClassWarriorGlyph.Id, card.Class.Image)
+			LeadPlate.Kind(card, "Red", "Warrior")
+			task.wait()
+			local function middle(g: GuiObject): Vector2
+				return g.AbsolutePosition + g.AbsoluteSize / 2
+			end
+			for _, pair in { { "GemSocket", card.Gem }, { "ClassSocket", card.Class } } do
+				local socket = card.Frame:FindFirstChild(pair[1] :: string) :: Frame?
+				local mark = pair[2] :: GuiObject
+				if not t.Check(`{pair[1]}: there`, socket ~= nil) or socket == nil then
+					continue
+				end
+				local round = socket:FindFirstChildOfClass("UICorner")
+				local rim = socket:FindFirstChildOfClass("UIStroke")
+				t.Check(`{pair[1]}: round, dark, its rim light`, round ~= nil and round.CornerRadius == UDim.new(0.5, 0) and socket.BackgroundColor3 == marks.SocketFill
+					and rim ~= nil and rim.Color == marks.SocketRim and socket.BackgroundTransparency == 0)
+				t.Near(`{pair[1]}: Socket across`, socket.Size.X.Offset, LeadPlate.Pt(marks.Socket), 1)
+				t.Check(`{pair[1]}: under its mark`, socket.ZIndex < mark.ZIndex, `{socket.ZIndex} under {mark.ZIndex}`)
+				t.Near(`{pair[1]}: centred on its mark`, (middle(socket) - middle(mark)).Magnitude, 0, 1.5)
+			end
 			card.Frame:Destroy()
 		end,
 	},

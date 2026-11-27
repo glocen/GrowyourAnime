@@ -1246,8 +1246,12 @@ return {
 			Front = { Width = 0.8, Colour = Color3.fromHex("#FFF4EC"), Clear = 0.1, Most = 0.99 }, -- the fill's end, while 0 < share < Most
 			Xp = { 65.68, 54.1, 116, 1.6 },
 			-- centres After past the name's right, then the gem's; Gem and Class the drawn shapes' size, the kit's icons drawn
-			-- Fill of their box (the class glyph 0.61, measured from its file; the gem by eye in the game, 2026-11-27)
-			Marks = { Y = 32.1, Gem = 8, GemAfter = 6, Class = 8.6, ClassAfter = 11, Fill = 0.61 },
+			-- Fill and GemFill of their box (the class glyph 0.61 wide, measured from its file; the gem 0.875 tall, by height
+			-- since it's taller than wide, Modulo's measure of GemStrength.png's alpha, 2026-11-27)
+			Marks = { Y = 32.1, Gem = 8, GemAfter = 6, Class = 8.6, ClassAfter = 11, Fill = 0.61, GemFill = 0.875,
+				-- each sits in a dark round socket with a light rim, as the target paints them (top_left/day/A_zoom.png, research's
+				-- must-fix 2, 2026-11-27): Socket its width, Line its rim, measured from the target by eye at 3.7 px a point
+				Socket = 10.4, Line = 0.6, SocketFill = Color3.fromHex("#14161B"), SocketRim = Color3.fromHex("#5C616C") },
 			Texts = {
 				Name = { X = 70, Baseline = 37.7, Size = 16.5, Least = 12, Room = 97, Line = 1.3 }, -- steps down to fit Room
 				Health = { X = 126.86, Baseline = 50.1, Size = 9.4, Line = 1.2 }, -- centred: '2,518  /  4,061', one weight

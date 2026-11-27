@@ -261,6 +261,9 @@ return {
 		Far = 160,
 		Ink = Color3.fromHex("#F6FCFF"),
 		Shade = Color3.fromHex("#14101E"),
+		-- its power label fades out over Fade seconds while its box on the screen crosses the lead's plate, from any
+		-- camera, and back once clear (research's must-fix 1 on AR68 A, 2026-11-27: it stood half over the blade's top)
+		Under = { Fade = 0.15 },
 	},
 	-- The gate's plate (TR22): the owner's display name over the base's level ("Level n", in Power's yellow, as the plan's
 	-- level mark asks), on both faces, each line Share of the plate's height. Seeds, judged from the Strip.

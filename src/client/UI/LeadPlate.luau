@@ -87,11 +87,43 @@ local function placeMarks(card: Card)
 	local right = pt(c.Texts.Name.X) + drawn(card.Name)
 	local gem = right + pt(marks.GemAfter)
 	local y = pt(marks.Y)
-	local across = pt(marks.Gem / marks.Fill)
+	local across = pt(marks.Gem / marks.GemFill)
 	card.Gem.Position = UDim2.fromOffset(gem - across / 2, y - across / 2)
 	card.Gem.Size = UDim2.fromOffset(across, across)
 	local mark = card.Class.Parent :: Frame
 	mark.Position = UDim2.fromOffset(gem + pt(marks.ClassAfter), y)
+	local frame = card.Frame
+	for _, pair in { { "GemSocket", gem }, { "ClassSocket", gem + pt(marks.ClassAfter) } } do
+		local s = frame:FindFirstChild(pair[1] :: string) :: Frame?
+		if s == nil then
+			continue
+		end
+		local x = pair[2] :: number
+		s.Position = UDim2.fromOffset(x, y)
+		s.Size = UDim2.fromOffset(pt(marks.Socket), pt(marks.Socket))
+		local rim = s:FindFirstChildOfClass("UIStroke") :: UIStroke
+		rim.Thickness = pt(marks.Line)
+	end
+end
+
+-- A mark's dark round socket with its light rim, under it (Config.Hud.M.Lead.Marks).
+local function socket(parent: Instance, name: string): Frame
+	local marks = a().Marks
+	local made = Instance.new("Frame")
+	made.Name = name
+	made.AnchorPoint = Vector2.new(0.5, 0.5)
+	made.BackgroundColor3 = marks.SocketFill
+	made.BorderSizePixel = 0
+	made.ZIndex = 7
+	local round = Instance.new("UICorner")
+	round.CornerRadius = UDim.new(0.5, 0)
+	round.Parent = made
+	local rim = Instance.new("UIStroke")
+	rim.Color = marks.SocketRim
+	rim.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	rim.Parent = made
+	made.Parent = parent
+	return made
 end
 
 -- The old face art in the square Config.Hud.Slate.Lead.Face names, for a lead with no bust drawn.
@@ -339,7 +371,9 @@ function LeadPlate.new(parent: Instance): Card
 	local level = word(frame, "Level", t.Level, Enum.TextXAlignment.Center, colours.Bright, 9)
 	-- The name in capitals, the gem and the class's mark after it; the damage taken over the blade's end.
 	local name = word(frame, "Name", t.Name, Enum.TextXAlignment.Left, colours.Text, 8)
-	local gem = Skin.Icon(frame, "GemRed", 0, 0, pt(c.Marks.Gem / c.Marks.Fill), nil, 8)
+	socket(frame, "GemSocket")
+	socket(frame, "ClassSocket")
+	local gem = Skin.Icon(frame, "GemRed", 0, 0, pt(c.Marks.Gem / c.Marks.GemFill), nil, 8)
 	gem.Name = "Gem"
 	local classAcross = pt(c.Marks.Class / c.Marks.Fill)
 	local mark = Instance.new("Frame")
@@ -349,7 +383,7 @@ function LeadPlate.new(parent: Instance): Card
 	mark.Size = UDim2.fromOffset(classAcross, classAcross)
 	mark.ZIndex = 8
 	mark.Parent = frame
-	local class = Skin.Icon(mark, "ClassWarrior", classAcross / 2, classAcross / 2, classAcross, colours.Text, 8)
+	local class = Skin.Icon(mark, "ClassWarriorGlyph", classAcross / 2, classAcross / 2, classAcross, colours.Text, 8)
 	class.Name = "Class"
 	local taken = word(frame, "Taken", t.Taken, Enum.TextXAlignment.Right, colours.Taken, 9)
 	taken.Visible = false

@@ -13,6 +13,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local CollectionService = game:GetService("CollectionService")
+local GuiService = game:GetService("GuiService")
 
 local Shared = ReplicatedStorage.Shared
 local Profile = require(Shared.Data.Profile)
@@ -1927,13 +1928,74 @@ local function watchShowcase(item: Instance)
 	end
 end
 
+-- Whether a world board's box on the screen crosses the lead's plate (both in the viewport's pixels): its four corners,
+-- facing the camera as a BillboardGui does, sized in studs.
+local function underLead(board: BillboardGui): boolean
+	local camera = workspace.CurrentCamera
+	local root = board.Adornee :: BasePart?
+	local lead = HudController.Parts().Lead :: GuiObject?
+	if camera == nil or root == nil or lead == nil or not lead.Visible then
+		return false
+	end
+	local middle = root.Position + board.StudsOffsetWorldSpace
+	if (middle - camera.CFrame.Position).Magnitude > board.MaxDistance then
+		return false -- not drawn
+	end
+	local right = camera.CFrame.RightVector * board.Size.X.Scale / 2
+	local up = camera.CFrame.UpVector * board.Size.Y.Scale / 2
+	local low, high = Vector2.new(math.huge, math.huge), Vector2.new(-math.huge, -math.huge)
+	for _, corner in { right + up, right - up, -right + up, -right - up } do
+		local point = camera:WorldToViewportPoint(middle + corner)
+		if point.Z <= 0 then
+			return false
+		end
+		low = low:Min(Vector2.new(point.X, point.Y))
+		high = high:Max(Vector2.new(point.X, point.Y))
+	end
+	local gui = lead:FindFirstAncestorOfClass("ScreenGui")
+	local at = lead.AbsolutePosition + (if gui and not gui.IgnoreGuiInset then GuiService:GetGuiInset() else Vector2.zero)
+	local to = at + lead.AbsoluteSize
+	return low.X < to.X and high.X > at.X and low.Y < to.Y and high.Y > at.Y
+end
+
+-- For tests: whether a world board's box crosses the lead's plate now.
+function BaseController.UnderLead(board: BillboardGui): boolean
+	return underLead(board)
+end
+
+-- Each showcase's power label shown (1) or faded (0) under the lead's plate (Config.World.Showcase.Under).
+local labelShown: { [BillboardGui]: number } = {}
+
 local function turnShowcases(dt: number)
-	local turn = WorldConfig.Showcase.Turn * 2 * math.pi * dt
+	local look = WorldConfig.Showcase
+	local turn = look.Turn * 2 * math.pi * dt
 	for model in showcased do
 		if model.Parent == nil then
 			showcased[model] = nil
 		elseif model.PrimaryPart then
 			model:PivotTo(model:GetPivot() * CFrame.Angles(0, turn, 0))
+			local board = model:FindFirstChild("Power", true)
+			if board and board:IsA("BillboardGui") then
+				local was = labelShown[board] or 1
+				local want = if underLead(board) then 0 else 1
+				local shown = if want > was then math.min(was + dt / look.Under.Fade, 1) else math.max(was - dt / look.Under.Fade, 0)
+				if shown ~= was or labelShown[board] == nil then
+					labelShown[board] = shown
+					board:SetAttribute("Shown", shown)
+					for _, item in board:GetDescendants() do
+						if item:IsA("TextLabel") then
+							item.TextTransparency = 1 - shown
+						elseif item:IsA("UIStroke") then
+							item.Transparency = 1 - shown
+						end
+					end
+				end
+			end
+		end
+	end
+	for board in labelShown do
+		if board.Parent == nil then
+			labelShown[board] = nil
 		end
 	end
 end

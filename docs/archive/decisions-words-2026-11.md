@@ -440,6 +440,10 @@ The director's words from 2026-11-27, 14:30 on, newest on top, in the table's ow
 
 | Date | The words | They cover |
 |---|---|---|
+| 2026-11-27, 23:15 to 23:16 | "why cant you js do art do research on how to do gfx for roblox anime icon etc" | the game page's icon and thumbnails as Roblox GFX: Modulo studies the craft, then makes them (said to Modulo) |
+| 2026-11-27, 23:15 to 23:16 | "GFX art first (picked from Modulo's options)" | the order: the GFX before Pip's finish (AR63) |
+| 2026-11-27, 23:15 to 23:16 | "no not of kira and rook it bad" | the page's images: not Kirra's or Rook's takes |
+| 2026-11-27, 23:15 to 23:16 | "Player + light silhouette (picked from Modulo's options)" | the icon's subject: a Roblox player smashing a Void Shard, a Voidkin rising from the crack as a glowing silhouette of light |
 | 2026-11-27, by 23:15 | "1) yes 2) new model. work with codex and gemini" | Rook's new make (AR59) installed tonight; Pip ships in her new make (AR63); Codex and Gemini work on the launch |
 | 2026-11-27, by 23:15 | "if we rly cant do art we  will use gemini and/or chatgpt they can imagine art we js need to prompt it well and you will do it" | PROPOSED change to rule 2: AI-generated art from research's prompts where our own tools can't reach the bar. Waits on the director's yes to research's restatement |
 | 2026-11-27, by 23:15 | "and we will launch whenever it ready" | the launch date: no fixed Sunday; the game launches when it's ready at the bar (Lantern Row, the keeper's zone and the main map overhauled included) |

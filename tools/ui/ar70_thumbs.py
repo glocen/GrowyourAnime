@@ -1,9 +1,12 @@
-"""AR70, the game page's thumbnails: the game's own frames, cropped to 16:9, graded, and the logotype set in one corner
-(research's brief of 2026-11-27, 20:17). No new renders: each thumbnail is a Studio capture of the game as it is, so
-nothing shows what the game doesn't have (rule 4).
+"""AR70, the game page's thumbnails, the logotype set in one corner. First the game's own frames, cropped to 16:9 and
+graded (research's brief of 2026-11-27, 20:17); since the director's word of 23:14 ("do research on how to do gfx"), GFX
+renders: tools/blender/ar70_player.py's T shots, graded and painted over by tools/ui/ar70_player_targets.py. Either way
+nothing shows what the game doesn't have (rule 4): the GFX shows its own beat, a shard broken and the reveal's
+silhouette.
 
     py tools/ui/ar70_thumbs.py <out_dir> thumbs [key ...]               each take: crop, grade, logotype; 1920 x 1080
     py tools/ui/ar70_thumbs.py <out_dir> one <capture> <cx> <cy> <w> [corner] [grade]   a trial crop of any capture
+    py tools/ui/ar70_thumbs.py <out_dir> art <key> <graded_png> [corner]   a GFX frame graded elsewhere: the logotype
     py tools/ui/ar70_thumbs.py <out_dir> sheet <refs_dir> <beside_dir>  ours at the store's card size among the top games'
     py tools/ui/ar70_thumbs.py <out_dir> final <final_dir>             the icon and the made thumbnails, in upload order
 
@@ -48,8 +51,10 @@ TAKES = {
 }
 # the game page's set, in upload order (research, 2026-11-27: "the minimum is Pip's burst and Rook's hit"; the shard
 # and the bays join when they land), with icon C round 2 at 512
-FINAL = ["fight_kirra", "shard", "bays"]   # old Pip and old Rook are out (the director, 2026-11-27, by 23:12, through research)
-ICON = REPO / "build" / "handoff" / "GamePage" / "ar70" / "player" / "icon_C.png"
+# the captures are out: the GFX art replaces them (the director, 2026-11-27, 23:14 and 23:15), and its keys and icon
+# join here at research's pick, so the set can't carry an old make
+FINAL = []
+ICON = None
 TITLES = {"fight_hit": "Rook, the hit", "fight_face": "Rook, the face", "fight_pip": "Pip, the burst",
           "shard": "the shard", "bays": "the bays at work"}
 
@@ -155,6 +160,17 @@ def make(out, key, capture, box, corner="br", changes=None):
     return path
 
 
+def from_art(out, key, art, corner="bl"):
+    """A frame already graded elsewhere (the GFX renders: tools/ui/ar70_player_targets.py's `grade`), with the
+    logotype in its corner, and its card."""
+    path = out / f"thumb_{key}.png"
+    compose(art, corner, LOGO, path)
+    subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-i", str(path), "-vf",
+                    f"scale={CARD[0]}:{CARD[1]}:flags=area", str(out / f"thumb_{key}_card.png")], check=True)
+    print(f"{key}: {path} ({path.stat().st_size / 1e6:.2f} MB)")
+    return path
+
+
 def tile(path, w, h, title, fg):
     return (f'<div class="tile" style="width:{w}px"><img src="{Path(path).as_uri()}" style="width:{w}px;height:{h}px;'
             f'display:block;border-radius:{w * 0.03:.0f}px;object-fit:cover"><div class="t" style="color:{fg};'
@@ -204,13 +220,16 @@ if __name__ == "__main__":
         corner = rest[4] if len(rest) > 4 else "br"
         changes = json.loads(rest[5]) if len(rest) > 5 else None
         make(out, Path(rest[0]).stem, capture, box, corner, changes)
+    elif mode == "art":   # <key> <graded 16:9 png> [corner]
+        from_art(out, rest[0], Path(rest[1]).resolve(), rest[2] if len(rest) > 2 else "bl")
     elif mode == "final":
         dest = Path(rest[0]).resolve()
         dest.mkdir(parents=True, exist_ok=True)
         for old in dest.glob("*.png"):
             old.unlink()
-        assert probe(ICON) == (512, 512), probe(ICON)
-        (dest / "icon_512.png").write_bytes(ICON.read_bytes())
+        if ICON:
+            assert probe(ICON) == (512, 512), probe(ICON)
+            (dest / "icon_512.png").write_bytes(ICON.read_bytes())
         n = 0
         for key in FINAL:
             src = out / f"thumb_{key}.png"

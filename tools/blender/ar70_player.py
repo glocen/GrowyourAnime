@@ -79,7 +79,7 @@ def glow(name, colour, strength):
     return m
 
 
-def spirit(name, colour, strength, fade, hot_colour=GOLD_HOT, paint=None, deep=None):
+def spirit(name, colour, strength, fade, hot_colour=GOLD_HOT, paint=None, deep=None, edge_body=False):
     """A figure of light, nearly opaque so its outline reads at 150 px; clear below fade[0] up the figure (from the
     root its Texture Coordinate is pointed at), whole above fade[1], so it rises out of the light.
 
@@ -140,6 +140,10 @@ def spirit(name, colour, strength, fade, hot_colour=GOLD_HOT, paint=None, deep=N
         # the strength: dark paint dim, pale paint bright, the outline a little brighter
         k = op("MULTIPLY_ADD", tone, strength * 1.25, strength * 0.5)
         links.new(op("MULTIPLY_ADD", rim, strength * 0.7, k), em.inputs["Strength"])
+    elif edge_body:   # the silhouette (S1, S2): deep inside, the colour toward the edge, white-hot at the outline
+        mid = mix_rgb(srgb(deep), srgb(colour), op("MINIMUM", op("MULTIPLY", lw.outputs["Facing"], 2.2), 1.0))
+        links.new(mix_rgb(mid, srgb(hot_colour), op("MAXIMUM", op("SUBTRACT", rim, 0.35), 0.0)), em.inputs["Color"])
+        links.new(op("MULTIPLY_ADD", rim, strength * 4.0, strength * 0.45), em.inputs["Strength"])
     else:
         links.new(mix_rgb(srgb(colour), srgb(hot_colour), rim), em.inputs["Color"])
         links.new(op("MULTIPLY_ADD", rim, strength * 2.2, strength), em.inputs["Strength"])
@@ -471,6 +475,47 @@ def fighter_light(mats, fighter, at, scale, turn, pose):
     return root, neck
 
 
+
+KIN_HAIR = (  # a fighter's hair as an outline: tall blades swept up and back, two falling past the brow, two at the sides
+    ((-0.40, 0.10, 1.30), (-0.6, 0.3, 0.8), 2.3, 0.7), ((-0.05, 0.10, 1.40), (-0.1, 0.4, 0.95), 2.8, 0.75),
+    ((0.35, 0.10, 1.32), (0.55, 0.3, 0.8), 2.3, 0.7), ((0.0, 0.50, 1.20), (0.0, 0.95, 0.4), 2.1, 0.8),
+    ((-0.55, 0.30, 1.05), (-0.95, 0.4, 0.3), 1.8, 0.62), ((0.55, 0.30, 1.05), (0.95, 0.4, 0.3), 1.7, 0.62),
+    ((-0.25, 0.25, 1.40), (-0.35, 0.5, 1.0), 2.5, 0.6), ((0.22, 0.25, 1.40), (0.35, 0.5, 1.0), 2.5, 0.6),
+    ((-0.30, -0.55, 1.30), (-0.2, -0.3, -0.95), 1.1, 0.5), ((0.28, -0.55, 1.28), (0.45, -0.3, -0.85), 1.0, 0.46),
+    ((-0.62, -0.15, 1.05), (-0.25, -0.05, -1.0), 1.0, 0.42), ((0.62, -0.15, 1.05), (0.3, -0.05, -1.0), 0.95, 0.4),
+)
+KIN_POSE = dict(hips=(0, 0, 0), waist=(4, 0, 6), neck=(-6, 0, -6), armR=(0, 155, 0), armL=(0, -30, 0),
+                legR=(0, 12, 0), legL=(0, -12, 0))
+
+
+def silhouette(mats, at, scale, turn, pose=KIN_POSE):
+    """A Voidkin as a silhouette of light (the director's pick, 2026-11-27, 23:15: "Player + light silhouette"): no
+    fighter of ours, a generic anime fighter's outline in the shard's light, the reveal's silhouette before its colours.
+    R6's blocks, hair in tall swept blades, a long coat whose two tails stream back, and two eyes burning hotter. Faces
+    -Y at turn 0, like the player. Returns its root and a pivot 0.6 under its head's middle."""
+    kin, hot = mats["kin"], mats["spark"]
+    root = pivot("Kin", at, rot=(0, 0, turn))
+    root.scale = (scale,) * 3
+    hips = pivot("KinHips", (0, 0, 2.0), root, pose.get("hips", (0, 0, 0)))
+    torso = pivot("KinTorso", (0, 0, 0), hips, pose.get("waist", (0, 0, 0)))
+    block("KinChest", (2.0, 1.0, 2.0), (0, 0, 1.0), kin, 0.1, torso)
+    block("KinCollar", (2.3, 1.3, 0.55), (0, 0.05, 2.0), kin, 0.18, torso)
+    for e in (-1, 1):   # the coat's two tails, from the waist, streaming back and down
+        blade(f"KinTail{e}", (e * 0.7, 0.3, 0.3), (e * 0.85, 0.55, -0.6), 2.9, 1.0, 0.12, kin, torso)
+    neck = pivot("KinNeck", (0, 0, 2.0), torso, pose.get("neck", (0, 0, 0)))
+    rounded_cylinder("KinHead", 0.62, 1.22, 0.3, kin, neck, (0, 0, 0.02))
+    for i, (at_, d, ln, w) in enumerate(KIN_HAIR):
+        blade(f"KinLock{i}", at_, d, ln, w, 0.22, kin, neck)
+    for e in (-1, 1):   # the eyes: two narrow slits, burning white-hot in the light
+        block(f"KinEye{e}", (0.3, 0.08, 0.1), (e * 0.24, -0.63, 0.66), hot, 0.02, neck)
+    for side, e in (("R", -1), ("L", 1)):
+        sh = pivot(f"KinShoulder{side}", (e * 1.5, 0, 1.5), torso, pose.get(f"arm{side}", (0, 0, 0)))
+        block(f"KinArm{side}", (1.0, 1.0, 2.0), (0, 0, -0.5), kin, 0.1, sh)
+        hip = pivot(f"KinHip{side}", (e * 0.5, 0, 0.0), hips, pose.get(f"leg{side}", (0, 0, 0)))
+        block(f"KinLeg{side}", (1.0, 1.0, 2.0), (0, 0, -1.0), kin, 0.08, hip)
+    return root, pivot("KinHeadMark", (0, 0, 0.0), neck)
+
+
 # --- the place ---------------------------------------------------------------------------------------------------------
 
 def sky(scene, zenith, mid, horizon, sun_dir, strength=1.0):
@@ -615,7 +660,41 @@ SHOTS = {
         dolly=0.72, cam=(-0.9, -4.4, 2.0), aim=(-0.9, 0.4, 3.5), lens=20, focus=(0.2, -0.4, 2.6), fstop=9.0,
         sky=("#3F6FC4", "#F6B48A", "#FF9A5A"), sun=(-0.7, 0.7, 0.2),
     ),
+    # S1 and S2, the GFX remake (the director, 2026-11-27, 23:15: "Player + light silhouette"; gfx-technique.md):
+    # C's smash with the Voidkin as a silhouette of light, no fighter's paint; a hard rim from behind, the backdrop
+    # deeper and softer (Gemini's and Codex's reads, research 23:1x), the brightest light at the fist, near his face.
+    # S1: the silhouette rises out of the crack, leaning up and away, as C's Lyric did.
+    "S1": dict(
+        kin="silhouette", light="rare", core_k=6.0, chips=22, chip_reach=4.2, kin_fade=(0.2, 1.9),
+        player=dict(hips=(0, 0, 0), waist=(-14, 0, -12), neck=(4, 0, 34), armR=(-140, 0, 6), armL=(70, 0, -4),
+                    legR=(-46, 0, 0), legL=(34, 0, 0)),
+        root=(1.0, 0.4, -0.45), turn=-66, shard_hand="R", shard_off=(-0.4, -0.28, 0.62), shard_scale=0.62, part=0.36,
+        kin_rise=(-0.9, 2.2, -1.9), kin_lean=-16, kin_scale=1.0, kin_turn=10,
+        ray_up=(-0.6, -0.2, 0.5), ray_reach=2.0, rays=4, ray_thin=0.5,
+        dolly=0.72, cam=(-0.9, -4.4, 2.0), aim=(-0.9, 0.4, 3.5), lens=20, focus=(0.2, -0.4, 2.6), fstop=3.2,
+        sky=("#163C96", "#C77C66", "#FF7A3A"), sun=(-0.7, 0.7, 0.2), sky_k=0.55, kin_k=2.5,
+        rim=("#FFD9A8", 6000), rim_at=(2.5, 2.5, 3.0),
+    ),
+    # S2: the silhouette towers behind him, two and a half times his height, its fist raised with his: the light he
+    # breaks out of the shard stands over him.
+    "S2": dict(
+        kin="silhouette", light="rare", core_k=6.0, chips=22, chip_reach=4.2, kin_fade=(0.0, 1.6),
+        kin_pose=dict(hips=(0, 0, 0), waist=(4, 0, -6), neck=(-8, 0, 8), armR=(0, 165, 0), armL=(0, -28, 0),
+                      legR=(0, 14, 0), legL=(0, -14, 0)),
+        player=dict(hips=(0, 0, 0), waist=(-14, 0, -12), neck=(4, 0, 34), armR=(-140, 0, 6), armL=(70, 0, -4),
+                    legR=(-46, 0, 0), legL=(34, 0, 0)),
+        root=(1.0, 0.4, -0.45), turn=-66, shard_hand="R", shard_off=(-0.4, -0.28, 0.62), shard_scale=0.62, part=0.36,
+        kin_screen=(0.3, 0.2), kin_far=12.0, kin_scale=2.2, kin_turn=-10,
+        ray_up=(-0.6, -0.2, 0.5), ray_reach=2.0, rays=4, ray_thin=0.5,
+        dolly=0.72, cam=(-0.9, -4.4, 2.0), aim=(-0.9, 0.4, 3.5), lens=20, focus=(0.2, -0.4, 2.6), fstop=3.2,
+        sky=("#163C96", "#C77C66", "#FF7A3A"), sun=(-0.7, 0.7, 0.2), sky_k=0.55, kin_k=2.5,
+        rim=("#FFD9A8", 6000), rim_at=(2.5, 2.5, 3.0),
+    ),
 }
+# T1 and T2, the thumbnails (1920 x 1080): S1's and S2's staging on a wider lens, so the 16:9 frame keeps the
+# silhouette's hair and the player's shoulders
+SHOTS["T1"] = dict(SHOTS["S1"], lens=16, aim=(-0.9, 0.4, 4.4), kin_rise=(-2.0, 2.2, -2.2), kin_lean=-10)
+SHOTS["T2"] = dict(SHOTS["S2"], lens=16)
 
 
 LIGHTS = {  # the shard's light, by shot: (the Voidkin's body, its white-hot, the rays, the key light on the player,
@@ -625,8 +704,9 @@ LIGHTS = {  # the shard's light, by shot: (the Voidkin's body, its white-hot, th
 }
 
 
-def materials(face_png, light="gold", core_k=24.0, kin_fade=(0.3, 2.6)):
+def materials(face_png, light="gold", core_k=24.0, kin_fade=(0.3, 2.6), paint=True, kin_k=None):
     body, hot, ray, _, body_k, deep = LIGHTS[light]
+    body_k = body_k if kin_k is None else kin_k
     mats = {k: cloth(k, LOOK[k]) for k in ("hoodie", "tee", "jeans", "shoe", "sole")}
     mats["hoodie_dark"] = cloth("hoodie_dark", "#B8301F")
     mats["skin"] = cloth("skin", LOOK["skin"], rough=0.5, sheen=0.0)
@@ -637,9 +717,24 @@ def materials(face_png, light="gold", core_k=24.0, kin_fade=(0.3, 2.6)):
     mats["ray"] = glow("ray", ray, 6.0)
     mats["spark"] = glow("spark", hot, 10.0)
     mats["kin"] = spirit("kin", body, body_k, fade=kin_fade, hot_colour=hot,
-                         paint=HANDOFF / "Lyric" / "Lyric_Color.png", deep=deep)
+                         paint=HANDOFF / "Lyric" / "Lyric_Color.png" if paint else None, deep=deep,
+                         edge_body=not paint)
     mats["paving"] = paving("paving", "#8C8A96")
     return mats
+
+
+def rim_light(scene, shot, head):
+    """A hard rim from behind and above the player, aimed at his head: an area light, small for a hard edge."""
+    colour, energy = shot["rim"]
+    rim = bpy.data.lights.new("Rim", "AREA")
+    rim.energy, rim.color, rim.size = energy, srgb(colour)[:3], 1.2
+    r = bpy.data.objects.new("Rim", rim)
+    scene.collection.objects.link(r)
+    right, up, back = shot.get("rim_at", (0.0, 2.2, 4.0))   # from the head: along the frame's right, up, away from the lens
+    away = (head - Vector(shot["cam"])).normalized()
+    side = away.cross(Vector((0, 0, 1))).normalized()
+    r.location = head + away * back + Vector((0, 0, up)) + side * right
+    r.rotation_euler = (head - r.location).to_track_quat("-Z", "Y").to_euler()
 
 
 def lights(scene, shot, shard_at):
@@ -673,21 +768,60 @@ def camera(scene, shot, size):
     obj.rotation_euler = (Vector(shot["aim"]) - Vector(shot["cam"])).to_track_quat("-Z", "Y").to_euler()
     cam.dof.focus_distance = (Vector(shot["focus"]) - Vector(shot["cam"])).length
     scene.camera = obj
-    scene.render.resolution_x = scene.render.resolution_y = size
+    scene.render.resolution_x, scene.render.resolution_y = dims(size)
     return obj
+
+
+def dims(size):
+    """A render's (width, height): `size` is a square's side, or (width, height) for the thumbnails' 16:9."""
+    return (size, size) if isinstance(size, int) else tuple(size)
 
 
 def where(scene, cam, point, size):
     from bpy_extras.object_utils import world_to_camera_view
+    w, h = dims(size)
     p = world_to_camera_view(scene, cam, Vector(point))
-    return [round(p.x * size, 1), round((1 - p.y) * size, 1)]
+    return [round(p.x * w, 1), round((1 - p.y) * h, 1)]
+
+
+def ids_pass(scene, out, name, mats, size):
+    """The paint-over's masks (gfx-technique.md: the rim line and the aura drawn in code from the figure's own mask): the
+    player red, the silhouette green (with its rise out of the light), its eyes blue, all else black, so what stands in
+    front of each still cuts it."""
+    def top(obj):
+        while obj.parent:
+            obj = obj.parent
+        return obj.name
+    kin_id = mats["kin"].copy()
+    em = next(n for n in kin_id.node_tree.nodes if n.type == "EMISSION")
+    for socket in ("Color", "Strength"):
+        for link in list(em.inputs[socket].links):
+            kin_id.node_tree.links.remove(link)
+    em.inputs["Color"].default_value, em.inputs["Strength"].default_value = (0, 1, 0, 1), 1.0
+    ids = dict(player=glow("id_player", "#FF0000", 1.0), eye=glow("id_eye", "#0000FF", 1.0),
+               none=glow("id_none", "#000000", 0.0))
+    for obj in scene.objects:
+        if obj.type != "MESH":
+            continue
+        obj.is_holdout = False
+        root = top(obj)
+        mat = (ids["eye"] if obj.name.startswith("KinEye") else kin_id if root == "Kin"
+               else ids["player"] if root == "Root" else ids["none"])
+        obj.data.materials.clear()
+        obj.data.materials.append(mat)
+    scene.cycles.samples, scene.cycles.use_denoising = 16, False
+    path = out / f"{name}_ids.exr"
+    scene.render.filepath = str(path)
+    bpy.ops.render.render(write_still=True)
+    save_npy(path, out / f"{name}_ids.npy", size)
 
 
 def save_npy(exr, npy, size):
+    w, h = dims(size)
     img = bpy.data.images.load(str(exr))
-    px = np.empty(size * size * 4, np.float32)
+    px = np.empty(w * h * 4, np.float32)
     img.pixels.foreach_get(px)
-    np.save(npy, np.flipud(px.reshape(size, size, 4)))
+    np.save(npy, np.flipud(px.reshape(h, w, 4)))
 
 
 def run(out, name, samples, size):
@@ -695,14 +829,18 @@ def run(out, name, samples, size):
     scene = bl.reset_scene()
     rng = np.random.default_rng(7)
     mats = materials(out / "face.png", shot.get("light", "gold"), shot.get("core_k", 24.0),
-                     shot.get("kin_fade", (0.3, 2.6)))
+                     shot.get("kin_fade", (0.3, 2.6)), paint=shot.get("kin") != "silhouette",
+                     kin_k=shot.get("kin_k"))
     neck, hands = player(mats, shot["player"], shot["root"], shot["turn"])
     bpy.context.view_layer.update()
     shot["shard_at"] = tuple(hands[shot["shard_hand"]].matrix_world.translation + Vector(shot["shard_off"]))
     shard(mats, shot["shard_at"], shot["shard_scale"], (0, 0, 20), shot["part"], rng)
     burst(mats, shot["shard_at"], shot.get("ray_reach", 5.0), shot.get("rays", 18), rng, up=shot.get("ray_up", (0, 0, 1)),
           spread=0.7, thin=shot.get("ray_thin", 1.0))
-    kin_root, kin_neck = fighter_light(mats, "Lyric", (0, 12, 6), shot["kin_scale"], shot["kin_turn"], LYRIC_POSE)
+    if shot.get("kin") == "silhouette":
+        kin_root, kin_neck = silhouette(mats, (0, 12, 6), shot["kin_scale"], shot["kin_turn"], shot.get("kin_pose", KIN_POSE))
+    else:
+        kin_root, kin_neck = fighter_light(mats, "Lyric", (0, 12, 6), shot["kin_scale"], shot["kin_turn"], LYRIC_POSE)
     for node in mats["kin"].node_tree.nodes:  # the rise is measured up the whole figure, from its own root
         if node.type == "TEX_COORD":
             node.object = kin_root
@@ -714,9 +852,6 @@ def run(out, name, samples, size):
         for key in ("cam", "aim", "focus"):
             shot[key] = tuple(Vector(shot[key]) + now - was)
     cam = camera(scene, shot, size)
-    chips(mats, shot["shard_at"], shot.get("chips", 14), shot.get("chip_reach", 3.2), rng, avoid=((neck.matrix_world @ Vector((0, 0, 0.7)), 1.4),
-                                                       (neck.matrix_world @ Vector((0, 0, -1.0)), 1.3),
-                                                       (cam.location, 2.6)))
     # the Voidkin turned to the lens, upright in the frame, so its shape reads whole
     bpy.context.view_layer.update()
     r = cam.matrix_world.to_3x3()
@@ -734,9 +869,16 @@ def run(out, name, samples, size):
         head = kin_neck.matrix_world @ Vector((0, 0, 0.6))
         kin_root.location += want - head
     bpy.context.view_layer.update()
+    avoid = [(neck.matrix_world @ Vector((0, 0, 0.7)), 1.4), (neck.matrix_world @ Vector((0, 0, -1.0)), 1.3),
+             (cam.location, 2.6)]
+    if shot.get("kin") == "silhouette":   # and the silhouette's head and hair, so its outline reads clear
+        avoid.append((kin_neck.matrix_world @ Vector((0, 0, 0.9)), 2.2 * shot["kin_scale"]))
+    chips(mats, shot["shard_at"], shot.get("chips", 14), shot.get("chip_reach", 3.2), rng, avoid=avoid)
     ground(mats)
-    sky(scene, *shot["sky"], shot["sun"])
+    sky(scene, *shot["sky"], shot["sun"], shot.get("sky_k", 1.0))
     lights(scene, shot, shot["shard_at"])
+    if "rim" in shot:
+        rim_light(scene, shot, neck.matrix_world @ Vector((0, 0, 0.7)))
     scene.render.engine = "CYCLES"
     scene.cycles.samples = samples
     scene.cycles.use_denoising = True
@@ -767,14 +909,18 @@ def run(out, name, samples, size):
         scene.render.filepath = str(light)
         bpy.ops.render.render(write_still=True)
         save_npy(light, out / f"{name}_light.npy", size)
+        if shot.get("kin") == "silhouette":
+            ids_pass(scene, out, name, mats, size)
     finally:
         held.unlink(missing_ok=True)
     centre = neck.matrix_world @ Vector((0, 0, 0.7))
     side = cam.matrix_world.to_3x3() @ Vector((0.7, 0, 0))   # the head with its hair is about 1.4 studs across
-    head_w = abs(where(scene, cam, centre + side, size)[0] - where(scene, cam, centre - side, size)[0]) / size
+    head_w = abs(where(scene, cam, centre + side, size)[0] - where(scene, cam, centre - side, size)[0]) / dims(size)[0]
     marks = dict(head=where(scene, cam, centre, size), head_w=round(head_w, 3),
                  shard=where(scene, cam, shot["shard_at"], size),
                  kin_head=where(scene, cam, kin_neck.matrix_world @ Vector((0, 0, 0.6)), size), size=size)
+    if shot.get("kin") == "silhouette":   # its eyes, for the read
+        marks["kin_eyes"] = where(scene, cam, kin_neck.matrix_world @ Vector((0, -0.6, 0.66)), size)
     (out / f"{name}.json").write_text(json.dumps(marks, indent=1), encoding="utf-8")
     print(f"{name}: {marks}")
 
@@ -784,7 +930,7 @@ def main():
     args = sys.argv[sys.argv.index("--") + 2:]
     name = args[0]
     samples = int(args[1]) if len(args) > 1 else 96
-    size = int(args[2]) if len(args) > 2 else 768
+    size = (tuple(int(v) for v in args[2].split("x")) if "x" in args[2] else int(args[2])) if len(args) > 2 else 768
     run(out, name, samples, size)
 
 

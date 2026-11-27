@@ -5,6 +5,9 @@ renders (research's order of 2026-11-27, 18:30; the study, docs/research/game-ic
     py tools/ui/ar70_player_targets.py <renders_dir> <out_dir> icons <shot> ...    graded, with the logotype, at 512/150/100
     py tools/ui/ar70_player_targets.py <renders_dir> <out_dir> sheets <refs_dir> <beside_dir> [shot ...]
 
+The S and T shots (the director's word of 2026-11-27, 23:15: the player and a Voidkin as a silhouette of light) take
+the GFX paint-over, `paint()`, from the render's masks (docs/research/gfx-technique.md).
+
 The grade, as the study measured the shipped player icons (bright, lit, black under 5% at 150 px, saturation about 0.5
 to 0.6, bloom only on the lights): an exposure, a filmic curve, a bloom from what's brighter than white, a little lift
 in the shadows toward the sky's blue, and saturation. The logotype is option (b)'s (ar70_painted_targets.logo_svg),
@@ -27,8 +30,29 @@ GRADES = {  # per shot: exposure, saturation, bloom strength, the logotype's siz
     "A": dict(exposure=0.7, sat=1.45, bloom=0.5, logo=(0.96, 478)),
     "B": dict(exposure=0.7, sat=1.45, bloom=0.5, logo=(0.96, 478)),
     "C": dict(exposure=0.6, sat=1.5, bloom=0.5, logo=(0.9, 482), grow=("Bangers", 60, 3, 0.86), bright_i=True),
+    "S1": dict(exposure=0.6, sat=1.4, bloom=0.6, logo=(0.9, 482), grow=("Bangers", 60, 3, 0.86), bright_i=True,
+               paint="silhouette_hot"),
+    "S2": dict(exposure=0.6, sat=1.4, bloom=0.6, logo=(0.9, 482), grow=("Bangers", 60, 3, 0.86), bright_i=True,
+               paint="silhouette_hot"),
+    "T1": dict(exposure=0.6, sat=1.4, bloom=0.6, paint="silhouette_hot"),
+    "T2": dict(exposure=0.6, sat=1.4, bloom=0.6, paint="silhouette_hot"),
+    "S1h": dict(exposure=0.6, sat=1.4, bloom=0.6, logo=(0.9, 482), grow=("Bangers", 60, 3, 0.86), bright_i=True,
+                paint="silhouette_hot", render="S1"),
 }
-TITLES = {"A": "A, the raise", "B": "B, the offer", "C": "C, the smash"}
+PAINTS = {  # the GFX paint-overs (paint() above), by name
+    "silhouette": dict(core="#36CCFF", core_k=1.5, edge="#F2FDFF", edge_k=3.2, core_w=0.016, eye="#F6FFFF", eye_k=4.0,
+                       aura="#1FA4FF", aura_k=1.5, rim="#BDF2FF", rim_k=2.5, rim_w=0.006, lines=20, lines_clear=0.26,
+                       lines_k=0.45, vignette=0.45, back_dark=0.4),
+    # the same, white-hot inside and the colour at the outline: the first try, kept for the pair
+    "silhouette_hot": dict(core="#E6FAFF", core_k=2.6, edge="#2FC4FF", edge_k=2.2, core_w=0.07, eye="#0A3A9A", eye_k=0.25,
+                           aura="#1FA4FF", aura_k=1.4, rim="#BDF2FF", rim_k=2.5, rim_w=0.006, lines=20, lines_clear=0.26,
+                           lines_k=0.45, vignette=0.45, back_dark=0.4),
+}
+for _g in GRADES.values():
+    if isinstance(_g.get("paint"), str):
+        _g["paint"] = PAINTS[_g["paint"]]
+TITLES = {"A": "A, the raise", "B": "B, the offer", "C": "C, the smash", "S1": "S1, the silhouette rising",
+          "S2": "S2, the silhouette towering"}
 
 
 def aces(x):
@@ -45,10 +69,67 @@ def blur(rgb, radii):
     return sum(np.dstack([ndimage.gaussian_filter(rgb[..., c], n * r) for c in range(3)]) * w for r, w in radii)
 
 
-def grade(lin, g, light=None):
+def hexlin(h, k=1.0):
+    c = np.array([int(h[i:i + 2], 16) for i in (1, 3, 5)]) / 255
+    return np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4) * k
+
+
+def paint(rgb, light, ids, marks, g):
+    """The GFX paint-over (docs/research/gfx-technique.md), in linear light before the curve, from the render's masks
+    (`ids`: the player red, the silhouette green, its eyes blue):
+    - the silhouette as one shape of light with no block inside it: white-hot at its heart, its colour toward the
+      outline, its eyes dark slits;
+    - its aura, the shape's own glow past the outline;
+    - the player's rim line on the edges that face the light;
+    - speed lines from the shard over the backdrop only, and the corners darkened, so the eye goes to the contact."""
+    p = g["paint"]
+    h, w = rgb.shape[:2]
+    n = h   # the paint's sizes are fractions of the frame's height
+    P, K, E = (np.clip(ids[..., c], 0, 1) for c in range(3))
+    K = np.clip(K + E, 0, 1)   # the eyes are the figure's too
+    inside = ndimage.distance_transform_edt(ndimage.binary_fill_holes(K > 0.5)) / (n * p["core_w"])   # what
+    # stands in front of it (the chips) cuts it, but makes no outline inside it
+    t = np.clip(inside, 0, 1)[..., None] ** 0.8
+    fill = hexlin(p["edge"], p["edge_k"]) * (1 - t) + hexlin(p["core"], p["core_k"]) * t
+    fill = fill * (1 - E[..., None]) + hexlin(p["eye"], p["eye_k"]) * E[..., None]
+    rgb = rgb * (1 - K[..., None]) + fill * K[..., None]
+    aura = sum(ndimage.gaussian_filter(K, n * r) * w for r, w in ((0.006, 0.6), (0.02, 0.45), (0.06, 0.4)))
+    rgb = rgb + aura[..., None] * hexlin(p["aura"], p["aura_k"]) * (1 - 0.75 * P[..., None])
+    head, kin = np.array(marks["head"]), np.array(marks["kin_head"])
+    d = (kin - head) / np.linalg.norm(kin - head)
+    step = n * p["rim_w"]
+    beyond = ndimage.shift(P, (-d[1] * step, -d[0] * step), order=1, mode="constant")
+    rim = ndimage.gaussian_filter(np.clip(P - beyond, 0, 1), n * 0.0015)
+    rgb = rgb + rim[..., None] * hexlin(p["rim"], p["rim_k"])
+    yy, xx = np.mgrid[0:h, 0:w].astype(float)
+    if p.get("lines"):
+        sx, sy = marks["shard"]
+        r = np.hypot(xx - sx, yy - sy)
+        th = np.arctan2(yy - sy, xx - sx)
+        rng = np.random.default_rng(5)
+        lines = np.zeros_like(r)
+        for a, w, k in zip(rng.uniform(-np.pi, np.pi, p["lines"]), rng.uniform(0.4, 1.0, p["lines"]),
+                           rng.uniform(0.4, 1.0, p["lines"])):
+            off = np.angle(np.exp(1j * (th - a))) * r          # the distance across the line, in pixels
+            width = n * 0.006 * w * np.clip(r / (n * 0.5), 0, 1.5)
+            lines = np.maximum(lines, k * np.exp(-(off / np.maximum(width, 0.3)) ** 2))
+        lines *= np.clip((r - n * p["lines_clear"]) / (n * 0.25), 0, 1)
+        rgb = rgb + (lines * (1 - P) * (1 - K))[..., None] * hexlin("#FFFFFF", p["lines_k"])
+    if p.get("back_dark"):   # the backdrop deeper away from the contact, so the light and the faces carry the frame
+        sx, sy = marks["shard"]
+        near = np.exp(-(np.hypot(xx - sx, yy - sy) / (n * 0.3)) ** 2)
+        rgb = rgb * (1 - (p["back_dark"] * (1 - near) * (1 - P) * (1 - K)))[..., None]
+    far = np.hypot(xx / w - 0.5, yy / h - 0.5) / 0.7071
+    rgb = rgb * (1 - p["vignette"] * np.clip((far - 0.35) / 0.65, 0, 1) ** 1.6)[..., None]
+    return rgb, (light * (1 - K[..., None]) if light is not None else None)
+
+
+def grade(lin, g, light=None, ids=None, marks=None):
     """`light` is the render of the lights alone (the Voidkin and the burst on black): it glows past their shapes,
     so they read as light and not as lit things."""
     rgb = lin[..., :3] * g["exposure"]
+    if ids is not None and "paint" in g:
+        rgb, light = paint(rgb, light, ids, marks, g)
     hot = np.clip(rgb - 1.0, 0, 8)
     rgb = rgb + blur(hot, ((0.006, 0.5), (0.02, 0.35), (0.06, 0.25))) * g["bloom"]
     if light is not None:
@@ -60,14 +141,14 @@ def grade(lin, g, light=None):
 
 
 def load(renders, shot):
-    light = renders / f"{shot}_light.npy"
+    light, ids = renders / f"{shot}_light.npy", renders / f"{shot}_ids.npy"
     return (np.load(renders / f"{shot}.npy"), np.load(light) if light.exists() else None,
-            json.loads((renders / f"{shot}.json").read_text(encoding="utf-8")))
+            json.loads((renders / f"{shot}.json").read_text(encoding="utf-8")), np.load(ids) if ids.exists() else None)
 
 
 def graded(renders, out, shot):
-    lin, light, marks = load(renders, shot)
-    img = grade(lin, GRADES[shot], light)
+    lin, light, marks, ids = load(renders, GRADES[shot].get("render", shot))
+    img = grade(lin, GRADES[shot], light, ids, marks)
     path = out / "work" / f"art_{shot}.png"
     path.parent.mkdir(parents=True, exist_ok=True)
     hl.write_png(path, np.dstack([img, np.ones(img.shape[:2])]))

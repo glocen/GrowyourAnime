@@ -123,6 +123,7 @@ type View = {
 	Cued: { [string]: boolean }, -- the beats whose cue (Rules.Sound.Beat) this press has begun
 	Held: { [string]: Held }, -- each hit it has shown on a body, by beat, press and target: what a server's hit may raise
 	Struck: Struck?, -- its flash and tremble as a hit's target, while they run
+	Blow: Vector3?, -- the way the last blow on it travelled, from its striker (a Shade's fall faces it, AR69)
 	Glow: Highlight?, -- its one Highlight: its flash's fill and a worn outline's line, made when either first needs it
 	Running: { Running },
 	Joint: Motor6D?, -- a box's lean
@@ -342,6 +343,7 @@ local function show(attacker: View, target: View?, rung: number, heavy: boolean,
 	if target then
 		local held: Held = { Target = target, At = nil, Rung = rung, Hold = hold }
 		attacker.Held[each] = held
+		target.Blow = target.Root.Position - attacker.Root.Position
 		-- A body struck in the middle of its own action shows the flash, the spark and the number, and its clip never holds:
 		-- its own beats keep the stage, timed as the server times them, which holds nothing (AR4, section 8: research,
 		-- 2026-11-12).
@@ -544,23 +546,26 @@ local function playReaction(view: View, role: string): AnimationTrack?
 	return t
 end
 
--- A Shade bursts as it goes down (AR2, section 11): the effect runs from the Down clip's start, on its clock, and hides
--- the body on its `Burst` marker (Effects.ShadeBurst), or bursts at once when it has no clip. A keeper's rig has a fall of
--- its own (Config.Effects.Falls): the same burst on its clip's marker, and its lantern left to go out (AR7, section 5).
+-- A Shade falls as it goes down (AR69; Effects.ShadeFall): on its Down clip's Burst marker, from its foot, along the
+-- blow that beat it, or at once when it has no clip. A keeper's rig has a fall of its own (Config.Effects.Falls): AR2's
+-- burst on its clip's marker, and its lantern left to go out (AR7, section 5); AR69 leaves it as it is.
 local function burst(view: View, down: AnimationTrack?)
 	local fall = EffectsConfig.Falls[view.Rig]
 	local kind = view.Model:GetAttribute("Kind")
 	local cue = SoundRule.Fall(if type(kind) == "string" then kind else nil)
-	Effects.ShadeBurst(view.Model, down, view.Collar, fall, function(at: Vector3)
+	local function sound(at: Vector3)
 		-- on the burst's frame: a Shade's in the world (AR13), a keeper's fall the run's big moment (TR64)
 		if cue == "ShadeBurst" then
 			Cues.Play(cue, at)
 		else
 			Cues.Moment(cue)
 		end
-	end)
+	end
 	if fall then
+		Effects.ShadeBurst(view.Model, down, view.Collar, fall, sound)
 		Effects.LanternOut(view.Model, down, fall)
+	else
+		Effects.ShadeFall(view.Model, down, view.Blow, sound)
 	end
 end
 
@@ -844,6 +849,7 @@ local function add(model: Instance)
 		Shown = {},
 		Held = {},
 		Struck = nil,
+		Blow = nil,
 		Glow = nil,
 		Running = {},
 		Joint = root:FindFirstChild("Body") :: Motor6D?,

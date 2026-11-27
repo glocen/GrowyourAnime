@@ -99,8 +99,6 @@ local R6_ROOT_HEIGHT = 3 -- an R6 body's root stands 3 studs above the floor (le
 local TUNE_PATH = "Game.Version" -- a string any build has; the case puts it back
 local BEAT_TOLERANCE = 1 / 120 -- half a frame at 60 fps
 local LEAD_SETTLE = 1.5 -- seconds for the lead to catch up after the reset's teleport (Config.Combat.Lead)
-local TAPE_WATCH = 2.4 -- one loop of Rook's idle
-local TAPE_SWING = 5 -- degrees: his idle swings the tape about 9
 local REPLAY_PAUSE = 5 -- seconds past the action before a second press, longer than the case waits
 local SHADE_AHEAD = 12 -- studs ahead of the avatar a test Shade spawns: inside its notice and the lead's leash
 local SHADE_TIMEOUT = 20 -- seconds a level-matched ordinary may take to fall (the seed is 5 s of fighting, Config.Enemies)
@@ -1805,7 +1803,7 @@ local cases = {
 				t.Row(`the lead is {tostring(lead:GetAttribute("Def"))}, not Rook: his checks wait for a Rook lead`, nil, nil, nil, "")
 				return
 			end
-			-- AR1 (his recipe, built by ModelRecipe): R6's seven parts hidden, his eight pieces riding them
+			-- AR59 (his make, built by ModelRecipe): R6's seven parts hidden, his seven pieces riding them, no gauntlet
 			local hidden, shown = 0, 0
 			for _, part in lead:GetChildren() do
 				if part:IsA("BasePart") then
@@ -1817,43 +1815,25 @@ local cases = {
 				end
 			end
 			t.Check("R6's seven parts are hidden", hidden == 7, `{hidden} of 7`)
-			t.Check("his eight pieces show", shown == 8, `{shown} of 8`)
-			local function joint(arm: string, name: string, piece: string): Motor6D?
-				local on = lead:FindFirstChild(arm)
-				local motor = if on then on:FindFirstChild(name) else nil
-				local part1 = if motor and motor:IsA("Motor6D") then motor.Part1 else nil
-				local ok = part1 ~= nil and part1.Name == piece
-				t.Check(`the {name} joint turns {piece} on the {arm}`, ok)
-				return if ok then motor :: Motor6D else nil
+			t.Check("his seven pieces show", shown == 7, `{shown} of 7`)
+			-- the hair rides the head (Down and Up throw it), and Haymaker's points are on the right fist
+			local hair, head = lead:FindFirstChild("Rook_Hair"), lead:FindFirstChild("Head")
+			local held = false
+			for _, weld in if hair then hair:GetChildren() else {} do
+				if weld:IsA("Weld") and weld.Part0 == head then
+					held = true
+				end
 			end
-			local piston = joint("Right Arm", "Piston", "Rook_Piston")
-			local tape = joint("Left Arm", "Tape", "Rook_Tape")
-			-- his clips key the two, under their arms (tools/studio/Animations/Author's HELD): Haymaker's wind-up slides the
-			-- piston 0.85 studs toward the shoulder at its most cocked (AR8 B5's polish, build/handoff/Rook/clips/Rook_Haymaker.json)
-			local slide = -1
-			local haymaker = Clips.Sequence(Actions.ById.RookHaymaker.Clip or "")
-			for _, keyframe in if haymaker then haymaker:GetKeyframes() else {} do
-				for _, pose in (keyframe :: Keyframe):GetDescendants() do
-					if pose:IsA("Pose") and pose.Name == "Rook_Piston" and (pose.Parent :: Instance).Name == "Right Arm" then
-						slide = math.max(slide, pose.CFrame.Position.Magnitude)
+			if not held and head then
+				for _, weld in head:GetChildren() do
+					if weld:IsA("Weld") and weld.Part1 == hair then
+						held = true
 					end
 				end
 			end
-			t.Near("Haymaker slides the piston", slide, 0.85, 0.01)
-			-- and a clip always plays: idle, the piston rests home and the tape swings (at R6's rest pose the ram meets the hip)
-			if piston and tape then
-				local first = tape.Transform
-				local swing, out = 0, 0
-				local began = os.clock()
-				while os.clock() - began < TAPE_WATCH do
-					RunService.Heartbeat:Wait()
-					local _, angle = (first:Inverse() * tape.Transform):ToAxisAngle()
-					swing = math.max(swing, math.deg(angle))
-					out = math.max(out, piston.Transform.Position.Magnitude)
-				end
-				t.Check("the tape swings through the idle", swing > TAPE_SWING, string.format("%.1f degrees", swing))
-				t.Near("the piston rests home", out, 0, 0.01)
-			end
+			t.Check("the hair is welded to the head", held)
+			local arm = lead:FindFirstChild("Right Arm")
+			t.Check("the knuckles' point is on the right arm", arm ~= nil and arm:FindFirstChild("Knuckles") ~= nil)
 		end,
 	},
 	{
@@ -1863,7 +1843,7 @@ local cases = {
 			-- (ServerStorage.Templates.<Model>) leads in turn, one owned or given, and its body is read as the lead wears it:
 			-- R6's seven parts hidden; every <Model>_ piece shown, held by a weld or a joint with both its ends set (a synced
 			-- .rbxm can drop a new part's Part0) and riding the body; every point a Body row of its kit's effects rides, and
-			-- every look a Glow or a Relight row lights, on it. Rook's own case keeps his piston, his tape and his Haymaker.
+			-- every look a Glow or a Relight row lights, on it. Rook's own case keeps his hair and his knuckles.
 			local view = ProfileController.Get()
 			local was = if view then view.Roles.Lead else nil
 			local count = 0
@@ -2530,7 +2510,7 @@ local cases = {
 		end,
 	},
 	{
-		Name = "Fight: a Shade wears AR2's rig, swings its clip and bursts on its marker",
+		Name = "Fight: a Shade wears AR2's rig, swings its clip and falls on its marker (AR69)",
 		Run = function(t: any)
 			-- docs/asset-requests.md, AR2, "For the builder": the mask's own light, the type's on the body, the mirrored
 			-- swing, and the whole body hidden on the Burst marker (frame 27), where the effect starts.
@@ -2621,111 +2601,88 @@ local cases = {
 					end
 					return nil
 				end
-				-- the burst's pictures (AR2, section 11), the art sheet's on billboards round its anchor
-				local function pictures(): { BillboardGui }
-					local found = {}
-					local home = workspace:FindFirstChild("NL_Effects")
-					for _, anchor in (if home then home:GetChildren() else {}) do
-						if anchor.Name == "NL_ShadeBurst" then
-							for _, gui in anchor:GetChildren() do
-								if gui:IsA("BillboardGui") then
-									table.insert(found, gui)
-								end
-							end
+				-- AR69's fall (Effects.ShadeFall): the rows "ShadeFall" on the marker, at the foot, along the blow; the
+				-- body hides four frames later, so the ball blooms round it first
+				local function myFall(): any
+					local list = Effects.Falls()
+					for _, item in list do
+						if item.Body == shade then
+							return item
 						end
 					end
-					return found
+					return nil
 				end
-				-- every billboard is made at the start; a picture shows by its image (Effects.ShadeBurst)
-				local function lit(): { BillboardGui }
-					local on = {}
-					for _, gui in pictures() do
-						local image = gui:FindFirstChildOfClass("ImageLabel")
-						if gui.Enabled and image and image.ImageTransparency < 1 then
-							table.insert(on, gui)
-						end
-					end
-					return on
-				end
-				local hideAt: number? = nil
-				local hideClip: number? = nil
+				local scale = shade:GetScale()
+				local struckFrom = if lead and lead.PrimaryPart then (lead.PrimaryPart :: BasePart).Position else nil
+				local stoodAt = if root then root.Position else shade:GetPivot().Position
 				local shownBefore = not hidden()
-				local charged = false
-				local atHide: { BillboardGui } = {}
-				local before: { BillboardGui } = {}
-				local beforeClip: number? = nil
-				-- the longest of the last steps: the flare is set on the first step at or past the marker and read a poll
-				-- later, so a long frame there moves the clip's time by that step, not by a nominal frame
+				local fall: any = nil
+				local fallAt: number?, fallClip: number?, hideAt: number? = nil, nil, nil
+				local shownAtFall = false
+				local lastClip: number? = nil
 				local polledAt, step = os.clock(), FRAME
-				while os.clock() - (downAt :: number) < 1 do
+				while os.clock() - (downAt :: number) < 1.5 do
 					step = math.max(step, os.clock() - polledAt)
 					polledAt = os.clock()
-					-- the effect steps on RenderStepped, before this poll's Heartbeat. A part is drawn the frame it's set; a
-					-- billboard shown is drawn a frame later, one cleared is gone at once. So the hide's picture shows what
-					-- was lit a step before it and is still lit on it.
-					if hidden() then
-						hideAt, hideClip = os.clock(), beforeClip
-						local still = {}
-						for _, gui in lit() do
-							still[gui] = true
+					if fall == nil then
+						fall = myFall()
+						if fall then
+							fallAt, fallClip, shownAtFall = os.clock(), lastClip, not hidden()
+							stoodAt = if root then root.Position else shade:GetPivot().Position -- where it fell, not where it spawned
+							struckFrom = if lead and lead.PrimaryPart then (lead.PrimaryPart :: BasePart).Position else struckFrom
 						end
-						for _, gui in before do
-							if still[gui] then
-								table.insert(atHide, gui)
-							end
-						end
+					end
+					if fall and hidden() then
+						hideAt = os.clock()
 						break
 					end
-					before, beforeClip = lit(), clipTime()
-					charged = charged or #before > 0
-					if beforeClip == nil or (beforeClip :: number) < ShadeBurstArt.Burst * FRAME - 2 * FRAME then
+					lastClip = clipTime() or lastClip
+					if lastClip == nil or (lastClip :: number) < ShadeBurstArt.Burst * FRAME - 2 * FRAME then
 						step = FRAME -- only the steps round the marker count
 					end
 					task.wait()
 				end
-				t.Check("its burst plays", playing(shade)[Animations.Rigs.Shade.Down] == true or hideAt ~= nil)
-				t.Check("whole until the marker", shownBefore)
-				t.Check("then the whole body, mask too, hides at once", hideAt ~= nil)
-				if hideAt then
+				t.Check("its fall plays", fall ~= nil)
+				t.Check("whole until the fall", shownBefore and shownAtFall)
+				if fall then
 					local marker = ShadeBurstArt.Burst * FRAME
 					t.Check(
-						"its flare set on the marker, frame 27 of the clip: never before it, within two of the steps that ran",
-						hideClip ~= nil and (hideClip :: number) >= marker - 1e-3 and (hideClip :: number) <= marker + 2 * step + 1e-3,
-						string.format("at %.3f s, the marker %.3f, a step %.1f ms", hideClip or -1, marker, step * 1000)
+						"its fall played on the marker, frame 27 of the clip: never before it, within two of the steps that ran",
+						fallClip ~= nil and (fallClip :: number) >= marker - 2 * step - 1e-3 and (fallClip :: number) <= marker + 2 * step + 1e-3,
+						string.format("at %.3f s, the marker %.3f, a step %.1f ms", fallClip or -1, marker, step * 1000)
 					)
-					t.Row("seconds from the fall to the burst, the hold included", nil, nil, (hideAt :: number) - (downAt :: number), "s")
-					t.Check("the charge shows in its collar before it", charged)
-					local flare = (ShadeBurstArt.Frames[ShadeBurstArt.Burst] or {})[1]
-					local label = if #atHide == 1 then atHide[1]:FindFirstChildOfClass("ImageLabel") else nil
-					t.Check(
-						"the flare, the art sheet's, drawn in the hide's own picture",
-						flare ~= nil and flare.Kind == "flare" and label ~= nil and label.ImageRectOffset == flare.Offset and label.ImageRectSize == flare.Rect,
-						`{#atHide} lit`
-					)
-					-- the table's At is right, forward and up: the flare's centre straight under the collar, its top over it
-					local offset = if #atHide == 1 then atHide[1].StudsOffsetWorldSpace else Vector3.zero
-					t.Near("the flare's centre under the collar by the table's 1.8", if flare then offset.Y else 0, if flare then flare.At.Z else 1, 0.05)
-					t.Near("and on its line, not out to a side", Vector3.new(offset.X, 0, offset.Z).Magnitude, 0, 0.05)
-					local plain = #pictures() > 0
-					for _, gui in pictures() do
-						local image = gui:FindFirstChildOfClass("ImageLabel")
-						if gui.LightInfluence ~= 0 or image == nil or image.ImageColor3 ~= Color3.new(1, 1, 1) or image.Image ~= EffectsConfig.ShadeBurst.Picture then
-							plain = false
-						end
+					t.Row("seconds from the fall to the burst, the hold included", nil, nil, (fallAt :: number) - (downAt :: number), "s")
+					t.Check("then the whole body, mask too, hides", hideAt ~= nil)
+					if hideAt then
+						t.Near("four frames after the fall, within two steps", (hideAt :: number) - (fallAt :: number), 4 * FRAME, 2 * step + 0.01)
 					end
-					t.Check("untinted and unlit, the group's picture (the content check's condition 1)", plain)
-					local gone = waitFor(t, (ShadeBurstArt.Last - ShadeBurstArt.Burst) * FRAME + 1, function(): boolean
-						local home = workspace:FindFirstChild("NL_Effects")
-						return home == nil or home:FindFirstChild("NL_ShadeBurst") == nil
+					local anchor = fall.Anchor :: CFrame
+					t.Near("at its foot, 3 of its scale under the root", anchor.Position.Y, stoodAt.Y - 3 * scale, 0.35)
+					t.Near("and under it, not out to a side", Vector3.new(anchor.Position.X - stoodAt.X, 0, anchor.Position.Z - stoodAt.Z).Magnitude, 0, 0.6)
+					if struckFrom then
+						local way = Vector3.new(stoodAt.X - struckFrom.X, 0, stoodAt.Z - struckFrom.Z)
+						local dot = if way.Magnitude > 0.01 then anchor.LookVector:Dot(way.Unit) else 1
+						t.Check("its Front along the blow, away from the lead", dot > 0.7, string.format("%.2f", dot))
+					end
+					local rows = fall.Rows
+					local ball = rows.Parts("Ball")
+					t.Check("its ball is made", #ball > 0)
+					local gone = waitFor(t, rows.End * FRAME + 1, function(): boolean
+						for _, made in rows.Parts("Ball") do
+							if made.Parent ~= nil then
+								return false
+							end
+						end
+						return true
 					end)
-					t.Check("nothing of it left after its last frame", gone)
+					t.Check("nothing of it left after its last frame", gone, `End {rows.End}`)
 				end
 			end
 			t.Server("FightSpawn") -- clears it
 		end,
 	},
 	{
-		Name = "Fight: a Shade's burst never waits for good on a clip held still",
+		Name = "Fight: a Shade's fall never waits for good on a clip held still",
 		Run = function(t: any)
 			-- AR2, section 13: the charge runs on the Down clip's clock. A clip held still bursts anyway after
 			-- Config.Effects.ShadeBurst.Wait, before the server takes the body; a body cleared while its clip is held takes the
@@ -2736,11 +2693,17 @@ local cases = {
 			if type(level) ~= "number" then
 				return
 			end
+			-- falls charging, and falls whose ball is still in the world (Effects.ShadeFall, AR69)
 			local function anchors(): number
-				local count = 0
-				local home = workspace:FindFirstChild("NL_Effects")
-				for _, child in (if home then home:GetChildren() else {}) do
-					count += if child.Name == "NL_ShadeBurst" then 1 else 0
+				local list, live = Effects.Falls()
+				local count = live
+				for _, item in list do
+					for _, made in item.Rows.Parts("Ball") do
+						if made.Parent ~= nil then
+							count += 1
+							break
+						end
+					end
 				end
 				return count
 			end
@@ -2777,7 +2740,7 @@ local cases = {
 				return if shade:GetAttribute("State") == "Down" then shade else nil, os.clock()
 			end
 			t.Check("no burst in the world before", anchors() == 0, `{anchors()}`)
-			local forced = ShadeBurstArt.Burst * FRAME + EffectsConfig.ShadeBurst.Wait
+			local forced = ShadeBurstArt.Burst * FRAME + EffectsConfig.ShadeBurst.Wait + 4 * FRAME -- the fall, then the hide
 			local held, downAt = fallen()
 			t.Check("a Shade falls", held ~= nil)
 			if held then
@@ -2791,8 +2754,8 @@ local cases = {
 					end
 					task.wait()
 				end
-				t.Near("its clip held still, it bursts anyway, Config.Effects.ShadeBurst.Wait past the marker", hidAt or -1, forced, 0.15)
-				t.Check("and the burst ends", waitFor(t, (ShadeBurstArt.Last - ShadeBurstArt.Burst) * FRAME + 1, function(): boolean
+				t.Near("its clip held still, it falls anyway, Config.Effects.ShadeBurst.Wait past the marker", hidAt or -1, forced, 0.15)
+				t.Check("and the fall ends", waitFor(t, 2, function(): boolean
 					return anchors() == 0
 				end), `{anchors()} left`)
 			end

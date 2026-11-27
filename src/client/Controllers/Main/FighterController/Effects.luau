@@ -1695,6 +1695,85 @@ function Effects.ShadeBurst(model: Model, down: AnimationTrack?, collar: Attachm
 	end)
 end
 
+local falls: { { Anchor: CFrame, Rows: Rows.Player, Body: Model } } = {} -- the falls playing, for the self-test
+local fallsLive = 0 -- falls charging or playing, for the self-test
+
+-- A Shade's fall (AR69, research's pick A; Config.EffectRows/ShadeFall, Scintilla's): on the Down clip's Burst marker the
+-- rows "ShadeFall" play once at the body's foot (its root, 3 of its scale down, upright), their Front (-Z) the way the
+-- defeating blow travelled (`blow`, flat; else back from the body's face), at the body's scale; the body hides FALL_HIDE
+-- later, so the ball blooms round it first (research's must-fix). The clip's clock, the hold and the cleared body are
+-- ShadeBurst's: the marker's frame, Config.Effects.ShadeBurst.Wait past it on a clip held still, nothing if the body
+-- leaves first. No row rides the body, so the server may take it once it's hidden. With no clip it plays at once.
+local FALL_HIDE = 4 -- frames
+function Effects.ShadeFall(model: Model, down: AnimationTrack?, blow: Vector3?, burst: ((at: Vector3) -> ())?)
+	local scale = model:GetScale()
+	local root = model:FindFirstChild("HumanoidRootPart") :: BasePart?
+	local reached = down == nil
+	local marker: RBXScriptConnection? = nil
+	if down then
+		marker = down:GetMarkerReachedSignal("Burst"):Connect(function()
+			reached = true
+		end)
+	end
+	local burstTime = ShadeBurstArt.Burst * FRAME -- the Down clip's Burst marker
+	local playedAge: number? = nil
+	fallsLive += 1
+	run(function(age: number): boolean
+		if playedAge == nil then
+			if model.Parent == nil then
+				return false -- the body left before its marker: the fall goes with it (AR2, section 13)
+			end
+			if not reached and down and (down.TimePosition >= burstTime - 1e-3 or not down.IsPlaying or age >= burstTime + EffectsConfig.ShadeBurst.Wait) then
+				reached = true -- the marker's signal can come a step late, or the clip has stalled
+			end
+			if not reached then
+				return true
+			end
+			playedAge = age
+			local stand = if root then root.CFrame else model:GetPivot()
+			local foot = stand.Position - Vector3.new(0, 3 * scale, 0)
+			local flat = if blow then Vector3.new(blow.X, 0, blow.Z) else Vector3.zero
+			if flat.Magnitude < 1e-3 then
+				flat = -Vector3.new(stand.LookVector.X, 0, stand.LookVector.Z)
+			end
+			local way = if flat.Magnitude > 1e-3 then flat.Unit else Vector3.new(0, 0, -1)
+			local anchor = CFrame.lookAt(foot, foot + way)
+			-- a foe on Hard: its Tint rows (the ring) in Config.Shades.Hard.Burst (AR46); the fire stays untinted
+			local hard = model:GetAttribute("Difficulty") == "Hard"
+			local rows = Effects.At("ShadeFall", anchor, scale, if hard then Shades.Hard.Burst else nil)
+			if rows then
+				table.insert(falls, 1, { Anchor = anchor, Rows = rows, Body = model })
+				if #falls > 8 then
+					table.remove(falls)
+				end
+			end
+			if burst then
+				burst(stand.Position) -- its sound, on this frame (AR13)
+			end
+			return true
+		end
+		if age - (playedAge :: number) >= FALL_HIDE * FRAME - 1e-3 then
+			for _, p in model:GetDescendants() do
+				if p:IsA("BasePart") then
+					p.LocalTransparencyModifier = 1
+				end
+			end
+			return false
+		end
+		return model.Parent ~= nil
+	end, function()
+		fallsLive -= 1
+		if marker then
+			marker:Disconnect()
+		end
+	end)
+end
+
+-- The falls this client played, newest first (at most 8), and how many are charging or playing, for the self-test.
+function Effects.Falls(): ({ { Anchor: CFrame, Rows: Rows.Player, Body: Model } }, number)
+	return falls, fallsLive
+end
+
 -- A keeper's lantern goes out (AR7, section 5; Config.Effects.Falls): on its Down clip's clock, run on past the clip's held
 -- last frame, the lantern's glow and its light steady at Glow to Gutter, flickering under a falling top to Out, dark from
 -- there, its paper going down to Dark from Gutter, eased in, there by Out; on Gone its Kept parts go

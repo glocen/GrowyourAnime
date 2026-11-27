@@ -152,7 +152,8 @@ function HardLooksCases.Cases(): { any }
 					lantern ~= nil and pole ~= nil and lantern.AlphaMode ~= Enum.AlphaMode.TintMask and pole.AlphaMode ~= Enum.AlphaMode.TintMask and lantern:GetAttribute("Glow") == "Lantern"
 				)
 			end
-			-- the burst: Hard's tint on every picture but the scraps
+			-- the burst: Hard's tint on every picture but the scraps. Only the keeper's is AR2's burst now: the elite falls in
+			-- AR69's ShadeFall, whose one Tint row (the ring) takes Shades.Hard.Burst
 			if eliteId then
 				t.Server("FightDefeat", eliteId)
 			end
@@ -166,7 +167,7 @@ function HardLooksCases.Cases(): { any }
 				for _, anchor in (if home then home:GetChildren() else {}) do
 					n += if anchor.Name == "NL_ShadeBurst" then 1 else 0
 				end
-				return n >= 2
+				return n >= 1
 			end)
 			local home = workspace:FindFirstChild("NL_Effects")
 			for _, anchor in (if home then home:GetChildren() else {}) do

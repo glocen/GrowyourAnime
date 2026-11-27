@@ -51,6 +51,7 @@ local Hud = require(Shared.Rules.Hud)
 local HudConfig = require(Shared.Config.Hud)
 local UIKit = require(Shared.Config.UIKit)
 local UI = script.Parent.Parent
+local Cues = require(UI.Parent.Controllers.Main.FighterController.Cues)
 local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
 local Read = require(UI.Read)
@@ -749,6 +750,9 @@ local function itemCard(context: Context, at: Layout, id: string)
 			local args = { Preset = owned.Preset, Slot = info.Worn or info.Slot, Class = if Gear.IsHand(info.Worn or info.Slot) then class else nil, Item = if info.Worn then "" else id }
 			local ok = said("Equip", if info.Worn then "Take off" else "Equip", context.Act("Equip", args))
 			if ok then
+				if not info.Worn then
+					Cues.Moment("Equip") -- a piece put on (TR64's gaps); taking one off stays quiet
+				end
 				close() -- the doll shows again, its Combat Power counting to its new number
 			end
 			return ok
@@ -927,6 +931,7 @@ local function chestCard(context: Context, at: Layout, id: string)
 		if info.Gear ~= true then
 			words = `Opened {Hud.Digits(tonumber(answer.Opened) or count)}: {familyWords(answer)}`
 		end
+		Cues.Moment("ChestOpen") -- the chest opened (TR64's gaps), as its toast says what came out
 		Toast.Show(words, Theme.Colour.Text)
 		-- The account's first of a rarity from Rare up (TR57's firsts; Rules.Chests.Firsts): its own line in its light,
 		-- a stand-in until TR34's band plays its full reveal with "First {rarity}" under its name.

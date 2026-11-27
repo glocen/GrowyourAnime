@@ -622,6 +622,8 @@ function StageController.Start()
 			StageScreen.Results(results, on)
 			if StageScreen.NewBest(results) then
 				Cues.Moment("Record") -- a new best (TR64), as its card rises
+			elseif results.Won == true then
+				Cues.Moment("RunCleared") -- a won run that isn't a new best (TR64's gaps): Record keeps the best
 			end
 		end
 	end)

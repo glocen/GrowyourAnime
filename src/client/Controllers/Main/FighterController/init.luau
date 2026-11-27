@@ -798,6 +798,9 @@ local function onAction(view: View)
 	end
 	local action = Actions.ById[id]
 	if action then
+		if id == "KeeperChallenge" and workspace:GetServerTimeNow() - at < 0.5 then
+			Cues.Moment("KeeperArrive") -- the keeper enters (TR64's gaps), never one streamed in mid-challenge
+		end
 		beginAction(view, action, at)
 	elseif freezeOf(view) == nil and view.State ~= "Stun" then
 		-- a frozen replay holds its frame past the server's end, until the next press; a stopped fighter its pose, until

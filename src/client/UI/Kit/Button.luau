@@ -42,6 +42,7 @@ local Theme = require(script.Parent.Parent.Theme)
 local Text = require(script.Parent.Text)
 local Skin = require(script.Parent.Skin)
 local Toast = require(script.Parent.Toast)
+local Cues = require(script.Parent.Parent.Parent.Controllers.Main.FighterController.Cues)
 
 export type Props = {
 	Name: string,
@@ -502,6 +503,7 @@ function Button.Press(button: TextButton): boolean
 		state.DownAt, state.UpAt = at, at
 		squeezing[button] = true
 	end
+	Cues.Moment("Tap") -- every press a button takes (TR64's gaps); a refused one shakes, silent
 	state.Pending = true
 	state.Flash = nil
 	paint(button, state)

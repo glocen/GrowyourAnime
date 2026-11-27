@@ -51,6 +51,7 @@ local Gear = require(Shared.Definitions.Gear)
 local Actions = require(Shared.Definitions.Actions)
 local Passives = require(Shared.Definitions.Passives)
 local UI = script.Parent
+local Cues = require(UI.Parent.Controllers.Main.FighterController.Cues)
 local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
 local Read = require(UI.Read)
@@ -490,7 +491,11 @@ local function actions(parent: Frame, view: Profile.View, owned: Profile.OwnedVo
 		if working then
 			return refused("Recall", on.Act("SetWorker", { Bay = tonumber(working), Voidkin = "" }))
 		end
-		return refused("Station", on.Act("SetWorker", { Bay = bay, Voidkin = owned.Id }))
+		local ok = refused("Station", on.Act("SetWorker", { Bay = bay, Voidkin = owned.Id }))
+		if ok then
+			Cues.Moment("BayOn") -- a Voidkin put in a bay, its power on (TR64's gaps); MachineStage keeps the stage-up
+		end
+		return ok
 	end)
 	local words = if working then "Recall" else "Station"
 	if working then

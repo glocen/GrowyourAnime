@@ -13,6 +13,11 @@ local Actions = require(Shared.Definitions.Actions)
 local CuesConfig = require(Shared.Config.Cues)
 local SoundRule = require(Shared.Rules.Sound)
 local Cues = require(script.Parent.Parent.Parent.Main.FighterController.Cues)
+local FadeController = require(script.Parent.Parent.Parent.Main.FadeController)
+local UI = script.Parent.Parent.Parent.Parent.UI
+local Button = require(UI.Kit.Button)
+local Layers = require(UI.Layers)
+local Theme = require(UI.Theme)
 
 local SoundCases = {}
 
@@ -450,6 +455,77 @@ function SoundCases.Cases(): { any }
 					end), tostring(config.Use[name]))
 				end
 				t.Equal("no play missed its take", Cues.Missed(), missedBefore)
+			end,
+		},
+		{
+			Name = "Sound: TR64's first-10-minute gaps, each cue written with its pick and its spare, both loading, and the button and the trip calling theirs",
+			Run = function(t: any)
+				local gaps = { "Tap", "Travel", "KeeperArrive", "RunCleared", "GearDrop", "ChestOpen", "BayOn", "Equip" }
+				local moments: { [string]: boolean } = {}
+				for _, name in CuesConfig.Moments do
+					moments[name] = true
+				end
+				local players: { AudioPlayer } = {}
+				for _, name in gaps do
+					local cue = CuesConfig.Cues[name]
+					local pick, back = CuesConfig.Takes["Pick" .. name], CuesConfig.Takes["Back" .. name]
+					t.Check(`{name}: a moment, playing its one pick`, moments[name] == true and cue ~= nil and #cue.Layers == 1 and cue.Layers[1].Takes == "Pick" .. name)
+					t.Check(`{name}: its pick and its spare written`, pick ~= nil and #pick == 1 and back ~= nil and #back == 1)
+					for _, take in { pick, back } do
+						if take and take[1] then
+							for other, takes in CuesConfig.Takes do
+								if other ~= "Pick" .. name and other ~= "Back" .. name then
+									for _, each in takes do
+										t.Check(`{name}: {take[1].Id} played by no other cue ({other})`, each.Id ~= take[1].Id)
+									end
+								end
+							end
+							local player = Instance.new("AudioPlayer")
+							player.Name = `NL_SelfTestGap{name}`
+							player.Asset = `rbxassetid://{take[1].Id}`
+							player.Parent = workspace
+							table.insert(players, player)
+						end
+					end
+				end
+				local loaded = waitFor(t, 15, function(): boolean
+					for _, player in players do
+						if not player.IsReady then
+							return false
+						end
+					end
+					return true
+				end)
+				local late = {}
+				for _, player in players do
+					if not player.IsReady then
+						table.insert(late, player.Asset)
+					end
+					player:Destroy()
+				end
+				t.Check("every pick and spare loads", loaded and #players == 16, `{#players} takes; not ready: {table.concat(late, ", ")}`)
+
+				-- the button: a press it takes calls Tap once, a refused one stays silent
+				local before = Cues.Heard("Tap")
+				local button = Button.new({ Name = "SelfTestTap", Text = "Tap", Size = UDim2.fromOffset(120, Theme.Size.Tap), Parent = Layers.Get("Hud"), OnPress = function() end })
+				Button.Press(button)
+				t.Wait(0.2)
+				t.Equal("a press the button takes calls Tap once", Cues.Heard("Tap") - before, 1)
+				Button.Set(button, { Disabled = "Not now" })
+				before = Cues.Heard("Tap")
+				Button.Press(button)
+				t.Wait(0.2)
+				t.Equal("a refused press stays silent", Cues.Heard("Tap") - before, 0)
+				button:Destroy()
+
+				-- the trip: a fade to black calls Travel, an arrival's lift (out 0) doesn't
+				before = Cues.Heard("Travel")
+				FadeController.Play(0.05, 0, 0.05)
+				t.Equal("a fade to black calls Travel", Cues.Heard("Travel") - before, 1)
+				before = Cues.Heard("Travel")
+				FadeController.Play(0, 0, 0.05)
+				t.Equal("an arrival's lift stays silent", Cues.Heard("Travel") - before, 0)
+				t.Wait(0.3)
 			end,
 		},
 	}

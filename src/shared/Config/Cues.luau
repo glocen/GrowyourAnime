@@ -216,6 +216,24 @@ local Config = {
 		PickScarfStep = { { Id = 109110048769542, Seconds = 0.48000, Peak = 0.09669, From = 0.01500, To = 0.49500, In = 0, Out = 0.020, Gain = 0.150 } }, -- zip flash quick dash sfx, Axellatic (community; the tab's no. 1)
 		PickShardDrop = { { Id = 92495718389777, Seconds = 0.38500, Peak = 0.00400, From = 0.00000, To = 0.38500, In = 0, Out = 0.020, Gain = 0.268 } }, -- Nice Bell 2, YoLiohcnj64 (community; the tab's no. 1)
 		PickWattHit = { { Id = 126976659766267, Seconds = 0.49066, Peak = 0.00791, From = 0.05434, To = 0.54500, In = 0, Out = 0.020, Gain = 0.317 } }, -- Hit - Impact - Punch - Blunt, lorenzosaudiostash (community; the tab's no. 5)
+		-- TR64's first-10-minute gaps (Sonus, 2026-11-27, 23:41 to 23:47; research's ask to install before the smoke,
+		-- 2026-11-28): unheard, judged in play. Back*: each one's next take, for a miss.
+		PickTap = { { Id = 15675059323, Seconds = 0.11000, Peak = 0.03650, From = 0.00000, To = 0.11000, In = 0, Out = 0.020, Gain = 0.173 } }, -- Roblox_UI_Bright_Click, Roblox (licensed; the finder's no. 10)
+		PickTravel = { { Id = 76843646912123, Seconds = 1.18300, Peak = 0.09300, From = 0.71500, To = 1.89800, In = 0, Out = 0.010, Gain = 0.052 } }, -- Crystal_Chime_Teleport_Whoosh_V1, gamerkudbu (community; the finder's no. 1)
+		PickKeeperArrive = { { Id = 1837830314, Seconds = 2.45000, Peak = 0.47100, From = 0.00000, To = 2.45000, In = 0, Out = 0.020, Gain = 0.184 } }, -- BOOM-Simple Ambient Thump 04, APMOfficial (licensed; the finder's no. 16)
+		PickRunCleared = { { Id = 182750827, Seconds = 1.48500, Peak = 0.43310, From = 0.00000, To = 1.48500, In = 0, Out = 0.020, Gain = 0.034 } }, -- Level Complete, WebGL3D (community; the finder's no. 1)
+		PickGearDrop = { { Id = 9113157070, Seconds = 0.80000, Peak = 0.15650, From = 0.48000, To = 1.28000, In = 0, Out = 0.020, Gain = 0.039 } }, -- Armor Metal 14 (SFX), ProSoundEffects (licensed; the finder's no. 6)
+		PickChestOpen = { { Id = 116841971399984, Seconds = 1.26500, Peak = 0.17760, From = 0.08000, To = 1.34500, In = 0, Out = 0.020, Gain = 0.088 } }, -- Chest opening, TmasterTACO (community; the finder's no. 1)
+		PickBayOn = { { Id = 109643999641339, Seconds = 1.27000, Peak = 0.71380, From = 0.01500, To = 1.28500, In = 0, Out = 0.020, Gain = 0.034 } }, -- chronos cosmic machine start, SamAb30015 (community; the finder's no. 2)
+		PickEquip = { { Id = 109030257810197, Seconds = 0.47100, Peak = 0.11600, From = 0.00000, To = 0.47130, In = 0, Out = 0.010, Gain = 0.077 } }, -- Item grab/equip 2, diman's group (community; the finder's no. 3)
+		BackTap = { { Id = 116080744084010, Seconds = 0.05800, Peak = 0.02200, From = 0.00000, To = 0.05800, In = 0, Out = 0.010, Gain = 0.266 } }, -- UI Click 2, 0FFZ3TI (community; the finder's no. 9)
+		BackTravel = { { Id = 110581542350218, Seconds = 0.78000, Peak = 0.69690, From = 0.00000, To = 0.78000, In = 0, Out = 0.020, Gain = 0.143 } }, -- fast-whoosh-transition-1490, Sopnatt (community; the finder's no. 2)
+		BackKeeperArrive = { { Id = 9039709283, Seconds = 1.45000, Peak = 0.28790, From = 0.04000, To = 1.49000, In = 0, Out = 0.020, Gain = 0.184 } }, -- Rush Rush Rush - Sting 2, APMOfficial (licensed; the finder's no. 9)
+		BackRunCleared = { { Id = 127613720380706, Seconds = 1.31500, Peak = 0.32590, From = 0.02000, To = 1.33500, In = 0, Out = 0.020, Gain = 0.055 } }, -- Goal Success Sound, MyLogicIsPerfect (community; the finder's no. 7)
+		BackGearDrop = { { Id = 79429660361913, Seconds = 0.74200, Peak = 0.30760, From = 0.03000, To = 0.77170, In = 0, Out = 0.010, Gain = 0.740 } }, -- loot drop, Romapro415 (community; the finder's no. 1)
+		BackChestOpen = { { Id = 104264437349046, Seconds = 0.66500, Peak = 0.19520, From = 0.09000, To = 0.75500, In = 0, Out = 0.020, Gain = 0.186 } }, -- Open Chest, phil7981thebest (community; the finder's no. 9)
+		BackBayOn = { { Id = 3406813517, Seconds = 1.37000, Peak = 0.22290, From = 0.00000, To = 1.37000, In = 0, Out = 0.020, Gain = 0.045 } }, -- Power_Up, thienbao2109 (community; the finder's no. 1)
+		BackEquip = { { Id = 130560557198529, Seconds = 0.40500, Peak = 0.10320, From = 0.00000, To = 0.40500, In = 0, Out = 0.020, Gain = 0.173 } }, -- Armor Equip 1, VitorGamerxd0012 (community; the finder's no. 4)
 		-- GroundWire's and MageShot's starts trimmed by the builder (2026-11-26) so their tops land before their beats at
 		-- the lowest pitch (Rules.Sound's case: Watt's Plant 0.417 s, Pip's Shot1 0.167 s), faded in over 10 ms.
 		-- The picks, unheard: end
@@ -345,7 +363,7 @@ local Config = {
 	Match = { On = true, Db = {} :: { [string]: { [string]: number } } },
 	-- TR64's big moments: cues the game plays by name at their moment (Cues.Moment), never by a hit's rules, each silent
 	-- until the director's ear picks its sound. Written below with the others.
-	Moments = { "LevelUp", "ShardDrop", "KeeperFall", "LeadDown", "GoalDone", "Record", "Reinforced", "ReinforceFailed", "MachineStage", "LeadHurt", "BroadcastPlate" },
+	Moments = { "LevelUp", "ShardDrop", "KeeperFall", "LeadDown", "GoalDone", "Record", "Reinforced", "ReinforceFailed", "MachineStage", "LeadHurt", "BroadcastPlate", "Tap", "Travel", "KeeperArrive", "RunCleared", "GearDrop", "ChestOpen", "BayOn", "Equip" },
 	Front = 12, -- studs in front of the camera a moment's cue (and the panel's tap) plays from: inside every cue's Near, never on the listener (8.5 dB down there, AR39)
 	-- A shard's drop note by its grade, as playback speeds (TR64's note set, A C D E): G and the octave stay the reveal's,
 	-- so a drop never sounds like a Legendary. A grade not here (a starter's) plays the Standard's.
@@ -397,6 +415,15 @@ do
 	cues.MachineStage = before(nil, 2)
 	cues.LeadHurt = before(nil, 2)
 	cues.BroadcastPlate = before(nil, 1) -- TR57's plate: someone else's find, on its fade-in (Rules.Broadcast.Chimes)
+	-- TR64's first-10-minute gaps: the button, the trip, the keeper's arrival, a run cleared, gear and chests, a bay, equip
+	cues.Tap = before(nil, 3)
+	cues.Travel = before(nil, 1)
+	cues.KeeperArrive = before(nil, 1)
+	cues.RunCleared = before(nil, 1)
+	cues.GearDrop = before(nil, 2)
+	cues.ChestOpen = before(nil, 1)
+	cues.BayOn = before(nil, 1)
+	cues.Equip = before(nil, 1)
 end
 
 -- The picks, unheard (TR42, TR64 and TR57's plate; Takes, above): each cue plays its one pick, with its own bus, voices
@@ -427,8 +454,16 @@ do
 		ScarfStep = { { Takes = "PickScarfStep", At = 0, Lead = "Peak", Volume = 1 } },
 		ShardDrop = { { Takes = "PickShardDrop", At = 0, Lead = "Peak", Volume = 1 } },
 		WattHit = { { Takes = "PickWattHit", At = 0, Volume = 1 } },
+		Tap = { { Takes = "PickTap", At = 0, Lead = "Peak", Volume = 1 } },
+		Travel = { { Takes = "PickTravel", At = 0, Lead = "Peak", Volume = 1 } },
+		KeeperArrive = { { Takes = "PickKeeperArrive", At = 0, Lead = "Peak", Volume = 1 } },
+		RunCleared = { { Takes = "PickRunCleared", At = 0, Lead = "Peak", Volume = 1 } },
+		GearDrop = { { Takes = "PickGearDrop", At = 0, Lead = "Peak", Volume = 1 } },
+		ChestOpen = { { Takes = "PickChestOpen", At = 0, Lead = "Peak", Volume = 1 } },
+		BayOn = { { Takes = "PickBayOn", At = 0, Lead = "Peak", Volume = 1 } },
+		Equip = { { Takes = "PickEquip", At = 0, Lead = "Peak", Volume = 1 } },
 	}
-	local tonal = { HeldNote = true, HealerShot = true, HealerHit = true, LevelUp = true, ShardDrop = true, BroadcastPlate = true, GoalDone = true, Record = true, Reinforced = true }
+	local tonal = { HeldNote = true, HealerShot = true, HealerHit = true, LevelUp = true, ShardDrop = true, BroadcastPlate = true, GoalDone = true, Record = true, Reinforced = true, RunCleared = true }
 	for name, layers in picks do
 		local cue = Config.Cues[name]
 		cue.Layers = layers

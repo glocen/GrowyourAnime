@@ -17,6 +17,7 @@ local Shared = ReplicatedStorage.Shared
 local Net = require(Shared.Net)
 local Parts = require(Shared.Util.Parts)
 local CameraTurn = require(Shared.Util.CameraTurn)
+local Cues = require(script.Parent.FighterController.Cues)
 
 local FadeController = {}
 
@@ -86,6 +87,9 @@ function FadeController.Play(out: number, hold: number, back: number)
 	local mine = current
 	for _, listener in listeners do
 		task.spawn(listener, out)
+	end
+	if out > 0 then
+		Cues.Moment("Travel") -- a trip in the place, going or coming back (TR64's gaps); an arrival's lift (out 0) had its own going
 	end
 	TweenService:Create(black, TweenInfo.new(out, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { BackgroundTransparency = 0 }):Play()
 	task.delay(out + hold, function()

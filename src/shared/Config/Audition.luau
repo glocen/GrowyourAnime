@@ -83,6 +83,15 @@ return {
 		{ Name = "ReinforceFailed", Label = "Reinforce failed", Max = 0.6, Beat = true, Words = { "fail", "error low", "crack", "negative" } },
 		{ Name = "MachineStage", Label = "Machine stage", Max = 1.5, Beat = true, Words = { "power up", "charge up", "energy rise", "magic charge" } },
 		{ Name = "LeadHurt", Label = "Lead hurt", Max = 0.4, Beat = false, Words = { "body hit", "low impact", "damage hit", "thud" } },
+		-- Round 3, TR64's first-10-minute gaps (Sonus, 2026-11-27):
+		{ Name = "Tap", Label = "Button press", Max = 0.25, Beat = true, Words = { "ui click", "button click", "soft click", "menu select", "interface tap" } },
+		{ Name = "Travel", Label = "Travel", Max = 1.5, Beat = true, Words = { "teleport whoosh", "portal whoosh", "warp", "transition whoosh", "magic teleport" } },
+		{ Name = "KeeperArrive", Label = "Keeper arrives", Max = 2.5, Beat = true, Words = { "boss appear", "boss intro", "dark impact boom", "ominous hit", "taiko hit", "gong" } },
+		{ Name = "RunCleared", Label = "Run cleared", Max = 1.5, Beat = true, Tonal = true, Words = { "stage clear", "victory short", "level complete", "win jingle", "success" } },
+		{ Name = "GearDrop", Label = "Gear drop", Max = 0.8, Beat = true, Words = { "item drop", "loot drop", "metal item drop", "equipment drop", "pickup item" } },
+		{ Name = "ChestOpen", Label = "Chest open", Max = 1.5, Beat = true, Words = { "chest open", "treasure open", "loot box open", "lid open", "reward reveal" } },
+		{ Name = "BayOn", Label = "Bay powers on", Max = 1.5, Beat = true, Words = { "power on", "machine start", "generator start", "electric hum start", "energy activate" } },
+		{ Name = "Equip", Label = "Equip", Max = 0.6, Beat = true, Words = { "equip", "armor equip", "gear equip", "sword sheath", "item equip" } },
 	} :: { Spec },
 	Pages = 2, -- the library's pages of 25 read a word
 	Keep = 20, -- candidates kept a cue, in the library's order (the panel shows ten at a time); 20 since 2026-11-25, Sonus
@@ -122,6 +131,15 @@ return {
 		ReinforceFailed = -12,
 		MachineStage = -6,
 		LeadHurt = -4,
+		-- TR64's gaps (Sonus's seeds: a reward -6, the UI -12, the trip between, a cleared run under a record)
+		Tap = -12,
+		Travel = -9,
+		KeeperArrive = 0,
+		RunCleared = -8,
+		GearDrop = -8,
+		ChestOpen = -6,
+		BayOn = -6,
+		Equip = -12,
 	},
 	Ceiling = -1, -- dBTP: a candidate's top at its matched level stays under it, so the bus's limiter takes 0 dB
 

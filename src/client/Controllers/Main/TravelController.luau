@@ -17,6 +17,7 @@ local TravelConfig = require(Shared.Config.Travel)
 local UI = script.Parent.Parent.Parent.UI
 local TravelCard = require(UI.TravelCard)
 local Refuse = require(UI.Kit.Refuse)
+local Cues = require(script.Parent.FighterController.Cues)
 
 local TravelController = {}
 
@@ -68,6 +69,7 @@ local function show(to: string)
 	gui.Parent = player:WaitForChild("PlayerGui")
 	TweenService:Create(frame, TweenInfo.new(IN, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { BackgroundTransparency = 0 }):Play()
 	card = gui
+	Cues.Moment("Travel") -- a trip to another place, as its card comes up (TR64's gaps)
 	pcall(function()
 		TeleportService:SetTeleportGui(TravelCard.new(to) :: any) -- a ScreenGui, as Roblox wants, though its type says GuiObject
 	end)

@@ -583,6 +583,29 @@ local cases = {
 		end,
 	},
 	{
+		Name = "Effects: a Ground row stands on the effect's foot, lifted by its At",
+		Stay = true,
+		Run = function(t: any)
+			-- Scintilla's find (2026-11-27): Ground set a row to the foot's height and dropped its At.Y, so SupportHeal's hoop
+			-- (At 0.05) and AR69's ring lay inside the floor with only their lip showing. SupportHeal's Hoop rides no body.
+			local root = t.Character():FindFirstChild("HumanoidRootPart") :: BasePart
+			local foot = root.Position + root.CFrame.LookVector * 20 - Vector3.new(0, 3, 0)
+			local anchor = CFrame.lookAt(foot, foot + root.CFrame.LookVector)
+			local SCALE = 2
+			local rows = (EffectsConfig.Rows :: any).SupportHeal.Rows
+			local player = Rows.Play("SupportHeal", anchor, SCALE)
+			player.Step(10)
+			local hoop = player.Parts("Hoop")[1] :: BasePart
+			local lift = (Track.Value(rows.Hoop.Tracks.At, 10) :: Vector3).Y
+			local size = (Track.Value(rows.Hoop.Tracks.Scale, 10) :: Vector3) * SCALE
+			local should = (CFrame.new(foot + Vector3.new(0, lift * SCALE, 0)) * anchor.Rotation
+				* CFrame.new(FxKit.Meshes.FxHoop.Centre * size)).Position
+			t.Check("the hoop's At lifts it, at the effect's scale", lift > 0 and hoop.Position:FuzzyEq(should, 1e-3),
+				string.format("off by %.4f", (hoop.Position - should).Magnitude))
+			player.Destroy()
+		end,
+	},
+	{
 		Name = "Effects: every effect's rows play on a body to their last frame, and leave nothing",
 		Stay = true,
 		Run = function(t: any)

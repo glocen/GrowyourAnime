@@ -603,8 +603,8 @@ function Rows.Play(name: string, anchor: CFrame, scale: number, options: Options
 				if turn then -- about up, then its own X, then its own Z
 					frame *= CFrame.Angles(0, math.rad(turn.Y), 0) * CFrame.Angles(math.rad(turn.X), 0, 0) * CFrame.Angles(0, 0, math.rad(turn.Z))
 				end
-				if row.Ground then -- set down to the effect's foot, upright, facing as the effect does
-					frame = CFrame.new(frame.X, anchor.Y, frame.Z) * anchor.Rotation
+				if row.Ground then -- set down to the effect's foot, upright, facing as the effect does; its At.Y still lifts it off the floor
+					frame = CFrame.new(frame.X, anchor.Y + (at * parentScale).Y, frame.Z) * anchor.Rotation
 				end
 				piece.Frame, piece.Scale, piece.Placed = frame, parentScale, placed
 				if row.Hold and shown and placed then

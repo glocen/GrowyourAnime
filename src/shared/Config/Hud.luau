@@ -450,6 +450,10 @@ return {
 	-- On, the camera's point eases from the avatar's focus to the lead's, Height studs over the lead's root, about 95% of
 	-- the way in Ease seconds (Rules.Hud.Approach); the player's drag and zoom are theirs throughout.
 	Spectate = { Size = 52, Plate = 44, Right = 10, Lower = 7, Off = 0.45, Ease = 0.3, Height = 1.5 },
+	-- The eye frames the fight (AR75, research's version (a), 2026-11-28; Rules.Hud.FightFocus): Toward of the way from the
+	-- lead to its foe, a foe within Reach studs; the point eases there over Ease seconds, so a new target never cuts. The
+	-- builder's seed, tuned by play.
+	SpectateFight = { Toward = 0.4, Reach = 40, Ease = 0.35 },
 	-- Plates kept apart in a group (UI.World.Apart: the base's machine plates): Gap authored pixels between two, over and
 	-- under, as the command view's chips (Config.BaseView.Chip.Gap). The builder's seed.
 	Plates = {

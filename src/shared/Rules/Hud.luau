@@ -547,6 +547,16 @@ function Hud.Approach(share: number, want: number, dt: number, seconds: number):
 	return share + (want - share) * k
 end
 
+-- Where the eye frames a fight (AR75, research's version (a), 2026-11-28): `toward` of the way from the lead to its foe,
+-- so both stand in the frame and the lead a little nearer its middle; the lead alone with no foe, or a foe farther than
+-- `reach` studs (a target across the grounds, not a fight).
+function Hud.FightFocus(lead: Vector3, foe: Vector3?, toward: number, reach: number): Vector3
+	if foe == nil or (foe - lead).Magnitude > reach then
+		return lead
+	end
+	return lead:Lerp(foe, math.clamp(toward, 0, 1))
+end
+
 -- How full the signature's ring is: 0 the moment it fires, 1 once it's ready again.
 function Hud.Ready(readyAt: number, cooldown: number, now: number): number
 	if cooldown <= 0 then

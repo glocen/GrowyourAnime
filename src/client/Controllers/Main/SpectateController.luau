@@ -1,6 +1,7 @@
 --!strict
 -- SpectateController (client): the spectate toggle (TR11; the director, 2026-11-14, night: the player's camera is never
 -- moved in a fight, and a small button follows the lead instead). On, Roblox's camera follows the player's lead instead
+-- (in a fight, the fight's middle between the lead and its foe: AR75, research's version (a), 2026-11-28)
 -- of their avatar. What it follows is a stand-in point, set before the camera each frame and eased from the avatar's
 -- focus to the lead's (Config.Hud.Spectate, Rules.Hud.Approach), so the camera's heading and distance stay the player's
 -- own and their drag and zoom work as ever. The avatar still walks, and the lead still follows it. Off, or when the lead
@@ -32,6 +33,7 @@ local AVATAR = Vector3.new(0, 1.5, 0)
 local on = false
 local share = 0
 local leadFocus: Vector3? = nil -- the lead's focus when last seen standing, for the way back once it has gone
+local fightFocus: Vector3? = nil -- where the eye frames, eased toward the fight's middle (Rules.Hud.FightFocus)
 local point: Part? = nil
 local changed = Instance.new("BindableEvent")
 SpectateController.Changed = changed.Event
@@ -50,6 +52,21 @@ local function standing(lead: Model?): BasePart?
 	local root = Parts.Root(lead)
 	local state = if lead then lead:GetAttribute("State") else nil
 	return if lead and root and state ~= "Down" and state ~= "Home" then root else nil -- a fallen lead is home (TR12)
+end
+
+-- The root of the lead's target, if it's a fighter standing in the Fighters folder.
+local function foeOf(lead: Model): BasePart?
+	local id = lead:GetAttribute("Target")
+	local folder = workspace:FindFirstChild("Fighters")
+	if type(id) ~= "string" or id == "" or folder == nil then
+		return nil
+	end
+	for _, model in folder:GetChildren() do
+		if model:IsA("Model") and model:GetAttribute("Fighter") == id then
+			return Parts.Root(model)
+		end
+	end
+	return nil
 end
 
 local function set(want: boolean)
@@ -118,9 +135,16 @@ function SpectateController.Start()
 			return
 		end
 		local look = HudConfig.Spectate
-		local leadRoot = standing(myLead())
-		if leadRoot then
-			leadFocus = leadRoot.Position + Vector3.new(0, look.Height, 0)
+		local lead = myLead()
+		local leadRoot = standing(lead)
+		if lead and leadRoot then
+			local lift = Vector3.new(0, look.Height, 0)
+			local fight = HudConfig.SpectateFight
+			local foe = foeOf(lead)
+			local want = Hud.FightFocus(leadRoot.Position + lift, if foe then foe.Position + lift else nil, fight.Toward, fight.Reach)
+			local k = Hud.Approach(0, 1, dt, fight.Ease)
+			fightFocus = if fightFocus and share > 0 then fightFocus:Lerp(want, k) else want
+			leadFocus = fightFocus
 		elseif on then
 			set(false) -- it fell, or it's gone: back to the avatar
 		end

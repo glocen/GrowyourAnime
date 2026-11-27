@@ -2,7 +2,7 @@
 -- Hud cases (pure): the flurry's one counting number, a number placed clear of its neighbours', the type edge's arrow for
 -- every pair, the digits, and what a control says (docs/test-requests.md, TR3, "Checks"); the interface's motion: a
 -- press's squeeze, a reward's pop, a number's size by its rung and its giving way (AR8 C); the effects kit's count, its
--- flock and its arc (TR6); the spectate's ease (TR11).
+-- flock and its arc (TR6); the spectate's ease (TR11) and its fight's framing (AR75 a).
 -- Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -561,6 +561,21 @@ return {
 			t.Check("the other way with the bend's other sign", (Hud.Arc(from, to, -0.35, 0.5).Y > 0) ~= (mid.Y > 0))
 			t.Check("a bend of 0 is the straight line", Hud.Arc(from, to, 0, 0.5).Y == 0)
 			t.Check("half way along at half its time", math.abs(mid.X - 50) < 1e-9)
+		end,
+	},
+	{
+		Name = "Hud: AR75 (a), the eye frames the fight: the way toward its foe, the lead alone with none or one too far",
+		Run = function(t: any)
+			local fight = HudConfig.SpectateFight
+			t.Check("Config's seed: a share of the way, a reach, an ease", fight.Toward > 0 and fight.Toward <= 0.5 and fight.Reach > 0 and fight.Ease > 0)
+			local lead, foe = Vector3.new(10, 2, -4), Vector3.new(20, 2, -4)
+			t.Check("no foe: the lead", Hud.FightFocus(lead, nil, 0.4, 40) == lead)
+			t.Check("a foe past the reach: the lead", Hud.FightFocus(lead, Vector3.new(60, 2, -4), 0.4, 40) == lead)
+			local mid = Hud.FightFocus(lead, foe, 0.4, 40)
+			t.Check("a foe in reach: 0.4 of the way, nearer the lead", (mid - Vector3.new(14, 2, -4)).Magnitude < 1e-9, tostring(mid))
+			t.Check("at the reach exactly: still framed", Hud.FightFocus(lead, lead + Vector3.new(40, 0, 0), 0.5, 40) == lead + Vector3.new(20, 0, 0))
+			t.Check("a share past 1 never goes past the foe", Hud.FightFocus(lead, foe, 3, 40) == foe)
+			t.Check("nor below 0 behind the lead", Hud.FightFocus(lead, foe, -1, 40) == lead)
 		end,
 	},
 	{

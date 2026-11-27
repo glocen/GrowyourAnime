@@ -38,7 +38,6 @@ local Hud = require(Shared.Rules.Hud)
 local Sheet = require(Shared.Rules.Sheet)
 local HudConfig = require(Shared.Config.Hud)
 local UIKit = require(Shared.Config.UIKit)
-local StagesConfig = require(Shared.Config.Stages)
 local GoalDefs = require(Shared.Definitions.Goals)
 
 local UI = script.Parent
@@ -690,13 +689,11 @@ function StageScreen.Pick(ground: string, view: Profile.View, on: On)
 			table.insert(plays, play)
 		end
 	end
-	-- The foot: the player's own power, and what Hard is once it's open.
+	-- The foot: the player's own power (Hard's chevrons and Recommended CR say what Hard is: the director, 2026-11-28).
 	local footY = ROAD.Y + LOOK.Foot.Down - T
 	Glass.Label(room, "YourPower", "Your power", SMALL, SEAM.Soft, TILE.Pad + 2, footY, 80, SMALL + 4, Enum.TextXAlignment.Left, false, 2)
 	local mine = power(view)
 	Glass.Label(room, "Power", if mine then `{Hud.Digits(mine)} {Sheet.Said.Power}` else "No lead", TITLE, SEAM.Text, TILE.Pad + LOOK.Foot.Power, footY - 2, 120, TITLE + 4, Enum.TextXAlignment.Left, true, 2)
-	local hardOpen = Stages.Needs(data, ground, "Hard", 1) == nil
-	parts.HardWords = Glass.Label(room, "HardWords", if hardOpen then `Hard: enemies are {StagesConfig.Offset.Hard} levels higher` else "", SMALL, SEAM.Text, W - TILE.Pad - 2 - 330, footY, 330, SMALL + 4, Enum.TextXAlignment.Right, false, 2)
 	-- The opening: the tile rises in, then each run's light fills to its checkpoint's ring.
 	if opening and not GuiService.ReducedMotionEnabled then
 		local at = group.Position

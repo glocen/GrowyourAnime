@@ -21,7 +21,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Sonus (sound).** 2026-11-27, 14:15 by the clock. **Music: stopped** on the director's word (14:15): the director handles the tracks, and none of my 12 unheard APM picks is offered (TR35). My 22 picks are in the game, unheard, each with its next take ready (TR42). No Studio turn held, nothing running.
 - **Next:** the director's word on the 22 in play (a bad one takes its next take); then research's next cue list.
 
-**Turns.** Studio: one at a time while memory is short. **Free from 16:49 (2026-11-27):** Scintilla's Festival turn (16:13 to 16:49, F1's round 2) ended, its playtest stopped and Studio closed with nothing saved. Blender: headless only while Studio is open, with 2 GB free. Timing tests: nobody.
+**Turns.** Studio: one at a time while memory is short. **Faber, from 16:51 (2026-11-27), on the main place:** AR68 A's three must-fixes, TR73's health ×10 duels and KeeperChallenge's case (Scintilla's 16:13 to 16:49 Festival turn ended, nothing saved). Blender: headless only while Studio is open, with 2 GB free. Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

@@ -5831,9 +5831,9 @@ local cases = {
 				t.Check("a Shade's card wears none", met and not parts.TargetElite.Visible)
 				t.Server("FightSpawn")
 			end
-			-- A: the keeper's title card at the foot, its name stamped on as the Challenge's Stamp lands; the dock steps out and
-			-- the target card stands aside for it.
-			t.Server("Tune", "Hud.Boss.Keeper", "A")
+			-- B, the top middle (the director's pick, 2026-11-14): the keeper's title card, its name stamped on as the
+			-- Challenge's Stamp lands, the target card standing aside for it.
+			t.Server("Tune", "Hud.Boss.Keeper", "B")
 			local def = nil
 			for _, stop in WorldConfig.Row.Stops do
 				def = if stop.Kind == "Keeper" then stop.Def else def
@@ -5867,7 +5867,7 @@ local cases = {
 			local at = if them then them:GetAttribute("ActionAt") else nil
 			local holding = them ~= nil and them:GetAttribute("Action") == challenge.Id and type(at) == "number"
 			t.Check("the keeper holds its Challenge as the avatar arrives", holding)
-			t.Check("A: its name stamps on", waitFor(t, challenge.Length, function(): boolean
+			t.Check("its name stamps on", waitFor(t, challenge.Length, function(): boolean
 				return stampedAt ~= nil
 			end))
 			if holding and stampedAt then
@@ -5882,10 +5882,6 @@ local cases = {
 			t.Check("its name, capitalised", name == string.upper(string.sub(row.Name, 1, 1)) .. string.sub(row.Name, 2), name)
 			local title = (parts.KeeperTitle :: TextLabel).Text
 			t.Check("its title names its ground", title == "Keeper of Lantern Row", title)
-			local screen = parts.Keeper.Parent :: GuiObject
-			local foot = parts.Keeper.AbsolutePosition.Y + parts.Keeper.AbsoluteSize.Y
-			t.Check("A: at the foot of the screen", foot > screen.AbsolutePosition.Y + screen.AbsoluteSize.Y * 0.85, string.format("its foot at %d of %d", foot, screen.AbsoluteSize.Y))
-			t.Check("the dock steps out for the try", not parts.Dock.Visible)
 			t.Check("the target card stands aside for it", waitFor(t, KEEPER_MEETS, function(): boolean
 				return lead:GetAttribute("Target") == inside.Keeper
 			end) and not parts.Target.Visible)
@@ -5898,10 +5894,8 @@ local cases = {
 				Layers.Box(nil)
 				Layers.Force(nil)
 			end
-			lintPhone("A, the keeper at the foot, on the smallest phone")
-			-- B, the top middle (the director's pick, 2026-11-14): the same keeper's title card in the band, between the
-			-- lead's card and the pills, never lower than the lead card's foot; the dock out, as in every fight (AR62, B).
-			t.Server("Tune", "Hud.Boss.Keeper", "B")
+			-- In the band, between the lead's card and the pills, never lower than the lead card's foot; the dock out, as in
+			-- every fight (AR62, B).
 			local band = parts.Lead.AbsolutePosition.Y + parts.Lead.AbsoluteSize.Y -- the lead card's foot
 			local head = parts.KeeperHead
 			local function inBand(): boolean
@@ -7750,6 +7744,15 @@ local cases = {
 		Run = function(t: any)
 			Screen.Close()
 			BaseController.Dismiss()
+			t.Check("no screen is open", Screen.Current() == nil)
+		end,
+	},
+	{
+		Name = "Capture: no screen open, in any place",
+		Manual = true,
+		Stay = true,
+		Run = function(t: any)
+			Screen.Close()
 			t.Check("no screen is open", Screen.Current() == nil)
 		end,
 	},

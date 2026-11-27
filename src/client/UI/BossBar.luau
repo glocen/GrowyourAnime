@@ -13,11 +13,10 @@
 -- scaled with the bar's height; the title's two tapering rules with their diamond tips, sliced across; the crest over the
 -- title's middle, standing above the title row's top.
 -- B, the top middle (the director's pick, 2026-11-14): in the band's middle, the target card's place, as wide as the room
--- between the lead's card and the pills (HudController measures it). A, at the foot: wide across the bottom centre (the
--- dock steps out for the try: HudController). The name stamps on as the keeper's Challenge lands (its Stamp beat), the
+-- between the lead's card and the pills (HudController measures it). The name stamps on as the keeper's Challenge lands (its Stamp beat), the
 -- rest comes in after it with a shine across the bar, and the whole leaves from the fall's Gone (Config.Effects.Falls).
 --   BossBar.new(parent)                         the bar, hidden
---   BossBar.Step(bar, keeper, variant, room?)   each frame: the keeper of this try (nil out of one), "A" | "B" | "Off",
+--   BossBar.Step(bar, keeper, variant, room?)   each frame: the keeper of this try (nil out of one), "B" | "Off",
 --                                               and B's room in the band, authored pixels
 --   BossBar.Shown(bar)                          for tests: 0 hidden to 1 whole, and what's showing ("", "Stamp", "In",
 --                                               "Whole", "Leave")
@@ -339,25 +338,25 @@ local function fit(bar: Bar)
 	end
 end
 
--- Laid for a variant, as two pieces of the HUD that never overlap another (the UI lint): the title and the name over
--- the bar, the number in the bar's middle. A at the foot; B in the band's middle, all inside the band.
+-- Laid as two pieces of the HUD that never overlap another (the UI lint): the title and the name over the bar, the
+-- number in the bar's middle, all inside the band's middle.
 local function lay(bar: Bar, variant: string, room: number?)
 	local boss = HudConfig.Boss
-	local width = if variant == "A" then boss.Foot.Width else math.floor(math.clamp(room or boss.Top.Most, 160, boss.Top.Most))
+	local width = math.floor(math.clamp(room or boss.Top.Most, 160, boss.Top.Most))
 	if bar.Variant == variant and bar.Width == width then
 		return
 	end
 	bar.Variant, bar.Width = variant, width
 	local frame, head = bar.Frame, bar.Head
-	local high = if variant == "A" then boss.Foot.Bar else boss.Top.Bar
+	local high = boss.Top.Bar
 	bar.High = high
-	local nameHigh = if variant == "A" then 34 else 26
+	local nameHigh = 26
 	head.Size = UDim2.fromOffset(width, TITLE + nameHigh)
 	bar.Title.Size = UDim2.fromOffset(width, TITLE)
 	bar.Title.Position = UDim2.fromOffset(0, 0)
 	bar.NameRow.Size = UDim2.fromOffset(width, nameHigh)
 	bar.NameRow.Position = UDim2.fromOffset(width / 2, TITLE + nameHigh / 2)
-	Text.Resize(bar.Name, if variant == "A" then Theme.Text.Big else Theme.Text.Title)
+	Text.Resize(bar.Name, Theme.Text.Title)
 	local tall = GLOW * 2 + high
 	frame.Size = UDim2.fromOffset(width, tall)
 	bar.Glow.Size = UDim2.fromOffset(width, tall)
@@ -377,17 +376,10 @@ local function lay(bar: Bar, variant: string, room: number?)
 	Skin.Set(bar.Crest, "BossTitleCrest", { X = (width - ART.Crest.X) / 2, Y = CREST_INTO - ART.Crest.Y })
 	bar.Number.Size = UDim2.fromOffset(long, high)
 	bar.Number.Position = UDim2.fromOffset(INSET, GLOW)
-	if variant == "A" then
-		frame.AnchorPoint = Vector2.new(0.5, 1)
-		frame.Position = UDim2.new(0.5, 0, 1, -boss.Foot.Above)
-		head.AnchorPoint = Vector2.new(0.5, 1)
-		head.Position = UDim2.new(0.5, 0, 1, -boss.Foot.Above - tall)
-	else
-		head.AnchorPoint = Vector2.new(0.5, 0)
-		head.Position = UDim2.new(0.5, 0, 0, boss.Top.Y)
-		frame.AnchorPoint = Vector2.new(0.5, 0)
-		frame.Position = UDim2.new(0.5, 0, 0, boss.Top.Y + TITLE + nameHigh + 1)
-	end
+	head.AnchorPoint = Vector2.new(0.5, 0)
+	head.Position = UDim2.new(0.5, 0, 0, boss.Top.Y)
+	frame.AnchorPoint = Vector2.new(0.5, 0)
+	frame.Position = UDim2.new(0.5, 0, 0, boss.Top.Y + TITLE + nameHigh + 1)
 	bar.Fitted = ""
 end
 
@@ -417,7 +409,7 @@ end
 
 function BossBar.Step(bar: Bar, keeper: Model?, variant: string, room: number?)
 	local boss = HudConfig.Boss
-	if variant ~= "A" and variant ~= "B" then
+	if variant ~= "B" then
 		clear(bar)
 		return
 	end

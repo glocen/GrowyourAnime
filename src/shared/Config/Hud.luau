@@ -1346,8 +1346,9 @@ return {
 	-- HUD"): judged in motion at phone size before Modulo's frames (UI.BossBar; UI.TargetCard.Elite).
 	-- Keeper: "B" at the top middle, the director's pick of 2026-11-14 ("it should be at the top middle"): its title, its
 	-- name and its bar in the band's middle, the target card's place, as wide as the room between the lead's card and the
-	-- pills (Top.Most at most); "A" its bar wide at the foot, the dock stepped out for the try; "Off" the target card as
-	-- before. Its look, the director's words of 2026-11-14: richer and composed, its health purple, and light over the
+	-- pills (Top.Most at most); "Off" the target card as before. A, its bar wide at the foot, was removed on research's
+	-- word of 2026-11-27 (launch bug 3): nothing in play reached it. Its look, the director's words of 2026-11-14:
+	-- richer and composed, its health purple, and light over the
 	-- fight ("it does need to looks very light too else we see nothing"): no plate behind it, a thin framed bar on a faint
 	-- glow, its line art Modulo's frames tinted Rim. Elite: the foe card's brass edge and shards (AR45); false the plain
 	-- card. Switched live by Tune ("Hud.Boss.Keeper", "B"). The name stamps on as the Challenge's Stamp
@@ -1360,7 +1361,6 @@ return {
 		Elite = true,
 		-- Bar: the bar's height, its number inside it: at least the number's line on the smallest phone (Caption at the
 		-- scale's floor, 17), and about twice the grey block's 8 (research's verdict, 2026-11-14, fix 2).
-		Foot = { Width = 400, Bar = 18, Above = 14 }, -- Above: the bar's foot over the screen's; Width clears the jump button on the smallest phone
 		Top = { Most = 400, Bar = 18, Y = 11 }, -- Y: the title's top, the band's top line; the bar's foot at 80, inside AR68 A's lead card (its foot at 81; 17 left it 6 under)
 		Stamp = { From = 1.6, Seconds = 0.14, Fill = 0.25 }, -- Fill: seconds the title and the bar take to come in after it
 		Shine = { Seconds = 0.6 },

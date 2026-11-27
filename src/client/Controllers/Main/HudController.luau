@@ -15,7 +15,7 @@
 -- (Config.Hud.Face), switched at runtime. Everything reads the fighters' attributes (FightService) or the save's copy
 -- (ProfileController); nothing here decides anything. The Voidkin screen lists the collection and makes a lead.
 -- A keeper's try and an elite take their own HUD (TR5's grey variants, Config.Hud.Boss): the keeper's title card
--- (UI.BossBar) at the foot or the top in the target card's stead, and an elite's heavier frame on the target card.
+-- (UI.BossBar) at the top in the target card's stead, and an elite's heavier frame on the target card.
 
 local CollectionService = game:GetService("CollectionService")
 local GuiService = game:GetService("GuiService")
@@ -1509,13 +1509,13 @@ local function step(dt: number)
 	end
 	paintHeal()
 	paintTaken()
-	-- A keeper's own bar stands in the target card's stead (TR5, A and B); an elite's card wears its brass (AR45).
+	-- A keeper's own bar stands in the target card's stead (TR5, B); an elite's card wears its brass (AR45).
 	local boss = HudConfig.Boss
 	local variant = tostring(boss.Keeper)
 	local trying = player:GetAttribute("Try") ~= nil
 	BossBar.Step(keeperBar, if trying then keeperNear() else nil, variant, if variant == "B" then bandRoom() else nil)
 	local foeKind = if foe then foe:GetAttribute("Kind") else nil
-	target.Frame.Visible = foe ~= nil and not (foeKind == "Keeper" and (variant == "A" or variant == "B"))
+	target.Frame.Visible = foe ~= nil and not (foeKind == "Keeper" and variant == "B")
 	banded[5] = if variant == "B" then keeperBar.Frame else nil
 	if foe then
 		TargetCard.Elite(target, foeKind == "Elite" and boss.Elite == true)
@@ -1597,12 +1597,7 @@ local function step(dt: number)
 		end
 		showChip(view) -- home or the field, as the avatar moves
 	end
-	-- A, the keeper at the foot: the dock and its chip step out for the try, since their buttons don't serve a fight.
-	local away = variant == "A" and trying
-	dockHolder.Visible = not away and not HudController.InFight()
-	if away then
-		chip.Visible = false
-	end
+	dockHolder.Visible = not HudController.InFight()
 end
 
 -- Opens the Base screen: BaseController's, set by it at Start.

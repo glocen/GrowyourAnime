@@ -1411,10 +1411,22 @@ This is delivery 4, the block clip of section 5 polished, on research's open not
     - Timings and colours are unchanged. Taken: logic offline 10,736 passed, 0 failed.
   - **Left, if the take shows it:** the flare's hot middle stays inside the lantern. Drawing it in front needs a card offset toward the camera, `BillboardGui.StudsOffset`, which a Card row can't carry yet (Faber's code, asked only if the take needs it).
   - **Status:**
-    - Implemented.
-    - Not tested in play: the next Studio turn takes it at the entrance at dusk.
-    - Not visually reviewed.
+    - Implemented. Faber's review of its data: PASS (rows parse, pictures present).
+    - Tested in play: FAILED (the next block).
+    - Visually reviewed by me only.
     - Not director-accepted.
+- **F1, round 1 in play (Scintilla, 2026-11-27, 13:38):** at the Festival entrance at dusk, 60 fps. After the Rojo sync, Studio held round 1's rows (the Halo at 11.11 studs, read in Studio before the take). The sheets: `checkpoint/f1_dusk_r1_{strip,peak}_vs_target.png`.
+  - **Main read: FAILED, as before.**
+    - The lantern flares white at the Stamp, but no warm halo shows round it.
+    - The column is a thin gold line, about a third of the target's width, and the Glow's haze never shows.
+    - The foot's sparks and the warm light on the ground (frames 7 to 16) show.
+  - **Round 1's cause is disproved for the cards.** A halo 11 to 13 studs wide can't hide behind a 4-stud lantern.
+    - Measured: no warm gain round the lantern from frame 2 to 7. It rises only at frame 11, from the ground's light.
+    - So the cards and the wide beams aren't drawn at all, and size isn't the cause.
+  - **Next, round 2: find the cause before any change.** Read the live rows in Studio, frozen at Stamp + 4:
+    - each card's position against the `Lantern` attachment, its size and its ImageTransparency;
+    - each beam's widths, transparency and ends.
+    - A cause inside Rows is Faber's. If a second round fails on the same cause, the technique changes.
 ## AR10. Kirra, the courier (Modulo, then Faber)
 
 Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three starters (`docs/roster.md`, her row: Common, Agility, Assassin, Zone 1). The four deliveries of AR1, measured against Rook, Pip and Lyric. Her install waits for "Content as data" (`docs/production-plan.md`); her art doesn't.
@@ -5112,9 +5124,23 @@ Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit firs
     - The self-test's "its rows drawn" still finds `StarLine`, now the light pass. Not yet run.
   - **Status:**
     - Implemented.
-    - Not tested in play: the next Studio turn takes the deck and the street at night, beside the target and a shipped frame.
-    - Not visually reviewed.
+    - Faber's review of its data: PASS (rows parse, pictures present). The images were Approved before any public build, which met his condition.
+    - Tested in play, and visually reviewed by me only: the next block.
     - Not director-accepted.
+- **The arms in play (Scintilla, 2026-11-27, 13:38):** taken on the main place's deck by day and at night, with the rungs slowed to 0.1, and in two real fights on the street at night, at the game camera.
+  - The sheets, in `checkpoint/`:
+    - `arms_{day,night}_{strip,rungs}_vs_target.png`;
+    - `arms_close_day_night.png`, with the target above, then day, then night;
+    - `arms_fight_night_tiles.png`.
+  - **By day: PASSED on the main read, by my eye.** The soft four-, six- and nine-arm star reads, and rung 4 is gold.
+    - The gap: thin rays, the needles' by their look (unchanged this round), run past the target's reach, so the star reads busier than the target.
+  - **At night: FAILED on rung 4's gold.**
+    - At rungs 2 and 3, the core blooms to a white blob over the arms.
+    - Rung 4 reads pale yellow, not the target's gold.
+    - The suspect, not measured: the night light's bloom on the additive light pass.
+    - Next: measure the core's pixels against the sheet's own. Then try a lower LightEmission or a smaller hot core at night.
+  - **In the real fights at night,** at the street camera, the hits read as small white flashes and rings, with rung 4's gold ring. The arms are too small to count there.
+  - **No shipped frame was beside it,** so the comparison verdict is NOT VERIFIED.
 ## AR62. The screens' redo: their colours, their light and their art (research's audit, then Modulo's directions, then Faber, a screen at a time)
 
 **Why:** the director, 2026-11-24, 13:35, on a still of the Arc panel: "that lantern drawing is so bad and the rest is just a pain in the eye many hud design will need a big polish and change of colors"; and 13:37: "let not add those shiny bright effect that goes outside the ui buttons" (the register; `docs/ui.md`, rule 5, "Light stays in its piece"). The sixth time the colour has been called too much. It's a redo under the 11:11 word: blockouts beside the old, research's verdict in the game, the old kept.

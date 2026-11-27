@@ -1,0 +1,24 @@
+Combo: 101 frames, 1.67 s
+  the lantern's nearest, in studs: Torso 0.50 at 58; Head 1.37 at 48; Hat 0.20 at 62; over the floor 2.97 at 67
+  the brim's rim at its lowest over the floor: 3.82 at 67
+  the hat's own lag, at its widest: 10 back or forward, 14 round, 5 to a side
+  a leg's widest swing in the robe: 14 of 25 degrees, at 62
+  the longest an arm is nearly still at 20 to 70 degrees up, of 6 frames: right 0 (to 100), left 0 (to 100)
+  a hand's nearest to the hat, in studs (under 0 it's in the brim): right 1.10 at 26, left 1.64 at 56
+[audit] Pip_Combo.json (export, 101 poses)
+  Legs cross            0.080 studs at 1.0333 (the legs)
+  Arm through body      0.018 studs at 0.4167 (Right Arm into Torso)
+  Leg out of hip        0.004 studs at 0.9667 (Right Leg)
+  Weapon through body   0.000 studs
+  Under the floor       0.000 studs at 0.1167 (Left Leg)
+  Pop                   1.198x at 1.0833 (Left Arm turns 8.1 deg in one frame)
+  Seam                  0.000 deg
+  Limb flip             9.253 deg at 0.9667 (Right Leg turns about its own length in one frame)
+  Wrist flip            0.000 deg
+  Salute held           0.000 s
+  Neck offset           0.000 studs at 1.2167 (the head off its neck)
+  Nod                  10.000 deg at 0.95 (the head against the torso)
+  Beat                  1.506x at 0.1667 (Right Leg turns 2.9 deg in one frame, on the marker Shot1; the clip's own beat, for information)
+  Shoulder cap          0.171 studs at 0.95 (Right Arm; inherent to R6, for information)
+  Eyes                 -3.3 to +5.2 deg (at 0.95 and 1.0167; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
+AUDIT PASS

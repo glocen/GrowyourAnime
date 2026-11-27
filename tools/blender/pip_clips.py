@@ -26,6 +26,7 @@ three goes: him, then the sleeves, then the hat.
 import contextlib
 import io
 import json
+import os
 import math
 import sys
 from pathlib import Path
@@ -43,7 +44,8 @@ import rook_sheet as rs  # noqa: E402
 import pip_sheet as ps  # noqa: E402
 
 FPS = rc.FPS
-MODEL = Path(__file__).resolve().parents[2] / "build" / "scratch" / "modulo" / "pip" / "model"
+# his model: the first make (pip_model.py), or another the same way jointed, as PIP_MODEL names it (pip_make.py, AR63)
+MODEL = Path(os.environ.get("PIP_MODEL") or Path(__file__).resolve().parents[2] / "build" / "scratch" / "modulo" / "pip" / "model")
 GAME, SIDE, FRONT = rc.GAME, (90.0, 6.0), rc.FRONT  # the camera's azimuth from his front and its elevation
 QUARTER = (48.0, 8.0)
 W = rc.W
@@ -64,7 +66,7 @@ SHOVE = 400.0  # studs a second squared: a key's corner is no harder than this
 
 # The lantern as a rod with a radius, in its own frame, and what it must clear (the content check: never onto or into
 # his head or torso): boxes in each part's frame, from the recipe's sizes, and the hat as two drums on its pivot.
-ROD, FAT = np.linspace(-1.0, 0.78, 7), 0.37
+ROD, FAT = np.linspace(-0.6, 1.1, 7), 0.45   # AR63's lantern (pip_make.LAMP, 1.65): its foot to its ring, its cap's lip
 BOXES = {"Torso": ((0.0, -0.376, 0.0), (1.378, 1.506, 1.077)), "Head": ((0.0, 0.0125, 0.0), (0.66, 0.64, 0.66))}
 DRUMS = (((0.0, -0.285, 0.0), 1.95, 0.335), ((-0.2, 1.2, 0.0), 0.8, 1.2))  # (centre, radius, half height)
 

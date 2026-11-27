@@ -1,0 +1,24 @@
+Reveal: 97 frames, 1.60 s
+  the lantern's nearest, in studs: Torso 0.67 at 21; Head 1.44 at 28; Hat 0.37 at 28; over the floor 0.55 at 0
+  the brim's rim at its lowest over the floor: 2.00 at 20
+  the hat's own lag, at its widest: 9 back or forward, 3 round, 2 to a side
+  a leg's widest swing in the robe: 22 of 25 degrees, at 20
+  the longest an arm is nearly still at 20 to 70 degrees up, of 6 frames: right 0 (to 96), left 0 (to 96)
+  a hand's nearest to the hat, in studs (under 0 it's in the brim): right 1.14 at 23, left 1.12 at 13
+[audit] Pip_Reveal.json (export, 97 poses)
+  Legs cross            0.027 studs at 0.8667 (the legs)
+  Arm through body      0.034 studs at 0.95 (Right Arm into Torso)
+  Leg out of hip        0.001 studs at 0.8 (Right Leg)
+  Weapon through body   0.000 studs
+  Under the floor       0.000 studs at 0.85 (Left Leg)
+  Pop                   1.242x at 0.4667 (Left Arm turns 2.5 deg in one frame)
+  Seam                  0.000 deg
+  Limb flip            11.786 deg at 0.9667 (Right Leg turns about its own length in one frame)
+  Wrist flip            0.000 deg
+  Salute held           0.000 s
+  Neck offset           0.000 studs at 1.1167 (the head off its neck)
+  Nod                  28.000 deg at 0.0167 (the head against the torso)
+  Beat                  1.681x at 0.4 (Head turns 11.4 deg in one frame, on the marker Kindle; the clip's own beat, for information)
+  Shoulder cap          0.171 studs at 1.1667 (Left Arm; inherent to R6, for information)
+  Eyes                 -46.0 to +18.8 deg (at 0.3333 and 1.1; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
+AUDIT PASS

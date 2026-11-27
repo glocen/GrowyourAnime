@@ -12,7 +12,7 @@ He keeps the first Pip's joints (pip_model.py), so his clips (pip_clips.py) stil
 on the Head at the first pivot, the lantern on "Lamp" on the Torso at its rest beside his right shoulder.
 
     blender.exe -b --factory-startup --python tools/blender/pip_make.py -- <out_dir> targets [takes] [sheet]
-    blender.exe -b --factory-startup --python tools/blender/pip_make.py -- <out_dir> model
+    blender.exe -b --factory-startup --python tools/blender/pip_make.py -- <out_dir> model [1|2]
     blender.exe -b --factory-startup --python tools/blender/pip_make.py -- <out_dir> sheet
 
 `targets` draws Rook, Kirra, Pip today and the finish with each face, and lays pip_faces.png: the faces at the lead
@@ -22,6 +22,7 @@ ModelRecipe.luau reads them) and <out_dir>/handoff/model/pip_model.blend, which 
 folder>). `sheet` lays pip_make_sheet.png from those files.
 """
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -43,6 +44,7 @@ HAT_PIVOT = (0.0, 0.0, 4.95)   # the first Pip's hat joint, on the Head (pip_mod
 HOME = (2.75, 0.3, 4.3)        # the first Pip's lantern joint, on the Torso: its rest and the flame's middle (pip_clips.HOME)
 LAMP = 1.65                    # the lantern's size: the takes' 1.35 read small at 64 px; 1.65 is the first Pip's height
 COLD, HOT = 1.2, 3.0           # its glow at rest and through Lantern Burst's send (the first Pip's)
+SKIN = "#F3D2B8"               # take A's
 
 
 # --- his face: two for research's pick ---------------------------------------------------------------------------------
@@ -127,7 +129,7 @@ def face_set(p, skin, iris="#E08A2A", brow="#8A3E1C"):
 
 
 FACES = {"1": ("1, the eager", face_eager), "2": ("2, the set", face_set)}
-PICK = dict(face=None)   # research's pick of FACES, its key
+PICK = dict(face="1")   # research's pick of FACES (2026-11-28, AR63): 1, the eager
 
 
 # --- the lantern -----------------------------------------------------------------------------------------------------
@@ -160,15 +162,30 @@ def hex_ring(c, r, z, n, sub):
     return [corners[j].lerp(corners[(j + 1) % n], t / sub) for j in range(n) for t in range(sub)]
 
 
-# Each pane, its foot to its top, as the flame seen through it: its middle column and its sides, 0 to 1.
-HEAT = ((0.7, 0.45), (0.95, 0.6), (1.0, 0.65), (0.95, 0.55), (0.85, 0.42), (0.65, 0.3), (0.4, 0.22))
-GLASS = ((0.9, pt.FLAME[0]), (0.75, pt.FLAME[1]), (0.55, pt.FLAME[2]), (0.4, "#D9662A"), (0.0, "#9C4A22"))
+ROWS, COLUMNS = 10, 3   # each pane's cells, its foot to its top and across
+
+
+def heat(u, v):
+    """The flame's light through a pane, 0 to 1: `u` up it (0 to 1), `v` across (-1 to 1). Hottest a third of the way
+    up and in the middle, cooling to its top; frosted glass, so it runs smooth, never a drawn flame in stripes."""
+    rise = 0.55 + 0.45 * u / 0.35 if u < 0.35 else 1.0 - 0.7 * ((u - 0.35) / 0.65) ** 1.3
+    return round((0.22 + 0.78 * rise) * (1.0 - 0.16 * abs(v)), 2)
+
+
+GLASS = ((0.22, "#9C4A22"), (0.45, "#D9662A"), (0.65, pt.FLAME[2]), (0.82, pt.FLAME[1]), (1.0, pt.FLAME[0]))
+
+
+def glass_colour(h):
+    for (h0, c0), (h1, c1) in zip(GLASS, GLASS[1:]):
+        if h <= h1:
+            return mix(c0, c1, max(0.0, (h - h0) / (h1 - h0)))
+    return GLASS[-1][1]
 
 
 def lamp(at=HOME, size=LAMP):
     """His lantern as one piece: the takes' iron cage (pip_make_takes.lantern), and six panes lit from inside, the
     flame's teardrop glowing through each, hottest a third of the way up its middle."""
-    c, S, n, sub = Vector(at), size, 6, 3
+    c, S, n = Vector(at), size, 6
     b = LitBuilt("Lamp")
     iron, iron_lit = pt.IRON, pt.IRON_LIT
     shade = pt.lit_round(iron, n, low=0.8, high=1.6)
@@ -184,13 +201,12 @@ def lamp(at=HOME, size=LAMP):
            pt.ring(c, 0.0, c.z + 0.53 * S, n)]
     b.tube(cap, lambda i, k: tone(iron_lit, 1.05) if i == 1 else shade(k), caps=(tone(iron, 0.6), None), smooth=False)
     pt.torus(b, (c.x, c.y, c.z + 0.6 * S), 0.07 * S, 0.016 * S, iron_lit)
-    z0, z1, rows = c.z - 0.2 * S, c.z + 0.22 * S, len(HEAT)
-    panes = [hex_ring(c, 0.197 * S, z0 + (z1 - z0) * i / rows, n, sub) for i in range(rows + 1)]
+    z0, z1 = c.z - 0.2 * S, c.z + 0.22 * S
+    panes = [hex_ring(c, 0.197 * S, z0 + (z1 - z0) * i / ROWS, n, COLUMNS) for i in range(ROWS + 1)]
 
     def glass(i, k):
-        h = HEAT[i][0 if k % sub == 1 else 1]
-        colour = next(col for low, col in GLASS if h >= low)
-        return b.lit(colour, round(max(h, 0.2), 2))
+        h = heat((i + 0.5) / ROWS, ((k % COLUMNS) + 0.5) / COLUMNS * 2 - 1)
+        return b.lit(glass_colour(h), h)
 
     b.tube(panes, glass, caps=None, smooth=False)
     return [b]
@@ -213,10 +229,43 @@ def emit(material, mask_path, strength):
     bsdf.inputs["Emission Strength"].default_value = strength
 
 
+def hair_shadow(made, colour, drop=0.045, soft=0.02, alpha=0.75):
+    """The hair's own outline cast on his head's picture, `drop` studs under it and softened: each lock leaves a shade
+    on the skin just below its edge, so the hair lies on his head instead of stopping on it (the director, on art that
+    must be composited: layers bound by edge and shadow). The head's picture is drawn again with it."""
+    head, hair = made["head"], made["hair"]
+    px = am.PICTURES[head.name]
+    p = am.Paint(px, -math.pi * am.R, 2 * math.pi * am.R, 1.25)
+    v = np.array([hair.matrix_world @ q.co for q in hair.data.vertices])
+    r = np.hypot(v[:, 0], v[:, 1])
+    x, y = np.arctan2(-v[:, 0], v[:, 1]) * am.R, v[:, 2] - am.CHIN - drop   # where on the head's picture
+    cover = np.zeros(px.shape[:2], np.float32)
+    for f in hair.data.polygons:
+        ids = list(f.vertices)
+        if r[ids].min() > am.R + 0.2 or np.ptp(x[ids]) > math.pi * am.R:   # off the head, or across the picture's seam
+            continue
+        for i in range(1, len(ids) - 1):
+            (x0, y0), (x1, y1), (x2, y2) = ((x[j], y[j]) for j in (ids[0], ids[i], ids[i + 1]))
+            d = (y1 - y2) * (x0 - x2) + (x2 - x1) * (y0 - y2)
+            if abs(d) < 1e-9:
+                continue
+            win = p._win(min(x0, x1, x2), max(x0, x1, x2), min(y0, y1, y2), max(y0, y1, y2))
+            X, Y = p.X[win], p.Y[win]
+            l0 = ((y1 - y2) * (X - x2) + (x2 - x1) * (Y - y2)) / d
+            l1 = ((y2 - y0) * (X - x2) + (x0 - x2) * (Y - y2)) / d
+            cover[win] = np.maximum(cover[win], ((l0 >= 0) & (l1 >= 0) & (l0 + l1 <= 1)).astype(np.float32))
+    p.lay(am.blur(cover, soft * p.k), colour, alpha)
+    tex = next(n for n in head.active_material.node_tree.nodes if n.type == "TEX_IMAGE")
+    rs.save(np.dstack([np.clip(px, 0, 1), np.ones(px.shape[:2], np.float32)]), Path(bpy.path.abspath(tex.image.filepath)))
+    tex.image.reload()
+
+
 def take(face_draw):
-    """Take A as the finish makes it: `face_draw` his face, the fitted hair, the lantern lit through its panes."""
+    """Take A as the finish makes it: `face_draw` his face, the fitted hair casting on his head, the lantern lit
+    through its panes."""
     def made(joints, folder):
         figure = pt.take_a(joints, folder, face_draw=face_draw, fitted=True, lamp=lamp)
+        hair_shadow(figure, mix(SKIN, "#B5654F", 0.4))
         obj = figure["Lamp"]
         path = folder / "Lamp_glow.png"
         mask = am.GLOWS[obj.name]
@@ -283,6 +332,8 @@ def model_run(out):
 
 
 def sheet_run(out):
+    if not (out / "layers" / "Shade_foe.npz").exists():
+        rmt.shade_run(out)
     rmt.proof_run(out, TAKE, title="PIP IN THE MAKE: THE MODEL FOR THE INSTALL", about="Common / Purple / Mage / Fire.",
                   whose="his", stem="pip_make", beside=list(kt.BESIDE), tag="AR63: the finish")
     proof = rs.load(out / "pip_make.png")
@@ -374,4 +425,6 @@ if __name__ == "__main__":
     if rest and rest[0] == "targets":
         targets_run(OUT, rest[1:] or ("takes", "sheet"))
     else:
+        if len(rest) > 1 and rest[1] in FACES:   # a face in place of the pick, to try the files before it
+            PICK["face"] = rest[1]
         {"model": model_run, "sheet": sheet_run}[rest[0] if rest else "model"](OUT)

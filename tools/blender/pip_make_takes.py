@@ -321,6 +321,8 @@ def take_a(joints, folder, face_draw=None, fitted=False, lamp=None):
     shadow(t, 0.3)
     lit(t)
     grain(t, seed=41)
+    if fitted:   # the finish: the mantle over his shoulders, so the game's camera sees green there, never a cream square
+        t.faces["top"].px[:] = rgb(green)
     neck(t, skin)
 
     for i, key in enumerate(("rs", "ls")):
@@ -342,10 +344,14 @@ def take_a(joints, folder, face_draw=None, fitted=False, lamp=None):
                         brow_y=0.74, brow_tilt=-0.02, brow="#8A3E1C", mouth=[(-0.04, 0.236), (0.0, 0.226), (0.045, 0.24)]))
     hair = am.Hair("#8E3A1B", "#F2A260", seed=47, band=(0.42, 0.1, 0.25), **({"scalp": am.HEAD_EGG} if fitted else {}))
     # the mass under the hat, its own points spilling below the brim: a fringe across the brow, locks at the temples
-    hair.mass(am.hairline(front=4.92, temple=4.56, nape=4.28), (0, 4), opening=0.1, seed=47,
-              tips=((180, 20, 12), (152, 14, 14), (208, 14, 14), (124, 14, 12), (236, 14, 12), (84, 18, 18), (-84, 18, 18),
-                    (0, 13, 19), (-26, 12, 17), (24, 12, 18), (-50, 11, 13), (48, 11, 13)),
-              lift=0.05, off=(0.04, 0.1), **(dict(ease=2.0, tuck=0.09) if fitted else {}))
+    # fitted: the rim on the head, not 0.04 off it, and the back down to the nape, as Kirra's round 2 (AR60)
+    tips = ((180, 20, 12), (152, 14, 14), (208, 14, 14), (124, 14, 12), (236, 14, 12), (84, 18, 18), (-84, 18, 18),
+            (0, 13, 19), (-26, 12, 17), (24, 12, 18), (-50, 11, 13), (48, 11, 13))
+    if fitted:   # the back's points short, so its rim lies even down to the collar with no skin between them
+        tips = tuple((a, w, round(l * 0.4)) if 100 < a < 260 else (a, w, l) for a, w, l in tips)
+    hair.mass(am.hairline(front=4.92, temple=4.5 if fitted else 4.56, nape=3.98 if fitted else 4.28), (0, 4), opening=0.1, seed=47,
+              tips=tips,
+              lift=0.05, off=(0.0 if fitted else 0.04, 0.1), **(dict(ease=2.0, tuck=0.09) if fitted else {}))
     top = hat((0.0, -0.06, 5.0), 0.8, 1.22, 1.3, green, ochre, tip_back=0.95, pitch=9.0)
     return figure(joints, folder, b, head, hair, [top, *(lamp() if lamp else lantern())])
 

@@ -1,0 +1,23 @@
+Idle: 193 frames, 3.20 s
+  the lantern's nearest, in studs: Torso 0.67 at 125; Head 1.59 at 147; Hat 0.36 at 125; over the floor 3.18 at 72
+  the brim's rim at its lowest over the floor: 4.12 at 95
+  the hat's own lag, at its widest: 0 back or forward, 0 round, 0 to a side
+  a leg's widest swing in the robe: 6 of 25 degrees, at 48
+  the longest an arm is nearly still at 20 to 70 degrees up, of 6 frames: right 0 (to 192), left 0 (to 192)
+  a hand's nearest to the hat, in studs (under 0 it's in the brim): right 2.16 at 123, left 2.20 at 46
+[audit] Pip_Idle.json (export, 193 poses)
+  Legs cross            0.000 studs
+  Arm through body      0.000 studs at 2.5333 (Right Arm into Torso)
+  Leg out of hip        0.001 studs at 1.9833 (Right Leg)
+  Weapon through body   0.000 studs
+  Under the floor       0.000 studs at 0.7 (Right Leg)
+  Pop                   0.000x
+  Seam                  0.000 deg
+  Limb flip             0.628 deg at 2.55 (Right Arm turns about its own length in one frame)
+  Wrist flip            0.000 deg
+  Salute held           0.000 s
+  Neck offset           0.000 studs at 0.8833 (the head off its neck)
+  Nod                   0.000 deg
+  Shoulder cap          0.104 studs at 2.2167 (Right Arm; inherent to R6, for information)
+  Eyes                 +4.2 to +4.5 deg (at 0.8167 and 1.7667; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
+AUDIT PASS

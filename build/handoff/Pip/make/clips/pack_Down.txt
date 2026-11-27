@@ -1,0 +1,25 @@
+Down: 67 frames, 1.10 s
+  the lantern's nearest, in studs: Torso 0.70 at 2; Head 1.22 at 66; Hat 0.31 at 66; over the floor 0.88 at 66
+  the brim's rim at its lowest over the floor: 0.03 at 39
+  the hat's own lag, at its widest: 8 back or forward, 6 round, 2 to a side
+  a leg's widest swing in the robe: 18 of 25 degrees, at 14
+  the longest an arm is nearly still at 20 to 70 degrees up, of 6 frames: right 0 (to 66), left 0 (to 66)
+  a hand's nearest to the hat, in studs (under 0 it's in the brim): right 0.50 at 22, left 0.44 at 22
+[audit] Pip_Down.json (export, 67 poses)
+  Legs cross            0.000 studs at 0.2333 (the legs)
+  Arm through body      0.029 studs at 0.4333 (Right Arm into Torso)
+  Leg out of hip        0.000 studs at 0.0333 (Right Leg)
+  Weapon through body   0.000 studs
+  Under the floor       0.000 studs at 0.1167 (Right Leg)
+  Pop                   1.265x at 0.1167 (Right Arm turns 7.1 deg in one frame)
+  Seam                  0.000 deg
+  Limb flip             7.671 deg at 0.0167 (Right Arm turns about its own length in one frame)
+  Wrist flip            0.000 deg
+  Salute held           0.050 s at 0.2167 (Left Arm 21 up, 10 off its facing, in the zone to 0.25)
+  Neck offset           0.000 studs at 0.4833 (the head off its neck)
+  Nod                  18.000 deg at 0.2333 (the head against the torso)
+  Beat                  1.105x at 0.5 (Left Arm turns 9.5 deg in one frame, on the marker Land; the clip's own beat, for information)
+  Shoulder cap          0.424 studs at 0.6833 (Right Arm; inherent to R6, for information)
+  Salute tilted         0.067 s at 0.2667 (Right Arm 30 up, 17 off its facing, in the zone to 0.3167; the body tilted past 30 deg, so no salute: for information)
+  Eyes                 -2.1 to +77.9 deg (at 0.1 and 1.1; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
+AUDIT PASS

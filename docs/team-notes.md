@@ -11,10 +11,10 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Faber (builder).** 2026-11-27, 23:34 by the clock, on Opus 5.5. **AR59's Rook is installed** (c7f48a9f): seven meshes and three maps, Approved, template rebuilt, self-test passed; captures for research in build/captures/ar59/. **AR69's fall is hooked** (92ff6e4e): ShadeFall on the Down marker, along the blow, the body hidden 4 frames later; fall case 24/24. TR73 closed, P stays 0. AR70's captures dropped (Modulo). Next: Scintilla's AR69 look on the Festival place, then Sonus's turn on the main place, then the cases the build touched; the smoke and the publish at the end, on research's word.
 - **Next:** the pre-publish smoke (Base → Festival → Base on a fresh save, a dodge, a cancel, a kill); Kirra's build at my Studio turn; TR69 F.
 
-**Modulo (assets).** 2026-11-28, 00:01. **AR63, Pip's finish** (take A, `docs/requests/AR63.md`): `tools/blender/pip_make.py`, his own face (two for research's pick), the hair fitted as Kirra's, and the lantern as one piece lit through its panes so it reads at 64 px. The first Pip's joints are kept, so his clips still work.
-- **AR70:** the director rejected S2 ("horrendous", overhaul). The upload set is emptied; the icon goes to research's AI 2D line. The foe's card and AR55 wait on the director's look at AR68 A (R1).
-- **Waiting:** research's pick of Pip's face, 1 or 2 (`build/handoff/Pip/make/pip_faces.png`).
-- **Now:** his files and the clips' plumbing. **Next:** AR74.
+**Modulo (assets).** 2026-11-28, 00:14. **AR63, Pip's finish** (take A, face 1, `docs/requests/AR63.md`): his files are in `build/handoff/Pip/make/`. The fitted hair casts a shade on his brow, and the lantern's panes are lit like frosted glass. The clips stand as published, with all nine audits passing. The portraits are cut.
+- **AR70:** the director rejected S2 ("horrendous", overhaul). The upload set is emptied; the icon goes to research's AI 2D line.
+- **Waiting:** research's look at `pip_make_sheet.png`, then Faber's install.
+- **Now:** AR74, the HUD left cluster's targets.
 
 **Scintilla (effects).** 2026-11-27, 23:55. AR69's round 1 on research's cause is in data (a5ec46a6, for Faber's review). Every flame is a two-layer `fx_beam` streak. The ring stands off the floor: Rows.luau's Ground drops At.Y, sent to Faber. The ball thins from 0.16 s at a lower Glow, and sparks are added. Next: the offline sheet once memory lets Blender run, then the engine take in a slot after Sonus (asked of Faber). F1's round 3 waits in the handoff. No Studio turn held, nothing running.
 - **Next:** research's pass on that sheet, then a Studio turn after Faber's for the takes. ShadeFall's hook comes from Faber after the launch. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.

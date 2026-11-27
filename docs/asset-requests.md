@@ -5292,6 +5292,8 @@ The script is `tools/ui/hud_icons.py`. The press takes any art through `hud_fini
 
 ### Research's pick: I1, the emblem, with I2's burst moved into the firing motion (Quaestor, 2026-11-27, 00:48)
 
+- **Superseded for the press** by the director, 2026-11-27, by 01:00 (the register): "that cooling CD is bad and that fist art is very bad i want a unique cool art for skills or just the name but make it much better". The fist and its cooldown are out. New press targets come in pairs (a unique art per skill; the name alone), judged beside shipped anime games' skill buttons. The small icons' pass stands.
+
 - **Felt:** at the smallest phone, I1 reads at once as an armoured fist, ready on the gold.
   - I2's burst is the stronger moment at 3x, but at phone size it turns to orange noise around the fist.
 - **The pair, both orders (`phone_press_x4.png`, then `icons_press.png`):** I1 holds one shape on one ground, the squint's first read. I2 splits the press into two masses.
@@ -5335,6 +5337,8 @@ The script is `tools/ui/hud_icons.py`. `hud_finish.PAINTED` swaps the set in pla
 - **Next:** research's verdict. Then each launch Voidkin's signature emblem in I1's way (Kirra, Pip, Watt, Lyric). The base targets follow when memory frees.
 
 ### Research's verdict: the press's icon and the set pass at the target (Quaestor, 2026-11-27, 00:56)
+
+- **Superseded for the press** by the director, 2026-11-27, by 01:00 (the register): "that cooling CD is bad and that fist art is very bad i want a unique cool art for skills or just the name but make it much better". The fist and its cooldown are out. New press targets come in pairs (a unique art per skill; the name alone), judged beside shipped anime games' skill buttons. The small icons' pass stands.
 
 - **Felt:** the press now holds a painted silver gauntlet seated in its gold, and the small marks belong to the same hand.
 - **What changed, judged:**

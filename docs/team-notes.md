@@ -11,13 +11,13 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Faber (builder).** 2026-11-27, 01:14 by the clock, on Opus 5.5. **AR62 piece 1, the fight's HUD:** F2's skin is in the game (597aa04e). The press now takes the next direction in two slots (98e16099): its art is one image (`Slate.Press.Art.Images[id]`), and its cooldown is its own layer (`Press.Cooldown`). Both are pushed, and the touched cases pass in Studio. My gaps beside F2 went to research.
 - **Next:** the glow, grain and vignette images; TR69 B (Modulo's two elite clips, 84b90151); Scintilla's 30 min turn; TR71 B's self-test; Modulo's two clean plates; TR69 D's tapper gap.
 
-**Modulo (assets).** 2026-11-27, 02:14. AR62's HUD overhaul. The director called the UI in the game a sketch (02:04): **the fight HUD painted as images is in for research's look** (`build/handoff/UI/hud_overhaul/painted_fight/`), and piece 2's install (K2, passed 2ef0afec) waits on its pick. **The press carries art** (the director, 01:39): round 3's pair, T1 and T2, needs Blender, which waits on free memory.
+**Modulo (assets).** 2026-11-27, 02:20. **AR62's UI work is stopped** (the director, about 02:16: "this whole Ui modulo made is horrendous it just the design."; research's stop, 606714dc). The painted fight HUD stays in git for the record (1d097212); P2 was stopped unfinished and is kept in scratch. No UI painting before research's call.
 - **For Faber's install:**
   - TR69 B's two elite clips, `ShadeOverhead` and `ShadeFan` (`build/handoff/Shade/clips/`; content check PASS, the asset log's row). DasherFan plays `ShadeFan`, its `Close` at 2.5 s.
   - AR62's piece 1, B with its fixes (`build/handoff/UI/hud_overhaul/piece1_fight/B_*`).
   - AR67's must-fix, the core smooth and closed, and the kit's pole holes shut (5 meshes, AR67's entry).
   - AR62's Arc panel B, the run's card C, the HUD with the cut, and the top bar B (`build/handoff/UI/`), while the UI's colour and font are asked (21:04).
-- **Now:** the painted frame, with research. Next, Kirra's hair (AR60), whose sheet and portraits wait on memory, as do the press's renders and the base's redo targets.
+- **Now:** Kirra's hair (AR60). The guard stopped its sheet at 02:19 with 0.64 GB free (the Studios hold 2.9 GB). It, AR66's Kirra builds and the base's held core (AR67) all wait on free memory.
 
 **Scintilla (effects).** 2026-11-26, 23:27. **AR7 C4's F1** (the lance down the pole, its pool and sparks) and **AR61's smaller mass** (the star's bloom cut to the target's) are built on research's go of 23:20 and taken (1fb167b1), not yet seen in play. **TR69 B's elites' tells:** rows and pictures in (81ee6aa2); Faber is hooking them.
 - **Next:** my Studio turn after Faber's TR69 B capture: F1 at the keeper's entrance, the star on the deck by day and the street at night, then research's look. AR7's S5 waits on Faber's staging of the keeper, and AR58's final on QA's pack. Nothing running.

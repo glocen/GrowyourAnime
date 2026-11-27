@@ -1,28 +1,29 @@
 {
- "Why": "Kirra's redesigned make (AR60, round 2's hair): her 19 meshes and two maps, published under the group on 2026-11-27 (docs/asset-log.md). No glow (nothing of hers is lit), and every piece casts its shadow, the scarf included: it's her one streak and reads on the ground. The first make's ids are in git before this commit.",
+ "Why": "Kirra's redesigned make (AR60, round 2's hair, then the cut of 13:04: sheathed blades on her back and her own face): her 20 meshes and two maps, published under the group on 2026-11-27 (docs/asset-log.md). No glow (nothing of hers is lit), and every piece casts its shadow, the scarf included: it's her one streak and reads on the ground. The first make's ids are in git before this commit.",
  "Meshes": {
   "Kirra_Torso": 119323710640935,
   "Kirra_Head": 114182605070027,
   "Kirra_Hair": 83465668007539,
-  "Kirra_Tie": 130300587601919,
+  "Kirra_Tie": 136666413951320,
+  "Kirra_Sheaths": 72161076510768,
   "Kirra_RightArm": 112484732580622,
   "Kirra_LeftArm": 76612128687459,
   "Kirra_RightLeg": 139549027264436,
   "Kirra_LeftLeg": 75718377742437,
-  "Kirra_Scarf": 78595882092286,
-  "Kirra_BladeR": 115149301206417,
-  "Kirra_BladeL": 113305989755677,
-  "Kirra_Scarf1": 98814358505962,
-  "Kirra_Scarf2": 102568179512944,
-  "Kirra_Scarf3": 119736235128888,
-  "Kirra_Scarf4": 134329223381300,
-  "Kirra_Scarf5": 72416898811772,
-  "Kirra_Scarf6": 126700933201390,
-  "Kirra_Scarf7": 128943968929144,
-  "Kirra_Scarf8": 104024636605763
+  "Kirra_Scarf": 134148351321570,
+  "Kirra_BladeR": 80940957329443,
+  "Kirra_BladeL": 134475295177928,
+  "Kirra_Scarf1": 79103513551517,
+  "Kirra_Scarf2": 115402146920962,
+  "Kirra_Scarf3": 139804762268323,
+  "Kirra_Scarf4": 82437154167393,
+  "Kirra_Scarf5": 107201762865055,
+  "Kirra_Scarf6": 75262126359846,
+  "Kirra_Scarf7": 86388692081636,
+  "Kirra_Scarf8": 101089558220951
  },
  "Maps": {
-  "Color": "rbxassetid://99608994120654",
+  "Color": "rbxassetid://127997353008682",
   "Roughness": "rbxassetid://133007182803709"
  }
 }

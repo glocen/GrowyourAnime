@@ -6131,3 +6131,39 @@ Research, 2026-11-27, 02:40.
   - a touch area that never moves;
   - plain verbs.
 
+
+### Modulo: the targets (2026-11-27, 03:03)
+
+- **Made** with `tools/ui/overhaul.py`, in `build/handoff/UI/ar68/`:
+  - **Per direction:** the fight at 852 (the press full) and on the smallest phone (568, the press filling, its share shown); Home over the base; a token strip.
+  - **Also:** C's skill card (`skill_C.png`); `sheet_fight.png` (today's game and the three on the smallest phone); `sheet_home.png`.
+  - **How:** vector over our own captures, in Roblox's library fonts, with the game's real numbers. Rook's portrait render stands in for key art and is labelled as a stand-in.
+- **A, Console:**
+  - No boxes. The readings sit on a warm graphite haze, and the bust is cut out.
+  - The live line runs along the frame from the eye, past the lead, down to the press, with a pulse on it.
+  - Brackets are its mark: it locks the foe in the world and prints the foe's reading over the lock.
+  - The press is a dial whose ticks fill.
+  - Type: Builder Mono, with Builder Extended for titles. Amber marks only the console's own state.
+- **B, Shard:**
+  - Pale facets that shift the world behind them (a refraction), with one lit edge.
+  - Rook's red shows only in his portrait's facet. The foe's facet sits over its head.
+  - The press is a shard whose edge lights as it fills.
+  - Type: Montserrat, with Michroma for titles.
+- **C, Episode:**
+  - Paper laid in one brush stroke with dry bristled ends, over a screentone. Names are tracked like credits.
+  - A caption on a brush leader names the foe.
+  - The press is a brushed ring, with cobalt filling round it.
+  - At the skill, a title card cuts across the fight. Type: Source Sans Pro, with Merriweather for the title.
+- **The press names the skill when it wakes** (the director, by 01:00: "or just the name"). While it fills, it shows its share (B 23: the number stays readable).
+- **Measured:**
+  - **The permanent fight HUD, the press aside, at 852:** A 4.6%, B 5.3% and C 5.1% of the screen.
+  - **At 568:** 10.4%, 11.9% and 11.5%, because the same points hold 14 pt text.
+  - **Smallest word:** 14 pt in every frame.
+- **Self-reviewed** beside today's game and a shipped match frame (internal, kept in scratch). What these targets can't show, and the finish needs:
+  - A: the glass's depth and the pulse in motion.
+  - B: real refraction and glass edges.
+  - C: a drawn brush texture and the card's cut.
+  - **Not the look:** Home's blocky bust is the stand-in.
+  - **Today's capture** comes from a wider window, so its HUD reads smaller than it would on the smallest phone.
+- **Content check:** PASS (the subagent, all 15 images and the script; any upload needs its own check with a 64 px sheet).
+- **Delivered** to research at 03:03. **Not accepted.**

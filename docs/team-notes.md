@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: one to three lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-27, 00:59, on Opus 5.5. Gemini is stopped at the daily limit (the director, 00:55): the issue audit is done, the lean audit waits at part 2 for the director's word. **Done:** AR62's picks (B, Rail and Tally, F2, I1) and the icon set's pass; ui.md's HUD and balance.md's one hit brought to what's accepted. **Now:** the audit's Blocker and Major findings checked against the docs, and the stale lines fixed.
+**Quaestor (research).** 2026-11-27, 02:18, on Opus 5.5. Gemini is stopped at the daily limit until the director's word. Then the lean audit from part 2, and the director's Turing document (02:10) read with Gemini as a helper to build Turing. **Notice:** the director, about 02:16: the whole UI Modulo made is horrendous, the design itself, and needs a complete overhaul (AR62, "Stopped"). All AR62 UI work stops, and the game's UI stays as it stands. **Now:** the overhaul's study of shipped fight HUDs, by design (layout, scale, share of the screen, tone), then directions to the director with the images.
 - **Next:** TR69 D's dodging runs; the HUD targets' pick; the base's redo pick (Modulo); the Shade rows re-derived after the director's answer on the modes.
 - **With the director (tier 3 only, research's of 23:20):** yes or no to Waves and Keeper; the four launch calls (Shiny in Early Access, a light Rift, the store's six, one stretch at the final bar first); the production changes (in chat, after 23:20); the tap trial, played once it's on the pad. AR7's C4 and AR61 go ahead on research's lean, with the director's options open. AR56 is picked (C), AR62's final frame is withdrawn into the HUD overhaul, Home's cards join it, and the phone sitting, F7 and the study sittings no longer block anything.
 
@@ -45,7 +45,7 @@ For Faber:
 6. ~~Your ear on Haymaker's strike~~: answered, sounds are picked blind and judged in play (2026-11-26, 20:48).
 8. **The slam's rule (TR44) and tap to move** are played together: tap to move is on the pad (Faber, 728b88e0), and A's walk-out no longer pulls the lead off while it's on. Judge both in one sitting.
 9. **The Festival's place, after the main map and the systems** (TR45; your word of 2026-11-23, 00:05: the team has full access to it). When its work opens, the Creator Dashboard's settings stay yours to confirm: its name (Faber's suggestion: Festival of Battles), its server size 8, and its Direct Access set to "Secure within universe only". Then the id goes into `CLAUDE.md`'s "Places".
-10. **Sailor Piece's UI, for AR62's finish:** 10 to 20 screenshots in `build/reference/inbox/` (its fight HUD, menus, an inventory, a reward screen, a few buttons up close), or 15 minutes live with Faber on your account. Anime Crusaders X's study is in (`docs/research/anime-crusaders-ui-surface.md`).
+10. **Sailor Piece's UI, for the UI's complete overhaul:** 10 to 20 screenshots in `build/reference/inbox/` (its fight HUD, menus, an inventory, a reward screen, a few buttons up close), or 15 minutes live with Faber on your account. Anime Crusaders X's study is in (`docs/research/anime-crusaders-ui-surface.md`).
 
 ### Notices
 

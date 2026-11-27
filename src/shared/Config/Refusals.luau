@@ -95,6 +95,7 @@ local Refusals = {
 			NotOwned = "It isn't in the bag",
 			WrongSlot = "Wrong slot",
 			WrongClass = "That weapon is for another class",
+			WornElsewhere = { Words = "Preset {Preset} wears it too. Take it off there first.", Plain = "Another preset wears it too" },
 			InCombat = IN_FIGHT,
 			NoAnswer = TRY_AGAIN,
 		},
@@ -116,7 +117,7 @@ local Refusals = {
 			Nowhere = "The Tower isn't in reach here",
 			InRun = "You're in the Tower already",
 			InCombat = IN_FIGHT,
-			NoLead = "Wait for your lead to heal",
+			NoLead = { Words = "Still healing at base. Ready in {Time}.", Plain = "Wait for your lead to heal" }, -- Time: TowerService's
 			NoRoom = "The Tower is full. Try again soon.",
 		},
 		-- Rules.Stages, StageService (the stage screen): what a shut stretch or difficulty waits for.

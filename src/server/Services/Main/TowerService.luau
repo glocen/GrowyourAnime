@@ -41,6 +41,7 @@ local RoomPlan = require(Shared.Config.Kits.TowerRoom.Plan) :: any
 local RoomManifest = require(Shared.Config.Kits.TowerRoom.Manifest) :: any
 local Profile = require(Shared.Data.Profile)
 local Tower = require(Shared.Rules.Tower)
+local Hud = require(Shared.Rules.Hud)
 local Net = require(Shared.Net)
 local Core = script.Parent.Parent.Core
 local DataService = require(Core.DataService)
@@ -210,6 +211,18 @@ local function leadOf(player: Player): FightService.Fighter?
 	return if lead and FightService.Standing(lead) then lead else nil
 end
 
+-- No lead standing: with the time until the lead is whole, when it's healing at home (LeadService's "Healing" folder), so
+-- the refusal says when (research's launch bug 1, 2026-11-27: a run ends in a fall, and Retry said nothing for 90 s).
+local function noLead(player: Player): { [string]: any }
+	local data = DataService.Get(player)
+	local folder = player:FindFirstChild("Healing")
+	local whole = if data and folder then folder:GetAttribute(data.Roles.Lead) else nil
+	if type(whole) == "number" and whole > workspace:GetServerTimeNow() then
+		return { Ok = false, Error = "NoLead", Time = Hud.Clock(whole - workspace:GetServerTimeNow()) }
+	end
+	return { Ok = false, Error = "NoLead" }
+end
+
 -- Floor `floor`: the room's beat plays on the client (its steps, its number: TowerRise says how long), and the foe comes
 -- at its end.
 local function rise(player: Player, run: Run, floor: number)
@@ -262,7 +275,7 @@ function TowerService.Begin(player: Player): { [string]: any }
 	elseif player:GetAttribute("Try") ~= nil or FightService.InCombat(player) then
 		return { Ok = false, Error = "InCombat" }
 	elseif leadOf(player) == nil then
-		return { Ok = false, Error = "NoLead" }
+		return noLead(player)
 	elseif roomKit() == nil then
 		return { Ok = false, Error = "NoRoom" }
 	end
@@ -644,7 +657,7 @@ local function after(player: Player, what: string): { [string]: any }
 	if ring == nil then
 		return { Ok = false, Error = "NoRing" }
 	elseif leadOf(player) == nil then
-		return { Ok = false, Error = "NoLead" }
+		return noLead(player)
 	end
 	local x, z = Tower.Door()
 	local door = (ring * CFrame.new(x, DAIS_TOP, z)).Position

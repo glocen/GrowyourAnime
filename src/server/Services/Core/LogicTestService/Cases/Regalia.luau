@@ -378,8 +378,9 @@ return {
 			local start = holdings()
 			local held: { string } = {} -- what the ledger should hold, oldest first
 			local sent: { [string]: any } = {} -- each id's request while it's live, so a repeat is a true retry
-			local moves, repeats, interrupted, broken = 0, 0, 0, 0
-			for step = 1, 400 do
+			local moves, repeats, interrupted, broken, elsewhere = 0, 0, 0, 0, 0
+			-- 1000 steps: a transfer from a ring the other preset wears is refused (Regalia.WornElsewhere), so fewer land
+			for step = 1, 1000 do
 				local op = string.format("%08x-0000-4000-8000-%012x", roll(12), 0)
 				local args = sent[op]
 				if args == nil then
@@ -416,6 +417,8 @@ return {
 					if answer.Moved then
 						moves += 1
 					end
+				elseif answer.Error == Regalia.WornElsewhere then
+					elsewhere += 1
 				end
 				if holdings() ~= start then
 					broken += 1
@@ -424,7 +427,8 @@ return {
 				end
 			end
 			t.Equal("no step made or lost anything", broken, 0)
-			t.Check(`the run covered moves ({moves}), repeats ({repeats}) and interruptions ({interrupted})`, moves >= 20 and repeats >= 20 and interrupted >= 20)
+			t.Check(`the run covered moves ({moves}), refusals for another preset ({elsewhere}), repeats ({repeats}) and interruptions ({interrupted})`,
+				moves >= 10 and elsewhere >= 20 and repeats >= 20 and interrupted >= 20)
 			local problems = Saveable.Problems(data, "profile")
 			t.Check("the save stays whole", #problems == 0, table.concat(problems, "; "))
 		end,

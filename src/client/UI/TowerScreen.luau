@@ -28,6 +28,7 @@ local Theme = require(UI.Theme)
 local Text = require(UI.Kit.Text)
 local Button = require(UI.Kit.Button)
 local Screen = require(UI.Kit.Screen)
+local Refuse = require(UI.Kit.Refuse)
 
 local TowerScreen = {}
 TowerScreen.Name = "Tower"
@@ -48,6 +49,7 @@ local BOARD_ROW = 19 -- a row of the board, in Caption
 local BOARD_LEAST = 16 -- and the board's, on the smallest phone (Theme.Smallest)
 
 local parts: { [string]: Instance } = {}
+local said: string? = nil -- the last refusal a press said (for tests)
 local shown: string? = nil
 local closing: { [string]: boolean } = {} -- results already told seen, so a closed screen asks once
 local taps: { [string]: () -> () } = {} -- the week's line and the board, by name: what a tap on each does
@@ -283,18 +285,20 @@ function TowerScreen.Open(results: Profile.TowerResults, on: On)
 		taps.Week = open
 	end)
 	-- Retry and Home in the base, where the Tower stands; Close wherever a crash's results open instead.
-	local function asked(ask: () -> { [string]: any }): () -> boolean
+	local function asked(ask: () -> { [string]: any }, what: string): () -> boolean
 		return function(): boolean
 			local ok, answer = pcall(ask)
 			if ok and type(answer) == "table" and answer.Ok == true then
 				Screen.Close()
 				return true
 			end
+			-- refused: said, never silent (research's launch bug 1: Retry after a fall, the lead still healing)
+			said = Refuse.Show("Tower", if ok and type(answer) == "table" then answer else nil, nil, `TowerScreen {what}`)
 			return false
 		end
 	end
 	local presses = if PlaceRole.Is("Main")
-		then { { "Retry", asked(on.Retry), true }, { "Home", asked(on.Home), false } }
+		then { { "Retry", asked(on.Retry, "Retry"), true }, { "Home", asked(on.Home, "Home"), false } }
 		else { { "Close", function(): boolean
 			Screen.Close()
 			return true
@@ -396,6 +400,11 @@ function TowerScreen.Shown(): string?
 end
 
 -- Whether results `id` were told seen from this client.
+-- For tests: the words the last refused press said, or nil.
+function TowerScreen.Said(): string?
+	return said
+end
+
 function TowerScreen.Told(id: string): boolean
 	return closing[id] == true
 end

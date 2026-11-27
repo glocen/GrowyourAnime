@@ -513,6 +513,49 @@ function TowerCases.Cases(): { any }
 			end,
 		},
 		{
+			-- Research's launch bug 1 (2026-11-27): a run mostly ends in a fall, and Retry, refused while the lead heals, said
+			-- nothing. A refused press says why, with the heal's time when the server gives it, and the results stay open.
+			Name = "Tower card: a refused Retry says why, with the time the lead heals in",
+			Place = "Main",
+			Run = function(t: any)
+				local refusal: { [string]: any } = { Ok = false, Error = "NoLead", Time = "1:05" }
+				local function answer(): { [string]: any }
+					return { Ok = true }
+				end
+				local on = {
+					Act = answer,
+					Retry = function(): { [string]: any }
+						return refusal
+					end,
+					Home = answer,
+					Board = function(): { [string]: any }
+						return { Ok = true, Week = 0, Rows = {}, Mine = nil }
+					end,
+				}
+				local ok, problem = pcall(function()
+					TowerScreen.Open({ Id = "selftest-refused", Floor = 4, Best = 130, Record = false, Credits = 100, Chests = {} } :: any, on)
+					task.wait()
+					local retry = TowerScreen.Parts().Retry
+					if retry and retry:IsA("TextButton") then
+						Button.Press(retry)
+					end
+					t.Equal("healing: said with its time", TowerScreen.Said() or "nothing", "Still healing at base. Ready in 1:05.")
+					t.Check("the results still open", Screen.Current() == TowerScreen.Name)
+					refusal = { Ok = false, Error = "NoLead" }
+					if retry and retry:IsA("TextButton") then
+						Button.Press(retry)
+					end
+					t.Equal("no time given: the plain words", TowerScreen.Said() or "nothing", "Wait for your lead to heal")
+				end)
+				if Screen.Current() == TowerScreen.Name then
+					Screen.Close()
+				end
+				if not ok then
+					error(problem, 0)
+				end
+			end,
+		},
+		{
 			-- TR46: the week's line made the card taller than a phone's room. Laid out from the room it was fitted to, its
 			-- rows close up, and past that its lines scroll; the board's rows close up too. Opened on its own, with the
 			-- results and the board answered here, never the save's or the store's.

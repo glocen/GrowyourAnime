@@ -367,6 +367,38 @@ return {
 		end,
 	},
 	{
+		-- Research's launch bug 2 (2026-11-27): a transfer stripped an item another preset still wore, silently.
+		Name = "Transfer: refused from an item another preset still wears, naming it; nothing moves; without Yes, the equip goes",
+		Run = function(t: any)
+			local data = fresh()
+			while #data.Presets < 2 do
+				table.insert(data.Presets, { Slots = {}, Hands = {} } :: any)
+			end
+			local old = item(data, "helmet", "Epic", 1)
+			old.Reinforce = 14
+			old.Jewels = { Red = 3 }
+			local new = item(data, "helmet", "Uncommon", 2)
+			data.Presets[1].Slots.Helmet = old.Id
+			data.Presets[2].Slots.Helmet = old.Id
+			local refused = Regalia.Equip(data, 1, "Helmet", nil, new.Id, true)
+			t.Check("refused, naming preset 2", refused.Ok == false and refused.Error == Regalia.WornElsewhere and refused.Preset == 2, `{tostring(refused.Error)} {tostring(refused.Preset)}`)
+			t.Check("nothing moved, nothing worn changed", old.Reinforce == 14 and old.Jewels.Red == 3 and new.Reinforce == 0 and data.Presets[1].Slots.Helmet == old.Id)
+			local plain = Regalia.Equip(data, 1, "Helmet", nil, new.Id)
+			t.Check("without Yes: equipped, the old item whole", plain.Ok == true and plain.Moved == false and data.Presets[1].Slots.Helmet == new.Id and old.Reinforce == 14)
+			local sword = item(data, "sword", "Rare", 1)
+			sword.Reinforce = 3
+			local blade = item(data, "sword", "Rare", 1)
+			Regalia.Equip(data, 1, "Main Hand", "Warrior", sword.Id)
+			Regalia.Equip(data, 2, "Main Hand", "Warrior", sword.Id)
+			local hand = Regalia.Equip(data, 1, "Main Hand", "Warrior", blade.Id, true)
+			t.Check("a weapon worn in another preset's hand: refused too", hand.Ok == false and hand.Error == Regalia.WornElsewhere and sword.Reinforce == 3)
+			data.Presets[2].Slots.Helmet = nil
+			data.Presets[1].Slots.Helmet = old.Id
+			local alone = Regalia.Equip(data, 1, "Helmet", nil, new.Id, true)
+			t.Check("worn in this preset alone: the transfer goes", alone.Ok == true and alone.Moved == true and new.Reinforce == 14)
+		end,
+	},
+	{
 		Name = "Gap: a lower attacker's hit by levels below, the combat review's table: 3 x0.85 ... 16 x0.10, 20+ x0.05; a higher one nothing",
 		Run = function(t: any)
 			local table1: { [number]: number } = { [0] = 1, [1] = 1, [2] = 1, [3] = 0.85, [4] = 0.72, [5] = 0.61, [6] = 0.52, [8] = 0.38, [10] = 0.27, [12] = 0.20, [16] = 0.10, [20] = 0.05, [30] = 0.05 }

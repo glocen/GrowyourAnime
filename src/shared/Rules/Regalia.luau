@@ -18,6 +18,7 @@ Regalia.Unknown = "Unknown" -- no such preset, or the request isn't one
 Regalia.NotOwned = "NotOwned" -- the item isn't the player's
 Regalia.WrongSlot = "WrongSlot" -- the item doesn't go in that slot
 Regalia.WrongClass = "WrongClass" -- a weapon for another class, or a hand named for no class
+Regalia.WornElsewhere = "WornElsewhere" -- a transfer from an item another preset still wears (it would lose what it holds)
 
 -- Puts `id` in `slot` of `preset` (nil: empties it), for `class`'s pair when the slot is a hand. The item leaves any
 -- other place it held in this preset, so a ring moves from Ring I to Ring II rather than being worn twice. A pair left
@@ -118,6 +119,27 @@ function Regalia.Transfer(from: Profile.OwnedItem, to: Profile.OwnedItem): (numb
 	return moved, #kept
 end
 
+-- The first preset other than `index` that wears `id` in any slot or hand, or nil.
+function Regalia.WornIn(data: Profile.Data, id: string, index: number): number?
+	for other, preset in data.Presets do
+		if other ~= index then
+			for _, worn in preset.Slots do
+				if worn == id then
+					return other
+				end
+			end
+			for _, pair in preset.Hands do
+				for _, worn in pair do
+					if worn == id then
+						return other
+					end
+				end
+			end
+		end
+	end
+	return nil
+end
+
 -- What `slot` of `preset` wears for `class`'s pair in a hand, or nil.
 function Regalia.Worn(preset: Profile.Preset, slot: string, class: string?): string?
 	if Gear.IsHand(slot) then
@@ -129,7 +151,7 @@ end
 
 -- Wears `id` in `slot` of preset `index` (an empty or nil id takes off what's there), for `class`'s pair in a hand. With
 -- `move`, the item it replaces gives it its Reinforce level, emblems and jewels first (Regalia.Transfer): the player's Yes
--- to the prompt the screen shows when that item holds any (Regalia.Holds).
+-- to the prompt the screen shows when that item holds any (Regalia.Holds). Refused when another preset wears that item.
 -- Answers what it did, or a refusal that changed nothing.
 function Regalia.Equip(data: Profile.Data, index: any, slot: any, class: any, id: any, move: any): { [string]: any }
 	local preset = if type(index) == "number" then data.Presets[index] else nil
@@ -164,6 +186,12 @@ function Regalia.Equip(data: Profile.Data, index: any, slot: any, class: any, id
 	local was = Regalia.Worn(preset, slot, owner)
 	local moved, stayed = 0, 0
 	if move == true and wearing and was and was ~= wearing and data.Items[was] then
+		-- Another preset still wears the old item: the transfer would strip it there, silently (research's launch bug 2,
+		-- 2026-11-27). Refused with that preset's number; an equip without the transfer still goes.
+		local other = Regalia.WornIn(data, was, index)
+		if other then
+			return { Ok = false, Error = Regalia.WornElsewhere, Preset = other }
+		end
 		moved, stayed = Regalia.Transfer(data.Items[was], data.Items[wearing])
 	end
 	Regalia.Put(preset, slot, owner, wearing)

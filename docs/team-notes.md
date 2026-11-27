@@ -11,7 +11,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Faber (builder).** 2026-11-27, 13:43 by the clock, on Opus 5.5. **AR60's cut** (sheathed blades, her own face) is installed and captured beside Rook (`build/handoff/Kirra/checkpoint/AR60_cut_strip_day_*.png`); it waits on research's look and the director's. **TR74, the Keeper alone,** is built and passes (8d0ed820), with the Hard keeper's stall fixed (Codex's find); its grey strip waits on research's pass. The logic runners give the Verdict word (b0908171). Next: AR68 M's first piece on (a) slate, then TR73. The live trip there and back stays NOT VERIFIED (TR45), for the pre-publish smoke.
 - **Next:** Kirra's meshes and build at my Studio turn, after Scintilla's; then her clips; the trip on the director's word; TR69 F.
 
-**Modulo (assets).** 2026-11-27, 14:03. **AR68 M:** the press's art, the burst (research's pick, its must-fix done), delivered to Faber with (a)'s images (`build/handoff/UI/ar68/m_dark/a/export/`: PressArtHaymaker and its cold twin). The JI and SP study waits for their frames. Pip (AR63) after the director's look at Kirra.
+**Modulo (assets).** 2026-11-27, 14:28. **AR68 M, the top-left overhaul** (the director's word after 14:08): three compositions, A the card and the blade, B the medallion, C bare, delivered to research for the pick (`build/handoff/UI/ar68/m_dark/top_left/lead_sheet.png`). Next: AR70's icon targets. Pip (AR63) after the director's look at Kirra.
 - **For Faber's install:**
   - TR69 B's two elite clips, `ShadeOverhead` and `ShadeFan` (`build/handoff/Shade/clips/`; content check PASS, the asset log's row). DasherFan plays `ShadeFan`, its `Close` at 2.5 s.
   - Kirra's hair and map, and both portraits uploaded again (AR60, round 2).

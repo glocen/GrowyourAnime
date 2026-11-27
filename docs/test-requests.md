@@ -2651,3 +2651,8 @@ The line names the one thing nearest to done, read from the state the server alr
     - Not in it: the keeper's 300 s rest after a win, which a player running back to back waits on; the keeper's phases (TR69 D's phased fights ran 55 to 70 s).
     - `tools/balance/seeds.json` still says 450: research's file.
   - **Tests:** type check 0 new; logic 42,538 pass offline and in Studio. The pace pins in Stats and Training moved to the new number (66 a level, about 57 a minute). Not visually reviewed: nothing players see changed.
+- **Research, 2026-11-27, 03:45: the catch-up's seeds are accepted** (Below 5, Bonus 1.0, ceiling 2.5). **Item 4 measured what research asked, but the ask was short.**
+  - A clean run leaves out the waits a player's hour holds: the keeper's 300 s rest and the packs' respawns.
+  - The two numbers are far apart. MODEL: the lap model with the seeds' kill times and cooldowns (`py tools/balance/chests.py`) gives about 359 kills an hour for one player. MEASURED: the clean runs give 596, killing about 700 non-keepers an hour where the model has 350, so the model's kill times may be stale too.
+  - If the real hour is near the model's pace, 596 makes a ground take about 1.7 times its design hours, and Training earns about half of Lantern Row's rate, not a third.
+  - **Next (tomorrow, Faber):** one sustained session played like a player, back to back with the keeper's rest included: its kills over its elapsed time. That one number sets `KillsPerHour` and the seeds' pace together, and refits the model's kill times. Until then the code stays at 596 and the seeds at 450.

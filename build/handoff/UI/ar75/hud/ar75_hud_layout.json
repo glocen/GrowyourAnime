@@ -1,0 +1,1256 @@
+{
+ "frame": [
+  568,
+  320
+ ],
+ "text": {
+  "small": 14,
+  "title": 17,
+  "big": 22
+ },
+ "tap": 44,
+ "states": {
+  "rest": {
+   "title": "At rest, at the base, nothing new",
+   "share": 0.09,
+   "elements": [
+    {
+     "name": "lead portrait",
+     "shape": "circle",
+     "box": [
+      104,
+      9,
+      32,
+      32
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "lead level",
+     "shape": "rect",
+     "box": [
+      104,
+      33,
+      30,
+      16
+     ],
+     "grey": 4,
+     "text": null
+    },
+    {
+     "name": "lead name",
+     "shape": "rect",
+     "box": [
+      142,
+      9.5,
+      38.1,
+      14
+     ],
+     "grey": 3,
+     "text": 14
+    },
+    {
+     "name": "lead health",
+     "shape": "rect",
+     "box": [
+      142,
+      26,
+      96,
+      7
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "lead experience",
+     "shape": "rect",
+     "box": [
+      142,
+      36,
+      96,
+      3
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "the strip",
+     "shape": "rect",
+     "box": [
+      346,
+      6,
+      214,
+      26
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "dock Base",
+     "shape": "rect",
+     "box": [
+      168,
+      248,
+      52,
+      52
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "dock Home",
+     "shape": "rect",
+     "box": [
+      228,
+      248,
+      52,
+      52
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "dock Play",
+     "shape": "rect",
+     "box": [
+      288,
+      248,
+      52,
+      52
+     ],
+     "grey": 3,
+     "text": null
+    }
+   ]
+  },
+  "gains": {
+   "title": "At rest, something new",
+   "share": 0.147,
+   "elements": [
+    {
+     "name": "lead portrait",
+     "shape": "circle",
+     "box": [
+      104,
+      9,
+      32,
+      32
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "lead level",
+     "shape": "rect",
+     "box": [
+      104,
+      33,
+      30,
+      16
+     ],
+     "grey": 4,
+     "text": null
+    },
+    {
+     "name": "lead name",
+     "shape": "rect",
+     "box": [
+      142,
+      9.5,
+      38.1,
+      14
+     ],
+     "grey": 3,
+     "text": 14
+    },
+    {
+     "name": "lead health",
+     "shape": "rect",
+     "box": [
+      142,
+      26,
+      96,
+      7
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "lead experience",
+     "shape": "rect",
+     "box": [
+      142,
+      36,
+      96,
+      3
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "the strip",
+     "shape": "rect",
+     "box": [
+      346,
+      6,
+      214,
+      26
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "dock Base",
+     "shape": "rect",
+     "box": [
+      168,
+      248,
+      52,
+      52
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "dock Home",
+     "shape": "rect",
+     "box": [
+      228,
+      248,
+      52,
+      52
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "dock Play",
+     "shape": "rect",
+     "box": [
+      288,
+      248,
+      52,
+      52
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "the gains pill",
+     "shape": "rect",
+     "box": [
+      452,
+      37,
+      108,
+      24
+     ],
+     "grey": 4,
+     "text": 14
+    },
+    {
+     "name": "an event chip",
+     "shape": "rect",
+     "box": [
+      440,
+      76,
+      120,
+      22
+     ],
+     "grey": 4,
+     "text": 14
+    },
+    {
+     "name": "the shards' hint",
+     "shape": "rect",
+     "box": [
+      166,
+      218,
+      236,
+      22
+     ],
+     "grey": 4,
+     "text": 14
+    }
+   ]
+  },
+  "fight": {
+   "title": "In a fight",
+   "share": 0.083,
+   "elements": [
+    {
+     "name": "lead portrait",
+     "shape": "circle",
+     "box": [
+      102,
+      10,
+      40,
+      40
+     ],
+     "grey": 2,
+     "text": null
+    },
+    {
+     "name": "lead level",
+     "shape": "rect",
+     "box": [
+      106,
+      42,
+      32,
+      16
+     ],
+     "grey": 4,
+     "text": null
+    },
+    {
+     "name": "lead name",
+     "shape": "rect",
+     "box": [
+      229.9,
+      10.5,
+      38.1,
+      14
+     ],
+     "grey": 2,
+     "text": 14
+    },
+    {
+     "name": "lead class",
+     "shape": "rect",
+     "box": [
+      201.9,
+      11,
+      10,
+      10
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "lead health",
+     "shape": "rect",
+     "box": [
+      148,
+      26,
+      122,
+      17
+     ],
+     "grey": 2,
+     "text": 14
+    },
+    {
+     "name": "lead experience",
+     "shape": "rect",
+     "box": [
+      148,
+      46,
+      122,
+      3
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "foe portrait",
+     "shape": "circle",
+     "box": [
+      426,
+      10,
+      40,
+      40
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "foe level and skull",
+     "shape": "rect",
+     "box": [
+      424,
+      42,
+      42,
+      16
+     ],
+     "grey": 4,
+     "text": null
+    },
+    {
+     "name": "foe name",
+     "shape": "rect",
+     "box": [
+      300,
+      10.5,
+      66.6,
+      14
+     ],
+     "grey": 3,
+     "text": 14
+    },
+    {
+     "name": "foe health",
+     "shape": "rect",
+     "box": [
+      298,
+      26,
+      122,
+      17
+     ],
+     "grey": 3,
+     "text": 14
+    },
+    {
+     "name": "the ground's step",
+     "shape": "rect",
+     "box": [
+      271,
+      14,
+      26,
+      26
+     ],
+     "grey": 4,
+     "text": 14
+    },
+    {
+     "name": "AUTO",
+     "shape": "rect",
+     "box": [
+      148,
+      58,
+      48,
+      20
+     ],
+     "grey": 4,
+     "text": 14
+    },
+    {
+     "name": "the eye",
+     "shape": "circle",
+     "box": [
+      209,
+      55,
+      26,
+      26
+     ],
+     "grey": 4,
+     "text": null
+    },
+    {
+     "name": "the press",
+     "shape": "circle",
+     "box": [
+      453,
+      167,
+      66,
+      66
+     ],
+     "grey": 2,
+     "text": null
+    }
+   ]
+  },
+  "ready": {
+   "title": "The signature ready",
+   "share": 0.083,
+   "elements": [
+    {
+     "name": "lead portrait",
+     "shape": "circle",
+     "box": [
+      102,
+      10,
+      40,
+      40
+     ],
+     "grey": 2,
+     "text": null
+    },
+    {
+     "name": "lead level",
+     "shape": "rect",
+     "box": [
+      106,
+      42,
+      32,
+      16
+     ],
+     "grey": 4,
+     "text": null
+    },
+    {
+     "name": "lead name",
+     "shape": "rect",
+     "box": [
+      229.9,
+      10.5,
+      38.1,
+      14
+     ],
+     "grey": 2,
+     "text": 14
+    },
+    {
+     "name": "lead class",
+     "shape": "rect",
+     "box": [
+      201.9,
+      11,
+      10,
+      10
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "lead health",
+     "shape": "rect",
+     "box": [
+      148,
+      26,
+      122,
+      17
+     ],
+     "grey": 2,
+     "text": 14
+    },
+    {
+     "name": "lead experience",
+     "shape": "rect",
+     "box": [
+      148,
+      46,
+      122,
+      3
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "foe portrait",
+     "shape": "circle",
+     "box": [
+      426,
+      10,
+      40,
+      40
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "foe level and skull",
+     "shape": "rect",
+     "box": [
+      424,
+      42,
+      42,
+      16
+     ],
+     "grey": 4,
+     "text": null
+    },
+    {
+     "name": "foe name",
+     "shape": "rect",
+     "box": [
+      300,
+      10.5,
+      66.6,
+      14
+     ],
+     "grey": 3,
+     "text": 14
+    },
+    {
+     "name": "foe health",
+     "shape": "rect",
+     "box": [
+      298,
+      26,
+      122,
+      17
+     ],
+     "grey": 3,
+     "text": 14
+    },
+    {
+     "name": "the ground's step",
+     "shape": "rect",
+     "box": [
+      271,
+      14,
+      26,
+      26
+     ],
+     "grey": 4,
+     "text": 14
+    },
+    {
+     "name": "AUTO",
+     "shape": "rect",
+     "box": [
+      148,
+      58,
+      48,
+      20
+     ],
+     "grey": 4,
+     "text": 14
+    },
+    {
+     "name": "the eye",
+     "shape": "circle",
+     "box": [
+      209,
+      55,
+      26,
+      26
+     ],
+     "grey": 4,
+     "text": null
+    },
+    {
+     "name": "the press",
+     "shape": "circle",
+     "box": [
+      453,
+      167,
+      66,
+      66
+     ],
+     "grey": 2,
+     "text": null
+    }
+   ]
+  },
+  "low": {
+   "title": "The lead low",
+   "share": 0.083,
+   "elements": [
+    {
+     "name": "lead portrait",
+     "shape": "circle",
+     "box": [
+      102,
+      10,
+      40,
+      40
+     ],
+     "grey": 2,
+     "text": null
+    },
+    {
+     "name": "lead level",
+     "shape": "rect",
+     "box": [
+      106,
+      42,
+      32,
+      16
+     ],
+     "grey": 4,
+     "text": null
+    },
+    {
+     "name": "lead name",
+     "shape": "rect",
+     "box": [
+      229.9,
+      10.5,
+      38.1,
+      14
+     ],
+     "grey": 2,
+     "text": 14
+    },
+    {
+     "name": "lead class",
+     "shape": "rect",
+     "box": [
+      201.9,
+      11,
+      10,
+      10
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "lead health",
+     "shape": "rect",
+     "box": [
+      148,
+      26,
+      122,
+      17
+     ],
+     "grey": 2,
+     "text": 14
+    },
+    {
+     "name": "lead experience",
+     "shape": "rect",
+     "box": [
+      148,
+      46,
+      122,
+      3
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "foe portrait",
+     "shape": "circle",
+     "box": [
+      426,
+      10,
+      40,
+      40
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "foe level and skull",
+     "shape": "rect",
+     "box": [
+      424,
+      42,
+      42,
+      16
+     ],
+     "grey": 4,
+     "text": null
+    },
+    {
+     "name": "foe name",
+     "shape": "rect",
+     "box": [
+      300,
+      10.5,
+      66.6,
+      14
+     ],
+     "grey": 3,
+     "text": 14
+    },
+    {
+     "name": "foe health",
+     "shape": "rect",
+     "box": [
+      298,
+      26,
+      122,
+      17
+     ],
+     "grey": 3,
+     "text": 14
+    },
+    {
+     "name": "the ground's step",
+     "shape": "rect",
+     "box": [
+      271,
+      14,
+      26,
+      26
+     ],
+     "grey": 4,
+     "text": 14
+    },
+    {
+     "name": "AUTO",
+     "shape": "rect",
+     "box": [
+      148,
+      58,
+      48,
+      20
+     ],
+     "grey": 4,
+     "text": 14
+    },
+    {
+     "name": "the eye",
+     "shape": "circle",
+     "box": [
+      209,
+      55,
+      26,
+      26
+     ],
+     "grey": 4,
+     "text": null
+    },
+    {
+     "name": "the press",
+     "shape": "circle",
+     "box": [
+      453,
+      167,
+      66,
+      66
+     ],
+     "grey": 2,
+     "text": null
+    }
+   ]
+  },
+  "banked": {
+   "title": "A reward banked in a fight",
+   "share": 0.098,
+   "elements": [
+    {
+     "name": "lead portrait",
+     "shape": "circle",
+     "box": [
+      102,
+      10,
+      40,
+      40
+     ],
+     "grey": 2,
+     "text": null
+    },
+    {
+     "name": "lead level",
+     "shape": "rect",
+     "box": [
+      106,
+      42,
+      32,
+      16
+     ],
+     "grey": 4,
+     "text": null
+    },
+    {
+     "name": "lead name",
+     "shape": "rect",
+     "box": [
+      229.9,
+      10.5,
+      38.1,
+      14
+     ],
+     "grey": 2,
+     "text": 14
+    },
+    {
+     "name": "lead class",
+     "shape": "rect",
+     "box": [
+      201.9,
+      11,
+      10,
+      10
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "lead health",
+     "shape": "rect",
+     "box": [
+      148,
+      26,
+      122,
+      17
+     ],
+     "grey": 2,
+     "text": 14
+    },
+    {
+     "name": "lead experience",
+     "shape": "rect",
+     "box": [
+      148,
+      46,
+      122,
+      3
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "foe portrait",
+     "shape": "circle",
+     "box": [
+      426,
+      10,
+      40,
+      40
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "foe level and skull",
+     "shape": "rect",
+     "box": [
+      424,
+      42,
+      42,
+      16
+     ],
+     "grey": 4,
+     "text": null
+    },
+    {
+     "name": "foe name",
+     "shape": "rect",
+     "box": [
+      300,
+      10.5,
+      66.6,
+      14
+     ],
+     "grey": 3,
+     "text": 14
+    },
+    {
+     "name": "foe health",
+     "shape": "rect",
+     "box": [
+      298,
+      26,
+      122,
+      17
+     ],
+     "grey": 3,
+     "text": 14
+    },
+    {
+     "name": "the ground's step",
+     "shape": "rect",
+     "box": [
+      271,
+      14,
+      26,
+      26
+     ],
+     "grey": 4,
+     "text": 14
+    },
+    {
+     "name": "AUTO",
+     "shape": "rect",
+     "box": [
+      148,
+      58,
+      48,
+      20
+     ],
+     "grey": 4,
+     "text": 14
+    },
+    {
+     "name": "the eye",
+     "shape": "circle",
+     "box": [
+      209,
+      55,
+      26,
+      26
+     ],
+     "grey": 4,
+     "text": null
+    },
+    {
+     "name": "the press",
+     "shape": "circle",
+     "box": [
+      453,
+      167,
+      66,
+      66
+     ],
+     "grey": 2,
+     "text": null
+    },
+    {
+     "name": "a banked reward",
+     "shape": "rect",
+     "box": [
+      452,
+      64,
+      108,
+      24
+     ],
+     "grey": 4,
+     "text": 14
+    }
+   ]
+  },
+  "keeper": {
+   "title": "A keeper",
+   "share": 0.084,
+   "elements": [
+    {
+     "name": "lead portrait",
+     "shape": "circle",
+     "box": [
+      102,
+      10,
+      40,
+      40
+     ],
+     "grey": 2,
+     "text": null
+    },
+    {
+     "name": "lead level",
+     "shape": "rect",
+     "box": [
+      106,
+      42,
+      32,
+      16
+     ],
+     "grey": 4,
+     "text": null
+    },
+    {
+     "name": "lead name",
+     "shape": "rect",
+     "box": [
+      229.9,
+      10.5,
+      38.1,
+      14
+     ],
+     "grey": 2,
+     "text": 14
+    },
+    {
+     "name": "lead class",
+     "shape": "rect",
+     "box": [
+      201.9,
+      11,
+      10,
+      10
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "lead health",
+     "shape": "rect",
+     "box": [
+      148,
+      26,
+      122,
+      17
+     ],
+     "grey": 2,
+     "text": 14
+    },
+    {
+     "name": "lead experience",
+     "shape": "rect",
+     "box": [
+      148,
+      46,
+      122,
+      3
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "foe portrait",
+     "shape": "circle",
+     "box": [
+      422.5,
+      6.5,
+      47.0,
+      47.0
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "foe level and skull",
+     "shape": "rect",
+     "box": [
+      424,
+      42,
+      42,
+      16
+     ],
+     "grey": 4,
+     "text": null
+    },
+    {
+     "name": "foe name",
+     "shape": "rect",
+     "box": [
+      300,
+      10.5,
+      57.1,
+      14
+     ],
+     "grey": 3,
+     "text": 14
+    },
+    {
+     "name": "foe health",
+     "shape": "rect",
+     "box": [
+      298,
+      26,
+      122,
+      17
+     ],
+     "grey": 3,
+     "text": 14
+    },
+    {
+     "name": "the ground's step",
+     "shape": "rect",
+     "box": [
+      271,
+      14,
+      26,
+      26
+     ],
+     "grey": 4,
+     "text": 14
+    },
+    {
+     "name": "AUTO",
+     "shape": "rect",
+     "box": [
+      148,
+      58,
+      48,
+      20
+     ],
+     "grey": 4,
+     "text": 14
+    },
+    {
+     "name": "the eye",
+     "shape": "circle",
+     "box": [
+      209,
+      55,
+      26,
+      26
+     ],
+     "grey": 4,
+     "text": null
+    },
+    {
+     "name": "the press",
+     "shape": "circle",
+     "box": [
+      453,
+      167,
+      66,
+      66
+     ],
+     "grey": 2,
+     "text": null
+    }
+   ]
+  },
+  "fallen": {
+   "title": "The lead fallen",
+   "share": 0.026,
+   "elements": [
+    {
+     "name": "lead portrait",
+     "shape": "circle",
+     "box": [
+      102,
+      10,
+      40,
+      40
+     ],
+     "grey": 2,
+     "text": null
+    },
+    {
+     "name": "lead level",
+     "shape": "rect",
+     "box": [
+      106,
+      42,
+      32,
+      16
+     ],
+     "grey": 4,
+     "text": null
+    },
+    {
+     "name": "lead name",
+     "shape": "rect",
+     "box": [
+      229.9,
+      10.5,
+      38.1,
+      14
+     ],
+     "grey": 2,
+     "text": 14
+    },
+    {
+     "name": "lead class",
+     "shape": "rect",
+     "box": [
+      201.9,
+      11,
+      10,
+      10
+     ],
+     "grey": 3,
+     "text": null
+    },
+    {
+     "name": "lead health",
+     "shape": "rect",
+     "box": [
+      148,
+      26,
+      122,
+      17
+     ],
+     "grey": 2,
+     "text": 14
+    },
+    {
+     "name": "lead experience",
+     "shape": "rect",
+     "box": [
+      148,
+      46,
+      122,
+      3
+     ],
+     "grey": 3,
+     "text": null
+    }
+   ]
+  },
+  "return": {
+   "title": "The return panel, at load",
+   "share": 0.034,
+   "elements": [
+    {
+     "name": "Reveal",
+     "shape": "rect",
+     "box": [
+      214,
+      246,
+      140,
+      44
+     ],
+     "grey": 2,
+     "text": 17
+    }
+   ]
+  }
+ }
+}

@@ -5462,6 +5462,19 @@ The script is `tools/ui/hud_base_finish.py`.
 - **Content check:** PASS.
 - **Next:** research's pick in pairs, then the finish of the one picked. Faber builds after piece 1 is judged in play, as research said.
 
+### Research's pick: K2, Hued (Quaestor, 2026-11-27, 01:38; alone, with Gemini stopped; `piece2_finish/K1_*` and `K2_*` in both orders, and `build/scratch/modulo/piece2f/beside_shipped.png`)
+
+- **Why K2:**
+  - The shipped frame gives every system its own hue, and so does our adopted study (`docs/research/anime-crusaders-ui-surface.md`, "Our adaptation").
+  - K1's steel return panel reads as two black slabs on a whole screen, which is the director's "too ... black, somber" (said six times).
+  - Both orders agree.
+  - The machines' names, now bare stroked text, answer the polish-later note on the base's signs.
+- **Must-fixes for the build:**
+  1. **Every line of text** is 14 px or more on the smallest phone (ui.md, rule 1). The return panel's subtitle, "Tap anywhere to close", the battery's line and the stones' Low, Mid and High read at about 5 to 8 px. Cut words before shrinking them.
+  2. **The largest gain is the one big number,** as Tally was picked: +1,240 reads first at the squint, bigger than WELCOME BACK.
+  3. **The hue reaches each large panel's ground, not only its rim.** The return's two cards are slate tinted gold and azure, as the shipped frame tints a panel by its system.
+  4. **The dock takes the same rule:** each tile's rim is in its icon's hue.
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

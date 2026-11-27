@@ -11,6 +11,7 @@ and Assembly.Serialize(model) into src/storage/<Name>.rbxm. Check the build with
     lune run tools/checks/models_offline.luau <Name>            (after: the template that ships is what it builds)
 
 Run:  py tools/upload/stage_model.py Kirra
+      py tools/upload/stage_model.py Kirra make   (a delivery in a folder of its own: build/handoff/Kirra/make/)
 """
 import json
 import sys
@@ -20,11 +21,13 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def main() -> int:
-    if len(sys.argv) != 2:
+    if len(sys.argv) not in (2, 3):
         print(__doc__)
         return 2
     name = sys.argv[1]
     home = ROOT / "build" / "handoff" / name
+    if len(sys.argv) == 3:
+        home = home / sys.argv[2]
     source = home / f"{name}.recipe.json"
     if not source.is_file():
         print(f"{source.relative_to(ROOT).as_posix()}: no recipe")

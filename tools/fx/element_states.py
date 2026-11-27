@@ -18,9 +18,7 @@ hits, and takes a shape no hit uses (a hit is a white star, a ring and radial sp
 player's camera the body hides the floor.
 
 Hero shapes (one each, with a direction and an acceleration):
-- Burn: a steady stream of few tapered embers, each about the size of the foe's hand, rising off the head's top and
-  the shoulders' tops beside the mask, lifted and drifting outward, so they live against the sky over and beside the
-  silhouette; a few larger still.
+- Burn: AR69 replaced its embers with flame tongues, written by tools/fx/ar69_burn.py (git log has this file's).
 - Chill: no look. Research's pass of 2026-11-26 dropped its crust on the legs (the lead hides them at the player's
   camera): Freeze carries Frost alone, and a chill keeps its slow and its numbers.
 - Freeze: a shell snapping up from the street and shut in 6 frames, its edge flashing once, held clear. Stand-in: the
@@ -48,7 +46,6 @@ ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "build" / "handoff" / "States" / "fx"
 FAR = 3600  # frames: a look holds to here, and FighterController ends it when its state ends
 
-FIRE = ((255, 233, 176), (255, 138, 61))  # core, body (Config.UIKit's Fire)
 FROST = ((244, 253, 255), (143, 227, 255))
 SAP_RIM = (211, 186, 255)  # Sap's rim, its disc dark in the picture: Void's violet (#B58CFF) lifted toward white to the
 # grey pass's value (about 200 of 255), so the rim reads on the dark robe as it did in grey; the violet only this rim
@@ -59,7 +56,7 @@ SHUT = 6  # frames: the shell snaps shut (0.1 s)
 ROOT_HEIGHT = 3  # studs: the root over the foot, at scale 1
 
 
-COLOURED = {"StateBurn", "StateFreeze", "FreezeBreak", "StateSap"}  # past research's grey pass, in their colour (2026-11-26)
+COLOURED = {"StateFreeze", "FreezeBreak", "StateSap"}  # past research's grey pass, in their colour (2026-11-26)
 
 
 def effect(name, why, rows):
@@ -68,53 +65,6 @@ def effect(name, why, rows):
 
 def held(value):
     return [[0, value], [FAR, value]]
-
-
-# Burn ------------------------------------------------------------------------------------------------------------
-CROWN = 2.9  # studs over the root: at the Brawler's mask top (2.95), so an ember is out over it at once
-SHOULDER = (1.55, 1.0)  # the arm's top, beside the mask (its half width 1.35), the body's outline from behind
-
-
-def ember(at, radius, rate, size, drift, why):
-    return {
-        "Kind": "Emitter",
-        "Body": "HumanoidRootPart",
-        "Image": "fx_ember",
-        "Emitter": {
-            "FlipbookLayout": "Grid2x2",  # one blob an ember (the sheet's four cells), as the kit's note says
-            "FlipbookMode": "Loop",
-            "FlipbookStartRandom": True,
-            "FlipbookFramerate": [0, 0],
-            "EmissionDirection": "Top",
-            "SpreadAngle": [12, 12],
-            "Lifetime": [1.1, 1.5],
-            "Speed": [1.8, 2.4],
-            "Drag": 1.0,
-            "Acceleration": v3(drift, 2.6, 0),  # lifted, and drifting outward, away from the face
-            "Orientation": "VelocityParallel",
-            "Size": [[0, size * 0.6], [0.12, size], [0.7, size * 0.8], [1, 0]],
-            "Squash": [[0, -1.0], [1, -0.4]],
-            "Transparency": [[0, 0.2], [0.1, 0], [0.55, 0.05], [0.65, 0.3], [0.75, 0.1], [1, 1]],  # steady, one late flicker
-            "Color": [[0, c3(FIRE[0])], [0.2, c3(FIRE[1])], [1, c3(FIRE[1])]],
-            "LightEmission": 0.25,  # mostly laid over, not added: at 1 the orange added onto the pale sky read cream (21:36)
-            "LightInfluence": 0,
-            "ZOffset": 0.3,
-        },
-        "Emit": [[0, 1]],
-        "Tracks": {"At": held(at), "Radius": held(radius), "Rate": held(rate)},
-        "Why": why,
-    }
-
-
-def burn():
-    rows = {
-        "Crown": ember(v3(0, CROWN, 0), 0.7, 1.4, 0.9, 0, "the hero: embers about the size of the foe's hand, rising off the head's top, over the silhouette"),
-        "CrownBig": ember(v3(0, CROWN, 0), 0.5, 0.35, 1.2, 0, "a few larger"),
-    }
-    for name, side in (("Left", -1), ("Right", 1)):
-        rows[f"Shoulder{name}"] = ember(v3(SHOULDER[0] * side, SHOULDER[1], 0), 0.4, 1.0, 0.9, 0.6 * side,
-                                        "embers off the arm's top, beside the mask, drifting outward")
-    return effect("StateBurn", "Burn (Fire), worn while it holds: a steady stream of embers off the head's and shoulders' outline (AR48, Scintilla's grey, research's rule).", rows)
 
 
 # Freeze -----------------------------------------------------------------------------------------------------
@@ -247,7 +197,7 @@ def mote_rim(out=PICTURES, side=128):
 
 
 def build():
-    looks = {"StateBurn": burn(), "StateFreeze": freeze(), "FreezeBreak": freeze_break(), "StateSap": sap()}
+    looks = {"StateFreeze": freeze(), "FreezeBreak": freeze_break(), "StateSap": sap()}
     return looks
 
 

@@ -67,7 +67,11 @@ STROKE = 2  # the lance's and its core's beams over the target's stroke. The tar
 # reaches 1.6 times its width and its bloom spreads the hot middle further, where a beam stops at its width: at the
 # stroke's own width the lance read as a hairline in play, at twice it reads as the target's band (round 2, AR7,
 # 2026-11-27; a softer glow picture and a brighter lance, each tried first, changed nothing)
-HOLD, GONE = 6, 20  # frames from Stamp: the lance whole to HOLD, burnt down to the foot by GONE
+HOLD, GONE = 6, 20  # frames from Stamp: the lance whole to HOLD; the lantern's halo and flare gone by GONE
+CLEAR = 11  # the lance and its glow gone by this frame from Stamp, as the target's (research's pass on round 2, AR7,
+# 2026-11-27, 17:18: burning down to GONE it lingered at 2.4 times the target's gold on 11, smearing the slam's moment)
+CORE_HOT = (255, 228, 166)  # the lantern's core on Stamp: white-gold, the target's additive amber blown out (same pass:
+# the lantern's own cyan, jolted brighter on Stamp, read as its resting glow; it now rests while the flare is gold)
 
 
 def trail(body, beat, keys_width, lag, why):
@@ -116,17 +120,19 @@ def challenge():
         "From": "Lift",
         "Part": ["Lamplighter_Lantern"],
         "Tracks": {"Glow": [[-4, LANTERN_COLD, "Quad Out"], [3, LANTERN_HOT, "Sine InOut"], [stamp, LANTERN_HOT * 0.85, "Quad Out"],
-                            [stamp + 1, LANTERN_HOT * 1.3, "Quad Out"], [stamp + 5, LANTERN_HOT * 0.8, "Quad In"], [30, LANTERN_COLD]]},
-        "Why": "the lantern flares as it lifts its face to you, it has heard you, and jolts brighter with the stamp",
+                            [stamp + 1, LANTERN_COLD * 0.5, "Linear"], [stamp + 9, LANTERN_COLD * 0.5, "Quad In"],
+                            [stamp + 16, LANTERN_COLD]]},
+        "Why": "the lantern flares as it lifts its face to you, it has heard you; on the stamp its cyan rests under the "
+               "gold flare, so the core reads white-gold, then it comes back cold",
     }
     beam = {"FaceCamera": True, "LightEmission": 1, "LightInfluence": 0, "TextureMode": "Stretch", "TextureSpeed": 0,
             "Segments": 1}
 
     def strength(base):
         """A layer's transparency over its life, from the target's strength: in over 2 frames, whole to HOLD, then
-        falling away by GONE; base its strength at the peak."""
+        falling away by CLEAR; base its strength at the peak."""
         return [[0, round(1 - 0.35 * base, 3), "Linear"], [2, round(1 - base, 3), "Linear"],
-                [HOLD, round(1 - base, 3), "Quad Out"], [12, round(1 - 0.37 * base, 3), "Linear"], [GONE, 1]]
+                [HOLD, round(1 - base, 3), "Quad In"], [CLEAR, 1]]
 
     def glow(r):  # a card whose light reaches as far as the target's glow of radius r (target studs)
         return round(2 * r * SEEN / FALL, 2)
@@ -141,7 +147,7 @@ def challenge():
                  "Why": "where the pole struck the street, held: the lance's foot (no width, never drawn)"},
         "Wick": {"Kind": "Beam", "From": "Stamp", "Body": "Lantern", "Low": "Foot.Low", "Image": "fx_beam", "Grey": "",
                  "Beam": beam, "Tracks": {"At": [[0, v3(0, 0, 0)]], "Width": [[0, 0]], "Top": [[0, OVER]],
-                                          "Reach": [[0, 1, "Linear"], [HOLD, 1, "Quad In"], [GONE, 0]]},
+                                          "Reach": [[0, 1, "Linear"], [HOLD, 1, "Quad In"], [CLEAR, 0.5]]},
                  "Why": "the lance's top: out of the lantern, then burning down the lance to the foot (no width, never drawn)"},
     }
     # (name, colour, width at the lantern, at the foot, peak strength, Brightness, stroke, why); widths in target studs
@@ -173,8 +179,8 @@ def challenge():
                                  "the lantern answers: a warm halo round it as the lance leaves, dying as it burns down "
                                  "(the target's 1.2 studs of radius)")
     rows["Flare"] = lantern_light(((0, glow(0.36)), (2, glow(0.5)), (GONE, glow(0.36))),
-                                  ((0, 0.5), (2, 0), (HOLD, 0), (GONE, 1)), AMBER, 2,
-                                  "the lantern's own flare, hot at its heart, in front of the lantern")
+                                  ((0, 0.5), (2, 0), (HOLD, 0), (GONE, 1)), CORE_HOT, 2,
+                                  "the lantern's core on the stamp, white-gold, in front of the lantern")
 
     def on_street(row):
         row.update({"From": "Stamp", "Body": "PoleFoot", "Ground": True, "Hold": True})

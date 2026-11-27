@@ -31,12 +31,12 @@
           ],
           [
             15,
-            3.9000000000000004,
-            "Quad Out"
+            0.6,
+            "Linear"
           ],
           [
-            19,
-            2.4000000000000004,
+            23,
+            0.6,
             "Quad In"
           ],
           [
@@ -45,7 +45,7 @@
           ]
         ]
       },
-      "Why": "the lantern flares as it lifts its face to you, it has heard you, and jolts brighter with the stamp"
+      "Why": "the lantern flares as it lifts its face to you, it has heard you; on the stamp its cyan rests under the gold flare, so the core reads white-gold, then it comes back cold"
     },
     "Foot": {
       "Kind": "Beam",
@@ -133,7 +133,7 @@
         "Top": [
           [
             0,
-            2.75
+            0
           ]
         ],
         "Reach": [
@@ -148,8 +148,8 @@
             "Quad In"
           ],
           [
-            20,
-            0
+            11,
+            0.5
           ]
         ]
       },
@@ -223,15 +223,10 @@
           [
             6,
             0.7,
-            "Quad Out"
+            "Quad In"
           ],
           [
-            12,
-            0.889,
-            "Linear"
-          ],
-          [
-            20,
+            11,
             1
           ]
         ],
@@ -290,17 +285,17 @@
         "Width": [
           [
             0,
-            0.8,
+            1.6,
             "Linear"
           ],
           [
             4,
-            0.8,
+            1.6,
             "Sine InOut"
           ],
           [
             16,
-            0.4
+            0.8
           ]
         ],
         "Transparency": [
@@ -317,15 +312,10 @@
           [
             6,
             0.1,
-            "Quad Out"
+            "Quad In"
           ],
           [
-            12,
-            0.667,
-            "Linear"
-          ],
-          [
-            20,
+            11,
             1
           ]
         ],
@@ -384,17 +374,17 @@
         "Width": [
           [
             0,
-            0.3,
+            0.6,
             "Linear"
           ],
           [
             4,
-            0.3,
+            0.6,
             "Sine InOut"
           ],
           [
             16,
-            0.15
+            0.3
           ]
         ],
         "Transparency": [
@@ -411,15 +401,10 @@
           [
             6,
             0,
-            "Quad Out"
+            "Quad In"
           ],
           [
-            12,
-            0.63,
-            "Linear"
-          ],
-          [
-            20,
+            11,
             1
           ]
         ],
@@ -438,82 +423,80 @@
       "Why": "its gold core, hot at the lantern: drawn down from the lantern to the foot, speeding up, then burnt out from the top down"
     },
     "Halo": {
-      "Kind": "Card",
+      "Kind": "Emitter",
       "From": "Stamp",
       "Body": "Lantern",
       "Image": "fx_glow",
-      "Color": {
-        "Color3": [
-          224,
-          122,
-          22
-        ]
-      },
-      "Tracks": {
-        "At": [
-          [
-            0,
-            {
-              "Vector3": [
-                0,
-                0,
-                0
-              ]
-            }
-          ]
+      "Grey": "",
+      "Emitter": {
+        "Lifetime": [
+          0.3333,
+          0.3333
+        ],
+        "Speed": [
+          0.01,
+          0.01
+        ],
+        "EmissionDirection": "Top",
+        "LockedToPart": true,
+        "Rotation": [
+          0,
+          0
+        ],
+        "RotSpeed": [
+          0,
+          0
         ],
         "Size": [
           [
-            0,
-            11.11,
-            "Quad Out"
+            0.0,
+            11.11
           ],
           [
-            6,
-            13.33,
-            "Linear"
+            0.3,
+            13.33
           ],
           [
-            20,
+            1.0,
             10.0
           ]
         ],
         "Transparency": [
           [
-            0,
-            0.75,
-            "Linear"
+            0.0,
+            0.75
           ],
           [
-            2,
-            0.45,
-            "Linear"
+            0.1,
+            0.45
           ],
           [
-            6,
-            0.45,
-            "Quad In"
+            0.3,
+            0.45
           ],
           [
-            20,
+            1.0,
             1
           ]
-        ]
+        ],
+        "Color": {
+          "Color3": [
+            224,
+            122,
+            22
+          ]
+        },
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "Brightness": 1,
+        "ZOffset": 2.5
       },
-      "Why": "the lantern answers: a warm halo round it as the lance leaves, dying as it burns down (the target's 1.2 studs of radius: its light shows round the lantern, which hides its middle)"
-    },
-    "Flare": {
-      "Kind": "Card",
-      "From": "Stamp",
-      "Body": "Lantern",
-      "Image": "fx_glow",
-      "Color": {
-        "Color3": [
-          255,
-          117,
-          23
+      "Emit": [
+        [
+          0,
+          1
         ]
-      },
+      ],
       "Tracks": {
         "At": [
           [
@@ -526,46 +509,100 @@
               ]
             }
           ]
+        ]
+      },
+      "Why": "the lantern answers: a warm halo round it as the lance leaves, dying as it burns down (the target's 1.2 studs of radius)"
+    },
+    "Flare": {
+      "Kind": "Emitter",
+      "From": "Stamp",
+      "Body": "Lantern",
+      "Image": "fx_glow",
+      "Grey": "",
+      "Emitter": {
+        "Lifetime": [
+          0.3333,
+          0.3333
+        ],
+        "Speed": [
+          0.01,
+          0.01
+        ],
+        "EmissionDirection": "Top",
+        "LockedToPart": true,
+        "Rotation": [
+          0,
+          0
+        ],
+        "RotSpeed": [
+          0,
+          0
         ],
         "Size": [
           [
-            0,
-            4.0,
-            "Quad Out"
+            0.0,
+            4.0
           ],
           [
-            2,
-            5.56,
-            "Linear"
+            0.1,
+            5.56
           ],
           [
-            20,
+            1.0,
             4.0
           ]
         ],
         "Transparency": [
           [
-            0,
-            0.5,
-            "Linear"
+            0.0,
+            0.5
           ],
           [
-            2,
-            0,
-            "Linear"
+            0.1,
+            0
           ],
           [
-            6,
-            0,
-            "Quad In"
+            0.3,
+            0
           ],
           [
-            20,
+            1.0,
             1
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            255,
+            228,
+            166
+          ]
+        },
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "Brightness": 2,
+        "ZOffset": 2.5
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
           ]
         ]
       },
-      "Why": "the lantern's own flare, hot at its heart (inside the lantern, only its rim shows: its heart needs a card drawn toward the camera)"
+      "Why": "the lantern's core on the stamp, white-gold, in front of the lantern"
     },
     "Pool": {
       "Kind": "Emitter",

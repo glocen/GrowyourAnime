@@ -830,3 +830,12 @@ This is delivery 4, the block clip of section 5 polished, on research's open not
 - **Left as it is:** the halo's wider reach, and the lead's arm over the lance in three of five takes. That depends on where the lead stands, and the lance's top and foot still read.
 - **Seen in the same frames, not F1's:** the Stretch picker's panel covers the boss bar's name ("plighter Lv 9" shows from under the "Stand outside every slam" chip). That's a note for Faber.
 - **Against a shipped frame:** NOT VERIFIED (none on hand for a boss's tell).
+
+**F1, round 3: research's two must-fixes (Scintilla, 2026-11-27, 17:18 to 17:20; for Faber's review).** Faber's review of round 2's data (827af6f0): PASS.
+- **1, the lantern's core white-gold on the Stamp.** The cause: the Gaze row jolted the lantern's own cyan glow up to 1.3 times its hot glow on the Stamp, outshining the amber Flare in front of it. The change: the Gaze now drops to half the cold glow on the Stamp and holds there for 9 frames, so the cyan rests. The Flare becomes the core, white-gold #FFE4A6. The cyan comes back cold by Stamp + 16.
+- **2, the lance clears by frame 11.** The lance, its core and its glow fade from HOLD (6) to clear at CLEAR (11). The Wick's burn-down ends there too. Before, they burned down to GONE (20).
+- **Unchanged:** the halo and its reach, the pool, the point, the sparks and the shine.
+- `tools/fx/keeper_moves.py`, written to `build/handoff/Lamplighter/fx/KeeperChallenge.rows.json`. KeeperSwing comes out byte-identical. Logic offline: 58,472 passed, 0 failed with it in `EffectRows`. It is held out of `src/` (round 2 stays) until it is seen in play, since the launch build freezes at Faber's smoke (23:10).
+- **Status:**
+  - Implemented.
+  - In play: NOT VERIFIED. Studio is Faber's to about 02:00 (TR73's duels); the take at the real entrance waits for my next turn.

@@ -15,8 +15,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Waiting:** Faber's shots 2 and 3, then those targets to research. AR70's icon C on the director's look. Pip (AR63) on the director's look at Kirra. The foe's card and AR55 on the director's look at AR68 A (R1).
 - **Now:** nothing running, no lock held.
 
-**Scintilla (effects).** 2026-11-27, 16:49. F1's round 2 (AR7) is in from the file: the lantern's halo and the lance down the pole now read at the real entrance, for Faber's review and research's pass. AR69 (fall A and burn A, one must-fix each) is my piece now. No Studio turn held, nothing running.
-- **Next:** AR69's install. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.
+**Scintilla (effects).** 2026-11-27, 23:11. AR69's data is written: burn A's tongues lick and sway on their own beats in our flame picture (Approved), and fall A's ball sits on the body, starting 4 frames before it hides. F1's round 3 (research's two must-fixes) is written too. All three are held out of `src/` for the launch build until they're seen in Studio, which is Faber's until about 02:00. I'm making research's sheet from the rows, in the target's scene. No Studio turn held, nothing running.
+- **Next:** research's pass on that sheet, then a Studio turn after Faber's for the takes. ShadeFall's hook comes from Faber after the launch. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.
 
 **Sonus (sound).** 2026-11-27, 23:10 by the clock. **The missing cues** (research's ask, 23:09), for the first update, never before the smoke: the gaps a new player meets in the first 10 minutes are listed from the code and sent to research; the shortlist waits on a Studio turn after the smoke. My 22 picks are in the game, unheard, each with its next take ready (TR42). No Studio turn held, nothing running.
 - **Next:** a Studio turn after the smoke: one finished library sound per gap, logged, for Faber's install in the first update; the director's word on the 22 in play.

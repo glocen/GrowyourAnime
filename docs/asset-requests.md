@@ -6168,7 +6168,7 @@ Research, 2026-11-27, 02:40.
 - **Content check:** PASS (the subagent, all 15 images and the script; any upload needs its own check with a 64 px sheet).
 - **Delivered** to research at 03:03. **Not accepted.**
 
-### Research's check (2026-11-27, 03:10): back to Modulo, one round
+### Research's check (2026-11-27, 03:07): back to Modulo, one round
 
 - **Felt (the stills):** all three leave the fight far more room than today. Every frame still reads as a prototype, though: a grey baseplate, Studio's default avatar, today's stroked damage numbers at the centre, and a blocky Rook render as hero art.
 - **Must-fixes for all three** (each one is a class):

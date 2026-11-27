@@ -4,7 +4,7 @@ py tools/blender/kirra_combo_fx.py measure
 py tools/blender/kirra_combo_fx.py sweeps
 py tools/blender/kirra_combo_fx.py rows build/handoff/Kirra/fx
 
-Plain Python, no Blender. Its numbers come from the delivered clip (build/handoff/Kirra/clips/Kirra_Combo.json, the
+Plain Python, no Blender. Its numbers come from the delivered clip (build/handoff/Kirra/make/clips/Kirra_Combo.json, the
 Transforms the game plays) on the recipe's blade joints, and from the action's own row (read only:
 src/shared/Definitions/Actions.luau, KirraCombo's Beats).
 - measure: each blade's grip and point in her root's frame through the clip, with the points' speed.
@@ -26,7 +26,7 @@ import combo_targets as ct  # noqa: E402  (every target the cuts land on, and ru
 
 ROOT = Path(__file__).resolve().parents[2]
 RECIPE = ROOT / "build" / "handoff" / "Kirra" / "Kirra.recipe.json"
-CLIP = ROOT / "build" / "handoff" / "Kirra" / "clips" / "Kirra_Combo.json"
+CLIP = ROOT / "build" / "handoff" / "Kirra" / "make" / "clips" / "Kirra_Combo.json"
 ACTIONS = ROOT / "src" / "shared" / "Definitions" / "Actions.luau"  # read only
 ACTION = "KirraCombo"
 BEATS = {"Dash": 0, "Hit1": 12, "Hit2": 26, "Hit3": 56, "Sheathe": 64}  # the clip's markers, and the action's Beats

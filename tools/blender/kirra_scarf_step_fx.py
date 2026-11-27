@@ -4,7 +4,7 @@ py tools/blender/kirra_scarf_step_fx.py rows <out_dir>
 blender.exe -b --factory-startup --python tools/blender/kirra_scarf_step_fx.py -- <out_dir> preview
 
 - rows (plain Python, no Blender): KirraScarfStep.rows.json. Schema rows/1 (docs/engineering-plan.md, "The rows
-  contract"), in grey. Its numbers come from the delivered clip, build/handoff/Kirra/clips/Kirra_ScarfStep.json, the
+  contract"), in grey. Its numbers come from the delivered clip, build/handoff/Kirra/make/clips/Kirra_ScarfStep.json, the
   Transforms the game plays, chained on the recipe's joints: the scarf's knot and tip in her root's frame, frame by frame.
   The Shade's chest is the clip's, in the effect's foot's frame as the game sets it (Effects.Play: her root at the
   action's start, set down to the floor, facing as she does; she faces the Shade). The skewer's two takes (research's
@@ -33,7 +33,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 RECIPE = ROOT / "build" / "handoff" / "Kirra" / "Kirra.recipe.json"
-CLIP = ROOT / "build" / "handoff" / "Kirra" / "clips" / "Kirra_ScarfStep.json"
+CLIP = ROOT / "build" / "handoff" / "Kirra" / "make" / "clips" / "Kirra_ScarfStep.json"
 FXKIT = ROOT / "src" / "shared" / "Config" / "FxKit.luau"  # read only: the kit's names, for the file's own check
 ACTION = "KirraScarfStep"
 BLINK, LAND, CUT = 13, 16, 18  # the clip's markers (AR10, section 4), checked against the clip

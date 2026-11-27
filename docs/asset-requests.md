@@ -5496,6 +5496,20 @@ The script is `tools/ui/hud_base_finish.py`.
   - Each signature's own moment is rendered from its Voidkin's model and effect. For the Haymaker: Rook's fist and forearm driving at the camera through its ember burst.
   - The shared cooldown stays.
 
+### Modulo: K2's four must-fixes (2026-11-27, 01:45; started 01:41)
+
+K2's files replace the takes in `build/handoff/UI/hud_overhaul/piece2_finish/`: `K2_base` (with `_small` and `_close`), `K2_return` (with `_small`) and `dock_states.png`. K1's files left the handoff and stay in git (975514ec).
+1. **Every line is 14 px or more on the smallest phone,** which is 21 points in the 852 frame. The script measures each word and prints the smallest: 14.0 px in both frames.
+   - Words were cut before any shrinking. The subtitle is now "Your base kept working.", and the battery's line "Battery full" (Credits above it says what the spare became). The strip's power reads "10/91 kW", used of made, over its bar.
+   - The machines' names and the long press's word went to 21 points, each name placed clear of its neighbours.
+   - **Outside this piece:** on the smallest phone, the lead card (piece 1's, passed) measures 6.7 px for its level, 9.0 px for ROOK and 7.0 px for its health. Sent to research.
+2. **+1,240 is the one big number:** 52 points beside a 60-point coin, with WELCOME BACK at 24.
+3. **The return's cards sit on tinted slate:** gold under the Credits card, azure under the list.
+4. **The dock's tiles take their icons' hues:** blue for the base, gold for Home, coral for Play. The tile you're on is lit from inside, with its rim brightest.
+- **Beside the shipped frame:** both frames at the smallest phone, beside Anime Crusaders X's lobby, in `build/scratch/modulo/piece2f/beside_shipped_k2.png` (internal).
+- **Content check:** PASS.
+- **Next:** research's verdict.
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

@@ -15,13 +15,13 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Waiting:** AR70's three thumbnails on the icon's pick. Pip (AR63) on the director's look at Kirra in the game. The foe's card in A's language and AR55's return card on the director's look at AR68 A in the game (R1).
 - **Now:** nothing running, no lock held. A new piece from research or the director starts at once.
 
-**Scintilla (effects).** 2026-11-27, 14:41. AR69: research picked fall A and burn A, with one must-fix each; the install is my piece now. Rung 4's gold at night now reads gold in play (AR61), for Faber's review. No Studio turn held, nothing running.
-- **Next:** AR69's install. F1's round 2 waits for a Festival turn; AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.
+**Scintilla (effects).** 2026-11-27, 16:49. F1's round 2 (AR7) is in from the file: the lantern's halo and the lance down the pole now read at the real entrance, for Faber's review and research's pass. AR69 (fall A and burn A, one must-fix each) is my piece now. No Studio turn held, nothing running.
+- **Next:** AR69's install. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.
 
 **Sonus (sound).** 2026-11-27, 14:15 by the clock. **Music: stopped** on the director's word (14:15): the director handles the tracks, and none of my 12 unheard APM picks is offered (TR35). My 22 picks are in the game, unheard, each with its next take ready (TR42). No Studio turn held, nothing running.
 - **Next:** the director's word on the 22 in play (a bad one takes its next take); then research's next cue list.
 
-**Turns.** Studio: one at a time while memory is short. **Free from 16:13 (2026-11-27):** Faber's turn (14:41 to 16:13, TR73 and AR68 A) ended, its playtest stopped, nothing saved; Scintilla's F1 round 2 may take the Festival turn. Blender: headless only while Studio is open, with 2 GB free. Timing tests: nobody.
+**Turns.** Studio: one at a time while memory is short. **Free from 16:49 (2026-11-27):** Scintilla's Festival turn (16:13 to 16:49, F1's round 2) ended, its playtest stopped and Studio closed with nothing saved. Blender: headless only while Studio is open, with 2 GB free. Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

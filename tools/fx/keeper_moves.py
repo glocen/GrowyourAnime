@@ -31,8 +31,15 @@ its grey.
 F1's sizes are the target's times SEEN. The target was drawn at 66 px a stud (keeper_flare_targets.py, PX), but at the
 keeper's entrance the game draws about 26: the lantern, 3.5 to 4 studs across, is about 90 px wide in the target's own
 view and in today's take, and the lance's beam measures the same. Built at the target's studs, every layer stood at
-two fifths of its target and the lantern hid its halo (fix round 1, AR7, 2026-11-27). A card's light falls off at
-0.45 of its half-size (fx_glow), so a glow of the target's radius r is a card 2 r / 0.45 across.
+two fifths of its target and the lantern hid its halo (fix round 1, AR7, 2026-11-27). fx_glow's light falls off at
+0.45 of its half-size, so a glow of the target's radius r is a picture 2 r / 0.45 across.
+
+Round 2 (AR7, 2026-11-27), read in play at Stamp + 4 on the keeper itself: every row was drawn at its size, but none
+read. The halo and the flare were cards, and a card's picture is laid over the sky, never added to it (+17 red beside
+the lantern, nothing past 120 px), so they are now particles of added light drawn NEAR studs toward the camera. The
+lance's top stood OVER studs up the lantern's leaning axis, over the keeper's hat, so its body hid the whole lance:
+it now starts at the lantern's middle. And the lance and its core are STROKE times the target's stroke, which reads
+wider than its width (its soft edge and its bloom).
 """
 import json
 import sys
@@ -51,7 +58,15 @@ WARM = (224, 122, 22)  # C4's band #E07A16: the glow round the lance and the lan
 # off red)
 SEEN = 2.5  # the target's stud in the game's, at the keeper's entrance (above)
 FALL = 0.45  # fx_glow's falloff: its light at e^-1 this share of its half-size out
-OVER = round(1.1 * SEEN, 3)  # studs over the lantern's middle the lance starts, out of its top (the target)
+OVER = 0  # studs over the lantern's middle the lance starts. The target's 1.1 (times SEEN) went up the lantern's own
+# axis, which leans with the pole: at Stamp + 4 that top stood over the keeper's hat, and from the player's camera the
+# whole lance ran behind its head and body (round 2, AR7, 2026-11-27). From the lantern's middle it shows down the pole.
+NEAR = 2.5  # studs toward the camera the lantern's halo and flare are drawn: in front of the lantern (3.5 to 4 across),
+# behind the keeper's head (about 3.5 nearer than the lantern from the player's camera)
+STROKE = 2  # the lance's and its core's beams over the target's stroke. The target's line (paintover.streak, soft 0.6)
+# reaches 1.6 times its width and its bloom spreads the hot middle further, where a beam stops at its width: at the
+# stroke's own width the lance read as a hairline in play, at twice it reads as the target's band (round 2, AR7,
+# 2026-11-27; a softer glow picture and a brighter lance, each tried first, changed nothing)
 HOLD, GONE = 6, 20  # frames from Stamp: the lance whole to HOLD, burnt down to the foot by GONE
 
 
@@ -129,11 +144,12 @@ def challenge():
                                           "Reach": [[0, 1, "Linear"], [HOLD, 1, "Quad In"], [GONE, 0]]},
                  "Why": "the lance's top: out of the lantern, then burning down the lance to the foot (no width, never drawn)"},
     }
-    # (name, colour, width at the lantern, at the foot, peak strength, Brightness, why)
-    layers = (("Glow", WARM, 1.0, 0.7, 0.3, 1, "its glow in the air round it"),
-              ("Lance", AMBER, 0.32, 0.2, 0.9, 1.2, "the hero: a lance of warm light dropping out of the lantern down the pole"),
-              ("Core", GOLD, 0.12, 0.05, 1, 2.5, "its gold core, hot at the lantern"))
-    for name, colour, top, foot, base, bright, why in layers:
+    # (name, colour, width at the lantern, at the foot, peak strength, Brightness, stroke, why); widths in target studs
+    layers = (("Glow", WARM, 1.0, 0.7, 0.3, 1, 1, "its glow in the air round it"),
+              ("Lance", AMBER, 0.32, 0.2, 0.9, 1.2, STROKE, "the hero: a lance of warm light dropping out of the lantern down the pole"),
+              ("Core", GOLD, 0.12, 0.05, 1, 2.5, STROKE, "its gold core, hot at the lantern"))
+    for name, colour, top, foot, base, bright, stroke, why in layers:
+        top, foot = top * stroke, foot * stroke
         fade = strength(base)
         rows[name] = {
             "Kind": "Beam", "From": "Stamp", "Body": "Lantern", "Low": "Wick.High", "High": "Foot.Low",
@@ -142,16 +158,23 @@ def challenge():
             "Tracks": {"At": [[0, v3(0, 0, 0)]], "Width": thin(round(top * SEEN, 3)), "Transparency": strength(base),
                        "Reach": [[0, 0.12, "Quad In"], [3, 1]]},  # down the pole, speeding up: on the foot on 3
             "Why": why + ": drawn down from the lantern to the foot, speeding up, then burnt out from the top down"}
-    rows["Halo"] = {"Kind": "Card", "From": "Stamp", "Body": "Lantern", "Image": "fx_glow", "Color": c3(WARM), "Tracks": {
-        "At": [[0, v3(0, 0, 0)]], "Size": [[0, glow(1.0), "Quad Out"], [HOLD, glow(1.2), "Linear"], [GONE, glow(0.9)]],
-        "Transparency": [[0, 0.75, "Linear"], [2, 0.45, "Linear"], [HOLD, 0.45, "Quad In"], [GONE, 1]]},
-        "Why": "the lantern answers: a warm halo round it as the lance leaves, dying as it burns down (the target's 1.2 "
-               "studs of radius: its light shows round the lantern, which hides its middle)"}
-    rows["Flare"] = {"Kind": "Card", "From": "Stamp", "Body": "Lantern", "Image": "fx_glow", "Color": c3(AMBER), "Tracks": {
-        "At": [[0, v3(0, 0, 0)]], "Size": [[0, glow(0.36), "Quad Out"], [2, glow(0.5), "Linear"], [GONE, glow(0.36)]],
-        "Transparency": [[0, 0.5, "Linear"], [2, 0, "Linear"], [HOLD, 0, "Quad In"], [GONE, 1]]},
-        "Why": "the lantern's own flare, hot at its heart (inside the lantern, only its rim shows: its heart needs a card "
-               "drawn toward the camera)"}
+    def lantern_light(sizes, fades, colour, bright, why):
+        """One particle of light at the lantern, riding it from Stamp to GONE; sizes and fades are (frame, value) from
+        Stamp. Added light, never laid over (a card's picture only lays its colour over the sky), and drawn NEAR studs
+        toward the camera, so the lantern doesn't hide its middle (round 2, AR7, 2026-11-27)."""
+        return {"Kind": "Emitter", "From": "Stamp", "Body": "Lantern", "Image": "fx_glow", "Grey": "", "Emitter": {
+            "Lifetime": [round(GONE / 60, 4), round(GONE / 60, 4)], "Speed": [0.01, 0.01], "EmissionDirection": "Top",
+            "LockedToPart": True, "Rotation": [0, 0], "RotSpeed": [0, 0],
+            "Size": [[round(f / GONE, 3), v] for f, v in sizes], "Transparency": [[round(f / GONE, 3), v] for f, v in fades],
+            "Color": c3(colour), "LightEmission": 1, "LightInfluence": 0, "Brightness": bright, "ZOffset": NEAR},
+            "Emit": [[0, 1]], "Tracks": {"At": [[0, v3(0, 0, 0)]]}, "Why": why}
+    rows["Halo"] = lantern_light(((0, glow(1.0)), (HOLD, glow(1.2)), (GONE, glow(0.9))),
+                                 ((0, 0.75), (2, 0.45), (HOLD, 0.45), (GONE, 1)), WARM, 1,
+                                 "the lantern answers: a warm halo round it as the lance leaves, dying as it burns down "
+                                 "(the target's 1.2 studs of radius)")
+    rows["Flare"] = lantern_light(((0, glow(0.36)), (2, glow(0.5)), (GONE, glow(0.36))),
+                                  ((0, 0.5), (2, 0), (HOLD, 0), (GONE, 1)), AMBER, 2,
+                                  "the lantern's own flare, hot at its heart, in front of the lantern")
 
     def on_street(row):
         row.update({"From": "Stamp", "Body": "PoleFoot", "Ground": True, "Hold": True})

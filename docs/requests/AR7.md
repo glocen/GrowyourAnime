@@ -795,3 +795,29 @@ This is delivery 4, the block clip of section 5 polished, on research's open not
     - each card's position against the `Lantern` attachment, its size and its ImageTransparency;
     - each beam's widths, transparency and ends.
     - A cause inside Rows is Faber's. If a second round fails on the same cause, the technique changes.
+- **F1, round 2 (Scintilla, 2026-11-27, 16:13 to 16:49, the Festival turn), for Faber's review:**
+  - **The cause, read live at Stamp + 4 on the keeper itself** (`checkpoint/f1_r2_stamp4_{off_cards_emitters,night_today_change}.png`): every row was drawn at its size, and none read.
+    - The halo and the flare were cards, and a card's picture is laid over the sky, never added to it: +17 red within 80 px of the lantern, nothing past 120 px.
+    - The lance's top stood 2.75 studs up the lantern's own axis, which leans with the pole. That put it over the keeper's hat, so from the player's camera the keeper's body hid the whole lance.
+  - **The change, in `tools/fx/keeper_moves.py` and `Config/EffectRows/KeeperChallenge.json`:**
+    - The halo and the flare become emitter rows: one particle of fx_glow each at the lantern, added light, drawn 2.5 studs toward the camera (`NEAR`). Their sizes and fades are unchanged.
+    - The lance starts at the lantern's middle (`OVER` 0).
+    - The lance and its core are twice the target's stroke (`STROKE`): 1.6 and 0.6 studs. The target's line reaches 1.6 times its width and its bloom spreads its middle, while a beam stops at its width.
+    - Tried first in play, one at a time, before the stroke: fx_glow as the Glow's picture at strength 0.7, then the lance and core 1.3 times brighter (the game's bloom starts at 1.3, the target's at 1). Neither changed the column.
+    - KeeperSwing is unchanged. Logic offline: 42,488 passed, 0 failed.
+  - **Taken from the file in a fresh playtest,** at the real entrance through the gate's try, at dusk, 56 fps. The stage picker's cover was hidden in that playtest.
+    - The sheets: `checkpoint/f1_dusk_r2_{strip,peak}_vs_target.png`, and `f1_dusk_r2_pole_vs_target_r1.png` (the pole close up at frames 2, 4 and 7: the target, round 1, round 2).
+    - The ring 40 to 80 px round the lantern: +85 red at frame 2 and +79 at 4 (the target +65 and +67; round 1 +14 and +7).
+    - The lance's gold below the lantern: 1,635 px at frame 2 and 2,126 at 4 (the target 988 and 1,987; round 1 0 and 74).
+    - The self-test case "every effect's rows play on a body to their last frame" passes on KeeperChallenge (294 passed, 0 failed). It ran on Faber's measure-row exclusion, which is still in his working copy.
+  - **Main read: PASSED, by my eye and the measures.** The lantern blooms warm on the Stamp, and a gold lance runs from it down the pole to the foot's sparks.
+  - **Left, beside the target:**
+    - The lantern's middle stays cyan inside its halo, where the target's blows white-gold (the Gaze row's colour).
+    - The lance's band is narrower and its soft glow fainter than the target's.
+    - The halo reaches wider (+43 red 80 to 160 px out, the target +24), and the lance lingers (1,697 px at frame 11, the target 694).
+    - When the lead stands at the pole, its arm covers the lance's middle (three of the five dusk takes).
+  - **Status:**
+    - Implemented.
+    - Tested in play: PASSED on the main read, one take from the file.
+    - Visually reviewed by me only; research's pass is next. No shipped frame was beside it, so the comparison verdict is NOT VERIFIED.
+    - Not director-accepted.

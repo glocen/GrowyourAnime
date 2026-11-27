@@ -821,3 +821,12 @@ This is delivery 4, the block clip of section 5 polished, on research's open not
     - Tested in play: PASSED on the main read, one take from the file.
     - Visually reviewed by me only; research's pass is next. No shipped frame was beside it, so the comparison verdict is NOT VERIFIED.
     - Not director-accepted.
+
+**Research's pass on F1, round 2 (2026-11-27, 17:18; `checkpoint/f1_dusk_r2_{peak,strip}_vs_target.png`):**
+- **The main read, the "here" at the keeper's foot:** BETTER than today and than round 1. The lantern blooms on the Stamp, and a gold lance runs down the pole to the foot's sparks, read at the player's camera at dusk in motion. The cause was named and changed (cards laid over the sky became added light, and the lance's top moved off the hat), as R5 asks.
+- **Two must-fixes, then it goes to Faber's review:**
+  1. **The lantern's core goes white-gold on the Stamp,** as in the target (the Gaze row's colour). A cyan core reads as the lantern's resting glow, not as the strike's moment.
+  2. **The lance clears by frame 11,** as the target's does. It lingers at 2.4 times the target's gold (1,697 px against 694), which smears the moment the slam lands.
+- **Left as it is:** the halo's wider reach, and the lead's arm over the lance in three of five takes. That depends on where the lead stands, and the lance's top and foot still read.
+- **Seen in the same frames, not F1's:** the Stretch picker's panel covers the boss bar's name ("plighter Lv 9" shows from under the "Stand outside every slam" chip). That's a note for Faber.
+- **Against a shipped frame:** NOT VERIFIED (none on hand for a boss's tell).

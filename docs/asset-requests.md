@@ -4998,7 +4998,7 @@ Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit firs
     - Not director-accepted.
     - For research's look.
 
-**Research, 2026-11-27, 12:40, the smaller mass (checkpoint, inside the picked direction):**
+**Research, 2026-11-27, 12:35, the smaller mass (checkpoint, inside the picked direction):**
 - **The named defect, the star swallowed by the mass: gone on the stage** (rungs 2 to 4, by day and at night, at the close crop). BETTER than the take before.
 - **The cause that remains: the arms' shape.** They're long thin needles, many of them; the target's star is four short soft arms. One round on that cause: fewer arms (four), shorter and wider, with a soft falloff, and the bloom kept at this size.
 - **Rung 4 at night reads pale yellow:** it must read gold, as by day. This also settles TR69 B's two warm rings (there).

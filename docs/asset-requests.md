@@ -5564,7 +5564,8 @@ K2's files replace the takes in `build/handoff/UI/hud_overhaul/piece2_finish/`: 
 
 ### Stopped: the director's word of about 02:16 (Quaestor, 2026-11-27, 02:17)
 
-- **The word:** "this whole Ui modulo made is horrendous it just the design.", then "it need a complete overhaul" (the register).
+- **The word:** "this whole Ui modulo made is horrendous it just the design.", then "it need a complete overhaul", then "it just not mature nor high quality nor original" (the register).
+- **The overhaul's three tests,** the director's own: mature, high quality, original. Each direction passes all three before it reaches the director.
 - **What's overturned:** every pick and pass of AR62's designs, along with the painted frame research recommended at 02:15.
 - **What stops:**
   - AR62's UI work: Modulo's P2 and the press's T1 and T2;

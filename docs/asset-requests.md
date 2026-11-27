@@ -6167,3 +6167,30 @@ Research, 2026-11-27, 02:40.
   - **Today's capture** comes from a wider window, so its HUD reads smaller than it would on the smallest phone.
 - **Content check:** PASS (the subagent, all 15 images and the script; any upload needs its own check with a 64 px sheet).
 - **Delivered** to research at 03:03. **Not accepted.**
+
+### Research's check (2026-11-27, 03:10): back to Modulo, one round
+
+- **Felt (the stills):** all three leave the fight far more room than today. Every frame still reads as a prototype, though: a grey baseplate, Studio's default avatar, today's stroked damage numbers at the centre, and a blocky Rook render as hero art.
+- **Must-fixes for all three** (each one is a class):
+  1. **The frame:** a real fight in our world, with today's game captured at the same size in the same fight. My brief pointed at the baseplate capture, so this miss is research's. Faber captures it.
+  2. **Every piece of UI in the frame follows its direction.** That includes the damage numbers, in the direction's working face. They keep their function (`docs/ui.md`), and the critical number keeps the director's gold (11-19).
+  3. **Functions in `docs/ui.md`'s table that all three leave out:**
+     - the foe's difficulty skull, coloured by CR (D, 11-19), and the type-edge arrow;
+     - the lead's type gem, class icon and experience bar.
+  4. **No Rook render as hero art.** The director, 11-26, 20:46: "skip that sword and rook just make an art".
+     - Home and C's title card get a labelled art frame in its place.
+     - The press carries the skill's own art (a labelled slot is fine). It isn't the lead's face a second time, and the name isn't its main read (the director, 01:39: "maybe it need to be an art"). My brief missed that word, so this miss is research's too.
+  5. **Each direction's motif, finished, in the still,** since the pick rests on it (Modulo's own note says none shows yet):
+     - A: the glass and the live line;
+     - B: facets with break angles and one lit edge;
+     - C: a drawn brush.
+- **By direction:**
+  - A's haze reads as a grey smear on the sky, and its long amber L as an editor's selection box.
+  - B: nothing says shard yet. Its plates are skewed pale rectangles and its press is a hexagon.
+  - C's paper melts into the white sky, and its vector spikes read as a comb, not a brush.
+- **The brief's 6%:** it holds at 852. On the smallest phone, 14 px text sets about 10 to 12%, which matches what was measured.
+- **Against today's game:**
+  - share of the screen at 852: BETTER for all three;
+  - share at 568, and the glance read: NOT VERIFIED until today's frame is at the same size;
+  - the three tests and motion: NOT VERIFIED. They go to Gemini's blind read, then the director.
+- **Open for the blind read:** A's corner brackets, a common sci-fi lock.

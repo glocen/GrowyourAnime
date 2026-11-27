@@ -374,14 +374,23 @@ def points():
     return out
 
 
+PICK = dict(gear=None, face=None)   # research's pick of the reopened targets: lacquer or knives; kt.face_cut or kt.face_still
+
+
+def made_pieces():
+    return gear_pieces(PICK["gear"]) if PICK["gear"] else pieces
+
+
 def finish(key, made, out):
-    extra = {"Scarf": ("Scarf", "Torso"), "Tie": ("Tie", "Head"), **{p: (p, "Torso") for p in BLADES},
+    sheathed = {"Sheaths": ("Sheaths", "Torso")} if PICK["gear"] else {}
+    extra = {"Scarf": ("Scarf", "Torso"), "Tie": ("Tie", "Head"), **{p: (p, "Torso") for p in BLADES}, **sheathed,
              **{f"Scarf{k + 1}": (f"Scarf{k + 1}", "Torso" if k == 0 else f"{NAME}_Scarf{k}") for k in range(LINKS)}}
     hand = out / "handoff"
     recipe = am.handoff(NAME, made, hand, points(), extra=extra,
                         make="tools/blender/anime_make.py and kirra_make.py: R6's own blocks and round head with the clothes and "
                              "the face drawn on them, the hair one mesh with its tie; built pieces: the scarf's turn and knot, "
-                             "its long tail as a chain, the two blades on joints of their own.")
+                             "its long tail as a chain, the two blades on joints of their own"
+                             + (", their sheaths one piece on the torso." if PICK["gear"] else "."))
     (hand / f"{NAME}.recipe.json").write_text(json.dumps(recipe_joints(recipe), indent=1))
     folder = hand / "model"
     folder.mkdir(parents=True, exist_ok=True)
@@ -391,7 +400,7 @@ def finish(key, made, out):
 
 
 def model_run(out):
-    rmt.TAKES[TAKE] = lambda joints, folder: kt.take_a(joints, folder, pieces=pieces)
+    rmt.TAKES[TAKE] = lambda joints, folder: kt.take_a(joints, folder, pieces=made_pieces(), face_draw=PICK["face"])
     rmt.takes_run(out, [TAKE], finish=lambda key, made: finish(key, made, out))
 
 

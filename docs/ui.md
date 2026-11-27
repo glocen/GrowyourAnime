@@ -30,7 +30,7 @@ The director, 2026-11-11: "we need to be even thoughtfull with the HUD".
 
 ## The HUD, in the world
 
-The look of every piece: AR62's HUD overhaul (`docs/asset-requests.md`), built with the construction in `docs/research/anime-crusaders-ui-surface.md`. A fight shows only what the fight needs.
+The look of every piece: the UI's complete overhaul (AR68, `docs/asset-requests.md`; the study, `docs/research/ui-design.md`). Until its pick, the game stays as built. A fight shows only what the fight needs.
 
 | Where | What | When it shows |
 |---|---|---|

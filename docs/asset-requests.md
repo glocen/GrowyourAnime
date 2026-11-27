@@ -6059,3 +6059,64 @@ Research, 2026-11-26, 17:47, on the director's word of about 17:46 (the register
 - **Faber, 2026-11-26, 21:33, installed:** the five meshes uploaded under the group, with their ids in `docs/asset-log.md` and both kits rebuilt (`src/storage/BaseKit.rbxm`, `StripKit.rbxm`, read back in Studio). Base 37 of 37.
   - **Up close in play:** `build/captures/ar67/core_close_own_look.jpg` shows the core in its own painted look, from a white-hot middle to a cyan rim, smooth, with no flats. Beside it, at the same camera, `core_close_neon.jpg` shows the unshaded Neon fallback, which flattens the core into one cyan disc.
   - **The mesh meets the must-fix by itself,** so the Neon stays out of the game. That's for research's look.
+
+## AR68. The UI's complete overhaul: three directions (research's brief, Modulo's targets, the director's pick)
+
+Research, 2026-11-27, 02:40.
+- **The director's words** (the register, 2026-11-27): "this whole Ui modulo made is horrendous it just the design.", "it need a complete overhaul", "it just not mature nor high quality nor original", and "i dont accept anything ui related everything need a overhaul including the galaxy breaker".
+- **Covers:** every screen. AR62's designs stop (AR62, "Stopped").
+- **The study:** `docs/research/ui-design.md`.
+
+**Feel line (the fight):** the player glances at a quiet frame round a loud fight. The lead's life and the one press read at a glance, and the rest of the screen is the fighters'.
+
+**The three tests (the director's):** mature, high quality, original. A target that fails one never reaches the director.
+
+**Common to all three directions** (the study's principles 1 and 3 to 11):
+- **Layout:**
+  - The centre 60% of the width belongs to the fighters, top to bottom.
+  - The permanent fight HUD, the press aside, covers about 6% of the screen's area at most. Today's two cards alone cover about 8%.
+- **The lead:** top left, compact. The portrait art without a box, the name and level in the working face, a thin health bar (red: the director's 11-13 word on health) and the charge.
+- **The foe:** small, over its head in the world or a slim tag at the top centre; each direction picks.
+- **The press:** the one big thing, at the left thumb (TR52). It wakes when ready and is quiet while charging. Auto and the eye are small beside it.
+- **Function stays:** `docs/ui.md`, "The HUD, in the world" (what each piece shows and when).
+- **Type:** one working face from Roblox's library for names and numbers, with display type only for titles and the skill's moment. No stroked bubbly face. Text is 14 px or more on the smallest phone.
+- **Colour:**
+  - One identity hue on neutrals, never pure black or white, never full saturation.
+  - Health's red is a state colour. Rarity hues stay on collection screens.
+  - Not purple, black and somber (said six times).
+- **Lines:** thin (1 to 2 px at phone size), flat or cut shapes. No pills and no fat strokes.
+- **Motion:** each move says what changed, then settles. Calm on Home, loud only at the skill.
+
+**The directions,** each answering "whose device or voice is this UI, in our fiction?":
+- **A, Console (a device):** the UI is the player's own yard system, the one that runs the bays and the Breaker.
+  - **Motif:** the gauge. Tick scales, readouts with their units, and one live line along the frame that links the HUD's pieces. A pulse runs along it when something changes.
+  - **Hue:** Power's amber on warm, translucent graphite.
+  - **Type:** a technical working face for the readouts.
+  - **Home:** the console's main page, the lead beside the yard's readings.
+  - **Not:** real electrical gear (the base's rule), or a cold sci-fi blue.
+- **B, Shard (a material):** the UI is seen in the shards the Voidkin come from.
+  - **Motif:** thin facets with one bright edge where the light catches, and cuts at a shard's break angles. Pale frosted glass over the world: light, not dark.
+  - **Hue:** the shard's clear ice light. A Voidkin's own hue shows only in its portrait's facet.
+  - **Type:** a light geometric working face, and a wide display face for titles.
+  - **Motion:** a glint crosses a facet once when it changes.
+  - **Home:** the lead in a large facet window.
+- **C, Episode (a voice):** the fight is the lead's own anime, and the UI is the show's graphics.
+  - **Motif:** ink lines with brush ends and a fine screentone, on paper-white and ink-grey (never pure). One hot hue that isn't red (a cobalt or a signal orange).
+  - **Type:** names set like a show's credits, widely tracked.
+  - **Motion:** nearly silent in the fight. A title card cuts in at the skill, the climax, then it's still again.
+  - **Home:** an episode's title card, the lead's art large.
+
+**The targets** (AGENTS.md, "A target before the hours"; three hours at most for all three):
+- For each direction:
+  - the fight HUD painted over a phone capture of a real fight (`build/scratch/faber/f2cap/fight_ready.jpg` or a fresher one), at the smallest phone and at 852;
+  - Home painted over a phone capture;
+  - one token strip: the hue and neutrals, the type with its sizes, the line weights, the motif, and one line on its motion.
+- At final quality, with the game's real data (Rook, the Brawler, his numbers). Our own renders of Rook stand in for key art, and are named as stand-ins.
+- Each made with whatever technique serves the direction: painted images, vector, or both.
+
+**The pick:**
+1. Research checks each target against the three tests, the study's principles and the phone's 14 px, and sends back any that fail.
+2. Gemini gives a cold read of the three when its program allows.
+3. The three go to the director side by side, with today's game and a shipped frame. Research brings no recommendation (the director, 11-27).
+4. After the pick, the chosen direction is built screen by screen, the fight HUD first.
+

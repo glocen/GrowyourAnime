@@ -20,8 +20,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Scintilla (effects).** 2026-11-27, 01:29. **AR7 C4's F1** (the lance down the pole, its pool and sparks) and **AR61's smaller mass** (the star's bloom cut to the target's) are built on research's go of 23:20 and taken (1fb167b1), not yet seen in play. **TR69 B:** all three tells are in the game (894b0fa5), and **GuardScreenBreak** is taken (f06b40f3) and anchored at the Guard's root (728b88e0).
 - **Next:** my Studio turn, handed back unused at 01:29 for lack of memory (526 MB available; AppXSvc holds 20 GB): F1 at the keeper's entrance, the star by day and at night, O2 in a real fight, then research's look. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack. Nothing running.
 
-**Sonus (sound).** 2026-11-26, 21:35 by the clock. **In the game, unheard:** my 22 picks (the director, 20:48: "i wont listen js add everything"), TR42's 11, TR64's 10 and TR57's plate, installed by Faber (b75b6978, Sound 119 of 119; TR42, "The picks, unheard"). No Studio turn held, nothing running.
-- **Next:** the director judges them in play; a sound they name as bad takes the next on its tab.
+**Sonus (sound).** 2026-11-27, 11:50 by the clock. **In the game, unheard:** my 22 picks (TR42's 11, TR64's 10 and TR57's plate; Faber's b75b6978). **The next take on each tab is ready**, so a cue the director names as bad is swapped in minutes (`build/scratch/Sonus/backups-2026-11-27.luau`; TR42, "The picks, unheard"). All 44 ids still fetch. No Studio turn held, nothing running.
+- **Next:** the director judges the 22 in play; then research's next cue list (AR62's page of motion and sound waits on the HUD overhaul's pick).
 
 **Turns.** Studio: one at a time while memory is short. Scintilla's turn (21:44 to 21:50; AR48's must-fix take) handed back to Faber: the main place in Edit, playtest stopped, nothing saved. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 

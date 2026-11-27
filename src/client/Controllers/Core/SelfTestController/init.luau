@@ -429,14 +429,20 @@ function SelfTestController.Start()
 	press.Parent = ReplicatedStorage
 	-- The smallest phone for a capture: NL_ClientLayout:Invoke(true) lays every layer as the cases do (Theme.Smallest at
 	-- the scale's floor, from the window's top left), :Invoke(Vector2) a phone of that size at its own scale, and
-	-- :Invoke(false) the window again.
+	-- :Invoke(false) the window again. :Invoke(Vector2, true) centres the phone on the window, so a capture widens the
+	-- camera's field of view to see the world as that phone would (TakeCases' take); it answers where the box sits.
 	local layout = Instance.new("BindableFunction")
 	layout.Name = "NL_ClientLayout"
-	layout.OnInvoke = function(smallest: boolean | Vector2): string
+	layout.OnInvoke = function(smallest: boolean | Vector2, centred: boolean?): string
 		if typeof(smallest) == "Vector2" then
 			-- the scale that phone draws at (Layers' fit on a small screen), not the window's
 			Layers.Force(math.clamp(smallest.Y / Theme.Author.Y, Theme.Scale.Floor, Theme.Scale.CapSmall))
-			Layers.Box(smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+			local view = workspace.CurrentCamera.ViewportSize
+			local at = if centred then (view - smallest) / 2 else nil
+			Layers.Box(smallest - Vector2.new(0, GuiService.TopbarInset.Height), at)
+			if at then
+				return `scale {Layers.Scale()} at {math.round(at.X)},{math.round(at.Y)} in {math.round(view.X)}x{math.round(view.Y)}`
+			end
 		elseif smallest then
 			Layers.Force(Theme.Scale.Floor)
 			Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))

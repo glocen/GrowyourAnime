@@ -1,6 +1,6 @@
 # The roster
 
-The thirty-one Voidkin of launch, the enemies, and the six grounds of the Festival. Research's design, 2026-11-11. Aegir as a white wind mech at Mythical, and a new Legendary in his old place, are the director's words of that day (`docs/decisions.md`). How fighters work: `docs/design.md`, "Voidkin". The numbers behind them: `docs/balance.md`.
+The thirty-one Voidkin planned, five of them at launch, the enemies, and the six grounds of the Festival. Research's design, 2026-11-11. Aegir as a white wind mech at Mythical, and a new Legendary in his old place, are the director's words of that day (`docs/decisions.md`). How fighters work: `docs/design.md`, "Voidkin". The numbers behind them: `docs/balance.md`.
 
 **Status:** designed on paper. None is built, drawn or reviewed. A row changes at its design sheet (`docs/asset-requests.md`): the sheet is where a look is judged, and a look that fails there is redrawn, not renamed.
 
@@ -10,8 +10,8 @@ The thirty-one Voidkin of launch, the enemies, and the six grounds of the Festiv
 
 - **Type** is what a Voidkin beats: Blue beats Red, Red beats Orange, Orange beats Purple, Purple beats Green, Green beats Blue.
 - **Class** is how it fights: Warrior, Tank, Assassin, Mage, Healer (`docs/design.md`, "Classes").
-- **Element** colours its second damage number. A dash means it deals none.
-- **Zone** is the first ground whose shards hold it. It stays in the next ground's shards too.
+- **Element** colours its second damage number.
+- **Zone** is the first ground whose shards hold it. It stays in every later ground's shards too.
 - **Apt** is its aptitude in an extraction bay, 1 to 3. It has nothing to do with combat.
 - **Passive,** Common to Epic: one plain effect in a few words, with at most one plain condition (the director, 2026-11-13, `docs/decisions.md`). Those not yet written so are rewritten when their Voidkin is built.
 - **Roots** are genre-level only, for the team. They name no work and no character.
@@ -25,19 +25,19 @@ Every Voidkin is drawn as a character from a real anime's cast (the director, 20
 - **An anime face,** drawn for the character's personality: eyes with highlights, sharp brows, a small mouth. No two Voidkin share a face.
 - **One weapon or focus with style,** sized to the body. Never a cartoon prop.
 - **The element is a motif:** a colour accent, a light, a charm, a pattern, its effects. Never a trade's gear.
-- **The body is our R6** (the director's "A", 2026-11-15). Hair, face, clothes and the weapon carry the look, with no custom proportions.
+- **The body is our R6** (the director's "A", 2026-11-15). Hair, face, clothes and the weapon carry the look, with no custom proportions; some built attachments and exaggeration are fine [D, 2026-11-24, about 01:47].
 - **Rarity sets the detail.**
   - A Common or Uncommon has three or four elements and a plain palette with one accent. Its signature and passive are modest. Like an anime's side character, it's simple, never corny.
   - Each rarity up adds layers, trims, light, and pieces that move.
-- **Already made:** Rook, Kirra, Pip and Lyric keep their looks now, and are redesigned to this bar at the end, in the finish pass before launch [D, 2026-11-17, 02:40: "Redesign them all", then "we wont redesign the old voidkin now right we said at the end"]. The redesigns start now, with Watt's finish, one at a time, each into the game only on the director's acceptance [D, 2026-11-23, by 22:52; AR59 first]. The Shade and the Lamplighter stay as they are until an overhaul much later.
-- **A basic attack and a signature of its own** [D, 2026-11-17, 02:40]: every Voidkin's basic attack (M1) and signature have their own effect and their own sound, at Anime Vanguards' level of flash. No two share a hit.
+- **Already made:** Rook, Kirra, Pip and Lyric are redesigned to this bar now, with Watt's finish, one at a time, each into the game only on the director's acceptance [D, 2026-11-23, by 22:52; AR59 first]. The Shade and the Lamplighter stay as they are until an overhaul much later.
+- **A basic attack and a signature of its own** [D, 2026-11-17, 02:40]: every Voidkin's basic attack (M1) and signature have their own effect, at Anime Vanguards' level of flash; the signature has its own sound, and the basic attack's sound is one per class [D, 2026-11-23, about 14:20 to 14:50].
 - **The "Look" column below was written before this rule.** A row whose look is a trade's costume is designed again at its sheet. It keeps its rarity, type, class, element and its signature's function.
 
 ## The thirty-one
 
 | id | Name | Rarity | Type | Class | Element | Zone | Apt | Look | Signature | Passive | Roots |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| rook | Rook | Common | Red | Warrior | Fire | 1 | 2 | Street brawler: cropped jacket with a high collar, taped fists, one oversized gauntlet | Haymaker: a long wind-up, one straight punch, a shockwave along the ground | Second Wind: takes less damage below 30% health | fighting manga |
+| rook | Rook | Common | Red | Warrior | Fire | 1 | 2 | Street brawler: cropped jacket with a high collar, taped fists | Haymaker: a long wind-up, one straight punch, a shockwave along the ground | Second Wind: takes less damage below 30% health | fighting manga |
 | kirra | Kirra | Common | Blue | Assassin | Void | 1 | 1 | Courier ninja: a scarf twice her length, a satchel, two short blades crossed on her back | Scarf Step: vanishes, crosses the target, cuts on the way out | First Strike: her first hit on a new target always crits | ninja action |
 | pip | Pip | Common | Purple | Mage | Fire | 1 | 2 | Apprentice: a hat too big, sleeves too long, a lantern that floats beside him | Lantern Burst: the lantern flies out and bursts over a small area | Kindle: his third shot adds Fire damage | fantasy school |
 | watt | Watt | Common | Orange | Tank | Storm | 1 | 3 | The quiet wall (AR11, take A, the director's pick, 2026-11-15): a long coat with a standing collar under his nose, swept dark hair lifting to pink tips, a thin black iron spear-staff with three white ceramic discs, slung | Ground Wire: plants his weapon, shields himself, and a pulse stops nearby enemies for a moment | Insulated: takes less elemental damage | the stoic guardian |
@@ -51,7 +51,7 @@ Every Voidkin is drawn as a character from a real anime's cast (the director, 20
 | rill | Rill | Uncommon | Blue | Mage | Frost | 3 | 1 | River sprite: a reed hat, sleeves that pour like water, a ring of water turning above one hand | Cold Snap: the ring flies out, freezes and breaks | Slipstream: harder to hit while she keeps her distance | water-spirit folklore |
 | dirge | Dirge | Uncommon | Green | Tank | Void | 3 | 2 | Bell knight: dented plate, a tattered tabard, a handbell the size of a mace | Toll: one stroke of the bell draws every enemy near | Mourner: takes less damage for each enemy on him, up to a cap | gothic knight |
 | juno | Juno | Uncommon | Purple | Warrior | Storm | 3 | 2 | School swordswoman: a blazer over wide pleated trousers, a wooden practice sword that crackles | Thunder Draw: a quick draw and a dash through the target | Study: crits more on a target she has hit five times | school battle |
-| lyric | Lyric | Rare | Green | Healer | Storm | 1 | 2 | Stage singer: a two-tone bob cut at a slant, a headset, a mic-staff, two speaker drones | Held Note: a wave of sound that heals allies and hurts enemies in a cone | Tempo: Held Note comes back sooner | virtual singer |
+| lyric | Lyric | Rare | Green | Healer | Storm | 1 | 2 | Stage singer: a two-tone bob cut at a slant, a headset, a mic-staff, two speaker drones | Held Note: a wave of sound that heals her and her allies and hurts enemies in a cone | Tempo: Held Note comes back sooner | virtual singer |
 | mirage | Mirage | Rare | Blue | Assassin | Fire | 3 | 1 | Desert blade dancer: a veil, two curved daggers, a belt of coins | Heat Haze: leaves an afterimage that strikes a second time | Shimmer: after a dodge, her next hit crits | desert adventure |
 | bulwark | Bulwark | Rare | Orange | Tank | Frost | 3 | 3 | Knight mech: a tower shield with frost vents, a helm with one slit of light, shoulders like ramparts | Rampart: raises an ice wall that shields allies behind it | Rime: a blocked hit gives him a small shield | mecha, knightly |
 | sliptail | Sliptail | Rare | Purple | Mage | Void | 3 | 2 | Fox fortune-teller: a fox mask worn on the side of the head, paper slips orbiting in a fan, long sleeves | Nine Slips: the slips leave the fan and home on targets | Trickster: after a dodge, reappears behind the attacker | fox-spirit folklore |
@@ -74,19 +74,19 @@ Every Voidkin is drawn as a character from a real anime's cast (the director, 20
 - Six of each type, and a seventh for Blue. Seven Warriors, six Tanks, six Assassins, seven Mages, five Healers.
 - Every type and every class exists among the Commons and Uncommons, so no counter and no role waits on luck.
 - Five machines (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir), one in each rarity from Uncommon to Mythical.
-- Twenty-one with an element (six Fire, four Frost, seven Storm, four Void) and ten with none.
+- All thirty-one have an element: nine Fire, six Frost, nine Storm, seven Void.
 - Seven Commons, seven Uncommons, six Rares, five Epics, three Legendaries, three Mythicals.
 - The starters are Rook, Kirra and Pip: the player picks one. Watt is the guaranteed second.
 
 ## The order they're made in
 
-Three first, to measure what one costs (`docs/production-plan.md`, phase 2): **Rook** (the plain melee fighter everything else reuses), **Pip** (the ranged family and the first element), **Lyric** (a complex signature and a heal). Then the rest of ground 1, then by ground. The count at launch is what's at the bar by then: about thirty is the director's target, and no fighter ships below the bar to reach it.
+Three first, to measure what one costs (`docs/production-plan.md`, phase 2): **Rook** (the plain melee fighter everything else reuses), **Pip** (the ranged family and the first element), **Lyric** (a complex signature and a heal). Then the rest of ground 1, then by ground. Five at launch [D, 2026-11-17, 02:40]; about thirty over the updates, and no fighter ships below the bar to reach it.
 
 **Names** may be Japanese or from any language that fits the fighter. A name is checked against `docs/ip-list.md` and nothing else.
 
 **Bodies** (the director, 2026-11-11). Humanoid Voidkin stand at the R6 player's height, on the shared R6 rig. The five machines share one custom rig and stand taller: a seed of about one and a half times a player for Gantry and Bulwark, up to about twice for Ironhymn, Shiomaru and Aegir, settled at the first machine's sheet. Height is a look, never a stat.
 
-**The first evolution** is Rook's: the same fighter with both gauntlets and a stronger Haymaker. One, built and judged, before a second is promised.
+**The first evolution** is Rook's: the same fighter with a stronger Haymaker. One, built and judged, before a second is promised.
 
 ## Enemies: Shades
 
@@ -103,7 +103,7 @@ A fall knocks the mask loose, and the festival-goer walks home, remembering noth
 
 The outline's colour is the Shade's type, in the same five colours as the Voidkin's gems. An elite is a larger Shade with a second mask on its shoulder. A ground's keeper is a Shade in full festival dress with one signature of its own.
 
-## The Festival of Battles: six grounds at launch
+## The Festival of Battles: six grounds, Lantern Row alone at launch
 
 A festival the Void has walked into. One kit of stalls, lanterns, banners and gates, recoloured and rearranged for each ground. The table is content, and a seventh ground is a new row.
 
@@ -117,8 +117,8 @@ A festival the Void has walked into. One kit of stalls, lanterns, banners and ga
 | 6 | Mirror Pavilion | 50 to 60 | a hall of mirrors over still water, indigo and silver | all five | the Reflection | changes each third of its health |
 
 - Ground 1's Shades give each starter something it beats, and its keeper is neutral to all three starters.
-- **Lantern Row's shards at launch** [D, 2026-11-17, 02:40: "we will launch 5 voidkins for the launch not 8"; the five, "The 5 already in"]: Rook, Kirra, Pip and Watt (Common) and Lyric (Rare). Sable (Uncommon), Marigold (Epic) and Crane (Legendary) come in the big update after launch. Patch moves to Drum Court.
-  - **Why these two:** without an Epic and a Legendary, an Enriched or Prismatic shard on the one ground holds nothing above Rare, and there's nothing to chase.
+- **Lantern Row's shards at launch** [D, 2026-11-17, 02:40: "we will launch 5 voidkins for the launch not 8"; the five, "The 5 already in"]: Rook, Kirra, Pip and Watt (Common) and Lyric (Rare). Sable (Uncommon), Marigold (Epic) and Crane (Legendary) come in the named updates after launch. Patch moves to Drum Court.
+  - An Enriched or Prismatic shard on Lantern Row always gives Lyric (`docs/production-plan.md`, "The cut line").
   - **Marigold** is the lion dancer, the festival's own figure. As an Orange Tank it beats the keeper, the top tier of Watt's line.
   - **Crane** is Blue like Kirra and a Warrior like Rook, so the top tier extends a starter's line. His afterimage storm is the ground's showpiece.
   - **Marigold's passive** is rewritten to the Common to Epic rule when he's built.

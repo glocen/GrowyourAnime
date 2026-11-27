@@ -19,7 +19,7 @@ What's next, in order. The game is in `docs/north-star.md`, its systems in `docs
    - **What changes:** one conductor for notices (one door, an order, a hold during fights and ceremonies); every ending closes with a Next line; the whole-screen return card the director asked for on 11-24 (`docs/research/cloud-2026-11-24/orchestration.md`, section 5; TR53).
    - **Who:** Faber builds, research writes the words.
 
-**Reworked: the design stays and is made better.** The base's look (AR65); the style frame, then every screen (AR62); the Voidkin's make (AR64 on); the Tower (TR67, AR56's clouds); the words (TR68); the hit and signature sounds (TR42, by the director's ear); and electricity's worker experience, which is built but still owes its Studio check.
+**Reworked: the design stays and is made better.** The base's look (AR65); the style frame, then every screen (AR62); the Voidkin's make (AR64 on); the Tower (TR67, AR56's clouds); the words (TR68); the hit and signature sounds (TR42, picked by Sonus, judged by the director in play); and electricity's worker experience, which is built but still owes its Studio check.
 
 **Kept as they are:** the currencies and the economy (the director, 11-24), the fourteen gear slots (11-25), the Tower's rules and the shard system.
 
@@ -47,7 +47,7 @@ The director asked, 2026-11-11, whether Modulo should make all the HUD design, t
 | The world kit: stalls, lanterns, gates, the base's machines | Modulo | after the first three fighters |
 | The map's layout: where grounds, gates and bases sit | Quaestor lays it out in grey, Faber installs it | a level designer isn't opened |
 | Effects in the engine: timing, hit-stop, camera | Faber, to Scintilla's look, in the same session | `/ga-action` |
-| Sounds | Sonus shortlists and loads them into the listening panel; the director's ear picks each cue (the director, 2026-11-23) | `AGENTS.md`, rule 2; the M1's sound is one per class |
+| Sounds | Sonus shortlists and loads them into the listening panel; the director's ear picks each cue (the director, 2026-11-23); TR42, TR64 and TR57's 22 cues: Sonus picks them, the director judges them in play (2026-11-26, 20:48) | `AGENTS.md`, rule 2; the M1's sound is one per class |
 
 One maker is one queue. If the board's count shows the team waiting on Modulo for more than a piece at a time, research proposes a second art seat (environment art) to the director. Not before.
 
@@ -60,6 +60,7 @@ One maker is one queue. If the board's count shows the team waiting on Modulo fo
 | Art | Modulo | now |
 | Effects | Scintilla | 2026-11-23 (the director: "we need agents for the combat visually and sfx to save us time") |
 | Sound | Sonus | 2026-11-23, the same word |
+| Outside voice | Gemini, through research | 2026-11-26 |
 | QA | Probator | at phase 4's end, for the whole game before launch (the director, 2026-11-13). Level design and environment art aren't opened, since the grounds are one kit recoloured (`docs/roster.md`). Until then, the builder's checks and player-camera captures are a piece's evidence, and research reads them as QA would: the test output, the angles still missing, what regressed |
 
 The PC's limits hold: two Studios at most, one render at a time. A seat opens when work waits for it.
@@ -165,8 +166,8 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
 **One ground at launch** (the director, 2026-11-13, `docs/decisions.md`): the Festival of Battles opens on Lantern Row alone.
 - **Five Voidkin at launch** (the director, 2026-11-17, 02:40): Rook, Kirra, Pip and Watt (Common) and Lyric (Rare), each perfected and looking its rarity.
   - Every one's basic attack and signature are its own, each with its own effect, at Anime Vanguards' level of flash. Each signature has its own sound; the basic attack's sound is one per class, shared by the class (the director, 2026-11-23).
-  - Rook, Kirra, Pip and Lyric are redesigned to the anime bar at the end, in the finish pass.
-  - **Every Voidkin piece waits for the end** (the director, 2026-11-17, by 11:10): the basic attacks' effects (AR26), Ground Wire's fix (AR11), the idles (AR27) and the redesigns are built with the finish pass. The game's systems come first.
+  - Rook, Kirra, Pip and Lyric are redesigned now, one at a time, each on the director's acceptance (the director, 2026-11-23, by 22:52).
+  - **Every Voidkin piece waits for the end** (the director, 2026-11-17, by 11:10): the basic attacks' effects (AR26), Ground Wire's fix (AR11) and the idles (AR27) are built with the finish pass. The game's systems come first.
   - Lantern Row's shards roll Common and Rare only: the guard drops each tier with no Voidkin made and keeps the rest's proportions, so about 87 and 13 in a Standard shard. An Enriched or Prismatic shard always gives Lyric.
 - **Small named updates after launch, every 2 to 4 weeks** (the director, 2026-11-23, 15:06, replacing "1 massive updates" of 2026-11-17), carry everything delayed: Sable, Marigold and Crane, the Rift, the Research Lab, Drum Court and the grounds after it, and the Calamity. Each update has its name and its own featured stock in the Void Shop. Their order is set nearer launch. Why: Roblox's guidance (updates every 2 to 4 weeks; curation checks for at least monthly) and the five Voidkin's reveals running out early (`docs/research/design-holes.md`, H9).
 - **Translation launches** (the director, 2026-11-18, D8): Roblox's automatic translation, switched on in Creator Hub by the director, with the Voidkin's names kept untranslated. No build hours.
@@ -187,7 +188,6 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
   - phase 6: the finish pass at the director's bar of 2026-11-17, the game page, Roblox's maturity questionnaire, and a soft opening.
 - **The earliest public date:** about Sunday 2026-11-29 if nothing slips, more likely the first week of December. Sunday 2026-11-22 isn't reachable at the bar.
 - **The director's cut** (02:40): the Rift and the Research Lab move to the big update, and launch has five Voidkin. The date above stands, since the redesigns spend what the cut saves.
-- The estimate is updated on the board each week.
 
 ## The count
 

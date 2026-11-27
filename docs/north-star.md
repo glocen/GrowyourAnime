@@ -34,7 +34,7 @@ Not a stopwatch. The first session has to make a new player want the second one,
 | Fight | walks onto Lantern Row and their Voidkin fights beside them | it hits hard and it's on my side |
 | Find | the first enemy drops a shard with a name on it | I want to know who's inside |
 | Work | puts the second Voidkin in a bay and the power comes on | the base runs because of who I found |
-| Build | the first piece of gear, the first forge rank | I'm getting stronger and I can see why |
+| Build | the first piece of gear, the first Reinforce level | I'm getting stronger and I can see why |
 | Want | sees what's next in this game: the Lamplighter on Hard, the Tower's door, the shop's featured stock | there's a lot here |
 
 Nothing in the first session waits more than about half a minute, asks for Robux, or explains with a wall of text.

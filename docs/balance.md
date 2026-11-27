@@ -1,10 +1,10 @@
 # Balance
 
-How every number in the game is put together, so that nothing compounds. The rules here are the design. The numbers are seeds in `tools/balance/seeds.json` (until the game's own Definitions hold them) and are tuned by play.
+How every number in the game is put together, so that nothing compounds. The rules here are the design. The numbers the game runs are in `src/shared/Config` and `src/shared/Definitions`, and are tuned by play; `tools/balance/seeds.json` holds what isn't built yet.
 
 The director, 2026-11-11: "avoid compounding (which was an issue i noticed on next button simulator all the multipliers led to me in 1 session having over 2296x in clicker which was not what i intented ... i was thinking of a x + x + x)".
 
-**Status:** the structure is designed and tested by simulation (`py tools/balance/sim.py`, run of 2026-11-11, below). Nothing is played. A simulation checks the numbers against each other; it doesn't know what players will do.
+**Status:** the structure is designed and tested by simulation (`py tools/balance/sim.py`, run of 2026-11-11, below). Most of it is built and run in Studio; no player data yet. A simulation checks the numbers against each other; it doesn't know what players will do.
 
 ## The one rule
 
@@ -32,7 +32,7 @@ Shares of a full launch build's stat points, at level 60:
 | Its stars | 3.5 | duplicates |
 | Gear | 27 | drops, the shop |
 | Reinforce levels | 13.5 | stones and Credits, by chance past +5 |
-| War Emblems | 11 | drops, the shop |
+| War Emblems | 11 | drops, the Tower's cases |
 | Jewels | 7 | Hard keepers, the Condenser |
 | Research | 3 | Research Points |
 
@@ -104,7 +104,7 @@ A lead more than a few levels under the account's highest Voidkin earns experien
 | Electricity | research, an event | x2 |
 | Luck | Breaker tuning from research | +0.40 lift on a shard's top two tiers |
 
-Upgrades to the base and its machines are the largest Credit sink (`docs/design.md`, "The base"). Their costs follow G, so a level costs about the same share of a ground's earnings wherever it's bought; the seeds set them before phase 3. **The base's level** [D, 2026-11-15, night: max 20 for now, "hundreds of hours of farm"; then launch's cap at 3, with items past it]: at launch, levels 2 and 3 cost Credits, priced so level 2 lands in the first session and 3 at about 5 hours (seeds, set with the sim). The sim's section 15 prices each level on the Credits earned since the one before. Level 2 takes half of the first 20 minutes' Credits, and level 3 a quarter of what's earned from there to 5 hours. **A machine's level** has a ceiling set by the base's level: 2, 6 and 15 at launch [D, 2026-11-24, replacing 30; six machines to 15 cost about 210,540 Credits, 12 to 27 hours of fighting on the 450-kill seed, COMPUTED in `docs/research/cloud-2026-11-24/launch-design.md`, section 4; the prices are refitted with the seed after the phone sitting]. That keeps the machines a sink through the launch, while the base's own levels are its gates. Each machine level costs the machines' 30% of the income over that level's slice of time, shared among the machines standing then. Up to 5 hours, the forge's 45%, the machines' 30% and the base's 25% use all of the income. After that, a quarter is left for the shop and the rest. What a level gives, and the battery's cap at each of the base's levels, are research's seeds (`tools/balance/seeds.json`, "baseLevels"): a bay +4% output a level; the Breaker +2% speed a level, its third chamber at level 8 and its fourth at 20; the battery's cap holds the dearest shard's full break in the grounds each base level spans. The ladder to 20 keeps a time target in the hundreds of hours, research's first reading 300, and is priced when its items are designed.
+Upgrades to the base and its machines are the largest Credit sink (`docs/design.md`, "The base"). Their costs follow G, so a level costs about the same share of a ground's earnings wherever it's bought; the seeds set them before phase 3. **The base's level** [D, 2026-11-15, night: max 20 for now, "hundreds of hours of farm"; then launch's cap at 3, with items past it]: at launch, levels 2 and 3 cost Credits, priced so level 2 lands in the first session and 3 at about 5 hours (seeds, set with the sim). The sim's section 15 prices each level on the Credits earned since the one before. Level 2 takes half of the first 20 minutes' Credits, and level 3 a quarter of what's earned from there to 5 hours. **A machine's level** has a ceiling set by the base's level: 2, 6 and 15 at launch [D, 2026-11-24, replacing 30; six machines to 15 cost about 210,540 Credits, 12 to 27 hours of fighting on the 450-kill seed, COMPUTED in `docs/research/cloud-2026-11-24/launch-design.md`, section 4; the stages count 136 to 204 kills an hour against that seed (`docs/test-requests.md`, TR72, item 4), and the prices are refitted with the seed once TR69 block B's timed run sets it]. That keeps the machines a sink through the launch, while the base's own levels are its gates. Each machine level costs the machines' 30% of the income over that level's slice of time, shared among the machines standing then. Up to 5 hours, the forge's 45%, the machines' 30% and the base's 25% use all of the income. After that, a quarter is left for the shop and the rest. What a level gives, and the battery's cap at each of the base's levels, are research's seeds (`tools/balance/seeds.json`, "baseLevels"): a bay +4% output a level; the Breaker +2% speed a level, its third chamber at level 8 and its fourth at 20; the battery's cap holds the dearest shard's full break in the grounds each base level spans. The ladder to 20 keeps a time target in the hundreds of hours, research's first reading 300, and is priced when its items are designed.
 
 The Stone Condenser is how time away becomes strength (`docs/design.md`, "The base"). Its stones count inside forge ranks' share, not on top of it, and its tray's cap bounds how far a player who checks in often pulls ahead of one who doesn't. Its rate and cap are seeds, set by the simulation before phase 3.
 
@@ -112,7 +112,7 @@ The Stone Condenser is how time away becomes strength (`docs/design.md`, "The ba
 
 **A worker's experience** [D, 2026-11-24, 10:50] is paid by the kWh it makes, as a share of the Training machine's rate: the best launch worker at level 1 earns half of it, and no worker ever earns more than it. So the Training machine stays the fastest place for one Voidkin, and the whole bench grows behind it; a higher bay grows its worker faster too (seeds "power.workXp"). A MODEL until the phone sitting times the pace.
 
-The Void Rift is Breaker speed for a minute, on a schedule. Online all day it averages x1.63. It's the one large multiplier in the game, it's on a clock, and it touches time only.
+After launch, the Void Rift is Breaker speed for a minute, on a schedule. Online all day it averages x1.63. It's the one large multiplier in the game, it's on a clock, and it touches time only.
 
 ## Pace
 
@@ -138,7 +138,7 @@ Seeds for how long each ground takes a player who keeps a 70% build ("on budget"
 - **A run at launch** (levels 10 to 15) lasts about a minute, nearly all of it hard floors. Whether that length feels good is judged in play.
 - **Fast floors** take 12 s at level 15. Past level 25 the stretch passes 30 s (51 s at 30, 129 s at 60), against the design's "takes seconds", and at 60 only 5 hard floors follow it. It isn't a launch problem; it's refit when the grounds above Lantern Row open.
 - **The heal cap** changes nothing today (the floors are the same from 10% up). It's the guard for when Lifesteal is wired.
-- **The pool:** a Rare foe (Lyric) in one floor of four moves a run by a floor at most.
+- **The pool:** a Rare foe (Lyric) in one floor of five moves a run by a floor at most.
 - **The rewards** (research's fit, TR29), with only hard floors paying, but for floor 5's chest, sure on the account's first win of it (a7cbd28, 2026-11-18):
   - **Credits:** half Lantern Row's an hour at levels 10 to 15, and a third at level 5. The Tower pays the gear; the grounds pay the Credits and experience, so neither is the only place worth playing.
   - **Chests:** about 15 an hour of runs at level 10 and 18 at 15. The chest has its own rarity row (`Config.Chests`), since Lantern Row's foes would read only row 2.
@@ -153,7 +153,7 @@ Seeds for how long each ground takes a player who keeps a 70% build ("on budget"
 - **SIMULATED** on the fit, a player alone on budget (the median first; 10% to 90% of players): Uncommon 0.3 h; Rare 3.5 h (1.5 to 6.2); Epic 12.5 h (10.3 to 16.4); Legendary 39.8 h (35.7 to 47.4). Eight players on a server are slower by up to 1.3 h, since they share the elite.
 - **About 43 chests an hour,** 18 of them from elites, about 2,450 over the climb to level 60: bulk opening and auto-salvage are what make that many pleasant.
 - **Salvage** pays at most 10% of a kill's Credits on Lantern Row and 16% on Mirror Pavilion, so fighting stays the income and the base's prices hold.
-- **At launch,** with Lantern Row alone, Hard's chests read Drum Court's rows (TR48), and its elites and keepers carry their own Epic and Legendary weights (TR48, part 2). MODEL: Rare about 2 h, Epic about 4.3 h, Legendary about 18 h. The Tower's row is TR48's.
+- **At launch,** with Lantern Row alone, Hard's chests read Drum Court's rows (TR48), and its elites and keepers carry their own Epic and Legendary weights (TR48, part 2). MODEL: Rare about 1 h with the Rare floor ("The family at launch", below), Epic about 4.3 h, Legendary about 18 h. The Tower's row is TR48's.
 - **The family at launch** (research, 2026-11-24; seeds "chestFamily"; `docs/design.md`, "Chests"):
   - **Rare at 1% or more on every chest** (the Hard keeper's at 3%, over its 1.6% Epic), taken from Common. MODEL by hand: a Normal run gives about seven chests, about 30 an hour, so the floor adds about 0.3 Rares an hour and moves the median first Rare from TR48's 1.9 h to about 1 h, design.md's first hour.
   - **Emblem Cases** come at about 1.65 a Normal run (three elites at 30%, the keeper at 75%), 5 to 7 an hour. With the combine, three of one stat (six stats even), MODEL, research's simulation of 4,000 players: the first Rare at 0.9 to 1.3 h, Epic 4.4 to 6.2 h, Legendary 16.7 to 23.4 h (medians), beside gear's 4 to 6 h and 15 to 20 h. The High stats (Critical Damage, Critical Immunity, Lifesteal) come only from Epic and Legendary drops and the Tower's cases, so they stay the chase.
@@ -161,7 +161,7 @@ Seeds for how long each ground takes a player who keeps a 70% build ("on budget"
 
 ## What the simulation showed (2026-11-11)
 
-Run it with `py tools/balance/sim.py`. It reads the seeds and `docs/roster.md`.
+Run it with `py tools/balance/sim.py`. It reads the seeds, `docs/roster.md` and the game's Config (`tools/balance/config_json.luau`).
 
 **Nothing compounds.**
 - A full build against a bare Voidkin of the same level: x2.86 in each stat. The same sources multiplied together would give x4.62.

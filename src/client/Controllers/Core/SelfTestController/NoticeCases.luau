@@ -120,7 +120,7 @@ function NoticeCases.Cases(): { any }
 					-- AR62, B: under the press's ring, wherever the press stands
 					local signature = hud.Signature :: GuiObject
 					local press: any = HudConfig.Slate
-					local corner = signature.AbsolutePosition.Y + signature.AbsoluteSize.Y + ((press.Press.Ring + press.Press.Line) / press.Page + LOOK.Below) * scale
+					local corner = signature.AbsolutePosition.Y + signature.AbsoluteSize.Y + ((press.Press.Ring + math.max(press.Press.Line, press.Press.TrackInk) / 2) / press.Page + LOOK.Below) * scale -- Slate.Reach
 					t.Check("at the card's left edge", math.abs(holder.AbsolutePosition.X - card.AbsolutePosition.X) < 1,
 						string.format("%.1f, the card's %.1f", holder.AbsolutePosition.X, card.AbsolutePosition.X))
 					t.Check("under the lead's corner, Below its press's ring", math.abs(holder.AbsolutePosition.Y - corner) < 1 + scale, -- whole points

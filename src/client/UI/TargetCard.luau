@@ -1,10 +1,11 @@
 --!strict
--- TargetCard (client UI): the foe's card, top centre of the HUD, only in a fight, in B, Slate glass (AR62's piece 1,
--- research's pick of 2026-11-26, 23:46; Config.Hud.Slate.Foe; UI.Kit.Slate). The lead card's glass with the coral rim
--- that says theirs, so the two read as you against it. Its top row: the difficulty skull and "Lv N" in the tier's colour
--- (Config.Hud.Skulls, Rules.Hud.Skull), the name in capitals, the type edge's arrow (Rules.Hud.Arrow), green up or red
--- down, and the type's gem at the row's end. Under it the health bar, its digits on it, white in a dark stroke. An elite's
--- card wears the gold rim and a second one outside it. A word never draws under the 14 px floor (UI.Kit.Text): on a
+-- TargetCard (client UI): the foe's card, top centre of the HUD, only in a fight: B's layout in F2's finish (AR62's piece
+-- 1, research's picks of 2026-11-26, 23:46 and 2026-11-27, 00:36; Config.Hud.Slate.Foe; UI.Kit.Slate). The lead card's
+-- construction in the coral family that says theirs, so the two read as you against it. Its top row: the difficulty skull
+-- and "Lv N" flat in the meta face in the tier's colour (Config.Hud.Skulls, Rules.Hud.Skull), the name in capitals, the
+-- type edge's arrow (Rules.Hud.Arrow), green up or red down, and the type's gem at the row's end. Under it the health bar,
+-- its digits on it, white in the bar's line, notched every 1,000. An elite's card wears the gold family and a second rim
+-- outside it. A word never draws under the 14 px floor (UI.Kit.Text): on a
 -- small phone the bar and the card grow to hold theirs (Layers.Changed).
 --   TargetCard.new(parent, position)      the card, hidden; its top centre at `position`
 --   TargetCard.Name(card, name, level)    the name and the level, the name cut with "…" before the arrow
@@ -98,7 +99,7 @@ function TargetCard.new(parent: Instance, position: UDim2): Card
 	local c = slate()
 	local f = c.Foe
 	local s = shape()
-	local card = Slate.Plate(parent, "Target", Vector2.new(s.W, s.H), "Theirs", pt(c.Plate.Radius))
+	local card = Slate.Plate(parent, "Target", Vector2.new(s.W, s.H), "Theirs")
 	card.AnchorPoint = Vector2.new(0.5, 0)
 	card.Position = position
 	card.Visible = false
@@ -108,7 +109,7 @@ function TargetCard.new(parent: Instance, position: UDim2): Card
 	skull.ZIndex = 3
 	Skin.Set(skull, "Skull", { X = 0, Y = 0, Size = pt(f.Skull) })
 	skull.Parent = card
-	local level = Slate.Word(card, "Level", pt(f.Level))
+	local level = Slate.Meta(card, "Level", pt(f.Level))
 	level.ZIndex = 3
 	local name = Slate.Word(card, "Name", pt(f.Name))
 	name.TextTruncate = Enum.TextTruncate.AtEnd
@@ -123,7 +124,7 @@ function TargetCard.new(parent: Instance, position: UDim2): Card
 	arrow:SetAttribute("Way", "")
 	arrow.Visible = false
 	arrow.Parent = card
-	local health = Slate.Bar(card, "Health", Vector2.new(s.In, s.BarTop), Vector2.new(s.W - 2 * s.In, s.BarH), c.Health, pt(c.Bar.Radius))
+	local health = Slate.Bar(card, "Health", Vector2.new(s.In, s.BarTop), Vector2.new(s.W - 2 * s.In, s.BarH), "Health", pt(c.Bar.Radius))
 	health.ZIndex = 3
 	local digits = Slate.OnBar(health, pt(f.Digits))
 	digits.Name = "HealthText"
@@ -137,12 +138,12 @@ function TargetCard.new(parent: Instance, position: UDim2): Card
 	elite.ZIndex = 3
 	elite.Visible = false
 	local round = Instance.new("UICorner")
-	round.CornerRadius = UDim.new(0, pt(c.Plate.Radius) + pt(c.Elite.Out))
+	round.CornerRadius = UDim.new(0, s.H * c.Kinds.Card.Round + pt(c.Elite.Out))
 	round.Parent = elite
 	local line = Instance.new("UIStroke")
 	line.Name = "Line"
 	line.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	line.Color = c.Rim.Elite
+	line.Color = c.Sides.Elite.Band[2]
 	line.Thickness = pt(c.Elite.Line)
 	line.Transparency = c.Elite.Clear
 	line.Parent = elite

@@ -337,11 +337,11 @@ local function eyeButton(): TextButton
 			SpectateController.Set(not SpectateController.On())
 		end,
 	})
-	-- In the face, so it squeezes with it (AR62, B): a small glass disc docked to the lead's card, the eye drawn on it
-	-- open while you watch your lead, shut (a lid's line) while you don't.
+	-- In the face, so it squeezes with it (AR62, B in F2's finish): a small steel press docked to the lead's card, its rim
+	-- azure while you watch your lead, the eye drawn on it open while you do, shut (a lid's line) while you don't.
 	local skin = Skin.Of(button)
 	local size = Slate.Pt(look.Size)
-	local disc = Slate.Plate(skin, "Disc", Vector2.new(size, size), "Plain", size / 2)
+	local disc = Slate.Plate(skin, "Disc", Vector2.new(size, size), "Plain", "Press")
 	disc.AnchorPoint = Vector2.new(0.5, 0.5)
 	disc.Position = UDim2.fromOffset(Slate.Pt(look.Gap) + size / 2, Slate.Pt(look.Down) + size / 2) -- B's place, in its area
 	local glyph = Slate.Pt(look.Icon)
@@ -401,13 +401,14 @@ local function eyeButton(): TextButton
 	return button
 end
 
--- The signature's Auto in B (AR62): a slim glass chip, its turn and its word gold-lit while on, grey and dim while off,
--- on a tap-high area. Its parts: the chip, the turn (a ring cut open at its top right), the word.
+-- The signature's Auto in B, F2's finish (AR62): a slim steel press, its rim gold and its turn gold while on, both grey
+-- while off, its word white in the steel's stroke either way, on a tap-high area. Its parts: the chip, the turn (a ring
+-- cut open at its top right), the word.
 local function autoChip(button: TextButton)
 	local c = HudConfig.Slate
 	local look = c.Auto
 	local w, h = Slate.Pt(look.Size.X), Slate.Pt(look.Size.Y)
-	local chip = Slate.Plate(Skin.Of(button), "Chip", Vector2.new(w, h), "Plain", h / 2)
+	local chip = Slate.Plate(Skin.Of(button), "Chip", Vector2.new(w, h), "Plain", "Press")
 	chip.AnchorPoint = Vector2.new(0, 0.5)
 	chip.Position = UDim2.new(0, 0, 0.5, 0)
 	local turnSize = Slate.Pt(look.Icon)
@@ -415,7 +416,7 @@ local function autoChip(button: TextButton)
 	turn.Name = "Turn"
 	turn.BackgroundTransparency = 1
 	turn.AnchorPoint = Vector2.new(0.5, 0.5)
-	turn.Position = UDim2.new(0, Slate.Pt(7) + turnSize / 2, 0.5, 0)
+	turn.Position = UDim2.new(0, Slate.Pt(6.5) + turnSize / 2, 0.5, 0)
 	turn.Size = UDim2.fromOffset(turnSize * 0.78, turnSize * 0.78)
 	turn.ZIndex = 3
 	local round = Instance.new("UICorner")
@@ -437,8 +438,8 @@ local function autoChip(button: TextButton)
 	turn.Parent = chip
 	local word = Slate.Word(chip, "Word", Slate.Pt(look.Text))
 	word.Text = "AUTO"
-	word.Position = UDim2.fromOffset(Slate.Pt(27), 0)
-	word.Size = UDim2.new(1, -Slate.Pt(27), 1, 0)
+	word.Position = UDim2.fromOffset(Slate.Pt(27.5), 0)
+	word.Size = UDim2.new(1, -Slate.Pt(27.5), 1, 0)
 	word.ZIndex = 3
 end
 
@@ -453,14 +454,14 @@ local function autoShows(button: TextButton, on: boolean)
 	local line = if turn then turn:FindFirstChild("Line") :: UIStroke? else nil
 	local word = chip:FindFirstChild("Word") :: TextLabel?
 	if line then
-		line.Color = if on then c.Accent[1] else c.Ink2
-		line.Transparency = if on then 0 else 0.45
+		line.Color = if on then c.Accent[2] else c.Auto.Off
+		line.Transparency = 0
 	end
 	if word then
-		word.TextColor3 = if on then c.Ink else c.Ink2
-		word.TextTransparency = if on then 0 else 0.45
+		word.TextColor3 = c.Ink
+		word.TextTransparency = 0
 	end
-	Slate.Side(chip, if on then "Elite" else "Plain") -- the gold rim while on
+	Slate.Side(chip, if on then "On" else "Plain") -- the gold rim while on
 	button:SetAttribute("On", on)
 end
 
@@ -556,7 +557,7 @@ local function placeCorner()
 	placeEye()
 	-- The level-up's notice under the corner's row, at the card's left edge (AR12, take B; TR41 (c)), stopping a gap short
 	-- of the step's chip over the dock, which shares its row on a phone.
-	local foot = press.Y + size / 2 + Slate.Pt(c.Press.Ring + c.Press.Line)
+	local foot = press.Y + size / 2 + Slate.Reach()
 	local chipLeft = if chip then (chip.AbsolutePosition.X - hud.AbsolutePosition.X) / scale else math.huge
 	LevelNotice.Place(x, foot + HudConfig.LevelNotice.Below, chipLeft - Theme.Size.Gap - x)
 	-- The quiet note in the same place: the two never meet, a Tower run's lead being frozen (TR46).
@@ -629,6 +630,7 @@ local function stepReadout(model: Model?, fighting: boolean, dt: number)
 	Readout.Step(piece, {
 		Share = share,
 		Full = full,
+		Left = ready - workspace:GetServerTimeNow(),
 		Flash = flash,
 		Swell = back,
 		Pulse = pulse,
@@ -1295,6 +1297,7 @@ end
 local function showHealth(bar: Frame, label: TextLabel, model: Model)
 	local health, most = healthOf(model)
 	LeadCard.Fill(bar, if most > 0 then health / most else 0)
+	Slate.Notch(bar, most)
 	-- Too wide for its bar, it takes its compact form (TR3's verdict, fix 6: the dummy's 1,254,735 crowded its bar): the
 	-- characters its share of the bar holds, a digit's width each (Config.Hud.Card.Room).
 	local inset = bar:GetAttribute("Inset")
@@ -1507,8 +1510,8 @@ local function paintHeal()
 	end
 end
 
--- The lead's damage taken over its health bar's draining end (AR62's piece 1, B; Config.Hud.Slate.Taken): its foot on the
--- bar's top at the light's front, kept right of the name's marks and inside the card, rising and fading.
+-- The lead's damage taken over its health bar's draining end (AR62's piece 1, F2; Config.Hud.Slate.Taken): its middle on
+-- the card's top edge (Cross) at the light's front, kept right of the name's marks and inside the card, rising and fading.
 local function paintTaken()
 	local k = HudConfig.Slate.Taken
 	local age = takenHeld or (os.clock() - takenAt)
@@ -1525,7 +1528,7 @@ local function paintTaken()
 	local most = lead.Frame.Size.X.Offset - Slate.Pt(HudConfig.Slate.Lead.Inset) - w / 2
 	local life = math.clamp(age / k.Life, 0, 1)
 	takenLabel.Size = UDim2.fromOffset(w, takenLabel.TextSize * 1.15)
-	takenLabel.Position = UDim2.fromOffset(math.clamp(front, math.min(least, most), most), bar.Position.Y.Offset + 1 - Slate.Pt(k.Rise) * Hud.Ease(life))
+	takenLabel.Position = UDim2.fromOffset(math.clamp(front, math.min(least, most), most), Slate.Pt(k.Cross) - Slate.Pt(k.Rise) * Hud.Ease(life))
 	takenScale.Scale = 1 + (k.Pop - 1) * math.clamp(1 - age / 0.12, 0, 1)
 	Slate.Fade(takenLabel, math.clamp((life - 2 / 3) * 3, 0, 1))
 end

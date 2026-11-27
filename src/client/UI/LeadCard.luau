@@ -1,11 +1,12 @@
 --!strict
--- LeadCard (client UI): the lead's card, top left of the HUD, in B, Slate glass (AR62's piece 1, research's pick of
--- 2026-11-26, 23:46, with Modulo's must-fixes; Config.Hud.Slate.Lead; UI.Kit.Slate). One plate of blue-grey glass with the
--- azure rim that says yours: the portrait a rounded square at its left (the face and head of the old card's art, its rim
--- in its rarity's colour, Config.Hud.Card.Trim), the level on a small gold badge at the portrait's foot; beside it the
--- name in capitals, the type's gem and the class's mark after it, the health bar with its digits on it (white in a dark
--- stroke), and experience a thin cool thread under it. Fallen, the face dims; never a red wash. A word never draws under
--- the 14 px floor (UI.Kit.Text), so on a small phone the bars and the card grow to hold theirs (Layers.Changed).
+-- LeadCard (client UI): the lead's card, top left of the HUD: B's layout in F2's finish (AR62's piece 1, research's picks
+-- of 2026-11-26, 23:46 and 2026-11-27, 00:36; Config.Hud.Slate.Lead; UI.Kit.Slate). One card in the azure family that says
+-- yours: the portrait a rounded square crossing its top and left edges (the face and head of the old card's art, in its
+-- rarity's family, Config.Hud.Card.Trim), the level white on a gold badge astride the portrait's foot, across the card's
+-- left edge; beside it the name in capitals, the type's gem and the class's mark after it, the health bar with its digits
+-- on it (white in the bar's line), notched every 1,000, and experience a thin lit thread under it. Fallen, the face dims;
+-- never a red wash. A word never draws under the 14 px floor (UI.Kit.Text), so on a small phone the bars and the card grow
+-- to hold theirs (Layers.Changed).
 --   LeadCard.new(parent, position)        the card, hidden until it has a lead
 --   LeadCard.Who(card, voidkinId?, down)  the face and its rarity's rim
 --   LeadCard.Kind(card, type, class)      the type's gem and the class's mark
@@ -75,8 +76,8 @@ local function shape(): Shape
 	local foot = pt(c.Size.Y - c.BarTop - c.Bar - c.ThreadGap - c.Thread) -- the target's room under the thread
 	local h = math.max(pt(c.Size.Y), threadTop + threadH + foot)
 	local w = pt(c.Size.X)
-	local portrait = h - 2 * inset
-	local nameX = inset + portrait + pt(9)
+	local portrait = pt(c.Portrait.Size)
+	local nameX = pt(c.NameX)
 	return {
 		W = w,
 		H = h,
@@ -109,9 +110,9 @@ local function fitLevel(card: Frame, level: TextLabel)
 	end
 	local b = slate().Badge
 	local wide = Text.Wide(level, level.Text)
-	local w = math.max(pt(b.Size.X), wide + pt(8))
+	local w = math.max(pt(b.Size.X), wide + pt(10))
 	local h = math.max(pt(b.Size.Y), level.TextSize + 1)
-	badge.Size = UDim2.fromOffset(w, h)
+	Slate.Resize(badge, Vector2.new(w, h))
 	local at = badge.Position
 	level.Position = UDim2.fromOffset(at.X.Offset + w / 2, at.Y.Offset + h / 2)
 	level.Size = UDim2.fromOffset(wide + 2, h)
@@ -157,7 +158,7 @@ local function paintWho(card: Card, want: string, down: boolean)
 	local head = if def and UIKit.Images[`CardHead{def.Name}`] then `CardHead{def.Name}` else nil
 	portrait:ClearAllChildren()
 	local round = Instance.new("UICorner")
-	round.CornerRadius = UDim.new(0, pt(slate().Lead.Corner))
+	round.CornerRadius = UDim.new(0, pt(slate().Lead.Portrait.Art))
 	round.Parent = portrait
 	local d = if down then 1 - HudConfig.Fallen.Dim else 1
 	local dim = Color3.new(d, d, d)
@@ -165,10 +166,9 @@ local function paintWho(card: Card, want: string, down: boolean)
 	if head then
 		art(portrait, "Head", head, 2, dim)
 	end
-	local rim = card.Frame:FindFirstChild("PortraitRim")
-	local line = if rim then rim:FindFirstChild("Line") :: UIStroke? else nil
-	if line then
-		line.Color = HudConfig.Card.Trim[rarity] or HudConfig.Card.Trim.Common
+	local rim = card.Frame:FindFirstChild("PortraitRim") :: Frame?
+	if rim then
+		Slate.Side(rim, "Hue", HudConfig.Card.Trim[rarity] or HudConfig.Card.Trim.Common)
 	end
 	portrait:SetAttribute("Face", face)
 	portrait:SetAttribute("Rarity", rarity)
@@ -188,18 +188,22 @@ local function layout(card: Card)
 	local s = shape()
 	local frame = card.Frame
 	frame.Size = UDim2.fromOffset(s.W, s.H)
-	local portrait = card.Portrait
-	portrait.Position = UDim2.fromOffset(s.Inset, s.Inset)
-	portrait.Size = UDim2.fromOffset(s.Portrait, s.Portrait)
+	-- The portrait in its rings, crossing the card's top and left edges; its art inside the rings.
+	local c = slate()
 	local rim = frame:FindFirstChild("PortraitRim") :: Frame
-	rim.Position = portrait.Position
-	rim.Size = portrait.Size
+	local at = Vector2.new(pt(c.Lead.Portrait.At.X), pt(c.Lead.Portrait.At.Y))
+	rim.Position = UDim2.fromOffset(at.X, at.Y)
+	Slate.Resize(rim, Vector2.new(s.Portrait, s.Portrait))
+	local inside = Slate.Inside(rim)
+	local portrait = card.Portrait
+	portrait.Position = UDim2.fromOffset(at.X + inside, at.Y + inside)
+	portrait.Size = UDim2.fromOffset(s.Portrait - 2 * inside, s.Portrait - 2 * inside)
 	card.Name.Position = UDim2.fromOffset(s.NameX, s.NameTop)
 	card.Name.Size = UDim2.fromOffset(nameRoom(s), s.NameSize * LINE)
 	Slate.Shape(card.Health, Vector2.new(s.NameX, s.BarTop), Vector2.new(s.BarW, s.BarH))
 	Slate.Shape(card.Xp, Vector2.new(s.NameX, s.ThreadTop), Vector2.new(s.BarW, s.ThreadH))
 	local badge = frame:FindFirstChild("LevelBadge") :: Frame
-	badge.Position = UDim2.fromOffset(s.Inset - pt(3), s.Inset + s.Portrait - pt(9))
+	badge.Position = UDim2.fromOffset(pt(c.Badge.At.X), pt(c.Badge.At.Y))
 	placeMarks(card)
 	fitLevel(frame, card.Level)
 	-- The face's art laid in its square again.
@@ -210,53 +214,30 @@ end
 function LeadCard.new(parent: Instance, position: UDim2): Card
 	local c = slate()
 	local s = shape()
-	local card = Slate.Plate(parent, "Lead", Vector2.new(s.W, s.H), "Yours", pt(c.Plate.Radius))
+	local card = Slate.Plate(parent, "Lead", Vector2.new(s.W, s.H), "Yours")
 	card.Position = position
 	card.Visible = false
-	-- The portrait: its face and head clipped to a rounded square, its rarity's rim over it.
+	-- The portrait: its rings in its rarity's family over the backdrop, its face and head clipped to a rounded square in them.
+	local rim = Slate.Plate(card, "PortraitRim", Vector2.new(s.Portrait, s.Portrait), "Hue", "Portrait")
+	rim:SetAttribute("Fill", c.Lead.Backdrop)
+	Slate.Side(rim, "Hue", HudConfig.Card.Trim.Common)
+	rim.ZIndex = 3
 	local portrait = Instance.new("CanvasGroup")
 	portrait.Name = "Portrait"
 	portrait.BackgroundColor3 = c.Lead.Backdrop
 	portrait.BorderSizePixel = 0
-	portrait.ZIndex = 3
+	portrait.ZIndex = 4
 	local round = Instance.new("UICorner")
-	round.CornerRadius = UDim.new(0, pt(c.Lead.Corner))
+	round.CornerRadius = UDim.new(0, pt(c.Lead.Portrait.Art))
 	round.Parent = portrait
 	portrait:SetAttribute("Voidkin", "-")
 	portrait:SetAttribute("Dim", false)
 	portrait.Parent = card
-	local rim = Instance.new("Frame")
-	rim.Name = "PortraitRim"
-	rim.BackgroundTransparency = 1
-	rim.ZIndex = 4
-	local rimRound = Instance.new("UICorner")
-	rimRound.CornerRadius = UDim.new(0, pt(c.Lead.Corner))
-	rimRound.Parent = rim
-	local rimLine = Instance.new("UIStroke")
-	rimLine.Name = "Line"
-	rimLine.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	rimLine.Thickness = pt(c.Lead.Rim)
-	rimLine.Parent = rim
-	rim.Parent = card
-	-- The level on its gold badge at the portrait's foot.
-	local badge = Instance.new("Frame")
-	badge.Name = "LevelBadge"
-	badge.BorderSizePixel = 0
+	-- The level, white on its gold badge astride the portrait's foot.
+	local badge = Slate.Plate(card, "LevelBadge", Vector2.new(pt(c.Badge.Size.X), pt(c.Badge.Size.Y)), "Gold", "Badge")
 	badge.ZIndex = 5
-	local badgeRound = Instance.new("UICorner")
-	badgeRound.CornerRadius = UDim.new(0, pt(c.Badge.Corner))
-	badgeRound.Parent = badge
-	Slate.Gold(badge)
-	badge.Parent = card
-	local level = Text.new({
-		Name = "Level",
-		Size = pt(c.Badge.Text),
-		Font = Font.new(c.Face, Enum.FontWeight.Bold),
-		Colour = c.AccentInk,
-		Align = Enum.TextXAlignment.Center,
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		Parent = card,
-	})
+	local level = Slate.Gold(card, "Level", pt(c.Badge.Text))
+	level.AnchorPoint = Vector2.new(0.5, 0.5)
 	level.ZIndex = 6
 	local function refit()
 		fitLevel(card, level)
@@ -279,11 +260,11 @@ function LeadCard.new(parent: Instance, position: UDim2): Card
 	local class = Skin.Icon(mark, "ClassWarrior", pt(11) / 2, pt(11) / 2, pt(11), c.Ink2, 3)
 	class.Name = "Class"
 	-- The health bar with its digits on it, and the experience thread under it.
-	local health = Slate.Bar(card, "Health", Vector2.new(s.NameX, s.BarTop), Vector2.new(s.BarW, s.BarH), c.Health, pt(c.Bar.Radius))
+	local health = Slate.Bar(card, "Health", Vector2.new(s.NameX, s.BarTop), Vector2.new(s.BarW, s.BarH), "Health", pt(c.Bar.Radius))
 	health.ZIndex = 3
 	local digits = Slate.OnBar(health, pt(c.Lead.Digits))
 	digits.Name = "HealthText"
-	local xp = Slate.Bar(card, "Xp", Vector2.new(s.NameX, s.ThreadTop), Vector2.new(s.BarW, s.ThreadH), c.Xp)
+	local xp = Slate.Bar(card, "Xp", Vector2.new(s.NameX, s.ThreadTop), Vector2.new(s.BarW, s.ThreadH), "Xp")
 	xp.ZIndex = 3
 	local made: Card = { Frame = card, Name = name, Level = level, Health = health, HealthText = digits, Xp = xp, Portrait = portrait, Gem = gem, Class = class }
 	LeadCard.Name(made, "")
@@ -323,17 +304,17 @@ end
 -- A bar's share (UI.Kit.Slate).
 LeadCard.Fill = Slate.Fill
 
--- The level-up's pop (HudController): the badge's gold lifted `share` of the way to white under the ink number (the
+-- The level-up's pop (HudController): the badge's gold fill lifted `share` of the way to white under the number (the
 -- kit's repaint leaves it alone while it's lit).
 function LeadCard.Glow(card: Card, share: number)
 	local badge = card.Frame:FindFirstChild("LevelBadge")
-	local gold = if badge then badge:FindFirstChild("Gold") :: UIGradient? else nil
+	local fill = if badge then Slate.FillOf(badge) else nil
+	local gold = if fill then fill:FindFirstChild("Paint") :: UIGradient? else nil
 	if badge and gold then
 		badge:SetAttribute("Lit", if share > 0 then share else nil)
 		local white = Color3.new(1, 1, 1)
-		local accent = slate().Accent :: { Color3 }
-		local top: Color3, foot: Color3 = accent[1]:Lerp(white, share), accent[2]:Lerp(white, share)
-		gold.Color = ColorSequence.new(top, foot)
+		local lit = slate().Sides.Gold.Fill :: { Color3 }
+		gold.Color = ColorSequence.new(lit[1]:Lerp(white, share), lit[2]:Lerp(white, share))
 	end
 end
 

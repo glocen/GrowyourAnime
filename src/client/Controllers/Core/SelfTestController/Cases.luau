@@ -70,7 +70,6 @@ local BreakerScreen = require(UI.BreakerScreen)
 local VoidkinScreen = require(UI.VoidkinScreen)
 local World = require(UI.World)
 local Read = require(UI.Read)
-local Readout = require(UI.Readout)
 local Button = require(UI.Kit.Button)
 local Row = require(UI.Kit.Row)
 local Screen = require(UI.Kit.Screen)
@@ -5139,7 +5138,7 @@ local cases = {
 			t.Wait(cfg.Seconds + 0.1) -- anything popping settles
 			local middle = pill.AbsolutePosition + pill.AbsoluteSize / 2
 			local most, moved, levelMost, glinted, whitest = 1, 0, 1, 0, 0
-			local rest = (HudConfig.Slate :: any).Accent[1] -- the level's badge in B: the accent's gold, lifted toward white
+			local rest = (HudConfig.Slate :: any).Sides.Gold.Fill[1] -- the level's badge in F2: the gold's fill, lifted toward white
 			local watch = RunService.RenderStepped:Connect(function()
 				most = math.max(most, Pop.Active(pill))
 				moved = math.max(moved, (pill.AbsolutePosition + pill.AbsoluteSize / 2 - middle).Magnitude)
@@ -5183,7 +5182,7 @@ local cases = {
 				-- against that; the number keeps its ink through it.
 				local reach = (3 - (rest.R + rest.G + rest.B)) * cfg.Glow
 				t.Check("and its badge brightened toward white", whitest >= reach * 0.8, string.format("%.3f of its %.3f", whitest, reach))
-				t.Check("its colour back after", HudCases.BadgeTop(parts):ToHex() == rest:ToHex() and level.TextColor3 == (HudConfig.Slate :: any).AccentInk, `{HudCases.BadgeTop(parts):ToHex()}, its number {level.TextColor3:ToHex()}`)
+				t.Check("its colour back after", HudCases.BadgeTop(parts):ToHex() == rest:ToHex() and level.TextColor3 == (HudConfig.Slate :: any).Ink, `{HudCases.BadgeTop(parts):ToHex()}, its number {level.TextColor3:ToHex()}`)
 				t.Check("the thread glinted", glinted >= cfg.Glow - 0.05, string.format("%.2f opaque", glinted))
 				t.Check("and the glint's gone after", not glint.Visible)
 			end
@@ -5427,7 +5426,8 @@ local cases = {
 				and middle + lineHalf <= bar.AbsolutePosition.Y + bar.AbsoluteSize.Y + 1, string.format("%.0f to %.0f on %.0f to %.0f", middle - lineHalf, middle + lineHalf, bar.AbsolutePosition.Y, bar.AbsolutePosition.Y + bar.AbsoluteSize.Y))
 			local stroke = text:FindFirstChild("Stroke") :: UIStroke?
 			local ink: any = HudConfig.Slate
-			t.Check("white in the dark stroke (15.6 to 1)", text.TextColor3 == ink.Ink and stroke ~= nil and stroke.Color == ink.Shade and stroke.Transparency == 0)
+			t.Check("white in the bar's own line (F2)", text.TextColor3 == ink.Ink and stroke ~= nil and stroke.Color == ink.Bars.Health.Outline and stroke.Transparency == 0,
+				if stroke then stroke.Color:ToHex() else "no stroke")
 			t.Check("the experience's thread under the bar", xpBar ~= nil and xpBar.AbsolutePosition.Y >= bar.AbsolutePosition.Y + bar.AbsoluteSize.Y - 1)
 			local scale = parts.Lead.AbsoluteSize.X / parts.Lead.Size.X.Offset
 			HudCases.LevelBadge(t, parts, scale)
@@ -6074,56 +6074,6 @@ local cases = {
 			t.Near("it fills with the cooldown", second - first, (os.clock() - at) / action.Cooldown, 0.03)
 			t.Server("Replay")
 			t.Wait(0.3)
-		end,
-	},
-	{
-		-- AR62's piece 1 (B, Slate glass): the signature's press alone, through the states it must show.
-		Name = "HUD: AR62, the press draws its states: the ring lit by the share, gold when ready, the flash, a glyph for a signature not drawn yet",
-		Run = function(t: any)
-			local config = HudConfig.Readout
-			local slate: any = HudConfig.Slate
-			local holder = Instance.new("Frame")
-			holder.Name = "SelfTestReadout"
-			holder.BackgroundTransparency = 1
-			holder.Size = UDim2.fromOffset(80, 80)
-			holder.Position = UDim2.fromOffset(-500, -500) -- off the screen
-			holder.Parent = Layers.Get("Hud")
-			local piece = Readout.new(holder)
-			local drawn = next(config.Icons)
-			local function state(share: number, flash: number?, seen: number?, action: string?): Readout.State
-				return { Share = share, Full = share >= 1, Flash = flash or 0, Swell = 0, Seen = seen or 1, Action = action or drawn or "", Class = "Warrior" }
-			end
-			t.Near("the press is the tap's size", piece.Frame.Size.X.Offset, slate.Press.Size / slate.Page, 1) -- whole points
-			for _, share in { 0, 0.25, 0.5, 0.75, 0.99 } do
-				Readout.Step(piece, state(share))
-				t.Near(`at {share}: it says how full`, piece.Frame:GetAttribute("Share") :: number, share, 1e-6)
-				-- The ring clockwise from the top: the right half to 0.5, the left after (UI.Readout's halves).
-				t.Near(`at {share}: the right half lit to its share`, piece.Halves[1].Rotation, math.min(share, 0.5) * 360, 1e-6)
-				t.Near(`at {share}: the left half after it`, piece.Halves[2].Rotation, math.max(share, 0.5) * 360, 1e-3)
-				t.Check(`at {share}: charging, the glass and the icon in white, no gold`, piece.Icon.ImageTransparency < 0.01 and piece.Gold.BackgroundTransparency > 0.99 and piece.ReadyIcon.ImageTransparency > 0.99)
-			end
-			Readout.Step(piece, state(1))
-			t.Check("ready: the gold disc, its icon in ink, the ring whole", piece.Gold.BackgroundTransparency < 0.01 and piece.ReadyIcon.ImageTransparency < 0.01 and piece.Icon.ImageTransparency > 0.99
-				and piece.Halves[1].Rotation == 180 and piece.Halves[2].Rotation == 360)
-			if drawn then
-				t.Check("the signature's own icon, charging and ready", piece.Icon:GetAttribute("Kit") == config.Icons[drawn] and piece.ReadyIcon:GetAttribute("Kit") == config.Icons[drawn] .. "Ready", tostring(piece.Icon:GetAttribute("Kit")))
-			end
-			Readout.Step(piece, state(0, 1))
-			t.Check("as it fires it swells", piece.Scale.Scale > 1.1, string.format("%.2f", piece.Scale.Scale))
-			t.Check("and the gold is still whole", piece.Gold.BackgroundTransparency < 0.01)
-			Readout.Step(piece, state(0.05, 0.5))
-			t.Near("half through the flash, the gold is half gone", piece.Gold.BackgroundTransparency, 0.5, 0.01)
-			Readout.Step(piece, state(0.5, 0, 0))
-			local hidden = piece.Icon.ImageTransparency > 0.99 and piece.Gold.BackgroundTransparency > 0.99 and piece.Glass.BackgroundTransparency > 0.99
-				and piece.Track.Transparency > 0.99
-			for _, line in piece.Lit do
-				hidden = hidden and line.Transparency > 0.99
-			end
-			t.Check("faded out, every layer is", hidden)
-			Readout.Step(piece, state(0.5, 0, 1, "SelfTestNoIcon"))
-			t.Check("a signature not drawn yet shows its class's glyph in white", piece.Icon:GetAttribute("Kit") == "ClassWarriorGlyph" and piece.Icon.ImageColor3 == slate.Ink, tostring(piece.Icon:GetAttribute("Kit")))
-			t.Check("and in ink on the gold", piece.ReadyIcon:GetAttribute("Kit") == "ClassWarriorGlyph" and piece.ReadyIcon.ImageColor3 == slate.AccentInk)
-			holder:Destroy()
 		end,
 	},
 	{

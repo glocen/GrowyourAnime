@@ -29,6 +29,8 @@ local DownController = require(script.Parent.Parent.Parent.Main.DownController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local Helpers = require(script.Parent.Helpers)
 local UI = script.Parent.Parent.Parent.Parent.UI
+local Slate = require(UI.Kit.Slate)
+local Readout = require(UI.Readout)
 local BreakerScreen = require(UI.BreakerScreen)
 local VoidkinScreen = require(UI.VoidkinScreen)
 local Button = require(UI.Kit.Button)
@@ -83,7 +85,8 @@ end
 -- 2026-11-17): the Voidkin's Block under the chevrons and the number in ink, the plate's edge its lavender, the words its
 -- pale; the number on the block; its foot above the eye under the card. `scale` is the card's points to pixels.
 function HudCases.LevelBadge(t: any, parts: { [string]: any }, scale: number)
-	-- AR62, B: a gold badge over the portrait's foot, at its left, the number in the accent's ink on it; the name white.
+	-- AR62, B in F2's finish: a gold badge astride the portrait's foot, across the card's left edge, its number white on
+	-- it in the gold's stroke; the name white.
 	local lead = parts.Lead :: Frame
 	local badge = lead:FindFirstChild("LevelBadge") :: Frame?
 	local portrait = parts.LeadPortrait :: GuiObject
@@ -93,46 +96,51 @@ function HudCases.LevelBadge(t: any, parts: { [string]: any }, scale: number)
 	local top, foot = badge.AbsolutePosition.Y, badge.AbsolutePosition.Y + badge.AbsoluteSize.Y
 	local left, right = badge.AbsolutePosition.X, badge.AbsolutePosition.X + badge.AbsoluteSize.X
 	local face = portrait.AbsolutePosition.Y + portrait.AbsoluteSize.Y
-	t.Check("the badge over the portrait's foot, at its left, inside the card", top < face and foot > face and left >= lead.AbsolutePosition.X - 1
-		and left <= portrait.AbsolutePosition.X + 1,
-		string.format("%.0f to %.0f over %.0f; from %.0f, the portrait from %.0f", top, foot, face, left, portrait.AbsolutePosition.X))
+	local edge = lead.AbsolutePosition.X
+	t.Check("the badge astride the portrait's foot, across the card's left edge", top < face and foot > face and left < edge
+		and right > edge and left <= portrait.AbsolutePosition.X + 1,
+		string.format("%.0f to %.0f over %.0f; %.0f to %.0f across %.0f, the portrait from %.0f", top, foot, face, left, right, edge,
+			portrait.AbsolutePosition.X))
 	local slate = HudConfig.Slate
-	local gold = badge:FindFirstChild("Gold") :: UIGradient?
+	local top0 = HudCases.BadgeTop(parts)
 	local number = parts.LeadLevel :: TextLabel
-	t.Check("B's colours: the badge gold, the number in the accent's ink, the name white",
-		gold ~= nil and gold.Color.Keypoints[1].Value == slate.Accent[1] and number.TextColor3 == slate.AccentInk
-			and (parts.LeadName :: TextLabel).TextColor3 == slate.Ink,
-		`{if gold then gold.Color.Keypoints[1].Value:ToHex() else "no gold"}, {number.TextColor3:ToHex()}, {(parts.LeadName :: TextLabel).TextColor3:ToHex()}`)
+	t.Check("F2's colours: the badge gold, its number white, the name white",
+		top0 == slate.Sides.Gold.Fill[1] and number.TextColor3 == slate.Ink and (parts.LeadName :: TextLabel).TextColor3 == slate.Ink,
+		`{top0:ToHex()}, {number.TextColor3:ToHex()}, {(parts.LeadName :: TextLabel).TextColor3:ToHex()}`)
 	local middle = number.AbsolutePosition + number.AbsoluteSize / 2
 	t.Check("the number on the badge", middle.X > left and middle.X < right and middle.Y > top and middle.Y < foot,
 		string.format("the number at %.0f, %.0f; the badge %.0f..%.0f, %.0f..%.0f", middle.X, middle.Y, left, right, top, foot))
 	local _ = scale
 end
 
--- The foe card's rims (AR62, B): an elite's gold on the glass and a second outside the plate, or the coral that says
--- theirs and no second.
+-- The foe card's rims (AR62, B in F2's finish): an elite's gold band in its ring stack and a second rim outside the
+-- plate, or the coral band that says theirs and no second.
 function HudCases.Rims(t: any, parts: { [string]: any }, elite: boolean)
 	local card = parts.Target :: Frame
-	local glass = card:FindFirstChild("Glass") :: Frame?
-	local rim = if glass then glass:FindFirstChild("Rim") :: UIStroke? else nil
+	local glass = card:FindFirstChild("Glass")
+	local dark = if glass then glass:FindFirstChild("Dark") else nil
+	local band = if dark then dark:FindFirstChild("Band") else nil
+	local paint = if band then band:FindFirstChild("Paint") :: UIGradient? else nil
 	local slate = HudConfig.Slate
-	local want = if elite then slate.Rim.Elite else slate.Rim.Theirs
-	t.Check(if elite then "its rim the gold" else "with the coral rim that says theirs", rim ~= nil and rim.Color == want
-		and card:GetAttribute("Side") == (if elite then "Elite" else "Theirs"), if rim then rim.Color:ToHex() else "no rim")
+	local family = if elite then slate.Sides.Elite else slate.Sides.Theirs
+	local lit = if paint then paint.Color.Keypoints[1].Value else nil
+	t.Check(if elite then "its band the gold" else "with the coral band that says theirs", lit ~= nil and lit == family.Band[1]
+		and card:GetAttribute("Side") == (if elite then "Elite" else "Theirs"), if lit then lit:ToHex() else "no band")
 	local outer = parts.TargetElite :: Frame
 	local line = outer:FindFirstChild("Line") :: UIStroke?
 	if elite then
-		t.Check("and the second rim outside the plate", outer.Visible and line ~= nil and line.Color == slate.Rim.Elite
+		t.Check("and the second rim outside the plate", outer.Visible and line ~= nil and line.Color == slate.Sides.Elite.Band[2]
 			and outer.AbsoluteSize.X > card.AbsoluteSize.X)
 	else
 		t.Check("and no second rim", not outer.Visible)
 	end
 end
 
--- The top of the level badge's tint now: the level-up's pop lifts it toward white (UI.LeadCard.Glow).
+-- The top of the level badge's fill now: the level-up's pop lifts it toward white (UI.LeadCard.Glow).
 function HudCases.BadgeTop(parts: { [string]: any }): Color3
 	local badge = (parts.Lead :: Frame):FindFirstChild("LevelBadge")
-	local body = if badge then badge:FindFirstChild("Gold") :: UIGradient? else nil
+	local fill = if badge then Slate.FillOf(badge) else nil
+	local body = if fill then fill:FindFirstChild("Paint") :: UIGradient? else nil
 	return if body then body.Color.Keypoints[1].Value else Color3.new()
 end
 
@@ -213,16 +221,20 @@ function HudCases.Cases(given: Given): { any }
 				local slate: any = HudConfig.Slate
 				local stroke = taken:FindFirstChild("Stroke") :: UIStroke?
 				t.Equal("hits while it shows add up", taken.Text, "−25")
-				t.Check("coral in its dark stroke", taken.Visible and taken.TextColor3 == slate.Taken.Colour and stroke ~= nil and stroke.Color == slate.Taken.Stroke)
-				local bar, mark = parts.LeadHealth :: GuiObject, (parts.Lead :: Frame):FindFirstChild("ClassMark") :: GuiObject?
-				local foot = taken.AbsolutePosition.Y + taken.AbsoluteSize.Y
+				local lit = taken:FindFirstChild("Paint") :: UIGradient?
+				local stops = if lit then lit.Color.Keypoints else {}
+				t.Check("lit pale to coral in its dark stroke", taken.Visible and #stops == #slate.Taken.Fill and stops[1].Value == slate.Taken.Fill[1]
+					and stops[#stops].Value == slate.Taken.Fill[#slate.Taken.Fill] and stroke ~= nil and stroke.Color == slate.Taken.Stroke)
+				local mark = (parts.Lead :: Frame):FindFirstChild("ClassMark") :: GuiObject?
+				local middle = taken.AbsolutePosition.Y + taken.AbsoluteSize.Y / 2
+				local k = card.AbsoluteSize.X / card.Size.X.Offset
+				local edge = card.AbsolutePosition.Y + slate.Taken.Cross / slate.Page * k
 				local lo, hi = card.AbsolutePosition.X, card.AbsolutePosition.X + card.AbsoluteSize.X
 				t.Check("inside the card, clear of the name's marks", taken.AbsolutePosition.X >= lo and taken.AbsolutePosition.X + taken.AbsoluteSize.X <= hi + 1
 					and mark ~= nil and taken.AbsolutePosition.X >= mark.AbsolutePosition.X + mark.AbsoluteSize.X - 1,
 					string.format("%.0f..%.0f in %.0f..%.0f", taken.AbsolutePosition.X, taken.AbsolutePosition.X + taken.AbsoluteSize.X, lo, hi))
-				t.Check("its foot on the health bar, risen no more than Rise", foot <= bar.AbsolutePosition.Y + 2 * (card.AbsoluteSize.X / card.Size.X.Offset)
-					and foot >= bar.AbsolutePosition.Y - (slate.Taken.Rise / slate.Page + 2) * (card.AbsoluteSize.X / card.Size.X.Offset),
-					string.format("its foot %.0f, the bar's top %.0f", foot, bar.AbsolutePosition.Y))
+				t.Check("crossing the card's top edge, risen no more than Rise", middle <= edge + 2 * k and middle >= edge - (slate.Taken.Rise / slate.Page + 2) * k,
+					string.format("its middle %.0f, the card's top %.0f", middle, edge))
 				HudController.HoldTaken(nil)
 				t.Check("gone after its life", waitFor(t, slate.Taken.Life + 0.5, function(): boolean
 					return not taken.Visible
@@ -1419,6 +1431,61 @@ function HudCases.Cases(given: Given): { any }
 				end
 			end,
 		},
+	{
+		-- AR62's piece 1 (B in F2's finish): the signature's press alone, through the states it must show.
+		Name = "HUD: AR62, the press draws its states: the ring lit by the share, gold when ready, the flash, a glyph for a signature not drawn yet",
+		Run = function(t: any)
+			local config = HudConfig.Readout
+			local slate: any = HudConfig.Slate
+			local holder = Instance.new("Frame")
+			holder.Name = "SelfTestReadout"
+			holder.BackgroundTransparency = 1
+			holder.Size = UDim2.fromOffset(80, 80)
+			holder.Position = UDim2.fromOffset(-500, -500) -- off the screen
+			holder.Parent = Layers.Get("Hud")
+			local piece = Readout.new(holder)
+			local drawn = next(config.Icons)
+			local function state(share: number, flash: number?, seen: number?, action: string?, left: number?): Readout.State
+				return { Share = share, Full = share >= 1, Left = left, Flash = flash or 0, Swell = 0, Seen = seen or 1, Action = action or drawn or "", Class = "Warrior" }
+			end
+			t.Near("the press is the tap's size", piece.Frame.Size.X.Offset, slate.Press.Size / slate.Page, 1) -- whole points
+			for _, share in { 0, 0.25, 0.5, 0.75, 0.99 } do
+				Readout.Step(piece, state(share))
+				t.Near(`at {share}: it says how full`, piece.Frame:GetAttribute("Share") :: number, share, 1e-6)
+				-- The ring clockwise from the top: the right half to 0.5, the left after (UI.Readout's halves).
+				t.Near(`at {share}: the right half lit to its share`, piece.Halves[1].Rotation, math.min(share, 0.5) * 360, 1e-6)
+				t.Near(`at {share}: the left half after it`, piece.Halves[2].Rotation, math.max(share, 0.5) * 360, 1e-3)
+				t.Check(`at {share}: charging, the cooling disc and its icon faint, no gold`, math.abs(piece.Icon.ImageTransparency - slate.Press.CoolIcon) < 0.01
+					and piece.Glass.BackgroundTransparency < 0.01 and piece.Gold.BackgroundTransparency > 0.99 and piece.ReadyIcon.ImageTransparency > 0.99,
+					string.format("icon %.2f, gold %.2f", piece.Icon.ImageTransparency, piece.Gold.BackgroundTransparency))
+			end
+			Readout.Step(piece, state(0.6, 0, 1, nil, 3.2))
+			t.Check("cooling, the seconds left on it, whole", piece.Count.Visible and piece.Count.Text == "4", `{piece.Count.Visible} {piece.Count.Text}`)
+			Readout.Step(piece, state(1))
+			t.Check("ready: the gold disc, its icon whole, the ring whole, no count", piece.Gold.BackgroundTransparency < 0.01 and piece.ReadyIcon.ImageTransparency < 0.01 and piece.Icon.ImageTransparency > 0.99
+				and piece.Halves[1].Rotation == 180 and piece.Halves[2].Rotation == 360 and not piece.Count.Visible)
+			t.Check("and its lit curve from below", piece.Curve.Transparency < 0.99, string.format("%.2f", piece.Curve.Transparency))
+			if drawn then
+				t.Check("the signature's own icon, charging and ready", piece.Icon:GetAttribute("Kit") == config.Icons[drawn] and piece.ReadyIcon:GetAttribute("Kit") == config.Icons[drawn] .. "Ready", tostring(piece.Icon:GetAttribute("Kit")))
+			end
+			Readout.Step(piece, state(0, 1))
+			t.Check("as it fires it swells", piece.Scale.Scale > 1.1, string.format("%.2f", piece.Scale.Scale))
+			t.Check("and the gold is still whole", piece.Gold.BackgroundTransparency < 0.01)
+			Readout.Step(piece, state(0.05, 0.5))
+			t.Near("half through the flash, the gold is half gone", piece.Gold.BackgroundTransparency, 0.5, 0.01)
+			Readout.Step(piece, state(0.5, 0, 0))
+			local hidden = piece.Icon.ImageTransparency > 0.99 and piece.Gold.BackgroundTransparency > 0.99 and piece.Glass.BackgroundTransparency > 0.99
+				and piece.Track.Transparency > 0.99 and piece.TrackInk.Transparency > 0.99 and piece.Curve.Transparency > 0.99
+			for _, line in piece.Lit do
+				hidden = hidden and line.Transparency > 0.99
+			end
+			t.Check("faded out, every layer is", hidden)
+			Readout.Step(piece, state(0.5, 0, 1, "SelfTestNoIcon"))
+			t.Check("a signature not drawn yet shows its class's glyph in white", piece.Icon:GetAttribute("Kit") == "ClassWarriorGlyph" and piece.Icon.ImageColor3 == slate.Ink, tostring(piece.Icon:GetAttribute("Kit")))
+			t.Check("and in ink on the gold", piece.ReadyIcon:GetAttribute("Kit") == "ClassWarriorGlyph" and piece.ReadyIcon.ImageColor3 == slate.AccentInk)
+			holder:Destroy()
+		end,
+	},
 	}
 end
 

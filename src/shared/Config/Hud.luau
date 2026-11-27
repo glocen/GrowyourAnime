@@ -1045,91 +1045,137 @@ return {
 		Oswald = { Family = "rbxasset://fonts/families/Oswald.json", Body = "Regular", Strong = "Medium", Number = "SemiBold", Digit = 0.5 },
 		TitilliumWeb = { Family = "rbxasset://fonts/families/TitilliumWeb.json", Body = "SemiBold", Strong = "Bold", Number = "Bold", Digit = 0.52 },
 	} :: { [string]: { Family: string, Body: string, Strong: string, Number: string, Digit: number } },
-	-- AR62's piece 1, the fight's HUD in B, Slate glass (research's pick, 2026-11-26, 23:46; Modulo's three must-fixes in,
-	-- 23:51; build/handoff/UI/hud_overhaul/piece1_fight/B_*.png, drawn by tools/ui/hud_palettes.py's "B"). Mid-value
-	-- blue-grey glass with a thin rim by side, white words in Titillium Web, one gold accent: the signature's press. Sizes
-	-- are the target's page points: Page of them to an authored point (the style frames' 1.28; UI.Kit.Slate.Pt), so its
-	-- press, 66 across, is the tap's 52. A word never draws under docs/ui.md's 14 px (UI.Kit.Text's floor): a bar grows to
-	-- hold its digits where the target's would not. Tuned live (research's ask): the plate's colours, the rim by side, the
-	-- press's place (Press.At). Every surface value is a token here, so the UI's finish (the director's bar of 2026-11-27,
-	-- 00:04: Anime Crusaders' and Sailor Piece's polish) swaps the surface without a rebuild (research, 00:04): the plate's
-	-- fill and gradient, strokes and their colours, the top highlight, the lift and the depth lip, the radii, the face, the
-	-- words' stroke and shade, the side rims. UI.Kit.Slate.Repaint lays them again a few times a second.
+	-- AR62's piece 1, the fight's HUD: B's layout (research's pick, 2026-11-26, 23:46) in F2's finish, the deeper slate
+	-- (research's pick, 2026-11-27, 00:36; build/handoff/UI/hud_overhaul/piece1_finish/F2_*.png, drawn by Modulo's
+	-- tools/ui/hud_finish.py; the construction from docs/research/anime-crusaders-ui-surface.md). Every plate a ring stack in
+	-- its side's family (azure yours, coral theirs, gold the press and the level, steel the plain presses), cards lit from
+	-- the top, presses from below; names and numbers in Fredoka One in a near-black stroke of their family's hue, meta words
+	-- flat in Builder Sans; bars on a dark tint of their own hue inside a black line, lit, with a lip, notched every 1,000.
+	-- Sizes are the target's page points: Page of them to an authored point (the style frames' 1.28; UI.Kit.Slate.Pt), so
+	-- its press, 66 across, is the tap's 52. A word never draws under docs/ui.md's 14 px (UI.Kit.Text's floor): a bar grows
+	-- to hold its digits where the target's would not. Every surface value is a token here, laid again a few times a second
+	-- (UI.Kit.Slate.Repaint), so a Tune or the next finish swaps it without a rebuild.
 	Slate = {
 		Page = 1.28,
-		-- The glass: a gradient top to foot, nearly solid (Clear: its transparency), a rounded rect with a fine pale rim and
-		-- a lit hairline inside its top; a soft lift under it. White on it measures 6.0 to 6.3 (Modulo, 23:51).
-		Plate = {
-			Top = Color3.fromHex("#52627A"),
-			Foot = Color3.fromHex("#405066"),
-			Clear = 0.04,
-			Radius = 7,
-			Rim = 1.1, -- the rim's width
-			RimClear = 0.2, -- its transparency
-			Hairline = Color3.fromHex("#FFFFFF"),
-			HairlineClear = 0.72,
-			Lift = 0.7, -- the soft shadow's transparency under a plate
-			LiftDown = 2, -- and how far down it sits
-			Lip = Color3.fromHex("#2A3442"), -- the depth lip: a solid darker edge under the glass (off in B: LipClear 1)
-			LipClear = 1,
-			LipDown = 1.5,
+		-- The take: F2, the deeper slate, or F1, B's mid slate with the same construction, its other: one Tune
+		-- ("Hud.Slate.Take", "F1") for the director to judge both in play (research, 00:36). A take holds the cards' fill (top
+		-- to foot), a plain press's fill (lit from below) and the steel family of the plain presses (Auto, the eye).
+		Take = "F2",
+		Takes = {
+			F1 = {
+				Fill = { Color3.fromHex("#52627A"), Color3.fromHex("#405066") },
+				Press = { Color3.fromHex("#3E4B60"), Color3.fromHex("#62728C") },
+				Steel = { Ink = Color3.fromHex("#0A101A"), Dark = Color3.fromHex("#26324A"), Band = { Color3.fromHex("#E3ECF7"), Color3.fromHex("#A3B3CA") } },
+			},
+			F2 = {
+				Fill = { Color3.fromHex("#2F3A4B"), Color3.fromHex("#1F2632") },
+				Press = { Color3.fromHex("#252E3D"), Color3.fromHex("#434F67") },
+				Steel = { Ink = Color3.fromHex("#080C14"), Dark = Color3.fromHex("#1E2839"), Band = { Color3.fromHex("#D5DFEC"), Color3.fromHex("#8FA0B8") } },
+			},
 		},
-		-- The words: a soft shade round a white word on the glass (its stroke, standing in for a shadow), and the dark stroke
-		-- of a number on a bar, its width a share of the number's size (15.6 to 1 on white, Modulo's must-fix).
-		Text = { Shade = 0.6, ShadeLine = 1, OnBar = 0.24 },
-		-- A bar: its light's sheen along its top, on a bar at least SheenFrom high.
-		Bar = { Radius = 4, Sheen = 0.75, SheenTall = 0.32, SheenFrom = 8 },
-		-- The rim by side, from C: azure on yours, coral on theirs; the plain pale rim on the chips.
-		-- An elite's or a keeper's card wears the gold, and a second rim outside it (Elite.Out).
-		Rim = { Yours = Color3.fromHex("#6FB2FF"), Theirs = Color3.fromHex("#FF8470"), Plain = Color3.fromHex("#E6EDF7"), Elite = Color3.fromHex("#F8C552") },
+		-- Each family one hue in its values (the study's rule 1): Ink a near-black hairline, Dark the hue at about 25%, Band
+		-- its bright band (a card's, lit corner to corner) or rim (a press's, lit top to foot), Line a card's dark line inside
+		-- the band; Fill a press's own fill, else the take's. A rarity's family comes from its colour (Config.Hud.Card.Trim;
+		-- UI.Kit.Slate.Family).
+		Sides = {
+			Yours = { Ink = Color3.fromHex("#06142A"), Dark = Color3.fromHex("#1A4378"), Band = { Color3.fromHex("#A9DCFF"), Color3.fromHex("#4A93F0") }, Line = Color3.fromHex("#0A1A33") },
+			Theirs = { Ink = Color3.fromHex("#1F0705"), Dark = Color3.fromHex("#7C2819"), Band = { Color3.fromHex("#FFBBAA"), Color3.fromHex("#EE5A46") }, Line = Color3.fromHex("#2B0B07") },
+			Elite = { Ink = Color3.fromHex("#1A0E00"), Dark = Color3.fromHex("#6A4206"), Band = { Color3.fromHex("#FFF4C8"), Color3.fromHex("#FFD457") }, Line = Color3.fromHex("#2A1700") },
+			Gold = { Ink = Color3.fromHex("#1A0E00"), Dark = Color3.fromHex("#6A4206"), Band = { Color3.fromHex("#FFF4C8"), Color3.fromHex("#FFD457") }, Line = Color3.fromHex("#2A1700"), Fill = { Color3.fromHex("#D08612"), Color3.fromHex("#FFCB40") } },
+			Cool = { Ink = Color3.fromHex("#1A0E00"), Dark = Color3.fromHex("#4A3410"), Band = { Color3.fromHex("#E5D3A2"), Color3.fromHex("#C2A866") }, Line = Color3.fromHex("#2A1700"), Fill = { Color3.fromHex("#7E6230"), Color3.fromHex("#A88A4C") } },
+			On = { Ink = Color3.fromHex("#080C14"), Dark = Color3.fromHex("#5A3A06"), Band = { Color3.fromHex("#FFF1B8"), Color3.fromHex("#F2B636") }, Line = Color3.fromHex("#000000") },
+		},
+		-- A plate's kinds: its rings outside in (page points), its corner (of its height, or its own page points: Corner),
+		-- and Rim, a press's order (Ink, Dark, a black hairline, then the Band as its rim) for a card's (Ink, Dark, the Band,
+		-- the Line). Lit: a card's top highlight.
+		Kinds = {
+			Card = { Rings = { 0.9, 1.3, 1.8, 0.6 }, Round = 0.1, Lit = true },
+			Portrait = { Rings = { 0.9, 1.2, 1.3, 0.5 }, Corner = 5 },
+			Press = { Rings = { 0.9, 1.0, 0.6, 1.1 }, Round = 0.14, Rim = true },
+			Badge = { Rings = { 0.8, 0.7, 0.4, 0.8 }, Round = 0.14, Rim = true },
+			Disc = { Rings = { 1.2, 2.0, 0.9, 2.0 }, Round = 0.5, Rim = true },
+		},
+		Plate = {
+			Light = 0.5, -- a card's 3 px highlight under its top edge: white at this transparency
+			LightTall = 1.3,
+			Shadow = Color3.fromHex("#0B1018"), -- the soft lift under a plate
+			Lift = 0.5,
+			LiftDown = 1.6,
+		},
+		-- The words: a display word's stroke a share of its size (the study: 18% of its cap, the cap 0.7 of the em), a number
+		-- on a bar's a little heavier (22%) in its bar's Outline, the level's on the gold in the gold's Line (20%).
+		Text = { Stroke = 0.126, OnBar = 0.154, Gold = 0.14 },
+		Face = "rbxasset://fonts/families/FredokaOne.json", -- names and numbers: one rounded heavy face from Roblox's own
+		Weight = "Regular", -- its weight (Fredoka One has the one)
+		Meta = "rbxasset://fonts/families/BuilderSans.json", -- meta words ("Lv 26"), Bold, flat
+		-- The bars: a black line outside a dark track of the bar's own hue, the light lit top to foot with a darker lip at its
+		-- foot and a sheen line near its top (on a bar From high or more), notched every Notch of its whole.
+		Bars = {
+			Health = { Outline = Color3.fromHex("#16060B"), Track = { Color3.fromHex("#5C1727"), Color3.fromHex("#3C0D18") }, Fill = { Color3.fromHex("#FFA6B0"), Color3.fromHex("#FF6478"), Color3.fromHex("#DE3954") }, Lip = Color3.fromHex("#9A1C34") },
+			Xp = { Outline = Color3.fromHex("#071326"), Track = { Color3.fromHex("#123056"), Color3.fromHex("#0B1E38") }, Fill = { Color3.fromHex("#E2F6FF"), Color3.fromHex("#7CCBFF"), Color3.fromHex("#4AA6F2") }, Lip = Color3.fromHex("#2C78C4") },
+		},
+		Bar = { Radius = 2.2, Outline = 0.7, Lip = 0.9, Sheen = 0.55, SheenTall = 0.7, SheenAt = 0.7, From = 6, Notch = 1000, NotchWide = 0.7, NotchClear = 0.45 },
+		-- An elite's card in the gold family, and a second rim outside it.
 		Elite = { Out = 2.5, Line = 1.2, Clear = 0.35 },
 		Ink = Color3.fromHex("#FFFFFF"), -- the words
-		Ink2 = Color3.fromHex("#D4DCE8"), -- a quiet mark (the class's)
-		Shade = Color3.fromHex("#1C2431"), -- a soft shade under the white words, and every number's stroke on a bar
-		Face = "rbxasset://fonts/families/TitilliumWeb.json", -- the names, the level and the numbers, Bold
-		Well = { Colour = Color3.fromHex("#1C2431"), Clear = 0.62 }, -- a bar's empty slot
-		Health = { Color3.fromHex("#FF6878"), Color3.fromHex("#E2425A") }, -- the health light, top to foot
-		Xp = Color3.fromHex("#A6E6FF"), -- the lead's experience thread
-		Accent = { Color3.fromHex("#F8C552"), Color3.fromHex("#E9A01E") }, -- the press, the level's badge, Auto when on
-		AccentInk = Color3.fromHex("#2E2104"), -- the icon and the level on the gold
-		-- The lead's card: 206 by 58, the portrait 46 square at 6 in, the name and its marks, the health bar 14 high with its
-		-- digits on it (white in the Shade's stroke, 15.6 to 1), the experience thread 3.5 under it.
-		-- Face: the square of the old card's portrait art the new one shows (its face and head, in the art's own points:
-		-- Config.UIKit's CardFace* at 2, 20 and CardHead* over it), from the hair's top to the chin.
+		Ink2 = Color3.fromHex("#AEB9C9"), -- a quiet mark (the class's, Auto's turn while off)
+		Shade = Color3.fromHex("#0A1528"), -- a word's stroke with no family round it
+		Accent = { Color3.fromHex("#FFF1B8"), Color3.fromHex("#FFC63C") }, -- the gold lit: the press's ring, Auto's turn on
+		AccentInk = Color3.fromHex("#22170A"), -- the icon on the gold
+		-- The lead's card: 206 by 58; the portrait 54 square crossing its top and left edges (At, from the card's top left),
+		-- in its rarity's family over Backdrop; the level on a gold badge astride the portrait's foot, across the card's left
+		-- edge (Badge.At); the name and its marks from NameX, the health bar 14 high with its digits on it, the experience
+		-- thread 3.5 under it. Face: the square of the old card's portrait art the new one shows (its face and head, in the
+		-- art's own points: Config.UIKit's CardFace* at 2, 20 and CardHead* over it), from the hair's top to the chin.
 		Lead = {
 			Size = Vector2.new(206, 58),
 			Inset = 6,
-			Corner = 6,
-			Rim = 1.2, -- the portrait's rim, in its rarity's colour (Card.Trim)
-			Name = 13,
+			Portrait = { At = Vector2.new(-7, -8), Size = 54, Art = 2.4 }, -- Art: the art's corner inside the rings
+			NameX = 61,
+			Name = 13.5,
 			NameTop = 6, -- the name's row from the card's top
 			Marks = 6, -- the gem after the name, and the class's mark after the gem
 			Bar = 14,
 			BarTop = 25,
-			Digits = 10,
+			Digits = 10.5,
 			Thread = 3.5,
 			ThreadGap = 5,
 			Right = 8, -- the bars stop this short of the card's right
 			Face = { X = 2, Y = 8, Size = 58 },
 			Backdrop = Color3.fromHex("#E9D6C8"), -- behind the portrait's art
 		},
-		-- The foe's card: 216 by 50, its top row (the skull, "Lv N", the name, the type's gem) and its health 13 high. Poise's
-		-- bar under it waits for poise (docs/design.md, "Poise": no fighter has one yet).
-		Foe = { Size = Vector2.new(216, 50), Inset = 8, RowTop = 6, Bar = 13, BarTop = 25, Digits = 9.5, Name = 12.5, Level = 10.5, Skull = 14, Gem = 12, Gap = 8 },
-		-- The level on a gold badge at the portrait's foot.
-		Badge = { Size = Vector2.new(22, 13), Corner = 4, Text = 9.5, Line = 0.9 },
-		-- The lead's damage taken (TR69 A, kept on its card): over the bar's draining end, inside the card.
-		-- The lead's damage taken, on its card over the health bar's draining end (research's must-fix 3): "−N" in coral
-		-- in a dark stroke, its foot on the bar's top, clear of the name's marks by Gap. Hits while it shows add to it; it
-		-- swells Pop at each, rises Rise over Life and fades in its last third.
-		Taken = { Colour = Color3.fromHex("#FF7A86"), Stroke = Color3.fromHex("#2A0E14"), Line = 2.6, Size = 12, Life = 1, Rise = 6, Pop = 1.25, Gap = 4 },
-		-- The signature's press: a gold disc 66 across, its charge a ring 5 out, full and lit when ready. At: its centre from
-		-- the lead card's foot-left (the target's 47, 160 against the card's 12, 108).
-		-- Its rims: the glass's while it charges, a white one inside the gold while it's ready.
-		Press = { Size = 66, Ring = 5, Line = 2.4, RingClear = 0.78, At = Vector2.new(35, 52), Icon = 30, Rim = 1.2, GoldRimClear = 0.45 },
-		-- Auto: a slim chip right of the press, 66 by 26, its turn and word gold when on, grey off; a 66 tap area round it.
-		Auto = { Size = Vector2.new(66, 26), Gap = 16, Icon = 16, Text = 10 },
-		-- The eye (spectate): a 26 disc docked to the card's right, 7 off it, 2 under its top; a 66 tap area round it.
+		-- The foe's card: 216 by 50, its top row (the skull, "Lv N" flat in the meta face, the name, the type's gem) and its
+		-- health 13 high. Poise's bar under it waits for poise (docs/design.md, "Poise": no fighter has one yet).
+		Foe = { Size = Vector2.new(216, 50), Inset = 8, RowTop = 6, Bar = 13, BarTop = 23.5, Digits = 10, Name = 13, Level = 10.5, Skull = 14.5, Gem = 12.5, Gap = 8 },
+		-- The level, white in the gold's stroke on a gold badge, 26 by 15 at At from the card's top left.
+		Badge = { Size = Vector2.new(26, 15), At = Vector2.new(-5, 39), Text = 10 },
+		-- The lead's damage taken, on its card over the health bar's draining end (research's must-fix 3), across the card's
+		-- top (F2): "−N" lit pale at its top to coral at its foot (Fill) in a dark stroke (Line, of its size), its middle
+		-- Cross under the card's top edge, clear of the name's marks by Gap. Hits while it shows add to it; it swells Pop at
+		-- each, rises Rise over Life and fades in its last third.
+		Taken = { Fill = { Color3.fromHex("#FFD6DA"), Color3.fromHex("#FF8A96"), Color3.fromHex("#FF3D57") }, Stroke = Color3.fromHex("#2A0610"), Line = 0.154, Size = 13, Cross = 0, Life = 1, Rise = 6, Pop = 1.25, Gap = 4 },
+		-- The signature's press: a gold disc 66 across in the Disc kind's rings, lit from below with a lit curve; its charge
+		-- a ring Ring out on a dark gold track (TrackInk under it), lit whole when ready. Charging it cools: the Cool family,
+		-- its icon faint (CoolIcon) and the seconds left on it (Count). Ready, a glow round it (Glow; its image waits for
+		-- the finish's images). At: its centre from the lead card's foot-left (the target's 47, 160 against the card's 12, 108).
+		Press = {
+			Size = 66,
+			At = Vector2.new(35, 52),
+			Icon = 38,
+			Ring = 4.2, -- the charge ring's line from the disc's edge
+			Line = 2.4, -- its width
+			Track = Color3.fromHex("#4A2E05"),
+			TrackInk = 3.8, -- the ink under the track, its width
+			TrackInkClear = 0.25,
+			RingClear = 0, -- the track's transparency
+			CoolIcon = 0.58, -- the icon's transparency while it charges
+			Count = 26, -- the seconds left, its size
+			Curve = { Across = 0.84, Line = 1.6, Clear = 0.6 }, -- the lit curve from below: of the disc, its width, transparency
+		},
+		-- Auto: a slim steel press right of the press, 66 by 26, its corner 14% of its height; on, its rim gold (the On
+		-- family) and its turn gold; off, the steel rim and a grey turn; its word white either way. A 66 tap area round it.
+		Auto = { Size = Vector2.new(66, 26), Gap = 16, Icon = 17, Text = 10.5, Off = Color3.fromHex("#AEB9C9") },
+		-- The eye (spectate): a 26 steel press docked to the card's right, 7 off it, 2 under its top; a 66 tap area round it.
 		Eye = { Size = 26, Gap = 7, Down = 2, Icon = 17 },
 		Tap = 66, -- every control's tap area (never under Theme.Size.Tap)
 	},

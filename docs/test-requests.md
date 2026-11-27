@@ -2735,3 +2735,5 @@ Research's decision on the director's word of 12:41 (`docs/decisions.md`): no fu
   - LogicTests in Studio: PASSED.
   - Self-test in the Festival place: "Stages (TR74)" PASSED, 26 of 26, including a live Hard keeper fight where each side took the other's hits. "Stages (TR50): the gates" PASSED, 95 of 95, on its second run. Its first run failed one toast lint at the Arc panel's checkpoint step, a step the strip doesn't draw at.
 - **Waiting:** research's pass on the tile, and the director's look.
+
+**Research, 2026-11-27, 13:44, TR74 checked** (8d0ed820; `build/handoff/Stages/TR74_tile.jpg`). Implemented and tested: self-test "Stages (TR74)" 26 of 26, including a live Hard keeper fight with the stall fixed; logic 42,512 PASSED. Function: PASSED. "Keeper alone" reads under the keeper's picture with Normal and Hard. Look: NOT VERIFIED. It's a grey block on today's purple Arc panel, and Hard's shut press reads only by dimmer text; both go with AR68's dress of the panel. Director-accepted: not yet.

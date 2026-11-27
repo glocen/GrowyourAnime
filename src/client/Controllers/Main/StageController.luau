@@ -13,6 +13,7 @@
 --   StageController.Gate(stage) -> boolean?       whether stage's gate shows shut, nil before it's streamed in
 --   StageController.Dare() -> { [string]: any }?  the stretch's dare as the line shows it, for tests (DareLine.Said)
 --   StageController.Shard() -> { [string]: any }?  the base's shard as the line's tab shows it, for tests (ShardTab.Said)
+--   StageController.Down() -> number              the line's top now, authored pixels, for tests
 --   StageController.Pick()                        the Arc panel, opened or closed if it's the one open
 --   StageController.Begin(ground, difficulty) -> boolean   a run begun as the Arc panel's press begins it
 
@@ -166,6 +167,14 @@ local function fit(): (number, number)
 	return wide, math.clamp(room.X / 2 - wide / 2, from, math.max(from, to - wide))
 end
 
+-- The line's top now: L.Down, or under the keeper's bar while it holds the top middle, so the bar's name and health
+-- read whole (research's launch bug 3, 2026-11-27: "Stretch 4 of 4" sat over the Lamplighter's name). Eased there.
+local lineDown = L.Down
+local function downTarget(): number
+	local foot = HudController.KeeperFoot()
+	return if foot then foot + L.Gap else L.Down
+end
+
 -- The line's frame and its fixed pieces, for a run of `stage` on Hard or not, with `quota` Shades.
 local function build(key: string, hard: boolean, stage: number, quota: number): Line
 	local wide, x0 = fit()
@@ -174,7 +183,7 @@ local function build(key: string, hard: boolean, stage: number, quota: number): 
 	frame.Name = "StageRun"
 	frame.BackgroundTransparency = 1
 	frame.Size = UDim2.fromOffset(wide, L.Tall)
-	frame.Position = UDim2.fromOffset(x0, L.Down)
+	frame.Position = UDim2.fromOffset(x0, lineDown)
 	StageScreen.Plate(frame, 0, 0, wide, L.Tall, hard, L.Corner, 1)
 	StageScreen.Mark(frame, "Mark", 8, 9, hard, 6)
 	local tx = 8 + LOOK.Badge.Side + 10
@@ -568,7 +577,7 @@ function StageController.Start()
 				made.Key = ""
 				showLine()
 			else
-				made.Frame.Position = UDim2.fromOffset(x0, L.Down)
+				made.Frame.Position = UDim2.fromOffset(x0, lineDown)
 			end
 		end
 	end
@@ -584,6 +593,14 @@ function StageController.Start()
 	end)
 	local since, shardSince = 0, 0
 	RunService.Heartbeat:Connect(function(dt: number)
+		local target = downTarget()
+		if lineDown ~= target then
+			lineDown = if math.abs(target - lineDown) < 0.5 then target else lineDown + (target - lineDown) * math.min(1, dt * L.Ease)
+			local made = line
+			if made and made.Frame.Parent then
+				made.Frame.Position = UDim2.new(made.Frame.Position.X, UDim.new(0, math.floor(lineDown + 0.5)))
+			end
+		end
 		shardSince += dt
 		if shardSince >= HudConfig.Return.Run.Every then
 			shardSince = 0
@@ -595,6 +612,10 @@ function StageController.Start()
 			look()
 		end
 	end)
+end
+
+function StageController.Down(): number
+	return lineDown
 end
 
 return StageController

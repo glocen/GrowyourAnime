@@ -1922,6 +1922,12 @@ function HudController.Keeper(): (number, string)
 	return BossBar.Shown(keeperBar)
 end
 
+-- The keeper's bar's foot in the band while it holds the top middle, authored pixels, or nil (UI.BossBar.Foot): the
+-- run's line steps under it (StageController; research's launch bug 3, 2026-11-27).
+function HudController.KeeperFoot(): number?
+	return if keeperBar then BossBar.Foot(keeperBar) else nil
+end
+
 -- For tests: the keeper's bar's trail and fill, shares of the bar (UI.BossBar.Trail).
 function HudController.KeeperTrail(): (number, number)
 	return BossBar.Trail(keeperBar)

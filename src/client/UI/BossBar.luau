@@ -22,6 +22,8 @@
 --   BossBar.Shown(bar)                          for tests: 0 hidden to 1 whole, and what's showing ("", "Stamp", "In",
 --                                               "Whole", "Leave")
 --   BossBar.Trail(bar)                          for tests: the trail's share of the bar, and the fill's
+--   BossBar.Foot(bar) -> number?                 B's foot in the band, authored pixels, while a keeper's bar holds the
+--                                               top middle (the run's line steps under it: StageController); else nil
 
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -518,6 +520,14 @@ end
 
 function BossBar.Trail(bar: Bar): (number, number)
 	return bar.TrailShare, bar.Share
+end
+
+function BossBar.Foot(bar: Bar): number?
+	if bar.Keeper == nil or bar.Variant ~= "B" then
+		return nil
+	end
+	local frame = bar.Frame
+	return frame.Position.Y.Offset + frame.Size.Y.Offset
 end
 
 return BossBar

@@ -124,7 +124,7 @@ local stages = {
 	-- The run's line under Roblox's top bar, in the Hud layer.
 	-- It stands clear of the HUD's pieces named in Clear, Gap from them; between them it narrows, to Least at most: Hard's
 	-- longest head ("Hard Stage 3  10 / 10 Shades") still clears its words there.
-	Line = { Wide = 368, Least = 330, Down = 4, Tall = 44, Corner = 6, Edge = 1.2, Gap = 8, Clear = { "Lead", "Credits", "Electricity" } },
+	Line = { Wide = 368, Least = 330, Down = 4, Tall = 44, Corner = 6, Edge = 1.2, Gap = 8, Ease = 12, Clear = { "Lead", "Credits", "Electricity" } }, -- Ease: per second, toward under the keeper's bar (Gap below its foot) and back
 	-- A stretch's dare under the line (AR53, build/handoff/UI/goals/goals.json, "dare"; TR54), from the line's glass's top
 	-- left. Open: its box from Left, Top to its foot by its rows (Foot, Corner), its words from the stretch's name's left at
 	-- Words.Y by its rows (capitals' top), the box Pad past the widest row and never past Limit short of the Electricity
@@ -1361,7 +1361,7 @@ return {
 		-- Bar: the bar's height, its number inside it: at least the number's line on the smallest phone (Caption at the
 		-- scale's floor, 17), and about twice the grey block's 8 (research's verdict, 2026-11-14, fix 2).
 		Foot = { Width = 400, Bar = 18, Above = 14 }, -- Above: the bar's foot over the screen's; Width clears the jump button on the smallest phone
-		Top = { Most = 400, Bar = 18, Y = 17 }, -- Y: the title's top, the band's top line; the bar's foot at 86 (the lead card's at 113)
+		Top = { Most = 400, Bar = 18, Y = 11 }, -- Y: the title's top, the band's top line; the bar's foot at 80, inside AR68 A's lead card (its foot at 81; 17 left it 6 under)
 		Stamp = { From = 1.6, Seconds = 0.14, Fill = 0.25 }, -- Fill: seconds the title and the bar take to come in after it
 		Shine = { Seconds = 0.6 },
 		Leave = 0.3,

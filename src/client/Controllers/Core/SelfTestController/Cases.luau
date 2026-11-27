@@ -59,6 +59,7 @@ local FadeController = require(script.Parent.Parent.Parent.Main.FadeController)
 local SpectateController = require(script.Parent.Parent.Parent.Main.SpectateController)
 local LightingController = require(script.Parent.Parent.Parent.Main.LightingController)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
+local StageController = require(script.Parent.Parent.Parent.Main.StageController)
 local DownController = require(script.Parent.Parent.Parent.Main.DownController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
@@ -5915,6 +5916,13 @@ local cases = {
 			t.Check("B: the top middle, in the band between the lead's card and the pills", waitFor(t, REPLICATE, inBand),
 				string.format("its foot at %d, the band's foot at %d", parts.Keeper.AbsolutePosition.Y + parts.Keeper.AbsoluteSize.Y, band))
 			t.Check("no dock in B either: none in a fight (AR62, B)", not parts.Dock.Visible)
+			-- The run's line steps under the bar while it holds the top middle, so "Stretch 4 of 4" never covers its name
+			-- (research's launch bug 3, 2026-11-27), and comes back up once it leaves (below).
+			local barFoot = parts.Keeper.Position.Y.Offset + parts.Keeper.Size.Y.Offset
+			local line = HudConfig.Stages.Line
+			t.Check("B: the run's line steps under the bar", HudController.KeeperFoot() == barFoot and waitFor(t, 1, function(): boolean
+				return StageController.Down() == barFoot + line.Gap
+			end), string.format("the line's top at %.1f, the bar's foot at %d", StageController.Down(), barFoot))
 			-- Its number on the bar, nothing of it below (research's verdict, 2026-11-14, fix 1).
 			local number = parts.Keeper:FindFirstChild("Number") :: GuiObject
 			local channel = parts.Keeper:FindFirstChild("Channel") :: GuiObject
@@ -5974,6 +5982,9 @@ local cases = {
 			t.Check("and is gone", waitFor(t, boss.Leave + 0.3, function(): boolean
 				return not parts.Keeper.Visible
 			end))
+			t.Check("the run's line back at the top", HudController.KeeperFoot() == nil and waitFor(t, 1, function(): boolean
+				return StageController.Down() == HudConfig.Stages.Line.Down
+			end), string.format("the line's top at %.1f", StageController.Down()))
 			restore()
 			t.Wait(math.max(0, keeper.WinPause + moved - (os.clock() - fellClock)))
 			t.Check("the try is over", Players.LocalPlayer:GetAttribute("Try") == nil)

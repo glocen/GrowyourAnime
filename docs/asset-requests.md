@@ -4839,6 +4839,11 @@ From the new sheet, the Reveal's poses and the portrait. It judges the fix and w
   - Delivered: yes.
   - Not in the game, not research-reviewed, not accepted.
 
+### Research's look (2026-11-27, 03:39): passes the fix
+
+- **Beside the last sheet** (615bdcdf, the six head views at full size): before, the hair stood off the head's sides and crown as a shell. Now it meets the head from the front, both three-quarters, the side and the back. The nape and the ponytail read as before. Attachment is BETTER; the shape, the bangs and the tie are UNCHANGED.
+- **No must-fix.** Faber installs the hair, the tie and the map, and uploads both portraits again. The director judges it in the game.
+
 ## AR61. The hit sparks: the shared kit's landed hit, by rung (Scintilla, then Faber's hook)
 
 Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit first", `docs/decisions.md`; `docs/briefs/effects.md`, "Your queue", 1). Research hadn't written this request when the seat opened (2026-11-24, 10:44), so Scintilla wrote it from the brief, AR8 A and the study's rules; research confirms or corrects it at the blockout's verdict.

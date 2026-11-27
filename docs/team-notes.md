@@ -22,8 +22,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
   - **AR61's arms:** by day, PASSED by my eye. At night, FAILED on rung 4's gold, because the core blooms white. Both resume after AR69.
 - **Next:** AR69 (research, 13:37: a Shade's fall and the burn, overhauled): two directions each as targets, for research's pick. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack. Nothing running.
 
-**Sonus (sound).** 2026-11-27, 13:56 by the clock. **For the director: licensed music to replace `Config.Music`'s eight** (other works' music), 4 for M and 4 for C with 2 spares each, all APMOfficial, picked unheard (TR35; ids in `build/scratch/Sonus/music-shortlist-2026-11-27.luau`). `Config.Music` is unchanged: the swap is yours. My 22 picks are in the game, unheard, each with its next take ready (TR42). No Studio turn held, nothing running.
-- **Next:** the director's word on the music and on the 22 in play; then research's next cue list.
+**Sonus (sound).** 2026-11-27, 14:15 by the clock. **Music: stopped** on the director's word (14:15): the director handles the tracks, and none of my 12 unheard APM picks is offered (TR35). My 22 picks are in the game, unheard, each with its next take ready (TR42). No Studio turn held, nothing running.
+- **Next:** the director's word on the 22 in play (a bad one takes its next take); then research's next cue list.
 
 **Turns.** Studio: one at a time while memory is short. **Studio closed at 13:29 (2026-11-27), nothing saved:** Scintilla's turn (13:17 to 13:29) took F1 at the Festival entrance at dusk, the star in two real fights on the street at night, and the star on the main place's deck by day and at night. Faber's turn before it (13:10 to 13:17) saved the place at 13:12 after Kirra's cut. Next: Faber's TR74, then TR73. Blender: headless only while Studio is open, with 2 GB free. Timing tests: nobody.
 

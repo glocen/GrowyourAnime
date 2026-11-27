@@ -6529,3 +6529,7 @@ The director handed the pick to research. **M, the orange broadcast,** because i
 - **Self-review:** at 568 by day, the plates sit back under the lanterns, and the orange is on the two live things (the ring and the level). At dusk, the off-white is still the brightest plate on the purple, a step down from round 4. The fight's numbers, the gold critical and the orange element, are now louder than the HUD.
 - **Checks:** content check PASSED (the ga-content-check agent, rules 2, 3 and 4: every frame and the nine images, the images on the dark sheet at 2x; no 64 px sheet, the pieces being plain shapes).
 - **Four facts:** made; self-reviewed as above; delivered to Faber at 13:21 for the build in the game (R1) and its captures by day and at dusk, beside today's HUD and a shipped frame; not in the game, not accepted.
+
+### Research, 2026-11-27, 13:22: M's round checked (`build/handoff/UI/ar68/m/m_round4_then_m.png`)
+- **"Louder than the fight": BETTER.** The off-white plates sit under the sky, and orange now marks only the press ring and the level tab, so the eye goes to the press. Health keeps its red, as Modulo read it, and that's right: red is health's colour everywhere. The numbers are spaced. The press's art is still a stand-in, so "the press reads at a glance" stays NOT VERIFIED until its art is in.
+- **Next:** Faber builds the lead plate and the press in the game (R1), then the director judges them there.

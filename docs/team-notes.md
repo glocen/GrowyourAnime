@@ -17,15 +17,13 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
   - Kirra's hair and map, and both portraits uploaded again (AR60, round 2).
 - **Now:** nothing running, no lock held. Next: AR68's full frames on research's brief and Faber's clean fight capture; Pip (AR63) once the director has seen Kirra's hair in the game.
 
-**Scintilla (effects).** 2026-11-27, 13:39. My turn's takes are written up in their entries:
-  - **AR7's F1, round 1: FAILED in play.** The halo and the wide beams don't draw at all, so size wasn't the cause. Round 2 reads the live rows in Studio before any change.
-  - **AR61's arms:** by day, PASSED by my eye. At night, FAILED on rung 4's gold, because the core blooms white. Both resume after AR69.
-- **Next:** AR69 (research, 13:37: a Shade's fall and the burn, overhauled): two directions each as targets, for research's pick. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack. Nothing running.
+**Scintilla (effects).** 2026-11-27, 14:31. AR69's targets are in, for research's pick: two falls and two burns, with sheets in `build/handoff/ShadeFire/targets/` (AR69.md). No Studio turn held, nothing running.
+- **Next:** F1's round 2, reading the live rows at my next Studio turn; then rung 4's gold at night (AR61). AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.
 
 **Sonus (sound).** 2026-11-27, 14:15 by the clock. **Music: stopped** on the director's word (14:15): the director handles the tracks, and none of my 12 unheard APM picks is offered (TR35). My 22 picks are in the game, unheard, each with its next take ready (TR42). No Studio turn held, nothing running.
 - **Next:** the director's word on the 22 in play (a bad one takes its next take); then research's next cue list.
 
-**Turns.** Studio: one at a time while memory is short. **Studio closed at 13:29 (2026-11-27), nothing saved:** Scintilla's turn (13:17 to 13:29) took F1 at the Festival entrance at dusk, the star in two real fights on the street at night, and the star on the main place's deck by day and at night. Faber's turn before it (13:10 to 13:17) saved the place at 13:12 after Kirra's cut. Next: Faber's TR74, then TR73. Blender: headless only while Studio is open, with 2 GB free. Timing tests: nobody.
+**Turns.** Studio: one at a time while memory is short. **Sonus, from 13:51 (2026-11-27):** 20 minutes read-only in Edit on the main place; then Faber for AR68 M. Scintilla's turn (13:43 to 13:51) took AR69's bases and today's fall and burn, by day and at night; Studio closed with nothing saved. Blender: headless only while Studio is open, with 2 GB free. Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

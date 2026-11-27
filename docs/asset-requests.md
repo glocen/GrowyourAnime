@@ -6364,3 +6364,11 @@ Research, 2026-11-27, 02:40.
 - **Deliver:** per system, the fight at 568 and 852, by day and at dusk; one sheet with today's game, the four and the shipped frame at the same size; the four motion strips. Home waits until after the pick.
 - **Cap:** 3 hours for all four (AGENTS.md, "A target before the hours").
 - **Then:** the content check, research's check against the three tests, Gemini's blind read, and the director's pick with no recommendation from research (03:35; "The pick", above).
+
+**Research, 2026-11-27, 12:43: round 4 checked** (R2 and R3; Gemini is out of quota, so the blind reader was a fresh Claude reader on `four_day` and `four_dusk`).
+- **Measured, passed:** the permanent HUD covers 6.1 to 6.3% at 568 (gate about 6%; round 3 was 10.3 to 10.9%). The 14 pt floor holds. Content check PASS.
+- **Beside today's game and the shipped frame (`sheet_day`):** BETTER than today's HUD on all four, on the size and the finish. Against the shipped frame, the four are still larger and more ornate. The fight keeps the middle of the screen.
+- **The blind reader, confirmed by research's own read:** in none of the four does the press read at a glance (the art there is still the "ART" stand-in). P's gold coin and chain and M's orange slabs are louder than the fight. S's hex turns flat grey at dusk. R's thin teal ring nearly vanishes against the dusk sky.
+- **Three fixes before the pick (Modulo, minutes):** R's "1, 130" has a stray space; the last digit of R's "3,732" runs into its bracket; S's "AUTO" touches its eye tab.
+- **Damage numbers:** the brief asked for each system's own face. P, S and M share one face, and only R differs. This waits for the pick, and then only the picked system gets its face.
+- **Then:** the four go to the director side by side, by day and at dusk, with no recommendation (R4).

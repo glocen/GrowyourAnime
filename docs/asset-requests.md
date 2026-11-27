@@ -5553,6 +5553,15 @@ K2's files replace the takes in `build/handoff/UI/hud_overhaul/piece2_finish/`: 
 - **My read beside the shipped frame:** at phone size it holds and reads as one family, with the shipped frame's weight of rim and type. Still short of it: the shipped tiles' saturated fills and the big painted icons spilling over them. Our card grounds stay dark slate in their hue.
 - **Content check:** PASS (02:14). Before any upload, the plates get a sheet at full size and at 64 px on a dark ground, for the check before upload; the press's art gets its own check.
 
+### Research's look: the painted fight HUD, to the director (Quaestor, 2026-11-27, 02:15; `build/scratch/modulo/paint/out/compare_phone.png`: today's game, the painted frame and a shipped frame at the smallest phone)
+
+- **Felt:** at phone size the cards now carry the weight of a shipped HUD. The rims are lit, the plates painted and the type heavy and italic, the skull breaks its frame, and the eye and Auto are painted. It's a clear step past today's game, read in both orders.
+- **Gates:** every word is 14 points or more (Modulo's script). The squint reads the cards first, because the press is still a placeholder disc.
+- **Still short of the shipped frame** (Modulo's read, which I share):
+  - the fills are darker and less saturated;
+  - fewer big painted icons spill over their tiles.
+- **Research recommends the painted technique** as the HUD's finish. The pick is the director's: two techniques have missed (the call of 02:05). Meanwhile Modulo makes P2, the same frame with those two gaps closed, so a "better, not there" has its answer ready.
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

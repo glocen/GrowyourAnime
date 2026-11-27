@@ -492,6 +492,14 @@ local UIKit = {
 		FrameMythicalSmallSeat = { Id = "rbxassetid://91744322488104", Pixels = Vector2.new(368, 400), Points = Vector2.new(92, 100), Pad = 26 },
 		FrameMythicalSmall = { Id = "rbxassetid://101356538853415", Pixels = Vector2.new(368, 400), Points = Vector2.new(92, 100), Pad = 26 },
 		GemRed = { Id = "rbxassetid://72892673074429", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		-- Modulo's painted marks for the fight's HUD (AR62's piece 1; tools/ui/hud_icon_export.py), each drawn at its size on
+		-- the target in page points with 2 of room round it (Pad), uploaded under the group, 2026-11-27, 01:38.
+		HudEye = { Id = "rbxassetid://122209058618854", Pixels = Vector2.new(128, 128), Points = Vector2.new(21, 21), Pad = 2 },
+		HudAutoOn = { Id = "rbxassetid://114182126234009", Pixels = Vector2.new(128, 128), Points = Vector2.new(21, 21), Pad = 2 },
+		HudAutoOff = { Id = "rbxassetid://83666585619117", Pixels = Vector2.new(128, 128), Points = Vector2.new(21, 21), Pad = 2 },
+		HudSkull = { Id = "rbxassetid://78056977482430", Pixels = Vector2.new(128, 128), Points = Vector2.new(18.5, 18.5), Pad = 2 },
+		HudGemRed = { Id = "rbxassetid://100397827816053", Pixels = Vector2.new(128, 128), Points = Vector2.new(16.5, 16.5), Pad = 2 },
+		HudClassWarrior = { Id = "rbxassetid://116944376917102", Pixels = Vector2.new(128, 128), Points = Vector2.new(15.5, 15.5), Pad = 2 },
 		GemRedSeated = { Id = "rbxassetid://130207894416680", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 		GemOrange = { Id = "rbxassetid://129415256747618", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 		GemOrangeSeated = { Id = "rbxassetid://134106888422403", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },

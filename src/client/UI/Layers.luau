@@ -8,8 +8,10 @@
 -- (Kit.Screen; TR17, research's call, 2026-11-15). Every container is named NL_..., which the UI lint reads as ours.
 --   Layers.Get("Hud")      the layer's root frame, made on first use
 --   Layers.Scale()         the scale every layer draws at now
+--   Layers.Fit(cap)        the scale the screen's height asks for under `cap` in place of Theme's (a test's forced scale
+--                          stands for it): the slate's page grows by it past the layers' cap (UI.Kit.Slate.Root)
 --   Layers.Band()          the band's size now, authored
---   Layers.Changed         (scale) after a refit
+--   Layers.Changed         (scale) after a refit: the scale changed, or the screen's height did
 --   Layers.Force(scale?), Layers.Box(size?)   for tests: a phone's scale and its box
 --   Layers.Only({ "World", "Overlay" })   every other layer made is off, for a capture's frame: what turns them back on,
 --                                         and how many it turned off
@@ -39,6 +41,7 @@ Layers.Changed = Signal.new()
 local roots: { [string]: Frame } = {}
 local scales: { UIScale } = {}
 local scale = 1
+local lastHeight: number = 0 -- the screen's height at the last refit, rendered
 local forced: number? = nil -- a test's scale, in place of the screen's
 local boxed: Vector2? = nil -- a test's phone, in rendered pixels: the inset layers laid out in it
 local boxAt = Vector2.zero -- its top left, rendered pixels from the safe area's
@@ -79,27 +82,40 @@ local function size(name: string, root: Frame)
 	root.Position = if box then UDim2.fromOffset(boxAt.X / scale, boxAt.Y / scale) else UDim2.new()
 end
 
-local function fit(): number
+local function height(): number
+	local camera = workspace.CurrentCamera
+	return if camera then camera.ViewportSize.Y else Theme.Author.Y :: number
+end
+
+function Layers.Fit(cap: number): number
 	if forced then
 		return forced
 	end
-	local camera = workspace.CurrentCamera
-	local height = if camera then camera.ViewportSize.Y else Theme.Author.Y
 	local small = tostring((GuiService :: any).ViewportDisplaySize) == "Enum.DisplaySize.Small"
-	return math.clamp(height / Theme.Author.Y, Theme.Scale.Floor, if small then Theme.Scale.CapSmall else Theme.Scale.Cap)
+	return math.clamp(height() / Theme.Author.Y, Theme.Scale.Floor, if small then math.min(cap, Theme.Scale.CapSmall) else cap)
 end
 
+local function fit(): number
+	return Layers.Fit(Theme.Scale.Cap)
+end
+
+-- A screen taller or shorter past the cap keeps the scale, but the slate's page grows with it: Changed fires for both.
 local function refit()
-	local now = fit()
-	if math.abs(now - scale) < 1e-4 then
+	local now: number, high: number = fit(), height()
+	local moved = math.abs(now - scale) >= 1e-4
+	local still = math.abs(high - (lastHeight :: number)) < 0.5
+	if not moved and (forced ~= nil or still) then
 		return
 	end
-	scale = now
-	for _, s in scales do
-		s.Scale = scale
-	end
-	for name, root in roots do
-		size(name, root)
+	lastHeight = high
+	if moved then
+		scale = now
+		for _, s in scales do
+			s.Scale = scale
+		end
+		for name, root in roots do
+			size(name, root)
+		end
 	end
 	Layers.Changed:Fire(scale)
 end
@@ -179,7 +195,7 @@ GuiService:GetPropertyChangedSignal("TopbarInset"):Connect(function()
 	end
 end)
 
-scale = fit()
+scale, lastHeight = fit(), height()
 local function watch(camera: Camera?)
 	if camera then
 		camera:GetPropertyChangedSignal("ViewportSize"):Connect(refit)

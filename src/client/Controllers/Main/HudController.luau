@@ -230,14 +230,6 @@ local function kindOf(model: Model): (string, string)
 end
 
 -- Swaps an icon's picture to another of the kit's, keeping its place and size.
-local function swap(image: ImageLabel, name: string)
-	local im = UIKit.Images[name]
-	if im and image:GetAttribute("Kit") ~= name then
-		image.Image = im.Id
-		image:SetAttribute("Kit", name)
-	end
-end
-
 -- A pill of the top right, in its system's colour (UI.Kit.Pill): its mark on its block, its value, what's after it in
 -- soft ink, and for electricity a thread.
 local function pill(name: string, order: number, width: number, system: string): Pill.Parts
@@ -332,45 +324,27 @@ local function eyeButton(): TextButton
 		Bare = true,
 		Size = UDim2.fromOffset(tapArea(), tapArea()),
 		AnchorPoint = Vector2.new(0, 0), -- its tap area from the card's right edge, so it never lies over the card
-		Parent = Layers.Get("Hud"),
+		Parent = Slate.Root(), -- the slate's page, with the card it docks to
 		OnPress = function()
 			SpectateController.Set(not SpectateController.On())
 		end,
 	})
 	-- In the face, so it squeezes with it (AR62, B in F2's finish): a small steel press docked to the lead's card, its rim
-	-- azure while you watch your lead, the eye drawn on it open while you do, shut (a lid's line) while you don't.
+	-- azure while you watch your lead, Modulo's painted eye on it while you do (research's F2 must-fix 3), shut (a lid's
+	-- line) while you don't.
 	local skin = Skin.Of(button)
 	local size = Slate.Pt(look.Size)
 	local disc = Slate.Plate(skin, "Disc", Vector2.new(size, size), "Plain", "Press")
 	disc.AnchorPoint = Vector2.new(0.5, 0.5)
 	disc.Position = UDim2.fromOffset(Slate.Pt(look.Gap) + size / 2, Slate.Pt(look.Down) + size / 2) -- B's place, in its area
 	local glyph = Slate.Pt(look.Icon)
-	local open = Instance.new("Frame")
+	local open = Instance.new("ImageLabel")
 	open.Name = "On"
 	open.BackgroundTransparency = 1
-	open.AnchorPoint = Vector2.new(0.5, 0.5)
-	open.Position = UDim2.fromScale(0.5, 0.5)
-	open.Size = UDim2.fromOffset(glyph, glyph * 0.56)
+	open.BorderSizePixel = 0
 	open.ZIndex = 3
-	local lid = Instance.new("UICorner")
-	lid.CornerRadius = UDim.new(0.5, 0)
-	lid.Parent = open
-	local outline = Instance.new("UIStroke")
-	outline.Color = HudConfig.Slate.Ink
-	outline.Thickness = math.max(1, glyph * 0.11)
-	outline.Parent = open
-	local pupil = Instance.new("Frame")
-	pupil.Name = "Pupil"
-	pupil.BackgroundColor3 = HudConfig.Slate.Ink
-	pupil.BorderSizePixel = 0
-	pupil.AnchorPoint = Vector2.new(0.5, 0.5)
-	pupil.Position = UDim2.fromScale(0.5, 0.5)
-	pupil.Size = UDim2.fromOffset(glyph * 0.34, glyph * 0.34)
-	pupil.ZIndex = 4
-	local round = Instance.new("UICorner")
-	round.CornerRadius = UDim.new(0.5, 0)
-	round.Parent = pupil
-	pupil.Parent = open
+	Slate.Mark(open, "Eye", glyph)
+	open.Position = UDim2.fromScale(0.5, 0.5)
 	open.Parent = disc
 	local shut = Instance.new("Frame")
 	shut.Name = "Off"
@@ -388,7 +362,7 @@ local function eyeButton(): TextButton
 		local lit = SpectateController.On()
 		local whole = if button:GetAttribute("Why") ~= nil then HudConfig.Spectate.Off else 1
 		open.Visible, shut.Visible = lit, not lit
-		outline.Transparency, pupil.BackgroundTransparency, shut.BackgroundTransparency = 1 - whole, 1 - whole, 1 - whole
+		open.ImageTransparency, shut.BackgroundTransparency = 1 - whole, 1 - whole
 		Slate.Side(disc, if lit then "Yours" else "Plain")
 		button:SetAttribute("On", lit)
 	end
@@ -402,8 +376,8 @@ local function eyeButton(): TextButton
 end
 
 -- The signature's Auto in B, F2's finish (AR62): a slim steel press, its rim gold and its turn gold while on, both grey
--- while off, its word white in the steel's stroke either way, on a tap-high area. Its parts: the chip, the turn (a ring
--- cut open at its top right), the word.
+-- while off, its word white in the steel's stroke either way, on a tap-high area. Its parts: the chip, the turn
+-- (Modulo's painted one, gold or steel: research's F2 must-fix 3), the word.
 local function autoChip(button: TextButton)
 	local c = HudConfig.Slate
 	local look = c.Auto
@@ -412,29 +386,13 @@ local function autoChip(button: TextButton)
 	chip.AnchorPoint = Vector2.new(0, 0.5)
 	chip.Position = UDim2.new(0, 0, 0.5, 0)
 	local turnSize = Slate.Pt(look.Icon)
-	local turn = Instance.new("Frame")
+	local turn = Instance.new("ImageLabel")
 	turn.Name = "Turn"
 	turn.BackgroundTransparency = 1
-	turn.AnchorPoint = Vector2.new(0.5, 0.5)
-	turn.Position = UDim2.new(0, Slate.Pt(6.5) + turnSize / 2, 0.5, 0)
-	turn.Size = UDim2.fromOffset(turnSize * 0.78, turnSize * 0.78)
+	turn.BorderSizePixel = 0
 	turn.ZIndex = 3
-	local round = Instance.new("UICorner")
-	round.CornerRadius = UDim.new(0.5, 0)
-	round.Parent = turn
-	local line = Instance.new("UIStroke")
-	line.Name = "Line"
-	line.Thickness = math.max(1.2, turnSize * 0.13)
-	line.Parent = turn
-	local cut = Instance.new("UIGradient") -- the ring open at its top right: a turn
-	cut.Rotation = -45
-	cut.Transparency = NumberSequence.new({
-		NumberSequenceKeypoint.new(0, 0),
-		NumberSequenceKeypoint.new(0.78, 0),
-		NumberSequenceKeypoint.new(0.781, 1),
-		NumberSequenceKeypoint.new(1, 1),
-	})
-	cut.Parent = line
+	Slate.Mark(turn, "AutoOn", turnSize)
+	turn.Position = UDim2.new(0, Slate.Pt(6.5) + turnSize / 2, 0.5, 0)
 	turn.Parent = chip
 	local word = Slate.Word(chip, "Word", Slate.Pt(look.Text))
 	word.Text = "AUTO"
@@ -450,12 +408,10 @@ local function autoShows(button: TextButton, on: boolean)
 	if chip == nil then
 		return
 	end
-	local turn = chip:FindFirstChild("Turn")
-	local line = if turn then turn:FindFirstChild("Line") :: UIStroke? else nil
+	local turn = chip:FindFirstChild("Turn") :: ImageLabel?
 	local word = chip:FindFirstChild("Word") :: TextLabel?
-	if line then
-		line.Color = if on then c.Accent[2] else c.Auto.Off
-		line.Transparency = 0
+	if turn then
+		Slate.Mark(turn, if on then "AutoOn" else "AutoOff")
 	end
 	if word then
 		word.TextColor3 = c.Ink
@@ -526,13 +482,15 @@ local function placeEye()
 	local at = corner.Press
 	local left = at.X + Slate.Pt(c.Press.Size) / 2 + Slate.Pt(c.Auto.Gap)
 	auto.Position = UDim2.fromOffset(left, at.Y)
-	nextButton.Position = auto.Position
+	local grow = Slate.Grow() -- the offer is the kit's, in the HUD layer: Auto's place in its points
+	nextButton.Position = UDim2.fromOffset(math.round(left * grow), math.round(at.Y * grow))
 end
 
 local function placeCorner()
 	local c, plate = HudConfig.Slate, HudConfig.Readout
 	local card = lead.Frame
 	local hud, scale = Layers.Get("Hud"), math.max(Layers.Scale(), 0.01)
+	local grow = Slate.Grow() -- the slate's page over the HUD layer: the corner in the page, its neighbours in the layer
 	local x, y = card.Position.X.Offset, card.Position.Y.Offset
 	local w, h = card.Size.X.Offset, card.Size.Y.Offset
 	local size = Slate.Pt(c.Press.Size)
@@ -541,10 +499,10 @@ local function placeCorner()
 	local press = Vector2.new(x + Slate.Pt(c.Press.At.X), y + h + Slate.Pt(c.Press.At.Y))
 	if plate.At == "Jump" then
 		local at, box = HudController.JumpBox()
-		local origin = hud.AbsolutePosition
-		press = Vector2.new((at.X + box.X / 2 - origin.X) / scale, (at.Y - origin.Y) / scale - plate.Jump.Above - size / 2)
+		local origin, k = Slate.Root().AbsolutePosition, scale * grow
+		press = Vector2.new((at.X + box.X / 2 - origin.X) / k, (at.Y - origin.Y) / k - plate.Jump.Above / grow - size / 2)
 	end
-	piece.Position = UDim2.fromOffset(press.X, press.Y)
+	piece.Position = UDim2.fromOffset(math.round(press.X), math.round(press.Y)) -- to the nearest whole point (an offset is cut)
 	corner = { Press = press }
 	local eyeSize = Slate.Pt(c.Eye.Size)
 	eye.Size = UDim2.fromOffset(tapArea(), tapArea())
@@ -557,12 +515,13 @@ local function placeCorner()
 	placeEye()
 	-- The level-up's notice under the corner's row, at the card's left edge (AR12, take B; TR41 (c)), stopping a gap short
 	-- of the step's chip over the dock, which shares its row on a phone.
-	local foot = press.Y + size / 2 + Slate.Reach()
+	local foot = (press.Y + size / 2 + Slate.Reach()) * grow
 	local chipLeft = if chip then (chip.AbsolutePosition.X - hud.AbsolutePosition.X) / scale else math.huge
-	LevelNotice.Place(x, foot + HudConfig.LevelNotice.Below, chipLeft - Theme.Size.Gap - x)
+	local left, top = math.round(x * grow), math.round(foot + HudConfig.LevelNotice.Below)
+	LevelNotice.Place(left, top, chipLeft - Theme.Size.Gap - left)
 	-- The quiet note in the same place: the two never meet, a Tower run's lead being frozen (TR46).
 	if note then
-		note.Holder.Position = UDim2.fromOffset(x, foot + HudConfig.LevelNotice.Below)
+		note.Holder.Position = UDim2.fromOffset(left, top)
 	end
 end
 
@@ -1614,7 +1573,7 @@ local function step(dt: number)
 		TargetCard.Name(target, tostring(foe:GetAttribute("Title") or ""), `Lv {tostring(foe:GetAttribute("Level") or "")}`)
 		local theirs = kindOf(foe)
 		if theirs ~= "" then
-			swap(target.Gem, `Gem{theirs}`)
+			Slate.Mark(target.Gem, `Gem{theirs}`)
 		end
 		target.Gem.Visible = theirs ~= ""
 		TargetCard.Point(target, Hud.Arrow(mine, theirs))
@@ -1767,11 +1726,12 @@ function HudController.Start()
 			task.wait(0.5)
 		end
 	end)
-	lead = LeadCard.new(Layers.Get("Hud"), UDim2.fromOffset(PAD, TOP))
+	-- Piece 1 (AR62) stands in the slate's page, which grows past the layers' cap on a big screen (Slate.Root).
+	lead = LeadCard.new(Slate.Root(), UDim2.fromOffset(PAD, TOP))
 	LevelNotice.Mount(Layers.Get("Hud"))
 	note = makeNote(Layers.Get("Hud"))
 	-- The foe's card centred, its top level with the lead's plate's (AR45: the two face each other).
-	target = TargetCard.new(Layers.Get("Hud"), UDim2.new(0.5, 0, 0, TOP)) -- level with the lead's card (AR62, B)
+	target = TargetCard.new(Slate.Root(), UDim2.new(0.5, 0, 0, TOP)) -- level with the lead's card (AR62, B)
 	local creditsPill = pill("Credits", 1, HudConfig.Pills.Credits, "Credits")
 	credits, coin = creditsPill.Value, creditsPill.Mark
 	local power = pill("Electricity", 2, HudConfig.Pills.Power, "Power")
@@ -1781,7 +1741,7 @@ function HudController.Start()
 	battery.Name = "Battery" -- the pill's own Mark stays the bolt, where the battery's jump flies to
 	Pill.Before(power, battery, HudConfig.Power.PillMark.Gap)
 	readout = {
-		Piece = Readout.new(Layers.Get("Hud")),
+		Piece = Readout.new(Slate.Root()),
 		Ready = 0,
 		FiredAt = -math.huge,
 		ReadyAt = -math.huge,
@@ -1828,7 +1788,7 @@ function HudController.Start()
 		Bare = true,
 		Size = UDim2.fromOffset(tapArea(), tapArea()),
 		AnchorPoint = Vector2.new(0, 0.5),
-		Parent = Layers.Get("Hud"),
+		Parent = Slate.Root(),
 		OnPress = function()
 			local ok, answer = pcall(Net.Client.Invoke, "Signature", "Auto", player:GetAttribute("SignatureAuto") == false)
 			return ok and type(answer) == "table" and answer.Ok == true
@@ -2060,13 +2020,14 @@ end
 -- The foe card's foot, in the HUD layer's authored pixels: a title at the top's middle stands under it (the Tower's
 -- floor, TR46; AR44's verdict: it drew over the card's health).
 function HudController.FoeFoot(): number
-	return target.Frame.Position.Y.Offset + target.Frame.Size.Y.Offset
+	return (target.Frame.Position.Y.Offset + target.Frame.Size.Y.Offset) * Slate.Grow() -- from the slate's page
 end
 
 -- The target card's place at the top centre, and whether a fight shows it: where the Broadcast's plate stands when it
 -- doesn't (TR57, BroadcastController).
 function HudController.TargetSpot(): (UDim2, boolean)
-	return target.Frame.Position, target.Frame.Visible
+	local at, grow = target.Frame.Position, Slate.Grow() -- from the slate's page, in the HUD layer's points
+	return UDim2.new(at.X.Scale, math.round(at.X.Offset * grow), at.Y.Scale, math.round(at.Y.Offset * grow)), target.Frame.Visible
 end
 
 -- Home's panel, for tests (UI.HomePanel's own calls).

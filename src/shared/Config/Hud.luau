@@ -1057,6 +1057,10 @@ return {
 	-- (UI.Kit.Slate.Repaint), so a Tune or the next finish swaps it without a rebuild.
 	Slate = {
 		Page = 1.28,
+		-- The page's cap (AR62's piece 1, research's F2 must-fix 2, 2026-11-27): the target is one page scaled whole by the
+		-- screen's height (at 1080 the lead's card 478 across), which the layers' cap (Theme.Scale.Cap) holds back on a big
+		-- screen. The slate's pieces stand in a page that grows past it, up to this scale (UI.Kit.Slate.Root).
+		Cap = 3,
 		-- The take: F2, the deeper slate, or F1, B's mid slate with the same construction, its other: one Tune
 		-- ("Hud.Slate.Take", "F1") for the director to judge both in play (research, 00:36). A take holds the cards' fill (top
 		-- to foot), a plain press's fill (lit from below) and the steel family of the plain presses (Auto, the eye).
@@ -1102,12 +1106,29 @@ return {
 			Lift = 0.5,
 			LiftDown = 1.6,
 		},
-		-- The words: a display word's stroke a share of its size (the study: 18% of its cap, the cap 0.7 of the em), a number
-		-- on a bar's a little heavier (22%) in its bar's Outline, the level's on the gold in the gold's Line (20%).
-		Text = { Stroke = 0.126, OnBar = 0.154, Gold = 0.14 },
-		Face = "rbxasset://fonts/families/FredokaOne.json", -- names and numbers: one rounded heavy face from Roblox's own
+		-- The words: a word's size is its em, the target's own; its stroke a share of it (the study: 18% of its cap, the cap
+		-- 0.7 of the em), a number on a bar's a little heavier (22%) in its bar's Outline, the level's on the gold in the
+		-- gold's Line (20%). Em: the face's em over its line, which a TextSize is (Fredoka One's hhea, 1000 over 974 + 236;
+		-- measured in Studio, 2026-11-27: "ROOK" at 100 draws 235 wide, its em's 282 at 0.83), so a word draws at its size
+		-- over Em (research's F2 must-fix 1: "ROOK" stood at about half the target's cap).
+		Text = { Stroke = 0.126, OnBar = 0.154, Gold = 0.14, Em = 0.826 },
+		Face = "rbxasset://fonts/families/FredokaOne.json", -- every word on the plates: one rounded heavy face, Roblox's own
 		Weight = "Regular", -- its weight (Fredoka One has the one)
-		Meta = "rbxasset://fonts/families/BuilderSans.json", -- meta words ("Lv 26"), Bold, flat
+		-- Modulo's painted marks (research's pass, 2026-11-27, 00:56; tools/ui/hud_icon_export.py): a kit mark's name to its
+		-- painted picture, for the slate's own marks (UI.Kit.Slate.Mark). A mark not here keeps the kit's.
+		Icons = {
+			GemRed = "HudGemRed",
+			ClassWarrior = "HudClassWarrior",
+			Skull = "HudSkull",
+			Eye = "HudEye",
+			AutoOn = "HudAutoOn",
+			AutoOff = "HudAutoOff",
+		} :: { [string]: string },
+		-- The plates' painted surfaces (research, 2026-11-27, after the director's 02:04 word: the finish is Modulo's painted
+		-- 9-slices at 2x), each in place of the ring stack and its lift: a kind's ("Card"), or a kind and side's ("Card.Mine"),
+		-- first. Image: its UIKit name; Slice: its middle, in its pixels; Density: its pixels a page point; Out: the page
+		-- points it reaches past the plate each side (a painted shadow or rim). None named: the ring stack (UI.Kit.Slate).
+		Surfaces = {} :: { [string]: { Image: string, Slice: Rect, Density: number, Out: number? } },
 		-- The bars: a black line outside a dark track of the bar's own hue, the light lit top to foot with a darker lip at its
 		-- foot and a sheen line near its top (on a bar From high or more), notched every Notch of its whole.
 		Bars = {
@@ -1135,6 +1156,9 @@ return {
 			Name = 13.5,
 			NameTop = 6, -- the name's row from the card's top
 			Marks = 6, -- the gem after the name, and the class's mark after the gem
+			Gem = 12.5, -- the type's gem, its drawing across
+			Class = 11.5, -- the class's mark, its drawing across
+			ClassAt = 15.5, -- the class's mark's middle past the gem's
 			Bar = 14,
 			BarTop = 25,
 			Digits = 10.5,
@@ -1144,9 +1168,10 @@ return {
 			Face = { X = 2, Y = 8, Size = 58 },
 			Backdrop = Color3.fromHex("#E9D6C8"), -- behind the portrait's art
 		},
-		-- The foe's card: 216 by 50, its top row (the skull, "Lv N" flat in the meta face, the name, the type's gem) and its
+		-- The foe's card: 216 by 50, its top row (the skull, "Lv N" in the tier's colour, the name, the type's gem) and its
 		-- health 13 high. Poise's bar under it waits for poise (docs/design.md, "Poise": no fighter has one yet).
-		Foe = { Size = Vector2.new(216, 50), Inset = 8, RowTop = 6, Bar = 13, BarTop = 23.5, Digits = 10, Name = 13, Level = 10.5, Skull = 14.5, Gem = 12.5, Gap = 8 },
+		-- Wide: the most the card widens to hold its whole name, of Size.X (the floor lifts its words on a small phone).
+		Foe = { Size = Vector2.new(216, 50), Inset = 8, RowTop = 6, Bar = 13, BarTop = 23.5, Digits = 10, Name = 13, Level = 10.5, Skull = 14.5, Gem = 12.5, Gap = 8, Wide = 1.35 },
 		-- The level, white in the gold's stroke on a gold badge, 26 by 15 at At from the card's top left.
 		Badge = { Size = Vector2.new(26, 15), At = Vector2.new(-5, 39), Text = 10 },
 		-- The lead's damage taken, on its card over the health bar's draining end (research's must-fix 3), across the card's

@@ -6,11 +6,20 @@
 --   the top with a highlight under its top edge, a press's lit from below), a soft lift under it;
 --   a bar, a black line outside a dark track of its own hue, its light lit top to foot with a darker lip and a sheen line,
 --   notched every so many of its whole;
---   a word in Fredoka One in a near-black stroke of its family's hue, or a meta word flat in Builder Sans.
+--   a word in Fredoka One in a near-black stroke of its family's hue, its size its em (Config.Hud.Slate.Text.Em);
+--   a mark, Modulo's painted picture where one is made (Config.Hud.Slate.Icons), else the kit's.
 -- The target's numbers are page points, Slate.Pt's authored points times Config.Hud.Slate.Page (the style frames' 1.28).
+-- The target is one page scaled whole by the screen's height: the slate's pieces stand in Slate.Root(), a page over the
+-- HUD layer drawn Grow() times larger, what the layers' cap holds back on a big screen up to Config.Hud.Slate.Cap (1 on a
+-- phone and under a test's forced scale). Its points are the HUD layer's over Grow().
 -- Every surface value is a token, read when a piece is painted: each piece is tagged, and Repaint lays the tokens again,
 -- so a Tune, the take (F1 or F2) or the next finish shows without a rebuild (research, 2026-11-27, 00:04).
---   Slate.Pt(page) -> authored                       a target's page points in the HUD's authored points
+--   Slate.Pt(page) -> authored                       a target's page points in the page's authored points
+--   Slate.Root() -> Frame                            the page the slate's pieces stand in, made on first use
+--   Slate.Em(page) -> authored                       the em a word of `page` points draws at, the kit's floor in
+--   Slate.Grow() -> number                           how much larger the page draws than the HUD layer now
+--   Slate.Mark(image, name, size?)                   a mark's picture, its drawing `size` across about the image's
+--                                                    middle (AnchorPoint 0.5); its Kit stays `name`
 --   Slate.Take() -> take                             the take now: its cards' fill, its presses' fill, its steel
 --   Slate.Family(side, hue?) -> family               a side's family; "Plain" the take's steel; "Hue" one from a colour
 --   Slate.Plate(parent, name, size, side, kind?, radius?)   a plate (Config.Hud.Slate.Kinds: "Card" unless named), a
@@ -26,7 +35,6 @@
 --   Slate.Shape(bar, position, size)                 a bar laid again: its share kept
 --   Slate.OnBar(bar, size)                           a number on a bar: white in the bar's line, centred
 --   Slate.Word(parent, name, size, colour?)          a display word, in its plate family's stroke, left aligned
---   Slate.Meta(parent, name, size, colour?)          a meta word, flat
 --   Slate.Gold(parent, name, size)                   a number on the gold, white in the gold's stroke, centred
 --   Slate.Taken(parent, name)                        the lead's damage taken: lit pale to coral in its stroke, centred
 --   Slate.Fade(label, transparency)                  a word and its stroke faded together
@@ -37,7 +45,10 @@ local CollectionService = game:GetService("CollectionService")
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local HudConfig = require(Shared.Config.Hud)
+local UIKit = require(Shared.Config.UIKit)
+local Layers = require(script.Parent.Parent.Layers)
 local Text = require(script.Parent.Text)
+local Theme = require(script.Parent.Parent.Theme)
 
 local Slate = {}
 
@@ -101,6 +112,89 @@ end
 
 function Slate.Pt(page: number): number
 	return page / config().Page
+end
+
+-- A word's floor on its TextSize, rendered: its em, not its line, holds the kit's minimum (docs/ui.md rule 1, 14 px, as
+-- research and Modulo measure a word: its font size).
+local function floor(): number
+	return Theme.Text.Minimum / (config().Text.Em or 1)
+end
+
+-- The em a word of `page` points draws at, authored: its size, or more where the floor lifts it on a small screen. A card
+-- lays its rows by it.
+function Slate.Em(page: number): number
+	local em = config().Text.Em or 1
+	return Text.Legible(Slate.Pt(page) / em, Layers.Scale(), floor() / Slate.Grow()) * em -- the cards stand in the page
+end
+
+function Slate.Grow(): number
+	return math.max(Layers.Fit(config().Cap) / math.max(Layers.Scale(), 0.01), 1)
+end
+
+local root: Frame? = nil
+local grown: UIScale? = nil
+
+-- A word's floor on its TextSize at the layers' scale: in the page, the grow already lifts it (Text.Floor).
+local function floorIn(label: TextLabel): number
+	return floor() / (if root and label:IsDescendantOf(root) then Slate.Grow() else 1)
+end
+
+local function regrow()
+	local page, scale = root, grown
+	if page == nil or scale == nil then
+		return
+	end
+	local grow = Slate.Grow()
+	if scale.Scale ~= grow then
+		scale.Scale = grow
+		page.Size = UDim2.fromScale(1 / grow, 1 / grow)
+	end
+	for _, label in CollectionService:GetTagged(WORD) do
+		if label:IsA("TextLabel") and label:GetAttribute("NL_TextFloor") ~= floorIn(label) then
+			Text.Floor(label, floorIn(label))
+		end
+	end
+end
+
+function Slate.Root(): Frame
+	if root then
+		return root
+	end
+	local page = Instance.new("Frame")
+	page.Name = "NL_Page"
+	page.BackgroundTransparency = 1
+	page.BorderSizePixel = 0
+	page.Size = UDim2.fromScale(1, 1)
+	local scale = Instance.new("UIScale")
+	scale.Name = "Grow"
+	scale.Parent = page
+	page.Parent = Layers.Get("Hud")
+	root, grown = page, scale
+	regrow()
+	Layers.Changed:Connect(regrow)
+	return page
+end
+
+function Slate.Mark(image: ImageLabel, name: string, size: number?)
+	local across = size or image:GetAttribute("Across")
+	local painted = config().Icons[name]
+	local kit = if painted and UIKit.Images[painted] then painted else name
+	local im = UIKit.Images[kit]
+	if im == nil or type(across) ~= "number" then
+		return
+	end
+	if image:GetAttribute("Kit") == name and image:GetAttribute("Across") == across then
+		return
+	end
+	local box = across * im.Points.X / math.max(im.Points.X - 2 * im.Pad, 1e-3)
+	image.Image = im.Id
+	image.ScaleType = Enum.ScaleType.Stretch
+	image.ImageRectOffset, image.ImageRectSize = Vector2.zero, Vector2.zero
+	image.AnchorPoint = Vector2.new(0.5, 0.5)
+	image.Size = UDim2.fromOffset(box, box)
+	image:SetAttribute("Kit", name)
+	image:SetAttribute("Across", across)
+	image:SetAttribute("Painted", kit ~= name)
 end
 
 function Slate.Take(): any
@@ -184,10 +278,58 @@ local function clearPlate(plate: Frame)
 	if lift then
 		lift.BackgroundTransparency = 1 - (1 - c.Lift) * (1 - t)
 	end
+	local surface = plate:FindFirstChild("Surface") :: ImageLabel?
+	if surface then
+		surface.ImageTransparency = t
+	end
+end
+
+-- Its painted surface, if one's named for its kind and side (Config.Hud.Slate.Surfaces): the 9-slice in place of the ring
+-- stack and the lift, sliced at its density so its corners hold their page points at any size. True while it shows.
+local function surfaceOf(plate: Frame): boolean
+	local c = config()
+	local kind, side = plate:GetAttribute("Kind"), plate:GetAttribute("Side")
+	local surfaces = c.Surfaces or {}
+	local named = surfaces[`{kind}.{side}`] or surfaces[tostring(kind)]
+	local im = if named then UIKit.Images[named.Image] else nil
+	local image = plate:FindFirstChild("Surface") :: ImageLabel?
+	if im == nil then
+		if image then
+			image.Visible = false
+		end
+		return false
+	end
+	if image == nil then
+		local made = Instance.new("ImageLabel")
+		made.Name = "Surface"
+		made.BackgroundTransparency = 1
+		made.BorderSizePixel = 0
+		made.ScaleType = Enum.ScaleType.Slice
+		made.AnchorPoint = Vector2.new(0.5, 0.5)
+		made.Position = UDim2.fromScale(0.5, 0.5)
+		made.ZIndex = 2
+		made.Parent = plate
+		image = made
+	end
+	local surface = image :: ImageLabel
+	local out = 2 * Slate.Pt(named.Out or 0)
+	surface.Image = im.Id
+	surface.SliceCenter = named.Slice
+	surface.SliceScale = 1 / math.max(named.Density * c.Page, 1e-3) -- its pixels to the page's points
+	surface.Size = UDim2.new(1, out, 1, out)
+	surface.Visible = true
+	return true
 end
 
 local function paintPlate(plate: Frame)
 	local c = config()
+	local painted = surfaceOf(plate)
+	for _, name in { RINGS[1], "Lift" } do
+		local frame = plate:FindFirstChild(name) :: GuiObject?
+		if frame and frame.Visible == painted then
+			frame.Visible = not painted
+		end
+	end
 	local kind = kindOf(plate)
 	local fam = familyOf(plate)
 	local take = Slate.Take()
@@ -475,7 +617,7 @@ end
 local function paintWord(label: TextLabel)
 	local c = config()
 	local role = label:GetAttribute("Role")
-	local want = if role == "Meta" then Font.new(c.Meta, Enum.FontWeight.Bold) else displayFace()
+	local want = displayFace()
 	if label.FontFace ~= want then
 		label.FontFace = want
 	end
@@ -483,11 +625,7 @@ local function paintWord(label: TextLabel)
 	if stroke == nil then
 		return
 	end
-	local size = label.TextSize
-	if role == "Meta" then
-		stroke.Enabled = false
-		return
-	end
+	local size = label.TextSize * (c.Text.Em or 1) -- its em: the strokes are shares of it
 	stroke.Enabled = true
 	if role == "Taken" then
 		local k = c.Taken
@@ -519,12 +657,13 @@ end
 local function word(parent: Instance, name: string, size: number, colour: Color3, role: string): TextLabel
 	local label = Text.new({
 		Name = name,
-		Size = size,
-		Font = if role == "Meta" then Font.new(config().Meta, Enum.FontWeight.Bold) else displayFace(),
+		Size = size / (config().Text.Em or 1), -- a TextSize is the line: the em `size` over the face's Em
+		Font = displayFace(),
 		Colour = colour,
 		Parent = parent,
 	})
 	label:SetAttribute("Role", role)
+	Text.Floor(label, floorIn(label))
 	local stroke = Instance.new("UIStroke")
 	stroke.Name = "Stroke"
 	stroke.LineJoinMode = Enum.LineJoinMode.Round
@@ -543,10 +682,6 @@ end
 
 function Slate.Word(parent: Instance, name: string, size: number, colour: Color3?): TextLabel
 	return word(parent, name, size, colour or config().Ink, "Word")
-end
-
-function Slate.Meta(parent: Instance, name: string, size: number, colour: Color3?): TextLabel
-	return word(parent, name, size, colour or config().Ink, "Meta")
 end
 
 function Slate.Gold(parent: Instance, name: string, size: number): TextLabel

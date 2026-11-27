@@ -17,10 +17,17 @@ local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Button = require(UI.Kit.Button)
 local Layers = require(UI.Layers)
+local Slate = require(UI.Kit.Slate)
 
 local SignatureCases = {}
 
 -- A button's words as drawn: its labels' text.
+-- Auto's turn: the painted one it wears, AutoOn or AutoOff (UI.Kit.Slate.Mark).
+local function turned(button: Instance): string
+	local turn = button:FindFirstChild("Turn", true)
+	return if turn then tostring(turn:GetAttribute("Kit")) else "no turn"
+end
+
 local function says(button: Instance): string
 	local words = {}
 	for _, item in button:GetDescendants() do
@@ -85,9 +92,9 @@ function SignatureCases.Cases(given: Given): { any }
 					t.Check("its toggle turns Auto off", waitFor(t, 2, function(): boolean
 						return me:GetAttribute("SignatureAuto") == false
 					end))
-					t.Check("and says so, in the kit's sentence case", waitFor(t, 1, function(): boolean
-						return says(auto) == "Auto off"
-					end), says(auto))
+					t.Check("and says so: AUTO on its steel, its turn grey (AR62, B)", waitFor(t, 1, function(): boolean
+						return says(auto) == "AUTO" and auto:GetAttribute("On") == false and turned(auto) == "AutoOff"
+					end), `{says(auto)}, {turned(auto)}`)
 					local pulses, last, fires = 0, 0, 0
 					local acted: { string } = {}
 					local pulseWatch = RunService.RenderStepped:Connect(function()
@@ -162,9 +169,9 @@ function SignatureCases.Cases(given: Given): { any }
 					t.Check("its toggle turns Auto back on", waitFor(t, 2, function(): boolean
 						return me:GetAttribute("SignatureAuto") ~= false
 					end))
-					t.Check("and says so", waitFor(t, 1, function(): boolean
-						return says(auto) == "Auto on"
-					end), says(auto))
+					t.Check("and says so: its turn gold", waitFor(t, 1, function(): boolean
+						return says(auto) == "AUTO" and auto:GetAttribute("On") == true and turned(auto) == "AutoOn"
+					end), `{says(auto)}, {turned(auto)}`)
 				end)
 				Net.Client.Invoke("Signature", "Auto", true)
 				t.Server("FightSpawn")
@@ -197,7 +204,9 @@ function SignatureCases.Cases(given: Given): { any }
 					local at, size = HudController.JumpBox()
 					local low, wide = ring.AbsolutePosition, ring.AbsoluteSize
 					local off = (low.X + wide.X / 2) - (at.X + size.X / 2)
-					t.Check("at Jump, the ring stands centred over the jump button", math.abs(off) <= 1, string.format("%+.1f px", off))
+					-- to half a whole point of the slate's page, which grows past the layers' cap (a UDim's offset is whole)
+					local half = math.max(1, Layers.Scale() * Slate.Grow() / 2 + 0.05)
+					t.Check("at Jump, the ring stands centred over the jump button", math.abs(off) <= half, string.format("%+.1f px, within %.1f", off, half))
 					local gap = at.Y - (low.Y + wide.Y)
 					t.Check("clear of its top", gap > 0, string.format("%.1f px", gap))
 					local hud = Layers.Get("Hud")

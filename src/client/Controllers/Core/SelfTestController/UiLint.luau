@@ -360,7 +360,19 @@ function UiLint.Run(): Report
 			continue
 		end
 		local pieces: { GuiObject } = {}
+		local tops: { Instance } = {}
 		for _, piece in root:GetChildren() do
+			-- The slate's page (UI.Kit.Slate.Root) is a frame the layer's size that grows on a big screen: its pieces are the
+			-- layer's own.
+			if piece.Name == "NL_Page" then
+				for _, inner in piece:GetChildren() do
+					table.insert(tops, inner)
+				end
+			else
+				table.insert(tops, piece)
+			end
+		end
+		for _, piece in tops do
 			if piece:IsA("GuiObject") and piece.Visible then
 				table.insert(pieces, piece)
 				if not inside(piece, root) then

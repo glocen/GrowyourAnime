@@ -65,10 +65,9 @@ type Shape = {
 
 local function shape(): Shape
 	local c = slate().Lead
-	local scale = Layers.Scale()
 	local inset = pt(c.Inset)
-	local nameSize = Text.Legible(pt(c.Name), scale)
-	local digits = Text.Legible(pt(c.Digits), scale)
+	local nameSize = Slate.Em(c.Name)
+	local digits = Slate.Em(c.Digits)
 	local barH = math.max(pt(c.Bar), digits + 1)
 	local barTop = math.max(pt(c.BarTop), pt(c.NameTop) + nameSize * LINE)
 	local threadTop = barTop + barH + pt(c.ThreadGap)
@@ -92,13 +91,14 @@ local function shape(): Shape
 		ThreadTop = threadTop,
 		ThreadH = threadH,
 		Digits = digits,
-		Level = Text.Legible(pt(slate().Badge.Text), scale),
+		Level = Slate.Em(slate().Badge.Text),
 	}
 end
 
 -- The name's room: the bar's width, less the gem and the class's mark after it, and the damage taken at the row's end.
 local function nameRoom(s: Shape): number
-	return s.BarW - pt(slate().Lead.Marks + 12 + 15 + 6) - pt(34)
+	local c = slate().Lead
+	return s.BarW - pt(c.Marks + c.Gem / 2 + c.ClassAt + c.Class / 2) - pt(34)
 end
 
 -- The badge cut to fit the number, its left fixed so it grows rightward; the number anchored at its middle so the
@@ -124,10 +124,11 @@ local function placeMarks(card: Card)
 	local m = slate().Lead.Marks
 	local wide = math.min(Text.Wide(card.Name, card.Name.Text), nameRoom(s))
 	local y = s.NameTop + s.NameSize * LINE / 2
-	local gemAt = s.NameX + wide + pt(m + 6)
-	card.Gem.Position = UDim2.fromOffset(gemAt - pt(12) / 2, y - pt(12) / 2) -- as Skin.Icon lays it
+	local lead = slate().Lead
+	local gemAt = s.NameX + wide + pt(m + lead.Gem / 2) -- the gem's middle (Slate.Mark lays it about its middle)
+	card.Gem.Position = UDim2.fromOffset(gemAt, y)
 	local mark = card.Class.Parent :: Frame
-	mark.Position = UDim2.fromOffset(gemAt + pt(15), y)
+	mark.Position = UDim2.fromOffset(gemAt + pt(lead.ClassAt), y)
 end
 
 -- An image of the old card's art laid in the portrait's square: the art's own points, `crop` of them across it.
@@ -248,17 +249,21 @@ function LeadCard.new(parent: Instance, position: UDim2): Card
 	local name = Slate.Word(card, "Name", pt(c.Lead.Name))
 	name.TextTruncate = Enum.TextTruncate.AtEnd
 	name.ZIndex = 3
-	local gem = Skin.Icon(card, "GemRed", 0, 0, pt(12), nil, 3)
+	local gem = Skin.Icon(card, "GemRed", 0, 0, pt(c.Lead.Gem), nil, 3)
 	gem.Name = "Gem"
+	Slate.Mark(gem, "GemRed", pt(c.Lead.Gem))
 	local mark = Instance.new("Frame")
 	mark.Name = "ClassMark"
 	mark.BackgroundTransparency = 1
 	mark.AnchorPoint = Vector2.new(0.5, 0.5)
-	mark.Size = UDim2.fromOffset(pt(11), pt(11))
+	mark.Size = UDim2.fromOffset(pt(c.Lead.Class), pt(c.Lead.Class))
 	mark.ZIndex = 3
 	mark.Parent = card
-	local class = Skin.Icon(mark, "ClassWarrior", pt(11) / 2, pt(11) / 2, pt(11), c.Ink2, 3)
+	local class = Skin.Icon(mark, "ClassWarrior", 0, 0, pt(c.Lead.Class), c.Ink2, 3)
 	class.Name = "Class"
+	Slate.Mark(class, "ClassWarrior", pt(c.Lead.Class))
+	class.Position = UDim2.fromScale(0.5, 0.5)
+	class.ImageColor3 = if class:GetAttribute("Painted") then Color3.new(1, 1, 1) else c.Ink2
 	-- The health bar with its digits on it, and the experience thread under it.
 	local health = Slate.Bar(card, "Health", Vector2.new(s.NameX, s.BarTop), Vector2.new(s.BarW, s.BarH), "Health", pt(c.Bar.Radius))
 	health.ZIndex = 3
@@ -290,15 +295,12 @@ function LeadCard.Name(card: Card, text: string)
 	fitLevel(card.Frame, card.Level) -- a face that just arrived measures the level's text anew too
 end
 
--- The type's gem and the class's mark, from the kit: nothing when unchanged.
+-- The type's gem and the class's mark: Modulo's painted ones where they're made (Slate.Mark), else the kit's; a kit
+-- class mark in the quiet ink, a painted one in its own colours. Nothing when unchanged.
 function LeadCard.Kind(card: Card, kind: string, class: string)
-	for image, name in { [card.Gem] = `Gem{kind}`, [card.Class] = `Class{class}` } do
-		local im = UIKit.Images[name]
-		if im and image:GetAttribute("Kit") ~= name then
-			image.Image = im.Id
-			image:SetAttribute("Kit", name)
-		end
-	end
+	Slate.Mark(card.Gem, `Gem{kind}`)
+	Slate.Mark(card.Class, `Class{class}`)
+	card.Class.ImageColor3 = if card.Class:GetAttribute("Painted") then Color3.new(1, 1, 1) else slate().Ink2
 end
 
 -- A bar's share (UI.Kit.Slate).

@@ -1151,7 +1151,8 @@ function HudCases.Cases(given: Given): { any }
 							continue
 						end
 						local foot = world.AbsolutePosition.Y + band * scale
-						t.Check(`{at.Name}: the eye reaches below the band`, eye.AbsolutePosition.Y + eye.AbsoluteSize.Y > foot, string.format("its foot %.1f, the band's %.1f", eye.AbsolutePosition.Y + eye.AbsoluteSize.Y, foot))
+						local below = eye.AbsolutePosition.Y + eye.AbsoluteSize.Y > foot
+						t.Row(`{at.Name}: the eye's foot past the band's`, nil, nil, eye.AbsolutePosition.Y + eye.AbsoluteSize.Y - foot, "px")
 						local inset = GuiService:GetGuiInset()
 						local x = eye.AbsolutePosition.X + eye.AbsoluteSize.X / 2 + inset.X
 						local y = world.AbsolutePosition.Y + band * scale * 0.5 + inset.Y
@@ -1175,7 +1176,11 @@ function HudCases.Cases(given: Given): { any }
 						local under = (p0.Y - world.AbsolutePosition.Y) / scale - band
 						t.Check(`{at.Name}: whole under the band`, under >= -1, string.format("its top %.1f px under the band", under))
 						local gap = (p0.X - (eye.AbsolutePosition.X + eye.AbsoluteSize.X)) / scale
-						t.Check(`{at.Name}: right beside the eye, not lost aside`, gap >= -0.5 and gap <= HudConfig.Numbers.Band + 2, string.format("%.1f px right of it", gap))
+						if below then
+							t.Check(`{at.Name}: right beside the eye, not lost aside`, gap >= -0.5 and gap <= HudConfig.Numbers.Band + 2, string.format("%.1f px right of it", gap))
+						else
+							t.Check(`{at.Name}: the eye in the band, the plate under it at its point, not pushed aside`, gap <= HudConfig.Numbers.Band + 2, string.format("%.1f px right of it", gap))
+						end
 					end
 					Layers.Box(nil)
 					Layers.Force(nil)
@@ -1502,6 +1507,143 @@ function HudCases.Cases(given: Given): { any }
 				error(failed, 0)
 			end
 			holder:Destroy()
+		end,
+	},
+	{
+		-- AR62 piece 1, research's F2 must-fixes: the slate's page at the target's size past the layers' cap (2), every word
+		-- on the plates in the display face at its em, in its stroke (1), Modulo's painted marks (3).
+		Name = "HUD: AR62, piece 1 at F2's size: the page grows past the cap, the plates' words in the display face at their em, the painted marks",
+		Run = function(t: any)
+			t.Wait(1)
+			local slate: any = HudConfig.Slate
+			local parts = HudController.Parts()
+			local root = Slate.Root()
+			local grow = root:FindFirstChild("Grow") :: UIScale?
+			local card = parts.Lead
+			t.Check("the cards, the press and Auto stand in the slate's page", card.Parent == root and parts.Target.Parent == root
+				and parts.Signature.Parent == root and parts.SignatureAuto.Parent == root and parts.Spectate.Parent == root,
+				if card.Parent then card.Parent:GetFullName() else "none")
+			t.Near("its grow: the page's fit over the layers'", if grow then grow.Scale else 0, Slate.Grow(), 1e-3)
+			local k = card.AbsoluteSize.X / math.max(card.Size.X.Offset, 1)
+			t.Near("a card's point draws at the page's fit, the target's size by height", k, Layers.Fit(slate.Cap), 0.02)
+			-- The words: their em the target's (a TextSize is the line, the em its share), or more where the floor lifts it.
+			local em = slate.Text.Em
+			for name, page in { LeadName = slate.Lead.Name, LeadLevel = slate.Badge.Text, TargetName = slate.Foe.Name, TargetLevel = slate.Foe.Level } :: { [string]: number } do
+				local label = parts[name] :: TextLabel
+				local stroke = label:FindFirstChild("Stroke") :: UIStroke?
+				t.Check(`{name}: the display face in its stroke`, label.FontFace.Family == slate.Face and stroke ~= nil and stroke.Enabled
+					and stroke.Thickness >= 1, `{label.FontFace.Family}, {if stroke then stroke.Thickness else "no stroke"}`)
+				t.Check(`{name}: its em the target's, or the floor's`, label.TextSize * em >= Slate.Pt(page) - 1,
+					string.format("%.1f, want %.1f", label.TextSize * em, Slate.Pt(page)))
+				-- the floor counts the page's grow: a word whose em already draws 14 px keeps its size
+				if Slate.Pt(page) * Layers.Scale() * Slate.Grow() >= Theme.Text.Minimum + 1 then
+					t.Near(`{name}: no lift where its em draws 14 px already`, label.TextSize, Slate.Pt(page) / em, 1)
+				end
+			end
+			local said = parts.SignatureAuto:FindFirstChild("Word", true) :: TextLabel?
+			t.Check("Auto's word too", said ~= nil and said.FontFace.Family == slate.Face and said:FindFirstChild("Stroke") ~= nil,
+				if said then said.FontFace.Family else "none")
+			-- The marks: Modulo's painting where one is made, its drawing `across` and its pad round it.
+			local function painted(image: Instance?, kit: string): (boolean, string)
+				local im = UIKit.Images[slate.Icons[kit] or ""]
+				local ok = image ~= nil and image:IsA("ImageLabel") and image:GetAttribute("Kit") == kit and image:GetAttribute("Painted") == true
+					and im ~= nil and image.Image == im.Id
+				return ok, if image then `{tostring(image:GetAttribute("Kit"))}, painted {tostring(image:GetAttribute("Painted"))}` else "none"
+			end
+			t.Check("the foe's skull, painted", painted(parts.TargetSkull, "Skull"))
+			local eye = parts.Spectate:FindFirstChild("On", true) :: ImageLabel?
+			t.Check("the eye, painted", painted(eye, "Eye"))
+			local im = UIKit.Images[slate.Icons.Eye]
+			if eye and im then
+				t.Near("its drawing Icon points across", eye.Size.X.Offset * (im.Points.X - 2 * im.Pad) / im.Points.X, Slate.Pt(slate.Eye.Icon), 0.5)
+			end
+			local on = Players.LocalPlayer:GetAttribute("SignatureAuto") ~= false
+			t.Check("Auto's turn, painted for its state", painted(parts.SignatureAuto:FindFirstChild("Turn", true), if on then "AutoOn" else "AutoOff"))
+			local gem = parts.LeadGem
+			local kind = tostring(gem:GetAttribute("Kit"))
+			if slate.Icons[kind] then
+				t.Check("the lead's gem, painted", painted(gem, kind))
+			else
+				t.Row(`the lead's gem: {kind} has no painting yet`, nil, nil, 0, "")
+			end
+			local class = card:FindFirstChild("Class", true) :: ImageLabel?
+			local named = if class then tostring(class:GetAttribute("Kit")) else ""
+			if slate.Icons[named] then
+				t.Check("the lead's class mark, painted, in its own colours", class ~= nil and class.ImageColor3 == Color3.new(1, 1, 1) and painted(class, named))
+			else
+				t.Check(`the lead's class mark {named}, the kit's in the quiet ink`, class ~= nil and class.ImageColor3 == slate.Ink2)
+			end
+			local probe = Instance.new("ImageLabel")
+			Slate.Mark(probe, "GemRed", 10)
+			local gemIm = UIKit.Images[slate.Icons.GemRed]
+			t.Check("a red gem marked: the painted one, about its middle, its pad round its 10 points", painted(probe, "GemRed") and probe.AnchorPoint == Vector2.new(0.5, 0.5)
+				and math.abs(probe.Size.X.Offset - 10 * gemIm.Points.X / (gemIm.Points.X - 2 * gemIm.Pad)) < 1, tostring(probe.Size))
+			Slate.Mark(probe, "GemBlue")
+			t.Check("an unpainted one: the kit's", probe:GetAttribute("Painted") == false and probe:GetAttribute("Kit") == "GemBlue"
+				and (UIKit.Images.GemBlue == nil or probe.Image == UIKit.Images.GemBlue.Id), tostring(probe:GetAttribute("Kit")))
+			probe:Destroy()
+			-- On a phone's scale the page doesn't grow: a forced scale is the screen's.
+			local ok, failed = pcall(function()
+				Layers.Force(Theme.Scale.Floor)
+				t.Wait(0.2)
+				t.Near("forced to the floor, the page doesn't grow", if grow then grow.Scale else 0, 1, 1e-3)
+				-- The smallest phone's words (research, 2ef0afec: the level, the name and the health under 14 px): each em 14 px
+				for _, name in { "LeadName", "LeadLevel", "LeadHealthText", "TargetName", "TargetLevel" } do
+					local label = parts[name] :: TextLabel
+					local drawn = label.TextSize * em * Theme.Scale.Floor
+					t.Check(`{name}: its em 14 px at the floor's scale`, drawn >= Theme.Text.Minimum - 0.05, string.format("%.1f px", drawn))
+				end
+			end)
+			Layers.Force(nil)
+			t.Wait(0.3)
+			if not ok then
+				error(failed, 0)
+			end
+		end,
+	},
+	{
+		-- Research, after the director's 02:04 word: the finish is Modulo's painted 9-slices, so a plate's surface is a slot
+		-- they drop into (Config.Hud.Slate.Surfaces), the ring stack where none is named.
+		Name = "HUD: AR62, a plate's painted surface: a 9-slice named for its kind and side takes the ring stack's place, sliced at its density",
+		Run = function(t: any)
+			local slate: any = HudConfig.Slate
+			local images: any = UIKit.Images
+			local surfaces = slate.Surfaces
+			local holder = Instance.new("Frame")
+			holder.Name = "SelfTestSurface"
+			holder.BackgroundTransparency = 1
+			holder.Size = UDim2.fromOffset(300, 200)
+			holder.Parent = Layers.Get("Hud")
+			local ok, failed = pcall(function()
+				local plate = Slate.Plate(holder, "Card", Vector2.new(160, 45), "Mine")
+				local glass, lift = plate:FindFirstChild("Glass") :: Frame, plate:FindFirstChild("Lift") :: Frame
+				t.Check("none named: the ring stack and its lift", glass.Visible and lift.Visible and (plate:FindFirstChild("Surface") == nil
+					or not (plate:FindFirstChild("Surface") :: GuiObject).Visible))
+				images.SelfTestSurface = { Id = "rbxassetid://1", Pixels = Vector2.new(256, 128), Points = Vector2.new(100, 50), Pad = 0 }
+				slate.Surfaces = { ["Card.Mine"] = { Image = "SelfTestSurface", Slice = Rect.new(40, 40, 216, 88), Density = 2, Out = 1.28 } }
+				Slate.Side(plate, "Theirs")
+				Slate.Side(plate, "Mine") -- painted again with the surface named
+				local surface = plate:FindFirstChild("Surface") :: ImageLabel?
+				t.Check("named for Card.Mine: its 9-slice shows, the stack and the lift hidden", surface ~= nil and surface.Visible and surface.Image == "rbxassetid://1"
+					and surface.ScaleType == Enum.ScaleType.Slice and surface.SliceCenter == Rect.new(40, 40, 216, 88) and not glass.Visible and not lift.Visible)
+				if surface then
+					t.Near("sliced at its density: two pixels a page point", surface.SliceScale, 1 / (2 * slate.Page), 1e-4)
+					t.Check("reaching Out past the plate each side", surface.Size == UDim2.new(1, 2, 1, 2), tostring(surface.Size))
+					Slate.Clear(plate, 0.4)
+					t.Near("and fading with it", surface.ImageTransparency, 0.4, 1e-3)
+				end
+				Slate.Side(plate, "Theirs")
+				t.Check("another side, none named: the stack again", glass.Visible and lift.Visible and surface ~= nil and not surface.Visible)
+				slate.Surfaces = { Card = { Image = "SelfTestSurface", Slice = Rect.new(40, 40, 216, 88), Density = 2 } }
+				Slate.Side(plate, "Mine")
+				t.Check("a kind's surface, for every side", surface ~= nil and surface.Visible and not glass.Visible)
+			end)
+			slate.Surfaces = surfaces
+			images.SelfTestSurface = nil
+			holder:Destroy()
+			if not ok then
+				error(failed, 0)
+			end
 		end,
 	},
 	}

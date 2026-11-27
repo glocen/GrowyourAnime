@@ -5661,7 +5661,19 @@ local cases = {
 			end)
 			t.Check("the target's card shows when the lead takes the Shade on", met)
 			local foe = (parts.TargetName :: TextLabel).Text
-			t.Check("with the Shade's name", foe == Enemies.ById.brawler.Name, foe)
+			t.Check("with the Shade's name, in capitals (AR62's slate)", foe == string.upper(Enemies.ById.brawler.Name), foe)
+			-- Whole, here and on the smallest phone, where the floor lifts its words (AR62: "BRA.." at 568 by 320 before)
+			local nameLabel = parts.TargetName :: TextLabel
+			local function whole(): (boolean, string)
+				local need, room = Text.Wide(nameLabel, nameLabel.Text), nameLabel.Size.X.Offset
+				return need <= room + 0.5, string.format("%.1f in %.1f, the card %.0f", need, room, parts.Target.Size.X.Offset)
+			end
+			t.Check("its name whole on the card", whole())
+			Layers.Force(Theme.Scale.Floor)
+			t.Wait(0.2)
+			t.Check("and on the smallest phone, the card widening for it", whole())
+			Layers.Force(nil)
+			t.Wait(0.2)
 			-- TR3, part 3: its type's gem, and the type edge's arrow up or down before the first hit (Rules.Hud.Arrow).
 			local theirs = Enemies.ById.brawler.Type
 			local mine = Voidkin.ById[lead:GetAttribute("Def") :: string]
@@ -6114,7 +6126,8 @@ local cases = {
 				HudConfig.Face = face
 				t.Wait(0.1)
 				t.Check(`{face}: the pill's value wears it`, value.FontFace.Family == row.Family and value.FontFace.Weight.Name == row.Strong, `{value.FontFace.Family} {value.FontFace.Weight.Name}`)
-				t.Check(`{face}: and the lead's name`, name.FontFace.Family == row.Family, name.FontFace.Family)
+				-- The plates' words keep the slate's one face whatever the HUD's (AR62, research's F2 must-fix 1).
+				t.Check(`{face}: the lead's name keeps the slate's face`, name.FontFace.Family == HudConfig.Slate.Face, name.FontFace.Family)
 				local joined = Text.new({ Name = "SelfTestFace", Font = Theme.Font.Number, Parent = Layers.Get("Hud") })
 				t.Check(`{face}: a label that joins the HUD wears it too`, joined.FontFace.Family == row.Family and joined.FontFace.Weight.Name == row.Number, `{joined.FontFace.Family} {joined.FontFace.Weight.Name}`)
 				joined:Destroy()

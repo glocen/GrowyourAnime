@@ -19,6 +19,7 @@ local Layers = require(UI.Layers)
 local Read = require(UI.Read)
 local LevelNotice = require(UI.LevelNotice)
 local Text = require(UI.Kit.Text)
+local Slate = require(UI.Kit.Slate)
 local Toast = require(UI.Kit.Toast)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
@@ -120,7 +121,7 @@ function NoticeCases.Cases(): { any }
 					-- AR62, B: under the press's ring, wherever the press stands
 					local signature = hud.Signature :: GuiObject
 					local press: any = HudConfig.Slate
-					local corner = signature.AbsolutePosition.Y + signature.AbsoluteSize.Y + ((press.Press.Cooldown.Ring + math.max(press.Press.Cooldown.Line, press.Press.Cooldown.Ink) / 2) / press.Page + LOOK.Below) * scale -- Slate.Reach
+					local corner = signature.AbsolutePosition.Y + signature.AbsoluteSize.Y + ((press.Press.Cooldown.Ring + math.max(press.Press.Cooldown.Line, press.Press.Cooldown.Ink) / 2) / press.Page * Slate.Grow() + LOOK.Below) * scale -- Slate.Reach, in the page that grows
 					t.Check("at the card's left edge", math.abs(holder.AbsolutePosition.X - card.AbsolutePosition.X) < 1,
 						string.format("%.1f, the card's %.1f", holder.AbsolutePosition.X, card.AbsolutePosition.X))
 					t.Check("under the lead's corner, Below its press's ring", math.abs(holder.AbsolutePosition.Y - corner) < 1 + scale, -- whole points

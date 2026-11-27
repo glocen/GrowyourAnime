@@ -77,12 +77,14 @@ def cut(lines: list[str]) -> list[tuple[str, int, int]]:
 
 
 def status_of(piece: list[str]) -> str:
-    for line in piece:
+    found = None
+    for line in piece:  # the last Status line: a piece's record grows downward, so the last is the current one
         text = line.strip()
         if text.startswith("**Status:**") or text.startswith("- **Status:**"):
-            text = text.split("**Status:**", 1)[1].strip()
-            return text if len(text) <= STATUS_WIDTH else text[: STATUS_WIDTH - 1].rstrip() + "…"
-    return "see the piece"
+            found = text.split("**Status:**", 1)[1].strip()
+    if found is None:
+        return "see the piece"
+    return found if len(found) <= STATUS_WIDTH else found[: STATUS_WIDTH - 1].rstrip() + "…"
 
 
 def raise_heading(line: str) -> str:
@@ -200,7 +202,8 @@ def do_check(source: Path) -> int:
         if not first.startswith(f"# {ident}. "):
             print(f"FAIL {link}: its first line isn't `# {ident}. ...`")
             bad += 1
-    folder = {p.name for link in links[:1] for p in (source.parent / link).parent.glob(f"{ids[0][:2]}*.md")}
+    prefixes = {re.match(r"[A-Z]+", i).group(0) for i in ids}  # AR and TR pieces may share one folder
+    folder = {p.name for link in links[:1] for pre in prefixes for p in (source.parent / link).parent.glob(f"{pre}[0-9]*.md")}
     stray = sorted(folder - {Path(l).name for l in links})
     for name in stray:
         print(f"FAIL {source}: {name} is in the pieces folder and not in the index")
@@ -242,7 +245,8 @@ def do_refresh(source: Path) -> int:
             out.append(line)
             continue
         piece = (source.parent / m.group(2)).read_text(encoding="utf-8").splitlines(keepends=True)
-        title = piece[0].rstrip("\r\n").split(". ", 1)[1]
+        head = piece[0].rstrip("\r\n").lstrip("# ")
+        title = head.split(". ", 1)[1] if ". " in head else head  # a heading without ". " keeps its whole text
         new = f"- [{m.group(1)}]({m.group(2)}) · {title} · {len(piece)} lines · {status_of(piece)}\n"
         changed += new != line
         out.append(new)

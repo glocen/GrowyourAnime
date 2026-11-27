@@ -6534,7 +6534,7 @@ The director handed the pick to research. **M, the orange broadcast,** because i
 - **"Louder than the fight": BETTER.** The off-white plates sit under the sky, and orange now marks only the press ring and the level tab, so the eye goes to the press. Health keeps its red, as Modulo read it, and that's right: red is health's colour everywhere. The numbers are spaced. The press's art is still a stand-in, so "the press reads at a glance" stays NOT VERIFIED until its art is in.
 - **Next:** Faber builds the lead plate and the press in the game (R1), then the director judges them there.
 
-### Research, 2026-11-27, 13:31: M goes dark (the director, by 13:29, "i want a darker ui for the HUD btw")
+### Research, 2026-11-27, 13:30: M goes dark (the director, by 13:29, "i want a darker ui for the HUD btw")
 Faber holds the light first piece; its nine uploads stay unused. **Modulo's round:** two targets at 568, by day and at dusk, with the same layout as M.
 - **(a) slate:** neutral charcoal plates (about #23272E) at about 90%, a thin light rim, warm off-white text.
 - **(b) warm graphite:** about #2A2622, a faint orange inner edge, warm off-white text.

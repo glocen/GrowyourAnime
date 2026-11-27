@@ -20,7 +20,7 @@ Research, 2026-11-27, 12:24. Written in on the director's word of 12:24 ("write 
 | R3 | A blind second reader for every direction and signature piece | `ga-review` |
 | R4 | A new direction goes to the director as options, with no research recommendation; research picks inside a direction | AGENTS.md, "The pick" |
 | R5 | Two rounds on one cause, then the technique changes or the director decides | AGENTS.md, "Two rounds, then the technique" |
-| R6 | A like holds for its piece at its moment; second-hand words stay UNVERIFIED | AGENTS.md, "The director's words keep their scope" |
+| R6 | A like holds for its piece at its moment; second-hand words stay UNVERIFIED | AGENTS.md, "Words keep their scope" |
 | R7 | Evidence has a date; a check that ran nothing says NOT VERIFIED | AGENTS.md, "Evidence has a date" |
 | R8 | Measure only what changes a decision, always with a quality gate | `docs/briefs/research.md` |
 | R9 | Nobody changes the director's PC without the director's word for that change | AGENTS.md, "The director's PC" |

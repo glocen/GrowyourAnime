@@ -41,6 +41,10 @@ CHIN = 3.875       # the head's lowest point
 CENTRE = Vector((0.0, 0.0, 4.5))  # the scalp's middle
 SCALP, SCALP_TOP = 0.78, 0.8      # the hair's mass under its clumps, an egg: its radius, and its top above the middle
 FACE = R + 0.07                   # how far from the head's middle a lock hangs past the egg, before the face
+# A scalp fitted to Roblox's round head (a `Hair`'s `scalp`): a squared egg 0.67 wide and tall, the power of its curve
+# (5.7, near the head's own rounded block), and the face's clearance below its widest. It clears the head by 0.02 to
+# 0.05 all round, where the egg above stands 0.16 off its sides and 0.18 over its top, so hair laid on it hugs the head
+HEAD_EGG = (0.67, 0.67, 5.7, R + 0.04)
 GUT = 12 / PPU                    # studs kept clear round a block's top and bottom pictures, so none bleeds into another
 PICTURES, GLOWS = {}, {}          # each built piece's own picture, and its glow's shape if it has one, by its object's name
 INK = "#1B161A"
@@ -449,8 +453,11 @@ class Hair:
     mesh by a picture, never by colours on its points). What makes it read as hair, and not as spines: few clumps, of three sizes;
     each lying on the one below; the tips turned out, never the whole clump; one way round the crown for all."""
 
-    def __init__(self, root, tip, seed=1, band=(0.5, 0.11, 0.4)):
+    def __init__(self, root, tip, seed=1, band=(0.5, 0.11, 0.4), scalp=None):
         self.bm = bmesh.new()
+        # the egg the hair lies on: the kit's (SCALP, SCALP_TOP), or `scalp`, (radius, top, power, the face's
+        # clearance), a squared egg laid out by the true angle down from the crown (HEAD_EGG)
+        self.egg = scalp or (SCALP, SCALP_TOP, None, FACE)
         self.strips, self.charts = [], []  # each clump's colours, ring by ring; and each of its faces' places in them
         self.pair = (np.array(rs.srgb(root)[:3]), np.array(rs.srgb(tip)[:3]))
         self.band = band  # the one band of light round the mass: its height over the scalp's middle, its width, its strength
@@ -480,12 +487,17 @@ class Hair:
         r = math.radians(a)
         flat, east = Vector((-math.sin(r), math.cos(r), 0)), Vector((-math.cos(r), -math.sin(r), 0))
 
+        wide, top, power, face = self.egg
+
         def point(deg):
             if deg <= 90:
                 q = math.radians(max(deg, 0.0))
-                return CENTRE + flat * (SCALP * math.sin(q) ** 0.75) + Vector((0, 0, SCALP_TOP * math.cos(q)))
+                if power is None:
+                    return CENTRE + flat * (wide * math.sin(q) ** 0.75) + Vector((0, 0, top * math.cos(q)))
+                rho = self.reach(q)
+                return CENTRE + flat * (rho * math.sin(q)) + Vector((0, 0, rho * math.cos(q)))
             d = deg - 90
-            return CENTRE + flat * (FACE + (SCALP - FACE) * math.exp(-d / 22)) + Vector((0, 0, -d * SCALP_TOP * math.pi / 180))
+            return CENTRE + flat * (face + (wide - face) * math.exp(-d / 22)) + Vector((0, 0, -d * top * math.pi / 180))
 
         ph = max(ph, 1.5)
         down = (point(ph + 1) - point(ph - 1)).normalized()
@@ -494,12 +506,40 @@ class Hair:
     def at(self, a, ph):
         return self.frame(a, ph)[:3]
 
+    def reach(self, q):
+        """A squared egg's distance from the scalp's middle at `q` radians down from the crown."""
+        wide, top, power, _ = self.egg
+        return (abs(math.sin(q) / wide) ** power + abs(math.cos(q) / top) ** power) ** (-1 / power)
+
     def where(self, p):
         """The degrees round and down of the surface's point under `p`."""
         v = p - CENTRE
+        wide, top, power, face = self.egg
+        if power is not None:
+            # the squared egg's point under `p` is on the line from the middle to it, above the widest and below
+            flat = math.hypot(v.x, v.y)
+            if v.z >= 0:
+                return math.degrees(math.atan2(-v.x, v.y)), math.degrees(math.atan2(flat, v.z))
+            slope, d = -v.z / max(flat, 1e-6), 0.0
+            for _ in range(6):
+                d = slope * (face + (wide - face) * math.exp(-d / 22)) / (top * math.pi / 180)
+            return math.degrees(math.atan2(-v.x, v.y)), 90 + d
         if v.z >= 0:
-            return math.degrees(math.atan2(-v.x, v.y)), math.degrees(math.acos(min(1.0, v.z / SCALP_TOP)))
-        return math.degrees(math.atan2(-v.x, v.y)), 90 - v.z / (SCALP_TOP * math.pi / 180)
+            return math.degrees(math.atan2(-v.x, v.y)), math.degrees(math.acos(min(1.0, v.z / top)))
+        return math.degrees(math.atan2(-v.x, v.y)), 90 - v.z / (top * math.pi / 180)
+
+    def down(self, z):
+        """The degrees down from the crown where the surface stands `z` studs over the scalp's middle."""
+        wide, top, power, _ = self.egg
+        if z < 0:
+            return 90 - z / (top * math.pi / 180)
+        if power is None:
+            return math.degrees(math.acos(max(-1.0, min(1.0, z / top))))
+        lo, hi = 0.0, math.pi / 2
+        for _ in range(40):
+            mid = (lo + hi) / 2
+            lo, hi = (mid, hi) if self.reach(mid) * math.cos(mid) > z else (lo, mid)
+        return math.degrees((lo + hi) / 2)
 
     def shell(self, hairline, segments=36):
         """The scalp's cover, down to `hairline(degrees round from the face's middle)`: what shows between clumps."""
@@ -687,15 +727,13 @@ class Hair:
         for c in range(cols):
             a = 360.0 * c / cols
             wrapped = (a + 180) % 360 - 180
-            z = hairline(abs(wrapped))
-            ph = (math.degrees(math.acos(max(-1.0, min(1.0, (z - CENTRE.z) / SCALP_TOP)))) if z >= CENTRE.z
-                  else 90 - (z - CENTRE.z) / (SCALP_TOP * math.pi / 180))
+            ph = self.down(hairline(abs(wrapped)) - CENTRE.z)
             for at_, half, deep in tips:
                 d = abs((wrapped - at_ + 180) % 360 - 180)
                 ph += deep * max(0.0, 1 - d / half) ** 1.4
             A = (self.at(a, ph)[0] - CENTRE).normalized()
             turn = A.angle(T)
-            E = T.slerp(A, min(0.9, opening / SCALP / max(turn, 1e-4)))
+            E = T.slerp(A, min(0.9, opening / self.egg[0] / max(turn, 1e-4)))
             line = []
             for r in range(rows):
                 s = (r / (rows - 1)) ** 0.85

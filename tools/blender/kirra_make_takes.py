@@ -242,7 +242,9 @@ def take_a(joints, folder, pieces=None):
     head = am.Head(skin)
     face(head, dict(skin=skin, iris="#5BA6D6", eye_w=0.32, eye_h=0.19, eye_x=0.268, eye_y=0.52, tilt=0.03, shut=0.3,
                     brow_y=0.7, brow_tilt=0.03, brow="#7A8092", mouth=[(-0.045, 0.232), (0.0, 0.228), (0.045, 0.232)]))
-    hair = am.Hair("#848CA3", "#EEF1F7", seed=31, band=(0.5, 0.1, 0.3))
+    # on a scalp fitted to her head: on the kit's wide egg it stood off her head's sides and crown (the director,
+    # 2026-11-27, "the hair being detached from the head", "from the sides and even abit top")
+    hair = am.Hair("#848CA3", "#EEF1F7", seed=31, band=(0.5, 0.1, 0.3), scalp=am.HEAD_EGG)
     # One solid lit mass combed up to the tie behind the crown, its locks drawn as parted lines on it, never as
     # leaves whose edges and undersides catch the light (research's must-fix 1, then the director's "messy", 11:2x)
     TIE = (180, 24)

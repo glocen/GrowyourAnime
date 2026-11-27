@@ -8,8 +8,13 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Next:** AR68 A's must-fixes pass once Faber's captures land; TR73's health ×10 read; AR69 and F1's fixes as Scintilla brings them; the Festival of Battles against the bar.
 - **With the director:** the icon's direction (a, b or c); whether research's acting lead of 11-24 still runs; whether the top-left overhaul word (relayed by Modulo) is theirs.
 
-**Faber (builder).** 2026-11-27, 23:34 by the clock, on Opus 5.5. **AR59's Rook is installed** (c7f48a9f): seven meshes and three maps, Approved, template rebuilt, self-test passed; captures for research in build/captures/ar59/. **AR69's fall is hooked** (92ff6e4e): ShadeFall on the Down marker, along the blow, the body hidden 4 frames later; fall case 24/24. TR73 closed, P stays 0. AR70's captures dropped (Modulo). Next: Scintilla's AR69 look on the Festival place, then Sonus's turn on the main place, then the cases the build touched; the smoke and the publish at the end, on research's word.
-- **Next:** the pre-publish smoke (Base → Festival → Base on a fresh save, a dodge, a cancel, a kill); Kirra's build at my Studio turn; TR69 F.
+**Faber (builder).** 2026-11-28, 00:31 by the clock, on Opus 5.5. In since 23:34:
+- TR64's gaps (dc8a4f97): 7 hooked, GearDrop unhooked. Sound 2325/2325.
+- HardWords is out (cfce6225).
+- The keeper arena's plumbing (12638b7c): an empty KeeperArenaKit on every ring copy.
+- AR63's Pip installed (a9011cc0): 9 meshes, 3 maps and 2 portraits; the large portrait was still Reviewing.
+Held by the memory guard (Studio 4.1 GB, under 2 GB free): the keeper ring case, the Stages screen, Pip's model case, and his day and dusk capture.
+- **Next:** those Runs once memory clears; AR69's capture on research's word; the pre-publish smoke; the publish on the director's word.
 
 **Modulo (assets).** 2026-11-28, 00:14. **AR63, Pip's finish** (take A, face 1, `docs/requests/AR63.md`): his files are in `build/handoff/Pip/make/`. The fitted hair casts a shade on his brow, and the lantern's panes are lit like frosted glass. The clips stand as published, with all nine audits passing. The portraits are cut.
 - **AR70:** the director rejected S2 ("horrendous", overhaul). The upload set is emptied; the icon goes to research's AI 2D line.
@@ -22,7 +27,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Sonus (sound).** 2026-11-28, 00:25 by the clock. **The seven gaps are in the game, unheard** (TR64; Faber's dc8a4f97): seven hooked, GearDrop unhooked (no gear drops in a fight). My 22 earlier picks too (TR42). Launch work done; no Studio turn held, nothing running.
 - **Next:** the director's word in play on the 22 and the 7 (a miss takes its next); then research's next cue list.
 
-**Turns.** Studio: one at a time while memory is short. **Scintilla, from 00:04 (2026-11-28), on the Festival place, to about 00:35:** AR69 round 1's engine take, day and night, nothing saved. Then Faber. Blender: headless only while Studio is open, with 2 GB free. Timing tests: nobody.
+**Turns.** Studio: one at a time while memory is short. **Faber, from 00:12 (2026-11-28), on the Festival place:** the cases and captures above, once memory clears. Blender: headless only while Studio is open, with 2 GB free. Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

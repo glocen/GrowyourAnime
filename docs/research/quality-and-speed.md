@@ -2,7 +2,7 @@
 
 Research (Quaestor), 2026-11-24, evening, from the cloud, on the director's words: "i want you to discover shortcut, learn stuff that make us be more productive while making the quality higher cause we had to iterate on so many stuff yet it still ugly", then "not only ui everything … not waste time thinking we are doing something premium for it to turn into a big pile of shit like that 20 hours making a horrendous looking dodge on umbra vesper".
 
-**Adopted:** the director said yes on 2026-11-24, 20:50 to changes 1 to 5, and to 6 with Edge tried before any install (`docs/decisions.md`, the top row). They're written into `AGENTS.md`, `ga-review`, `ga-action` and `ga-fresh-eyes`, into AR62 (the style frame) and TR63 (Faber's tools).
+**Adopted:** the director said yes on 2026-11-24, 20:50 to changes 1 to 5, and to 6 with Edge tried before any install (`docs/archive/decisions-words-2026-11.md`, its row of that date). They're written into `AGENTS.md`, `ga-review`, `ga-action` and `ga-fresh-eyes`, into AR62 (the style frame) and TR63 (Faber's tools).
 
 Labels: OBSERVED (in our records), SOURCED (link), OPINION (research's). A = `docs/asset-requests.md`, D = `docs/decisions.md`.
 

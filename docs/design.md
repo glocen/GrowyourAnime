@@ -1,6 +1,6 @@
 # Design
 
-The systems of Grow your Anime, as they stand. Research's design of 2026-11-11, from the director's production package (`docs/archive/package-v13/`) and the director's words (`docs/decisions.md`). Where this page and the package differ, this page is the design and `docs/decisions.md`, "What changed from the package", says why.
+The systems of Grow your Anime, as they stand. Research's design of 2026-11-11, from the director's production package (`docs/archive/package-v13/`) and the director's words (`docs/decisions.md`). Where this page and the package differ, this page is the design and `docs/archive/decisions-words-2026-11.md`, "What changed from the package", says why.
 
 **Status:** the design, most of it built. Each piece's request entry says what's built and tested. The numbers are in `docs/balance.md` and `tools/balance/seeds.json`, never here.
 
@@ -180,7 +180,7 @@ Eight bases in two rows, a Tower behind each [D]. A plot is given at join and th
 
 ## Regalia: gear
 
-The largest change from the package (`docs/decisions.md`, "What changed from the package"), kept by the director's yes of 2026-11-16, whose package has presets across the account.
+The largest change from the package (`docs/archive/decisions-words-2026-11.md`, "What changed from the package"), kept by the director's yes of 2026-11-16, whose package has presets across the account.
 
 - **Gear belongs to the account,** not to one Voidkin. Fourteen slots [D]: Main Hand, Off Hand, Helmet, Shoulders, Chest Armor, Gloves, Bracers, Boots, Cloak, Amulet, Ring I, Ring II, Earring I, Earring II. The two hands are the two weapon slots [D, 2026-11-12]: they take the places of the package's Weapon and Shield, since the Tank's shield is its off hand.
 - **Weapons belong to a class** [D]: only that class wields them. Each class has its pair:

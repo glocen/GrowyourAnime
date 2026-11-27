@@ -27,6 +27,7 @@ local process = require("@lune/process")
 local serde = require("@lune/serde")
 local roblox = require("@lune/roblox")
 local task = require("@lune/task")
+local Verdict = require("../../src/shared/Util/Verdict") -- pure: the same word the self-test and the Studio runner give
 
 local NEEDS_ENGINE = "needs the engine"
 
@@ -363,11 +364,13 @@ for _, file in casesFiles do
 	table.move(list, 1, #list, #cases + 1, cases)
 end
 
-local passed, failed, needStudio = 0, 0, 0
+local passed, failed, needStudio, empty = 0, 0, 0, 0
 local lines = {}
 local started = os.clock()
 for _, case in cases do
+	local checks = 0
 	local function record(ok: boolean, name: string, detail: string?)
+		checks += 1
 		if ok then
 			passed += 1
 		else
@@ -391,13 +394,23 @@ for _, case in cases do
 		else
 			record(false, "errored", tostring(err))
 		end
+	elseif checks == 0 then
+		empty += 1
+		table.insert(lines, `EMPTY {case.Name} · it ran and checked nothing`)
 	end
 end
 
-local clean = failed == 0 and needStudio == 0
-local verdict = if clean then "PASSED" else "FAILED"
+-- The word is Util.Verdict's, as the self-test's and the Studio runner's: nothing checked is NOT VERIFIED, never PASSED.
+local missing = {}
+if needStudio > 0 then
+	table.insert(missing, `{needStudio} case(s) need Studio`)
+end
+local verdict, reasons = Verdict.Of({ Failed = failed, Ran = #cases, Skipped = 0, Empty = empty, Missing = missing })
+for index, reason in reasons do
+	table.insert(lines, index, `WHY   {reason}`)
+end
 print(`LOGIC OFFLINE {verdict}: {passed} passed, {failed} failed, {needStudio} need Studio ({string.format("%.2f", os.clock() - started)} s, Lune)`)
 for _, line in lines do
 	print(line)
 end
-process.exit(if clean then 0 else 1)
+process.exit(if verdict == Verdict.Passed then 0 else 1)

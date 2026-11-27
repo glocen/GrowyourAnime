@@ -35,6 +35,7 @@ import blcommon as bl  # noqa: E402
 import hard_ember as he  # noqa: E402
 import rook_model as rm  # noqa: E402
 import rook_sheet as rs  # noqa: E402
+import shade_model as sm  # noqa: E402
 
 HANDOFF = he.REPO / "build" / "handoff"
 FOES = {
@@ -45,6 +46,7 @@ FOES = {
 }
 DAY = 1.2          # the day's light on the cloth, in the glow's units: the sun's 3 over pi and the fill's 0.8, as drawn
 TRIM = (0.3, 0.6)  # the glow over which the type's colour is fully in the map: the coat's own ramp under 0.5, trim 0.75 up
+TUNED_CUT = "#F0F0F0"   # the Normal masks' cuts that Hard's glow was tuned over (AR46): white, before AR57's cyan
 MARGIN = rm.MARGIN + 4  # texels grown past each island: past the foes' own margin, so no texel of theirs is unclassed
 SAMPLES = 16       # per texel: the cracks' edges antialiased
 
@@ -180,6 +182,20 @@ def type_tints():
     return dict(re.findall(r'(\w+) = Color3\.fromHex\("#?([0-9A-Fa-f]{6})"\)', block))
 
 
+def as_tuned(colour, glow):
+    """The Shade's Normal maps as Hard was tuned over them. On Normal the masks' cuts went cyan (AR57, 2026-11-27:
+    shade_model.CUT), and the glow map rose under them by as much as the colour darkened, to draw the same light
+    (shade_model.encode). Hard was tuned over the white cuts (TUNED_CUT): those texels go back to white and their glow
+    back by as much, so Hard's maps compose as they did, its faint cut edges included."""
+    at = np.all(np.abs(colour[..., :3] - np.array(rs.rgb(sm.CUT))) < 1.5 / 255, axis=-1)
+    k = (np.array(rs.srgb(sm.CUT)[:3]) @ rm.LUMA) / (np.array(rs.srgb(TUNED_CUT)[:3]) @ rm.LUMA)
+    colour, glow = colour.copy(), glow.copy()
+    colour[at, :3] = rs.rgb(TUNED_CUT)
+    glow[at, :3] *= k
+    print(f"shade: {at.sum()} texels of the Normal cuts' colour, back to white and their glow x {k:.3f}, as Hard was tuned")
+    return colour, glow
+
+
 def compose(kind, baked, types=None):
     """The foe's colour and glow maps with Hard's ember: the stand-in B's light, for a white body tint. One colour map
     per type named (the stand-in's by default), and one for SurfaceAppearance's TintMask, its alpha the type's share."""
@@ -188,6 +204,8 @@ def compose(kind, baked, types=None):
     types = types or [f["type"]]
     colour = rs.load(f["folder"] / f"{f['prefix']}_Color.png")
     glow = rs.load(f["folder"] / f"{f['prefix']}_Emissive.png")
+    if kind == "shade":
+        colour, glow = as_tuned(colour, glow)
     if colour.shape[:2] != baked.shape[:2] or glow.shape[:2] != baked.shape[:2]:
         raise SystemExit(f"{kind}: the maps and the bake differ in size")
     crack, core, island = baked[..., 0].clip(0, 1), baked[..., 1].clip(0, 1), baked[..., 2]

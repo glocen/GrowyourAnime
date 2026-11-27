@@ -48,7 +48,10 @@ LIT = ("Glow",)
 CLOTH = ("Void", "VoidLift")
 UNLIT = "#505050"  # the colour map under the body's lit edges: neutral, so the type's colour comes through whole,
                    # and dark, so daylight doesn't wash the edge out
-CUT = "#F0F0F0"    # under a mask's cuts: they're lit white, and white by day
+CUT = "#26B0FF"    # under a mask's cuts: on Normal they glow cyan, so a mask reads as a face at night and apart from
+#                    Hard's ember (AR57's pick, research, 2026-11-27: 38D8FF on screen). It is that cyan divided by the
+#                    mask's warm EmissiveTint (MASK_TINT), in linear light, so the paper keeps its warm glow; cyan by day
+#                    too. It was F0F0F0, lit white. Hard's looks paint their own (hard_cut.py, CUT_HARD).
 GROUND = "Void"    # the colour map's tone past the islands
 SHADE = rm.SHADE
 LIGHT = 2.0        # a lit edge's light as designed: what the glow adds to the picture, in the type's colour

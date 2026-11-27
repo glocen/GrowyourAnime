@@ -28,10 +28,10 @@ Research (Quaestor), 2026-11-24, evening, from the cloud. This is the calibratio
 
 | Verdict | The director's words | What | Image @ commit | Fit |
 |---|---|---|---|---|
-| **Accepted** | "ok we keep it good job" (11-15, 02:07 to 02:26, L191) | AR12, the galaxy Breaker screen, its third mock | `UI/hud/colour/vivid3_breaker.png` @0540456 | high |
-| **Accepted, crown cut; rail superseded** (11-17, 13:16: "childish", the rail redone as AR29) | "the crown for legendary gears is uselless ... the rest is very good good job" (11-15, 00:54 to 01:38, L189) | TR17 and AR12, the redrawn Voidkin screen | `UI/hud/colour/vivid_voidkin.png` @a094111 | high |
+| **Superseded** (was Accepted; 11-27, about 02:31: "i dont accept anything ui related everything need a overhaul including the galaxy breaker") | "ok we keep it good job" (11-15, 02:07 to 02:26, L191) | AR12, the galaxy Breaker screen, its third mock | `UI/hud/colour/vivid3_breaker.png` @0540456 | high |
+| **Superseded** (was Accepted; 11-27, about 02:31: "i dont accept anything ui related everything need a overhaul including the galaxy breaker"); earlier: crown cut, rail redone as AR29 (11-17, 13:16: "childish") | "the crown for legendary gears is uselless ... the rest is very good good job" (11-15, 00:54 to 01:38, L189) | TR17 and AR12, the redrawn Voidkin screen | `UI/hud/colour/vivid_voidkin.png` @a094111 | high |
 | **Superseded** (was Accepted; 11-26, 22:37 to 22:57: "overhaul the whole hud like voidkin top left hud ...") | "let try F i dont want segments tho just a bar" (11-15, after 03:32, L294) | AR12, the lead's card, round two | `UI/hud/lead_card_takes/lead_card_round2.png` @0159956 | high |
-| **Accepted** | "the B) UI on the left are very good" (11-17, 14:03, L214) | AR29, the Voidkin screen's rail, the seam | `UI/voidkin/chrome/voidkin_chrome_close.png` @32b5980 | high |
+| **Superseded, the style liked** (was Accepted; 11-27, about 02:31: "i do like voidkin screen thin line rail style but need a overhaul") | "the B) UI on the left are very good" (11-17, 14:03, L214) | AR29, the Voidkin screen's rail, the seam | `UI/voidkin/chrome/voidkin_chrome_close.png` @32b5980 | high |
 | **Superseded** (was Picked; 11-26, 21:04: "this Ui color and text font is a prototype cause this looks horrible"; the HUD overhaul, 22:37 to 22:57) | "B, Conduit" (11-14 to 11-15, L183) | AR12, the HUD's colour, B of three | `UI/hud/colour/hud_colour_B.png` @77c591e | high |
 | **Superseded** (was Accepted; 11-26, 21:04: "this Ui color and text font is a prototype cause this looks horrible") | "i love the graphite UI wayyy more" (11-12, L134) | AR3, the UI direction sheet | `UI/ui_sheet.png` @82d5d69 | medium-high |
 | Rejected, all three | "it js need a different type of color different width (smaller imo) and much better composition" (11-15, 03:21 to 03:32, L200) | AR12, the lead's card, takes A to C | `UI/hud/lead_card_takes/lead_card_takes.png` @63a25ab | high |
@@ -49,7 +49,7 @@ Research (Quaestor), 2026-11-24, evening, from the cloud. This is the calibratio
 | Rejected | "that cooling CD is bad and that fist art is very bad i want a unique cool art for skills or just the name but make it much better" (11-27, by 01:00, to Modulo) | AR62's press at I1's finish: a painted silver gauntlet seated in a gold disc, and its cooldown | `UI/hud_overhaul/icons/set/set_close.png` @eccb778d (which image the director saw isn't named) | medium: research had passed it 4 minutes before, against our own target |
 | Rejected | "look at that auto mode way to big", then "same for the spectate mode" (11-26, between about 23:00 and 23:39, to Modulo) | today's fight HUD in the game: Auto and the eye as large as the skill press | the Today panel of `UI/hud_overhaul/piece1_fight/sheet.png` @0fa66412 (the director saw the game, not this panel) | medium |
 
-The UI pair to start from: the accepted rail (AR29, B) beside the rejected rail in the game (L210). It's the same screen, before and after the director's word.
+No UI look stands accepted (the director, 11-27, about 02:31). A like in these rows is a data point about taste at its moment, never a principle for later work.
 
 ## The base and the world
 

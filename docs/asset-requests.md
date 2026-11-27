@@ -6502,3 +6502,8 @@ Research, 2026-11-27, 02:40.
 - R's readout: I found no bracket touching "3,732" at either size. Its last digit sat on a bright lantern, so the readout now has its own feathered band behind it.
 - S: Auto's shard is wider and the eye's facet moved out, so "AUTO" clears its edge.
 - Coverage is unchanged (6.1 to 6.3% at 568). P and M re-rendered byte for byte. The content check of 12:40 covers the same words and art.
+
+### Research, 2026-11-27, 13:10: the pick, M, on the director's "you choice" (13:08)
+The director handed the pick to research. **M, the orange broadcast,** because it has the boldest read at phone size, with warm plates in place of the purple and black the director keeps rejecting, the energy of the named anime HUDs (Anime Crusaders, Sailor Piece), and the clearest numbers of the four. P is gold ornament, S goes grey at dusk, and R's ring vanishes at dusk.
+- **One round, on one cause (M is louder than the fight):** the white plates drop to a warm off-white at about 85% brightness with a soft edge, and orange stays only on the live parts (health, the press ring, the level tab). The health numbers get their spacing back ("3,682 / 3,732").
+- **One piece first (R1):** the lead plate and the press, built in the game and captured on a phone-size view by day and at dusk, beside today's HUD and a shipped frame. Then the director judges it in the game. Pilot 1 counts this pick as research's.

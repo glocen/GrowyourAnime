@@ -3,6 +3,7 @@ research's pass before the Studio take, never in place of it.
 
     blender -b -P tools/blender/ar69_rows.py -- <pose.json> <out_dir> <burn_rows|fall_rows> <times> [heading]
 
+With AR69_ROWS set to a folder, the rows come from its <Effect>.rows.json (a handoff not yet in src) in place of src's.
 <times> are the target's seconds (ar69_targets.py), 0 where the body goes; the fall's rows start LEAD frames before.
 Reads src/shared/Config/EffectRows/StateBurn.json and ShadeFall.json, the kit's meshes (build/handoff/FxKit/meshes/)
 and pictures. Writes fx_<t>.exr and light_<t>.exr as ar69_targets.py does, for tools/fx/ar69_sheets.py's compositing.
@@ -12,13 +13,15 @@ key; a row's frame its parent's times At, then Spin about Y, then Tilt (X, Y, Z)
 camera, as wide as Width times the scale, its picture's top row at Low; a Mesh the kit's mesh at Size times Scale, its
 look's picture tinted by Color and lit by Glow; an emitter's particles from its Emit frames (Lifetime, Speed, Drag,
 Size, Transparency, Acceleration; EmissionDirection Top or Front; a VelocityParallel needle as a streak along its
-flight, its Squash's stretch approximate). Round 1 (2026-11-27): a beam's Taper, FootFade, Reach and Color, and its
+flight, its Squash's stretch approximate; a VelocityPerpendicular one a flat quad across its flight, its picture's).
+Round 1 (2026-11-27): a beam's Taper, FootFade, Reach and Color, and its
 LightEmission as a share of added light over laid-over (Roblox's own blend, approximated). A Ground row at the foot,
 lifted by its At's Y, as Rows.luau does since Faber's fix (2026-11-27, 23:5x; before it, the engine dropped the lift). Not
 modelled: bloom, which ar69_sheets.py approximates for every layer alike.
 """
 import json
 import math
+import os
 import random
 import sys
 from pathlib import Path
@@ -32,9 +35,18 @@ import ar69_targets as T  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 ROWS = ROOT / "src" / "shared" / "Config" / "EffectRows"
+HANDOFF_ROWS = os.environ.get("AR69_ROWS")
 KIT = ROOT / "build" / "handoff" / "FxKit"
-PICTURES = {"fx_lick_Flame": ROOT / "build" / "handoff" / "ShadeFire" / "pictures" / "fx_lick_Flame.png",
+SHADE_FIRE = ROOT / "build" / "handoff" / "ShadeFire" / "pictures"
+PICTURES = {"fx_lick_Flame": SHADE_FIRE / "fx_lick_Flame.png", "fx_lick_Soft": SHADE_FIRE / "fx_lick_Soft.png",
+            "fx_lick_Core": SHADE_FIRE / "fx_lick_Core.png", "fx_halo_Flame": SHADE_FIRE / "fx_halo_Flame.png",
             "fx_rise_Flame": KIT / "images" / "fx_rise_Flame.png", "fx_beam": KIT / "images" / "fx_beam.png"}
+
+
+def rows_of(effect):
+    """An effect's rows: src's, or a handoff's (AR69_ROWS) before they're installed."""
+    path = Path(HANDOFF_ROWS) / f"{effect}.rows.json" if HANDOFF_ROWS else ROWS / f"{effect}.json"
+    return json.loads(path.read_text(encoding="utf-8"))["Rows"]
 KIT_SIZE = {"FxShell": (2, 2, 2), "FxHoop": (2, 0.3, 2), "FxChip1": (1, 0.1424, 0.3469), "FxChip2": (1, 0.1435, 0.3142),
             "FxChip3": (1, 0.1578, 0.3694)}  # Config.FxKit.Meshes' Size
 LEAD = 4
@@ -195,6 +207,22 @@ def beam(name, low, high, width, image, tint, strength, opacity, col, taper=1.0,
     T.mesh_object(name, bm, col, picture_mat(name, image, tint, strength, opacity, added=added, foot=foot))
 
 
+def flat(name, centre, normal, size, image, tint, strength, opacity, col, added=0.0):
+    """A particle lying across its flight (VelocityPerpendicular): a square quad, `size` its half width, its picture's."""
+    if size <= 0 or opacity <= 0.002:
+        return
+    c, n = T.to_bl(centre), (T.to_bl(centre + normal) - T.to_bl(centre)).normalized()
+    a = n.cross(Vector((1, 0, 0)) if abs(n.x) < 0.9 else Vector((0, 1, 0))).normalized() * size
+    b = n.cross(a).normalized() * size
+    bm = bmesh.new()
+    uv = bm.loops.layers.uv.new("UVMap")
+    vs = [bm.verts.new(c + x * a + y * b) for x, y in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
+    f = bm.faces.new(vs)
+    for loop, co in zip(f.loops, ((0, 0), (1, 0), (1, 1), (0, 1))):
+        loop[uv].uv = co
+    T.mesh_object(name, bm, col, picture_mat(name, image, tint, strength, opacity, added=added))
+
+
 _KIT = {}
 
 
@@ -346,6 +374,9 @@ def draw_rows(rows, anchor, t, scale, col, lights, light_scale=180.0, night=Fals
                         shade = sum(colour) / 3 / (150 / 255)
                         tones = tuple(tuple(c * shade for c in tone) for tone in tones)
                         particle(f"{name}_{frame0}_{k}", centre, size, colour, opacity, 0, True, col, tones)
+                    elif em.get("Orientation") == "VelocityPerpendicular":  # a flat quad across its flight
+                        flat(f"{name}_{frame0}_{k}", centre, way, size, row["Image"], tuple(colour),
+                             em.get("Brightness", 1), opacity, col, added=em.get("LightEmission", 0))
                     elif em.get("Orientation") == "VelocityParallel":  # a needle along its flight
                         flight = way * speed * math.exp(-drag * s) + pull * s
                         if flight.length > 1e-3:
@@ -378,14 +409,14 @@ def root_of(pose):
 
 
 def burn_rows(t, pose, col, night, lights):
-    rows = json.loads((ROWS / "StateBurn.json").read_text(encoding="utf-8"))["Rows"]
+    rows = rows_of("StateBurn")
     root, scale = root_of(pose)
     draw_rows(rows, root, t * 60, scale, col, lights, light_scale=170.0, night=night)
     T.burn_embers(t, pose, col)  # the embers as the target's (an emitter per tongue tip in the game)
 
 
 def fall_rows(t, pose, col, night, lights):
-    rows = json.loads((ROWS / "ShadeFall.json").read_text(encoding="utf-8"))["Rows"]
+    rows = rows_of("ShadeFall")
     root, scale = root_of(pose)
     foot = root.translation - Vector((0, 3 * scale, 0))
     blow = Vector((pose.blow.x, 0, pose.blow.z)).normalized()

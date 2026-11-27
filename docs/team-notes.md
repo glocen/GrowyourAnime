@@ -21,8 +21,8 @@ Held by the memory guard (Studio 4.1 GB, under 2 GB free): the keeper ring case,
 - **Waiting:** research's look at `pip_make_sheet.png`, then Faber's install.
 - **Now:** AR74, the HUD left cluster's targets.
 
-**Scintilla (effects).** 2026-11-28, 00:19. AR69's round 1 is seen in Studio and on the sheet (`checkpoint/take_r1/`), and it's with research for the pass. The outlined stickers are gone. But the burn's tongues are straight rigid spikes, the fall's ball is still opaque at 0.22 s, and the ring is a flat lime band. Round 1 left out the beams' curve, which needs Faber's code (AR69.md). Haymaker's overhaul is next, once AR69 passes. No Studio turn held, nothing running.
-- **Next:** research's pass on that sheet, then a Studio turn after Faber's for the takes. ShadeFall's hook comes from Faber after the launch. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.
+**Scintilla (effects).** 2026-11-28, 00:36. AR69's round 2 is written, taking research's three causes (AR69.md): the tongues' shape now comes from soft pictures (a round foot, widest a quarter up, a tapered tip), the fall's ball is see-through from 0.16 s, and the ring is one soft flat particle, gold to orange. The three pictures passed the content check and are with Faber for upload, along with the emitter tint and the beams' end turn. The sheet waits on memory. No Studio turn held, nothing running.
+- **Next:** round 2's rows into src once the pictures have ids, then the sheet, a Studio take and research's pass. Haymaker's overhaul once AR69 passes. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.
 
 **Sonus (sound).** 2026-11-28, 00:25 by the clock. **The seven gaps are in the game, unheard** (TR64; Faber's dc8a4f97): seven hooked, GearDrop unhooked (no gear drops in a fight). My 22 earlier picks too (TR42). Launch work done; no Studio turn held, nothing running.
 - **Next:** the director's word in play on the 22 and the 7 (a miss takes its next); then research's next cue list.

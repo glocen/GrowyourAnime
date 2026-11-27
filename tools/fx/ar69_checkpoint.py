@@ -7,6 +7,7 @@ Writes build/handoff/ShadeFire/checkpoint/ar69_checkpoint_burn.png and ar69_chec
 model of the engine: their geometry, timing and the beams' picture are the rows' own; a SurfaceAppearance's shading,
 Neon and Roblox's bloom are approximations, the same for both sides. The Studio take is the judge.
 """
+import os
 import sys
 from pathlib import Path
 
@@ -19,6 +20,8 @@ OUT = S.ROOT / "build" / "handoff" / "ShadeFire" / "checkpoint"
 WIDTH = 2500
 GAP = 10
 GREY = 0.16
+# where the rows came from: src, or a round's handoff not yet installed (AR69_ROWS, as tools/blender/ar69_rows.py reads)
+SOURCE = os.environ.get("AR69_SOURCE", "the rows in src")
 NOTE = ("A model of the engine: the rows' geometry, timing and beams' picture are their own; SurfaceAppearance "
         "shading, Neon and bloom are approximate, alike on both sides. The Studio take is the judge.")
 
@@ -61,7 +64,7 @@ def burn():
     times = S.times_of(S.WORK / "r_burn_a_day")
     peak = 0.16
     parts = [S.caption(close("burn_a", "burn_rows", "day", peak, crop, "base_day_win.png", "base_day_win.png"),
-                       f"AR69 burn A at {peak:.2f} s, by day: the target (left), the rows in src (right). {NOTE}", 24)]
+                       f"AR69 burn A at {peak:.2f} s, by day: the target (left), {SOURCE} (right). {NOTE}", 24)]
     parts.append(S.caption(close("burn_a", "burn_rows", "night", peak, crop, "base_night_win.png", "base_night_win.png"),
                            "the same at night: the target (left), the rows (right)"))
     for light in ("day", "night"):
@@ -84,7 +87,7 @@ def fall():
     times = S.times_of(S.WORK / "r_fall_a_day")
     pre = S.times_of(S.WORK / "r_burn_fall_rows_day")
     parts = [S.caption(close("fall_a", "fall_rows", "day", 0.1, crop, "base_fall_day_win.png", "base_fall_day_win.png"),
-                       f"AR69 fall A at 0.10 s, by day: the target (left), the rows in src (right). {NOTE}", 24)]
+                       f"AR69 fall A at 0.10 s, by day: the target (left), {SOURCE} (right). {NOTE}", 24)]
     parts.append(S.caption(close("fall_a", "fall_rows", "night", 0.22, crop, "base_fall_night_win.png",
                                  "base_fall_night_win.png"), "at 0.22 s, at night: the target (left), the rows (right)"))
     # before the body goes: the rows' ball swells round the foe, who hides 4 frames after the play

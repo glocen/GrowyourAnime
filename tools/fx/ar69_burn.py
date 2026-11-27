@@ -1,7 +1,7 @@
 """AR69's burn, research's pick A ("the tongues"), installed in the game's rows. Scintilla's.
 
     py tools/fx/ar69_burn.py [out_dir]        (default: build/handoff/ShadeFire/fx; copy to src/shared/Config/EffectRows/)
-    py tools/fx/ar69_burn.py --pictures       (fx_lick_Flame into build/handoff/ShadeFire/pictures)
+    py tools/fx/ar69_burn.py --pictures       (fx_lick_Flame, fx_lick_Soft, fx_lick_Core into build/handoff/ShadeFire/pictures)
 
 Feel line (research): a burning foe carries real flame on its body, licking up from it in 3D and moving with it,
 readable at the player's camera against day and night.
@@ -15,12 +15,15 @@ Hero shape: a flame tongue, wide and round at its foot on the body, narrowing as
 tip curling to one side and breaking off in two pieces, embers rising off it. Its life is a lick, again and again on
 its own beat: it stretches up and thins, then sinks and swells, while its lean sways on a slower beat of its own.
 
-The technique (round 1, 2026-11-27): each tongue is a soft tapered streak facing the camera (so it reads as flame
-from every side), along an unseen guide that carries its lick and its sway: two Beams in the kit's fx_beam (soft across,
-solid along), an opaque orange body (laid over, so it holds by day) wide at the foot, fading into the body there and
-narrowing to a point, and a narrow added white-gold core up its lower three quarters. Round 0's picture, fx_lick_Flame
-(the target's fire drawn with its outline), read as flat outlined cut-outs in the engine; it stays in Pictures, unused
-here. A row of embers rides each tongue's tip (On its guide: they lean with it). A warm light flickers on the body.
+The technique (round 2, 2026-11-28): each tongue is two Beams facing the camera (so it reads as flame from every side),
+along an unseen guide that carries its lick and its sway, drawn from the guide's tip down to its foot. The tongue's shape
+is in their pictures' alpha: fx_lick_Soft, a round foot, widest a quarter up, a tapered tip, soft-edged with no outline,
+for an opaque orange body (laid over, so it holds by day); fx_lick_Core, narrower and shorter inside it, for an added
+white-gold core, the tip left orange. Each tongue's own curve waits on Faber's turn of the beam's ends. Round 0's
+fx_lick_Flame (the target's fire drawn with its outline) read as flat cut-outs, and round 1's fx_beam streaks (the
+shape from a straight taper) as rigid spikes, a cone round a white needle; the fall's licks and spikes keep round 1's
+streak (streak(), below), which suits their thin rays. A row of embers rides each tongue's tip (On its guide: they lean
+with it). A warm light flickers on the body.
 
 Written at a body of scale 1 (R6, 5 studs, the root 3 over the foot): Area 1, so a foe's scale scales it. The tongues'
 places are the target's, measured on the Brawler at scale 1 from the torso's middle, 0.16 over the root.
@@ -143,12 +146,35 @@ def streak(name, guide, widths, fades, length, why, bright=1.1, taper=TAPER):
     return {name: body, f"{name}Core": core}
 
 
+# Round 2 on research's three causes (Quaestor, 2026-11-28, 00:2x: round 1's streaks read as rigid spikes, a cone round a
+# white needle): the tongue's shape is in its pictures' alpha along their length, a round foot, widest a quarter up and
+# a tapered tip, with no outline; the body and its core are as wide as each other, the core's own picture narrower and
+# shorter inside the body's. Each is drawn from its guide's tip down to its foot, its picture stored tip-up (the
+# content check of 2026-11-27, 17:00). Each tongue's own curve waits on Faber's turn of the beam's ends (AR69).
+SOFT_WIDE = SHOWN / DRAWN  # the beam's width over the flame's `width`: the pictures' tongue is DRAWN of it at its widest
+
+
+def soft_streak(name, guide, widths, fades, why, bright=1.1):
+    """Two rows on `guide` (a beam row, unseen, whose ends are the flame's foot and tip), from its tip down to its
+    foot: the body and its core, their shapes their pictures'."""
+    base = {"Kind": "Beam", "On": guide,  # it rides the body through its guide: its scale, and gone with it
+            "Low": f"{guide}.High", "High": f"{guide}.Low"}  # the picture's top row, its tip, at the guide's tip
+    look = {"FaceCamera": True, "LightInfluence": 0, "TextureMode": "Stretch", "TextureLength": 1, "TextureSpeed": 0}
+    body = dict(base, Image="fx_lick_Soft", Color=c3(BODY), Beam=dict(look, LightEmission=0.15, Brightness=bright),
+                Tracks={"Width": widths, "Transparency": fades}, Why=why)
+    core = dict(base, Image="fx_lick_Core", Color=c3(HEAT),
+                Beam=dict(look, LightEmission=1, Brightness=round(bright * 1.8, 2), ZOffset=0.05),
+                Tracks={"Width": widths, "Transparency": fades},
+                Why=f"{name}'s core: added white-gold heat up its lower part, the tip left orange (its picture's)")
+    return {name: body, f"{name}Core": core}
+
+
 def tongue(name, at, lean, length, width, beat, phase, seed):
-    """The guide, unseen, from the foot up to the tip, carrying the lick and the sway; and the flame on it, a streak
-    (its body and core) from the guide's foot to its tip."""
+    """The guide, unseen, from the foot up to the tip, carrying the lick and the sway; and the flame on it, a soft
+    tongue (its body and core) from the guide's tip down to its foot."""
     rng = random.Random(seed)
     foot = v3(at[0], round(at[1] + TORSO_UP, 3), at[2])
-    top, wide = lick_keys(rng, beat, phase, length, width * BEAM_WIDE)
+    top, wide = lick_keys(rng, beat, phase, length, width * SOFT_WIDE)
     guide = {
         "Kind": "Beam",
         "Body": "HumanoidRootPart",
@@ -164,8 +190,8 @@ def tongue(name, at, lean, length, width, beat, phase, seed):
         "Why": f"{name}'s guide, unseen: the tongue's foot on the body and its tip, licking on its own beat ({beat} s), "
                "its lean swaying on a slower one",
     }
-    flame = streak(name, f"{name}Guide", wide, [[0, 1, "Quad Out"], [6, 0], [FAR, 0]], length * LICK[1],
-                   f"the hero: a flame tongue, {name}, a streak licking up from its foot; taller is thinner")
+    flame = soft_streak(name, f"{name}Guide", wide, [[0, 1, "Quad Out"], [6, 0], [FAR, 0]],
+                        f"the hero: a flame tongue, {name}, licking up from a round foot; taller is thinner")
     return guide, flame
 
 
@@ -286,6 +312,32 @@ def lick_picture():
     return img.reshape(H, SS, W, SS, 4).mean(axis=(1, 3))[::-1]  # stored tip-up: the tip on the top row
 
 
+# Round 2's pictures: white (each row's Color tints it), the shape in the alpha, the edge soft, no outline. Each: its
+# half width at its widest (a share of the picture's width), where it's widest and where its point is (shares of the
+# length from the foot), where its round foot starts (a share of the length below the picture's bottom row, so the
+# soft edge goes round it), and where its soft edge starts (a share of its half width): the body's soft over its outer
+# half, the core all soft.
+SOFT = {"fx_lick_Soft": (DRAWN / 2, 0.25, 1.0, 0.0, 0.45),
+        "fx_lick_Core": (DRAWN / 2 * 0.42, 0.2, 0.7, 0.0, 0.15)}
+
+
+def soft_picture(name):
+    half_max, widest, point, below, edge = SOFT[name]
+    u = (np.arange(W * SS) + 0.5) / (W * SS)
+    s = (np.arange(H * SS) + 0.5) / (H * SS)
+    u, s = np.meshgrid(u, s)  # rows along s from the foot; flipped to tip-up at the end
+    k = np.clip((s + below) / (widest + below), 0, 1)
+    grow = np.sqrt(np.clip(1 - (1 - k) ** 2, 0, 1))  # a round foot: a quarter ellipse
+    taper = np.clip(1 - (s - widest) / (point - widest), 0, 1) ** 1.5  # to a point, its sides drawn in: a lick, not a cone
+    half = half_max * grow * np.where(s < widest, 1.0, taper)
+    d = np.abs(u - 0.5) / np.maximum(half, 1e-5)
+    alpha = (1 - smooth(edge, 1.0, d)) * smooth(0, 0.03, s)  # soft across and round its foot
+    alpha *= 1 - 0.55 * smooth(point * 0.72, point, s)  # its point thins to air
+    shade = 1 - 0.18 * smooth(0.25, 1.0, d)  # a little deeper toward the edge: volume, never a line
+    img = np.concatenate([np.repeat(shade[..., None], 3, -1), alpha[..., None]], -1).astype(np.float32)
+    return img.reshape(H, SS, W, SS, 4).mean(axis=(1, 3))[::-1]  # stored tip-up: the tip on the top row
+
+
 def write_rgba(img, path):
     h, w, _ = img.shape
     data = (np.clip(img, 0, 1) * 255 + 0.5).astype(np.uint8).tobytes()
@@ -296,9 +348,11 @@ def write_rgba(img, path):
 
 def main():
     if sys.argv[1:2] == ["--pictures"]:
-        path = PICTURES / "fx_lick_Flame.png"
-        write_rgba(lick_picture(), path)
-        print("wrote", path.relative_to(ROOT).as_posix())
+        for name, img in (("fx_lick_Flame", lick_picture()), ("fx_lick_Soft", soft_picture("fx_lick_Soft")),
+                          ("fx_lick_Core", soft_picture("fx_lick_Core"))):
+            path = PICTURES / f"{name}.png"
+            write_rgba(img, path)
+            print("wrote", path.relative_to(ROOT).as_posix())
         return
     out = Path(sys.argv[1]) if len(sys.argv) > 1 else OUT
     out.mkdir(parents=True, exist_ok=True)

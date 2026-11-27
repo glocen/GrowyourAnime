@@ -18,7 +18,7 @@
      [0, {"Vector3": [0.7, 0.665, 0.7]}, "Quad Out"], [3, {"Vector3": [1.7, 1.615, 1.7]}, "Quad Out"],
      [8, {"Vector3": [2.35, 2.232, 2.35]}, "Quad Out"], [25, {"Vector3": [2.867, 2.724, 2.867]}, "Quad Out"]
     ],
-    "Transparency": [[0, 0.4, "Quad Out"], [2, 0.05], [14, 0.05], [26, 1]],
+    "Transparency": [[0, 0.4, "Quad Out"], [2, 0.05], [14, 0.05], [17, 0.72], [26, 1]],
     "Color": [
      [0, {"Color3": [253, 186, 130]}], [9, {"Color3": [253, 186, 130]}], [23, {"Color3": [215, 139, 86]}]
     ],
@@ -39,7 +39,7 @@
      [0, {"Vector3": [0.798, 0.758, 0.798]}, "Quad Out"], [3, {"Vector3": [1.938, 1.841, 1.938]}, "Quad Out"],
      [8, {"Vector3": [2.679, 2.545, 2.679]}, "Quad Out"], [25, {"Vector3": [3.268, 3.105, 3.268]}, "Quad Out"]
     ],
-    "Transparency": [[0, 0.4, "Quad Out"], [2, 0.45], [14, 0.45], [26, 1]],
+    "Transparency": [[0, 0.4, "Quad Out"], [2, 0.45], [14, 0.45], [17, 0.86], [26, 1]],
     "Color": [[0, {"Color3": [214, 137, 86]}], [9, {"Color3": [214, 137, 86]}], [23, {"Color3": [200, 119, 70]}]],
     "Glow": [[0, 1.4], [9, 1.4], [23, 0.8]]
    },
@@ -1334,16 +1334,28 @@
    "Why": "the puff: soft grey lumps rising off the top as the fire goes"
   },
   "Ring": {
-   "Kind": "Mesh",
-   "Part": ["FxHoop"],
-   "Color": {"Color3": [255, 197, 84]},
+   "Kind": "Emitter",
+   "Image": "fx_halo_Flame",
    "Tint": true,
-   "Tracks": {
-    "At": [[5, {"Vector3": [0, 0.06, 0]}]],
-    "Scale": [[5, {"Vector3": [1.0, 0.3, 1.0]}, "Cubic Out"], [26, {"Vector3": [6.5, 0.3, 6.5]}]],
-    "Transparency": [[5, 0], [15, 0.35], [26, 1]]
+   "Emitter": {
+    "Lifetime": [0.35, 0.35],
+    "Speed": [0.01, 0.01],
+    "EmissionDirection": "Top",
+    "Orientation": "VelocityPerpendicular",
+    "LockedToPart": true,
+    "Rotation": [0, 0],
+    "RotSpeed": [0, 0],
+    "Size": [[0, 1.087], [0.08, 2.41], [0.18, 3.769], [0.3, 5.015], [0.45, 6.071], [0.65, 6.809], [1, 7.065]],
+    "Transparency": [[0, 0], [0.476, 0.35], [1, 1]],
+    "Color": [[0, {"Color3": [255, 197, 84]}], [1, {"Color3": [255.0, 165.32549019607842, 57.976470588235294]}]],
+    "LightEmission": 0.3,
+    "LightInfluence": 0,
+    "Brightness": 1.1,
+    "ZOffset": 0
    },
-   "Why": "a ring of light running out over the floor"
+   "Emit": [[5, 1]],
+   "Tracks": {"At": [[5, {"Vector3": [0, 0.06, 0]}]]},
+   "Why": "a ring of light running out over the floor, soft-edged, gold at its front to orange behind"
   },
   "Sparks": {
    "Kind": "Emitter",

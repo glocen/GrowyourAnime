@@ -2,6 +2,7 @@
 Scintilla's.
 
     py tools/fx/ar69_fall.py [out_dir]        (default: build/handoff/ShadeFire/fx; copy to src/shared/Config/EffectRows/)
+    py tools/fx/ar69_fall.py --pictures       (fx_halo_Flame, the ring's, into build/handoff/ShadeFire/pictures)
 
 Feel line (research): the Shade's last hit lands, and its body comes apart into light and embers with a heavy, volumetric
 burst (a 3D shape with depth and a direction, never a flat card facing the camera), over in under a second. No gore:
@@ -25,8 +26,8 @@ The technique, from the kit: the ball and its rim are the kit's shell (FxShell) 
 so its white-hot middle is one additive particle (fx_glow) drawn toward the camera; the licks and spikes are the burn's
 soft tapered streak (round 1: an opaque orange body and an added white-gold core, in the kit's fx_beam) along an unseen
 guide, foot to tip; sparks of light (fx_streak) drawn out along their flight; the chips are the kit's chips in a flat
-light; the puff is soft grey particles, lit by the scene so it darkens at night; the ring is the kit's hoop, a flat
-band a little over the floor.
+light; the puff is soft grey particles, lit by the scene so it darkens at night; the ring is one flat particle of its
+own picture a little over the floor (round 2).
 
 Written at a body of scale 1 (R6, 5 studs, the root 3 over the foot): Area 1, so a Shade's scale scales it.
 """
@@ -35,7 +36,9 @@ import random
 import sys
 from pathlib import Path
 
-from ar69_burn import BEAM_WIDE, CORE, GOLD, ORANGE, RIM, angles, streak
+import numpy as np
+
+from ar69_burn import BEAM_WIDE, CORE, GOLD, ORANGE, PICTURES, RIM, angles, smooth, streak, write_rgba
 from element_states import compact
 from hit_sparks import c3, v3
 
@@ -65,10 +68,10 @@ def on_picture(colour):
 def ball():
     """The ball and its rim: the kit's shell swelling round the body from LEAD frames before the marker."""
     rows = {}
-    for name, size, fade, colour, why in (
-            ("Ball", 1.0, 0.05, mix(ORANGE, RIM, 0.1),
+    for name, size, fade, thin, colour, why in (
+            ("Ball", 1.0, 0.05, 0.72, mix(ORANGE, RIM, 0.1),
              "the hero: a ball of fire on the body, swelling round it as it comes apart"),
-            ("Rim", 1.14, 0.45, mix(ORANGE, RIM, 0.65), "its outline, deeper and fainter, a little over it")):
+            ("Rim", 1.14, 0.45, 0.86, mix(ORANGE, RIM, 0.65), "its outline, deeper and fainter, a little over it")):
         r = [(-LEAD, 0.7 * size), (-1, 1.7 * size), (4, BALL * size), (21, BALL * 1.22 * size)]
         y = MIDDLE[1] + (0.15 if name == "Rim" else 0.0)
         rows[name] = {
@@ -80,8 +83,10 @@ def ball():
                 "At": [[-LEAD, v3(MIDDLE[0], y, MIDDLE[2])], [4, v3(MIDDLE[0], y, MIDDLE[2]), EASE_OUT],
                        [24, v3(MIDDLE[0], y + 1.1, MIDDLE[2])]],
                 "Scale": [[f, v3(round(k, 3), round(k * 0.95, 3), round(k, 3)), EASE_OUT] for f, k in r],
-                # it thins from 0.16 s (research's must-fix 3), near linear as the target's: half gone by 0.27 s
-                "Transparency": [[-LEAD, 0.4, EASE_OUT], [-2, fade], [10, fade], [22, 1]],
+                # it thins from 0.16 s (research's must-fix 3). Round 2 (research, 2026-11-28): round 1's near-linear
+                # fade left the two shells stacked at 82% cover at 0.22 s, a solid sphere in the engine; now `thin` by
+                # 0.22 s (frame 13), together 0.72 x 0.86, about 60% of what's behind seen through, then out by 22
+                "Transparency": [[-LEAD, 0.4, EASE_OUT], [-2, fade], [10, fade], [13, thin], [22, 1]],
                 # cooling toward the rim's brown-orange, never deep red (the content check of 14:33)
                 "Color": [[-LEAD, c3(on_picture(colour))], [5, c3(on_picture(colour))],
                           [19, c3(on_picture(mix(colour, RIM, 0.6)))]],
@@ -234,24 +239,46 @@ def puff(tone, near, why):
     }
 
 
+RING_EDGE = 0.92  # the halo's outer edge, a share of its quad's half width (the particle's Size)
+RING_BAND = 0.3  # its band, a share of its radius (round 1's hoop's)
+HALO_BACK = tuple(0.7 * o / g + 0.3 for o, g in zip(ORANGE, GOLD))  # behind its front: gold times this is a light orange
+
+
 def ring():
-    """The kit's hoop as a flat band of light on the floor. Round 1 (research's must-fix 2): a Ground row is set down to
-    the foot exactly, so the hoop's floor band lay in the floor and only its lip showed, a thin gold line in the engine;
-    it stands on its At now, a little over the floor. The band is the hoop's own, 0.3 of its radius: 0.3 to 1.0 studs
-    while it's bright (to 0.2 s), to 1.5 as it fades (the target's 0.55 to 1.1, to 1.45). Its run and fade are the target's: out
-    with an ease near Cubic Out over 0.35 s, its fade u^1.5 in two straight pieces."""
+    """A ring of light running out over the floor. Round 2 (research, 2026-11-28): round 1's hoop read as a flat,
+    hard-edged lime band in the engine (Neon gold, its upright lip a hard outer edge). The ring is one particle of
+    fx_halo_Flame lying flat on the floor (VelocityPerpendicular, rising at 0.01): its band soft on both edges, gold
+    at its leading edge to orange behind, cooling a little as it goes. The picture holds the band's shape and its fall
+    from white to HALO_BACK; the gold is the particle's Color, so a Tint (a Hard Shade's Shades.Hard.Burst, AR46)
+    replaces the gold and keeps the gradient, once emitters take a Tint (Faber, asked 2026-11-28). Its run and fade are
+    round 1's: out to 6.5 studs with an ease near Cubic Out over 0.35 s (keys on Size, which is half the quad's width),
+    fading u^1.5 in two pieces."""
+    life = 21  # frames, 1 to 22
+    size = [[u, round((1 + 5.5 * (1 - (1 - u) ** 3)) / RING_EDGE, 3)] for u in (0, 0.08, 0.18, 0.3, 0.45, 0.65, 1)]
     return {
-        "Kind": "Mesh",
+        "Kind": "Emitter",
         "From": "Burst",
-        "Part": ["FxHoop"],
-        "Color": c3(GOLD),
-        "Tint": True,  # a typed Shade's colour in place of the gold (the Hard Shade's Shades.Hard.Burst), the fire untinted
-        "Tracks": {
-            "At": [[1, v3(0, 0.06, 0)]],
-            "Scale": [[1, v3(1.0, 0.3, 1.0), "Cubic Out"], [22, v3(6.5, 0.3, 6.5)]],
-            "Transparency": [[1, 0], [11, 0.35], [22, 1]],
+        "Image": "fx_halo_Flame",
+        "Tint": True,  # a typed Shade's colour in place of its own (the Hard Shade's Shades.Hard.Burst), the fire untinted
+        "Emitter": {
+            "Lifetime": [life / 60, life / 60],
+            "Speed": [0.01, 0.01],
+            "EmissionDirection": "Top",
+            "Orientation": "VelocityPerpendicular",  # flat on the floor
+            "LockedToPart": True,
+            "Rotation": [0, 0],
+            "RotSpeed": [0, 0],
+            "Size": size,
+            "Transparency": [[0, 0], [round(10 / life, 3), 0.35], [1, 1]],
+            "Color": [[0, c3(GOLD)], [1, c3(tuple(g * c / 255 for g, c in zip(GOLD, (255, 214, 176))))]],
+            "LightEmission": 0.3,  # held low: added gold washes to white on a light floor by day (round 0's streak)
+            "LightInfluence": 0,
+            "Brightness": 1.1,  # past it the gold clips toward yellow, round 1's lime
+            "ZOffset": 0,
         },
-        "Why": "a ring of light running out over the floor",
+        "Emit": [[1, 1]],
+        "Tracks": {"At": [[1, v3(0, 0.06, 0)]]},
+        "Why": "a ring of light running out over the floor, soft-edged, gold at its front to orange behind",
     }
 
 
@@ -331,7 +358,28 @@ def fall():
             "Area": 1, "Grey": False, "Rows": rows}
 
 
+def halo_picture(n=256, ss=4):
+    """fx_halo_Flame: the ring's band, clear inside and out, a multiplier for the particle's Color: white at its leading
+    (outer) edge, soft over its last fifth, falling back to HALO_BACK (gold to a light orange) and soft over the rest
+    toward its inner edge."""
+    c = (np.arange(n * ss) + 0.5) / (n * ss) * 2 - 1
+    x, y = np.meshgrid(c, c)
+    r = np.hypot(x, y)
+    inner = RING_EDGE * (1 - RING_BAND)
+    a = np.clip((r - inner) / (RING_EDGE - inner), -1, 2)  # 0 at the inner edge, 1 at the outer
+    alpha = smooth(0, 0.72, a) * (1 - smooth(0.8, 1.0, a))
+    k = smooth(0.15, 0.75, a)[..., None] * (1 - 0.45 * smooth(0.85, 1.0, a))[..., None]
+    rgb = np.array(HALO_BACK) * (1 - k) + k
+    img = np.concatenate([rgb, alpha[..., None]], -1).astype(np.float32)
+    return img.reshape(n, ss, n, ss, 4).mean(axis=(1, 3))
+
+
 def main():
+    if sys.argv[1:2] == ["--pictures"]:
+        path = PICTURES / "fx_halo_Flame.png"
+        write_rgba(halo_picture(), path)
+        print("wrote", path.relative_to(ROOT).as_posix())
+        return
     out = Path(sys.argv[1]) if len(sys.argv) > 1 else OUT
     out.mkdir(parents=True, exist_ok=True)
     data = fall()

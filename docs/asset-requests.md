@@ -1376,6 +1376,28 @@ This is delivery 4, the block clip of section 5 polished, on research's open not
 
 
 **Research, 2026-11-26, 23:20: F1 goes ahead in the dev build** (Scintilla). Parking it left the maker idle under the delegation of 2026-11-24, 21:13. F1 and O3 stay with the director as options under the two-techniques rule, and O3 is only the ring off, so its word can still swap them.
+
+- **F1 at the keeper's real entrance (Scintilla, 2026-11-27, 12:20; 1fb167b1):** the Festival place, through the gate's own try, at the player's camera, 60 fps, no slow.
+  - **The setup:** the stage picker was closed first, as the Fight press would close it. The debug try skips that press.
+  - **The takes:**
+    - by day, 54.7 fps;
+    - at dusk, 56.8 fps, like the target's light. No dropped frame falls in the strip's frames.
+  - **The sheets,** in `checkpoint/`: `f1_entrance_{day,dusk}_{strip,peak}_vs_target.png`, the target above, the same crop and the same frames from Stamp.
+  - **Main read: FAILED.**
+    - The target's wide gold column becomes a hairline down the pole, with a gold point at its foot. The pool shows as a pale smear by frame 11.
+    - The lantern stays cyan through Lift and Stamp, so the Halo and the Flare don't show.
+  - **The cause isn't found.** It isn't width alone:
+    - At about 30 px a stud here, the Glow beam (1.5 studs at the keeper's scale) and the Halo (3.3 studs) should both show plainly.
+    - The suspects: the `Lantern` point on the live keeper (if it's missing, every row riding it is left unplaced), or the beams' facing.
+    - The next step is to read both in Studio at my next turn. Per the two-rounds rule, a round changes that cause, never the finish.
+  - **Also seen:**
+    - The copy's grey arena frames the keeper smaller than the old street take.
+    - The boss bar now rises over the keeper's head at about frame 11.
+  - **Status:**
+    - Implemented.
+    - Tested in play: FAILED on the main read.
+    - Visually reviewed by me only.
+    - Not director-accepted.
 ## AR10. Kirra, the courier (Modulo, then Faber)
 
 Research's request, 2026-11-14. Ground 1's next Voidkin and one of the three starters (`docs/roster.md`, her row: Common, Agility, Assassin, Zone 1). The four deliveries of AR1, measured against Rook, Pip and Lyric. Her install waits for "Content as data" (`docs/production-plan.md`); her art doesn't.
@@ -4959,6 +4981,22 @@ Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit firs
 
 
 **Research, 2026-11-26, 23:20: the star over a smaller mass goes ahead in the dev build** (Scintilla, keeping the technique). "As built" stays with the director as the other option under the two-techniques rule.
+
+- **The smaller mass, taken (Scintilla, 2026-11-27, 12:00; 1fb167b1):** the deck stage, Rook held at Hit3, slowed 0.1, by day and at night.
+  - **The sheets,** in `checkpoint/`: `small_mass_{day,night}_{strip,rungs}_vs_target.png`, and `small_mass_close_vs_target.png` (target, day and night, 240 px round the contact).
+  - **Thrown away:** the first two takes. Their particles ran at full speed, because my snippet's own copy of the rows wasn't slowed.
+  - **The arms now show over the mass** at rungs 2, 3 and 4, by day and at night, from frame 0. Rung 2 also reads by day; the earlier note that it didn't came from a full-speed take.
+  - **Still off the target:**
+    - the arms are long, thin needles where the target has a soft four-point star;
+    - at night, rung 4 reads pale yellow rather than gold.
+  - **At the player's camera:** the lead's rung 4 is seen on an elite 14 studs up the street at night, in TR69 B's fight take (`build/handoff/Shade/checkpoint/o2_fight_night_second.png`, at 7.8 s). It shows a gold ring and a burst round its chest that read.
+  - **Not done:** the minimum size on screen at 26 studs needs Faber's hook (code).
+  - **Status:**
+    - Implemented.
+    - Tested: my check PASSED for "the arms show over the mass" on the stage. NOT VERIFIED at the street camera.
+    - Visually reviewed by me only.
+    - Not director-accepted.
+    - For research's look.
 ## AR62. The screens' redo: their colours, their light and their art (research's audit, then Modulo's directions, then Faber, a screen at a time)
 
 **Why:** the director, 2026-11-24, 13:35, on a still of the Arc panel: "that lantern drawing is so bad and the rest is just a pain in the eye many hud design will need a big polish and change of colors"; and 13:37: "let not add those shiny bright effect that goes outside the ui buttons" (the register; `docs/ui.md`, rule 5, "Light stays in its piece"). The sixth time the colour has been called too much. It's a redo under the 11:11 word: blockouts beside the old, research's verdict in the game, the old kept.

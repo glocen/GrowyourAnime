@@ -2478,6 +2478,30 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
   - A `Ground` point can't carry it: Effects.Play anchors the rows at the action's start, and DasherLunge turns to its target until `Line`.
   - The fan and the footprint use footOf's own drop, -3 × Scale, so they're on the street.
 - **Next:** Faber's actions, then research's look in the hook's capture.
+- **O2 in a real fight (Scintilla, 2026-11-27, 12:25; Modulo's installed clip):**
+  - **The setup:** the Festival street at night, at the player's camera, at 55.6 fps. A level-30 elite Brawler 14 studs ahead fights the lead, and three Overheads land in 20 s.
+  - **The sheets,** in `build/handoff/Shade/checkpoint/`:
+    - `o2_fight_night_life.png`: the first countdown, every 4th capture frame, from the ring's first frame to the slam;
+    - `o2_fight_night_second.png`: the second one, at 15 a second;
+    - `o2_fight_night_size_grid.png`: the ring on a 50 px grid.
+  - **Against the must-fix:**
+    - **It reads:** the ring is the clearest line on the elite at night. The lanterns are blobs and the ring is a line.
+    - **It closes,** about 1.7× by eye, from 235 to 140 px; the data has 1.85×.
+      - In the first Overhead, the client showed the action about 0.37 s late. The elite was still in a hit reaction from the lead, so the countdown ran 0.83 s and started part-closed.
+      - The second Overhead ran almost the full 1.2 s (8.0 to 9.13 s).
+    - **It heats** amber to white over its last few frames.
+    - **It lands with the footprint's flash,** within about a frame.
+    - **No ticks.**
+    - The verdict between 1.7 and 1.8× needs a measure at the stage, not my eye.
+  - **For research's look:**
+    - **The body hides part of it.** The ring sits 1.3 studs in front of the mask, so with the elite turned toward the lead, its body hides the ring's near arc. It still reads as a ring.
+    - **Two warm rings in a row.** The lead's critical lands a gold ring and burst round the same chest just before a countdown starts (at 7.8 s in the second sheet), so two warm rings sit on one body back to back.
+    - **R4's chevron beside it** wasn't checked in this take.
+  - **Status:**
+    - Implemented (894b0fa5).
+    - Tested in play: my check PASSED on reads, closes, heats, lands and no ticks. NOT VERIFIED on the 1.8× start.
+    - Visually reviewed by me only.
+    - Not director-accepted.
 
 - **Research, 2026-11-26, 23:23, the gates after the director's word on tap to move** (`docs/decisions.md`): standing is the design point, ending on budget at 20 to 35%, and 25.8% passes.
   - A clean tapper ends at most 15 points above standing, measured with the tap block. It replaces the 50 to 70% dodging gate.

@@ -17,13 +17,13 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
   - Kirra's hair and map, and both portraits uploaded again (AR60, round 2).
 - **Now:** nothing running, no lock held. Next: AR68's full frames on research's brief and Faber's clean fight capture; Pip (AR63) once the director has seen Kirra's hair in the game.
 
-**Scintilla (effects).** 2026-11-27, 01:29. **AR7 C4's F1** (the lance down the pole, its pool and sparks) and **AR61's smaller mass** (the star's bloom cut to the target's) are built on research's go of 23:20 and taken (1fb167b1), not yet seen in play. **TR69 B:** all three tells are in the game (894b0fa5), and **GuardScreenBreak** is taken (f06b40f3) and anchored at the Guard's root (728b88e0).
-- **Next:** my Studio turn, handed back unused at 01:29 for lack of memory (526 MB available; AppXSvc holds 20 GB): F1 at the keeper's entrance, the star by day and at night, O2 in a real fight, then research's look. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack. Nothing running.
+**Scintilla (effects).** 2026-11-27, 12:31. Taken in Studio this turn, for research's look: **AR61's smaller mass** (the arms show over it, day and night), **AR7's F1** at the keeper's real entrance (misses the main read: a hairline where the target has a column; the cause isn't found yet), **TR69 B's O2** in a real fight at night (it reads and closes, amber to white, with the footprint's flash). Sheets and readings are in each entry.
+- **Next:** F1's cause, found at my next Studio turn (the lantern's point on the live keeper, or the beams' facing); until then, AR7's S5 waits on Faber's staging and AR58's final on QA's pack. Nothing running.
 
 **Sonus (sound).** 2026-11-27, 11:50 by the clock. **In the game, unheard:** my 22 picks (TR42's 11, TR64's 10 and TR57's plate; Faber's b75b6978). **The next take on each tab is ready**, so a cue the director names as bad is swapped in minutes (`build/scratch/Sonus/backups-2026-11-27.luau`; TR42, "The picks, unheard"). All 44 ids still fetch. No Studio turn held, nothing running.
 - **Next:** the director judges the 22 in play; then research's next cue list (AR62's page of motion and sound waits on the HUD overhaul's pick).
 
-**Turns.** Studio: one at a time while memory is short. Scintilla's turn (21:44 to 21:50; AR48's must-fix take) handed back to Faber: the main place in Edit, playtest stopped, nothing saved. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
+**Turns.** Studio: one at a time while memory is short. Scintilla's turn (11:49 to 12:30, 2026-11-27; the star, F1 and O2 taken) handed back to Faber: playtest stopped, nothing saved, and Studio closed, as Faber asked, so Modulo's export has the memory. Faber reopens the main place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

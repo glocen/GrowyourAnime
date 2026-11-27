@@ -22,7 +22,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Sonus (sound).** 2026-11-27, 23:49 by the clock. **The seven missing cues, picked unheard** (before launch; TR64, "The first 10 minutes' gaps"): 8 picks and their next takes, loaded and logged, with each hook's place, in `build/scratch/Sonus/gaps-picks-2026-11-27.luau` for Faber's install after the smoke. Nothing in src/ changed. My 22 picks are in the game, unheard (TR42). No Studio turn held, nothing running.
 - **Next:** the director's word in play on the 22 and the 8 (a miss takes its next); then research's next cue list.
 
-**Turns.** Studio: one at a time while memory is short. **Scintilla, from 23:35 (2026-11-27), on the Festival place, to about 00:15:** AR69's fall and burn looked at in play, nothing saved. **Then Sonus, on the main place, Edit only, about 45 minutes:** the seven cues' library search. Faber holds no Studio meanwhile. Blender: headless only while Studio is open, with 2 GB free. Timing tests: nobody.
+**Turns.** Studio: one at a time while memory is short. **Scintilla, from 00:04 (2026-11-28), on the Festival place, to about 00:35:** AR69 round 1's engine take, day and night, nothing saved. Then Faber. Blender: headless only while Studio is open, with 2 GB free. Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

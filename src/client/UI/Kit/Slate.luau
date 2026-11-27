@@ -574,8 +574,8 @@ function Slate.Fade(label: TextLabel, transparency: number)
 end
 
 function Slate.Reach(): number
-	local p = config().Press
-	return Slate.Pt(p.Ring + math.max(p.Line, p.TrackInk) / 2)
+	local c = config().Press.Cooldown
+	return Slate.Pt(c.Ring + math.max(c.Line, c.Ink) / 2)
 end
 
 function Slate.Repaint(root: Instance)

@@ -6017,9 +6017,14 @@ local cases = {
 			-- Only in a fight (TR3's verdict, fix 5): hidden out of one, in as the lead takes a target, out a moment after.
 			local config = HudConfig.Readout
 			local card = HudController.Parts().Lead :: GuiObject
-			local dx = (ring.Position.X.Offset - config.Size / 2) - card.Position.X.Offset
-			local dy = (ring.Position.Y.Offset - config.Size / 2) - (card.Position.Y.Offset + card.Size.Y.Offset)
-			t.Check("under the lead's card, at its left", math.abs(dx - config.Right) < 0.01 and math.abs(dy - config.Under) < 0.01, string.format("%.1f right, %.1f under", dx, dy))
+			-- AR62's B: its middle At from the card's foot-left, in page points (Config.Hud.Slate.Press), unless it stands
+			-- over the jump button.
+			local slate: any = HudConfig.Slate
+			local place = slate.Press.At / slate.Page
+			local dx = ring.Position.X.Offset - card.Position.X.Offset
+			local dy = ring.Position.Y.Offset - (card.Position.Y.Offset + card.Size.Y.Offset)
+			t.Check("under the lead's card, at its left", config.At == "Jump" or (math.abs(dx - place.X) < 1 and math.abs(dy - place.Y) < 1), -- whole points
+				string.format("%.1f right, %.1f under, want %.1f, %.1f", dx, dy, place.X, place.Y))
 			local function target(): boolean
 				local id = lead:GetAttribute("Target")
 				return type(id) == "string" and id ~= ""
@@ -6045,8 +6050,8 @@ local cases = {
 			local row = Voidkin.ById[def :: string]
 			local own = config.Icons[action.Id]
 			local want = if own and UIKit.Images[own] then own elseif row then `Class{row.Class}Glyph` else ""
-			local icon = ring:FindFirstChild("Icon")
-			t.Check("with its signature's icon, or its class's glyph while none is drawn", icon ~= nil and icon:GetAttribute("Kit") == want and ring:GetAttribute("Icon") == want, `{ring:GetAttribute("Icon")}, wanted {want}`)
+			local icon = ring:FindFirstChild("Art")
+			t.Check("with its signature's art, or its class's glyph while none is drawn", icon ~= nil and icon:GetAttribute("Kit") == want and ring:GetAttribute("Art") == want, `{ring:GetAttribute("Art")}, wanted {want}`)
 			t.Check("ready, the plate is white-hot", waitFor(t, action.Cooldown + 1, function(): boolean
 				return ring:GetAttribute("Share") == 1 and ring:GetAttribute("Hot") == 1
 			end), `{tostring(ring:GetAttribute("Share"))} full, {tostring(ring:GetAttribute("Hot"))} hot`)

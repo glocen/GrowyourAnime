@@ -1154,23 +1154,30 @@ return {
 		-- Cross under the card's top edge, clear of the name's marks by Gap. Hits while it shows add to it; it swells Pop at
 		-- each, rises Rise over Life and fades in its last third.
 		Taken = { Fill = { Color3.fromHex("#FFD6DA"), Color3.fromHex("#FF8A96"), Color3.fromHex("#FF3D57") }, Stroke = Color3.fromHex("#2A0610"), Line = 0.154, Size = 13, Cross = 0, Life = 1, Rise = 6, Pop = 1.25, Gap = 4 },
-		-- The signature's press: a gold disc 66 across in the Disc kind's rings, lit from below with a lit curve; its charge
-		-- a ring Ring out on a dark gold track (TrackInk under it), lit whole when ready. Charging it cools: the Cool family,
-		-- its icon faint (CoolIcon) and the seconds left on it (Count). Ready, a glow round it (Glow; its image waits for
-		-- the finish's images). At: its centre from the lead card's foot-left (the target's 47, 160 against the card's 12, 108).
+		-- The signature's press: a gold disc 66 across in the Disc kind's rings, lit from below with a lit curve (Curve: of
+		-- the disc, its width, its transparency). At: its centre from the lead card's foot-left (the target's 47, 160 against
+		-- the card's 12, 108). The director rejected the fist and its cooldown (2026-11-27, by 01:00: "a unique cool art for
+		-- skills or just the name"), so the press takes either next direction in two slots, nothing rebuilt:
+		--   Art, one image Size across on the disc: Images[the signature's id] (an rbxassetid: its own art, or its name as
+		--     lettering), else today's mark (Config.Hud.Readout.Icons), else the class's glyph.
+		--   Cooldown, one layer over the disc and its art: the charge a ring Ring out on a dark gold track (Ink under it),
+		--     lit by the share, whole when ready; while it charges a veil of the Cool family over the disc (Veil, its
+		--     transparency) and the seconds left on it (Count, its size).
 		Press = {
 			Size = 66,
 			At = Vector2.new(35, 52),
-			Icon = 38,
-			Ring = 4.2, -- the charge ring's line from the disc's edge
-			Line = 2.4, -- its width
-			Track = Color3.fromHex("#4A2E05"),
-			TrackInk = 3.8, -- the ink under the track, its width
-			TrackInkClear = 0.25,
-			RingClear = 0, -- the track's transparency
-			CoolIcon = 0.58, -- the icon's transparency while it charges
-			Count = 26, -- the seconds left, its size
-			Curve = { Across = 0.84, Line = 1.6, Clear = 0.6 }, -- the lit curve from below: of the disc, its width, transparency
+			Art = { Size = 38, Images = {} :: { [string]: string } },
+			Cooldown = {
+				Ring = 4.2, -- the ring's line from the disc's edge
+				Line = 2.4, -- its width
+				Track = Color3.fromHex("#4A2E05"),
+				TrackClear = 0, -- the track's transparency
+				Ink = 3.8, -- the ink under the track, its width
+				InkClear = 0.25,
+				Veil = 0.22,
+				Count = 26,
+			},
+			Curve = { Across = 0.84, Line = 1.6, Clear = 0.6 },
 		},
 		-- Auto: a slim steel press right of the press, 66 by 26, its corner 14% of its height; on, its rim gold (the On
 		-- family) and its turn gold; off, the steel rim and a grey turn; its word white either way. A 66 tap area round it.

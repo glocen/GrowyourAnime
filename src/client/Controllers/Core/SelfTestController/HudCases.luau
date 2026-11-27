@@ -1433,10 +1433,11 @@ function HudCases.Cases(given: Given): { any }
 		},
 	{
 		-- AR62's piece 1 (B in F2's finish): the signature's press alone, through the states it must show.
-		Name = "HUD: AR62, the press draws its states: the ring lit by the share, gold when ready, the flash, a glyph for a signature not drawn yet",
+		Name = "HUD: AR62, the press draws its states: its art in one slot, its cooldown one layer over it (the veil, the count, the ring lit by the share), gold when ready, the flash",
 		Run = function(t: any)
 			local config = HudConfig.Readout
 			local slate: any = HudConfig.Slate
+			local cool = slate.Press.Cooldown
 			local holder = Instance.new("Frame")
 			holder.Name = "SelfTestReadout"
 			holder.BackgroundTransparency = 1
@@ -1449,40 +1450,57 @@ function HudCases.Cases(given: Given): { any }
 				return { Share = share, Full = share >= 1, Left = left, Flash = flash or 0, Swell = 0, Seen = seen or 1, Action = action or drawn or "", Class = "Warrior" }
 			end
 			t.Near("the press is the tap's size", piece.Frame.Size.X.Offset, slate.Press.Size / slate.Page, 1) -- whole points
+			-- The director's next direction drops in (2026-11-27, by 01:00): the cooldown one layer over the disc and its art.
+			t.Check("its cooldown one layer over the disc and its art: the veil, the ring and the count in it", piece.Cooldown.ZIndex > piece.Art.ZIndex
+				and piece.Veil:IsDescendantOf(piece.Cooldown) and piece.Count:IsDescendantOf(piece.Cooldown) and piece.Halves[1]:IsDescendantOf(piece.Cooldown)
+				and not piece.Disc:IsDescendantOf(piece.Cooldown) and not piece.Art:IsDescendantOf(piece.Cooldown))
 			for _, share in { 0, 0.25, 0.5, 0.75, 0.99 } do
 				Readout.Step(piece, state(share))
 				t.Near(`at {share}: it says how full`, piece.Frame:GetAttribute("Share") :: number, share, 1e-6)
 				-- The ring clockwise from the top: the right half to 0.5, the left after (UI.Readout's halves).
 				t.Near(`at {share}: the right half lit to its share`, piece.Halves[1].Rotation, math.min(share, 0.5) * 360, 1e-6)
 				t.Near(`at {share}: the left half after it`, piece.Halves[2].Rotation, math.max(share, 0.5) * 360, 1e-3)
-				t.Check(`at {share}: charging, the cooling disc and its icon faint, no gold`, math.abs(piece.Icon.ImageTransparency - slate.Press.CoolIcon) < 0.01
-					and piece.Glass.BackgroundTransparency < 0.01 and piece.Gold.BackgroundTransparency > 0.99 and piece.ReadyIcon.ImageTransparency > 0.99,
-					string.format("icon %.2f, gold %.2f", piece.Icon.ImageTransparency, piece.Gold.BackgroundTransparency))
+				t.Check(`at {share}: charging, the veil over the disc and its art`, math.abs(piece.Glass.BackgroundTransparency - cool.Veil) < 0.01
+					and piece.Gold.BackgroundTransparency < 0.01 and piece.Art.ImageTransparency < 0.01,
+					string.format("veil %.2f, gold %.2f, art %.2f", piece.Glass.BackgroundTransparency, piece.Gold.BackgroundTransparency, piece.Art.ImageTransparency))
 			end
 			Readout.Step(piece, state(0.6, 0, 1, nil, 3.2))
 			t.Check("cooling, the seconds left on it, whole", piece.Count.Visible and piece.Count.Text == "4", `{piece.Count.Visible} {piece.Count.Text}`)
 			Readout.Step(piece, state(1))
-			t.Check("ready: the gold disc, its icon whole, the ring whole, no count", piece.Gold.BackgroundTransparency < 0.01 and piece.ReadyIcon.ImageTransparency < 0.01 and piece.Icon.ImageTransparency > 0.99
-				and piece.Halves[1].Rotation == 180 and piece.Halves[2].Rotation == 360 and not piece.Count.Visible)
+			t.Check("ready: the gold disc and its art whole, no veil, the ring whole, no count", piece.Gold.BackgroundTransparency < 0.01 and piece.Art.ImageTransparency < 0.01
+				and piece.Glass.BackgroundTransparency > 0.99 and piece.Halves[1].Rotation == 180 and piece.Halves[2].Rotation == 360 and not piece.Count.Visible)
 			t.Check("and its lit curve from below", piece.Curve.Transparency < 0.99, string.format("%.2f", piece.Curve.Transparency))
 			if drawn then
-				t.Check("the signature's own icon, charging and ready", piece.Icon:GetAttribute("Kit") == config.Icons[drawn] and piece.ReadyIcon:GetAttribute("Kit") == config.Icons[drawn] .. "Ready", tostring(piece.Icon:GetAttribute("Kit")))
+				local mark = config.Icons[drawn]
+				local want = if UIKit.Images[mark] then mark else "ClassWarriorGlyph"
+				t.Check("its art today's mark for its signature", piece.Art:GetAttribute("Kit") == want, tostring(piece.Art:GetAttribute("Kit")))
 			end
 			Readout.Step(piece, state(0, 1))
 			t.Check("as it fires it swells", piece.Scale.Scale > 1.1, string.format("%.2f", piece.Scale.Scale))
-			t.Check("and the gold is still whole", piece.Gold.BackgroundTransparency < 0.01)
+			t.Check("and the veil isn't in yet", piece.Glass.BackgroundTransparency > 0.99)
 			Readout.Step(piece, state(0.05, 0.5))
-			t.Near("half through the flash, the gold is half gone", piece.Gold.BackgroundTransparency, 0.5, 0.01)
+			t.Near("half through the flash, the veil is half in", piece.Glass.BackgroundTransparency, 1 - 0.5 * (1 - cool.Veil), 0.01)
 			Readout.Step(piece, state(0.5, 0, 0))
-			local hidden = piece.Icon.ImageTransparency > 0.99 and piece.Gold.BackgroundTransparency > 0.99 and piece.Glass.BackgroundTransparency > 0.99
+			local hidden = piece.Art.ImageTransparency > 0.99 and piece.Gold.BackgroundTransparency > 0.99 and piece.Glass.BackgroundTransparency > 0.99
 				and piece.Track.Transparency > 0.99 and piece.TrackInk.Transparency > 0.99 and piece.Curve.Transparency > 0.99
 			for _, line in piece.Lit do
 				hidden = hidden and line.Transparency > 0.99
 			end
 			t.Check("faded out, every layer is", hidden)
 			Readout.Step(piece, state(0.5, 0, 1, "SelfTestNoIcon"))
-			t.Check("a signature not drawn yet shows its class's glyph in white", piece.Icon:GetAttribute("Kit") == "ClassWarriorGlyph" and piece.Icon.ImageColor3 == slate.Ink, tostring(piece.Icon:GetAttribute("Kit")))
-			t.Check("and in ink on the gold", piece.ReadyIcon:GetAttribute("Kit") == "ClassWarriorGlyph" and piece.ReadyIcon.ImageColor3 == slate.AccentInk)
+			t.Check("a signature with no art yet shows its class's glyph in white", piece.Art:GetAttribute("Kit") == "ClassWarriorGlyph" and piece.Art.ImageColor3 == slate.Ink, tostring(piece.Art:GetAttribute("Kit")))
+			-- A signature's own art (its image, or its name as lettering) takes the slot from the token alone.
+			local images = slate.Press.Art.Images
+			images.SelfTestArt = "rbxassetid://1"
+			local ok, failed = pcall(function()
+				Readout.Step(piece, state(1, 0, 1, "SelfTestArt"))
+				t.Check("its own art, from its token, takes the slot", piece.Art.Image == "rbxassetid://1" and piece.Art:GetAttribute("Kit") == nil
+					and piece.Frame:GetAttribute("Art") == "rbxassetid://1" and piece.Art.ImageRectSize == Vector2.zero, piece.Art.Image)
+			end)
+			images.SelfTestArt = nil
+			if not ok then
+				error(failed, 0)
+			end
 			holder:Destroy()
 		end,
 	},

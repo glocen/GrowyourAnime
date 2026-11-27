@@ -45,7 +45,11 @@ def side_of(row, role):
 def summarize(rows):
     groups = OrderedDict()
     for row in rows:
-        key = (row["LeadDef"], row["RivalDef"], row["LeadLevel"], row["RivalLevel"], row.get("Off") or "")
+        off = row.get("Off") or ""
+        health = row.get("Health") or 1
+        if health != 1:  # TR73's narrowing: both sides' health multiplied
+            off = f"health x{health:g}" + (f", {off}" if off else "")
+        key = (row["LeadDef"], row["RivalDef"], row["LeadLevel"], row["RivalLevel"], off)
         groups.setdefault(key, []).append(row)
     lines = [
         "| Lead | Rival | Levels | Off | Fights | Lead wins | Rival wins | Time-outs | Seconds | Melee first swing | Melee first hit "

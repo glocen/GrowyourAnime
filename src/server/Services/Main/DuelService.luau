@@ -12,6 +12,8 @@
 -- nothing worn, no Tower lift. They start Start studs apart (Pip's combo starts within 14.5) on a flat pad far from any
 -- map, the avatar Behind studs behind its lead, still. A rival never skips and never flinches (FightService: trySkip is
 -- the lead's, Combat.Flinch.Kinds has no Rival), so each direction runs the rules its sides own: each result says which.
+-- `Health` (TR73's narrowing, research 2026-11-27) multiplies both sides' health, the kits and damage as they are: a
+-- longer fight, to see what lasts past the burst. Each result carries it.
 -- `Off` turns one rule off for the batch, on the shared Config.Combat, and back after: "Skip" (Skip.On), "Flinch" (the
 -- lead's flinch, Flinch.Kinds.Lead), "Push" (every hit's push: Weight.Lead and Weight.Rival at 0).
 -- Each run seeds the hits' rolls (FightService.Seed: Seed + its index). The AI's own choices aren't seeded.
@@ -71,6 +73,7 @@ type Result = {
 	Run: number,
 	Seed: number,
 	Off: string,
+	Health: number,
 	Winner: string, -- "Lead", "Rival" or "Time"
 	WinnerDef: string,
 	Seconds: number,
@@ -100,7 +103,7 @@ local function pad(): BasePart
 end
 
 -- A Voidkin's own block at `level`: no stars, nothing worn.
-local function bare(def: string, level: number): Stats.Block
+local function bare(def: string, level: number, health: number?): Stats.Block
 	local block = Stats.Resolve({
 		Id = "",
 		Def = def,
@@ -114,6 +117,7 @@ local function bare(def: string, level: number): Stats.Block
 		Locked = false,
 		Born = 0,
 	}, nil, nil)
+	block.Health *= health or 1
 	return block
 end
 
@@ -218,7 +222,7 @@ local function fight(player: Player, spec: any, index: number): Result
 	local lead = leadAs(player, spec.Lead, spec.LeadLevel)
 	assert(lead, "the lead didn't stand up as " .. spec.Lead)
 	lead.Reblock = function(block: Stats.Block): Stats.Block
-		return bare(block.Def, block.Level)
+		return bare(block.Def, block.Level, spec.Health)
 	end
 	FightService.SetBlock(lead, lead.Block)
 	FightService.SetHealthShare(lead, 1)
@@ -236,7 +240,7 @@ local function fight(player: Player, spec: any, index: number): Result
 	lead.Root.CFrame = leadAt
 	lead.Humanoid:MoveTo(leadAt.Position)
 	task.wait(SETTLE)
-	local rival = FightService.SpawnRival(player, bare(spec.Rival, spec.RivalLevel), rivalAt, "Duel")
+	local rival = FightService.SpawnRival(player, bare(spec.Rival, spec.RivalLevel, spec.Health), rivalAt, "Duel")
 	local sides: { [FightService.Fighter]: Side } = { [lead] = newSide(spec.Lead), [rival] = newSide(spec.Rival) }
 	local bins: { [FightService.Fighter]: { [number]: boolean } } = { [lead] = {}, [rival] = {} }
 	local ranges = { Near = 0, Mid = 0, Far = 0 }
@@ -331,6 +335,7 @@ local function fight(player: Player, spec: any, index: number): Result
 		Run = index,
 		Seed = seed,
 		Off = spec.Off or "",
+		Health = spec.Health or 1,
 		Winner = winner,
 		WinnerDef = if winner == "Lead" then spec.Lead elseif winner == "Rival" then spec.Rival else "",
 		Seconds = seconds,
@@ -426,12 +431,16 @@ local function duel(who: any, spec: any): any
 			Seed = one.Seed or 1,
 			Limit = one.Limit or 90,
 			Off = one.Off,
+			Health = one.Health,
 		}
 		if type(given.Lead) ~= "string" or Voidkin.ById[given.Lead] == nil or type(given.Rival) ~= "string" or Voidkin.ById[given.Rival] == nil then
 			return { Ok = false, Error = "BadArgs" }
 		end
 		if given.Off ~= nil and OFF[given.Off] == nil then
 			return { Ok = false, Error = "BadOff" }
+		end
+		if given.Health ~= nil and not (type(given.Health) == "number" and given.Health > 0) then
+			return { Ok = false, Error = "BadHealth" }
 		end
 		total += given.Runs
 		table.insert(specs, given)

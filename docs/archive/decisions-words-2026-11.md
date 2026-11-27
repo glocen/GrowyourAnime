@@ -440,6 +440,9 @@ The director's words from 2026-11-27, 14:30 on, newest on top, in the table's ow
 
 | Date | The words | They cover |
 |---|---|---|
+| 2026-11-27, by 23:42 | "sure" | a standing OK: research copies the images Gemini generates from research's prompts out of Gemini's own folder (`.gemini/antigravity-cli/brain/` in the director's profile) into the project; nothing else from that folder |
+| 2026-11-27, by 23:42 | "your call for 2" | opening level design (Locus) and environment art (Tessera) for the maps' overhaul: research decides |
+| 2026-11-27, by 23:42 | "(pasted) ChatGPT's review to Quaestor: the gap between engineering and player-facing quality" | research assesses it critically and answers with a prioritized evaluation: weaknesses, causes, fixes, costs, launch-critical against later |
 | 2026-11-27, 23:15 to 23:16 | "why cant you js do art do research on how to do gfx for roblox anime icon etc" | the game page's icon and thumbnails as Roblox GFX: Modulo studies the craft, then makes them (said to Modulo) |
 | 2026-11-27, 23:15 to 23:16 | "GFX art first (picked from Modulo's options)" | the order: the GFX before Pip's finish (AR63) |
 | 2026-11-27, 23:15 to 23:16 | "no not of kira and rook it bad" | the page's images: not Kirra's or Rook's takes |

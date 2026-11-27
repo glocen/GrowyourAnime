@@ -26,12 +26,21 @@ import style_frames as sf  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[2]
 W, H = 1920, 1080                     # Roblox's thumbnail, 16:9
+WORK = REPO / "build" / "scratch" / "modulo" / "ar70_thumbs"   # gitignored
 CARD = (400, 225)                     # about the store's card on a phone (research's brief)
-GRADE = dict(exposure=1.08, contrast=1.18, sat=1.28, bloom=0.35, cool=0.05, warm=0.04, vignette=0.32)
+# `violet` takes that much of the saturation out of the blue-violet hues (230 to 300 degrees): the director's "too
+# purple" (said six times by 2026-11-24), on a dusk street whose sky and paving are violet
+GRADE = dict(exposure=1.08, contrast=1.18, sat=1.28, bloom=0.35, cool=0.0, warm=0.06, vignette=0.32, violet=0.3)
 LOGO = dict(size=1.45, margin=(64, 58), grow=("Bangers", 60, 3, 0.86), bright_i=True)
 # the takes, once Faber's captures are in build/captures/ar70/: key -> capture, crop (cx, cy, w), corner, grade changes
-TAKES = {}
-TITLES = {"fight": "the fight", "shard": "the shard", "bays": "the bays at work"}
+TAKES = {
+    # shot 1 (Faber, 2026-11-27, 21:36): Pip's Lantern Burst held at its peak (1.1 s), on Lantern Row at dusk
+    "fight": dict(capture="build/captures/ar70/shot1_pip_lanternburst_peak_a_00.png", box=(0.5, 0.5, 1.0), corner="br"),
+    "fight_close": dict(capture="build/captures/ar70/shot1_pip_lanternburst_peak_b_00.png", box=(0.5, 0.5, 1.0),
+                        corner="br"),
+}
+TITLES = {"fight": "the fight, the street", "fight_close": "the fight, close", "shard": "the shard",
+          "bays": "the bays at work"}
 
 
 def read(path):
@@ -75,7 +84,13 @@ def grade(img, g):
     k = 2 ** (ll * (g["contrast"] - 1))
     lin = lin * k[..., None]
     lum = lum * k
-    lin = lum[..., None] + (lin - lum[..., None]) * g["sat"]
+    sat = np.full(lum.shape, g["sat"], np.float32)
+    if g.get("violet"):
+        r, gr, b = lin[..., 0], lin[..., 1], lin[..., 2]
+        hue = np.degrees(np.arctan2(np.sqrt(3) * (gr - b), 2 * r - gr - b)) % 360
+        band = np.clip(1 - np.abs(hue - 265) / 40, 0, 1)        # full at 265, none past 225 and 305
+        sat = sat * (1 - g["violet"] * band)
+    lin = lum[..., None] + (lin - lum[..., None]) * sat[..., None]
     # the bloom: what's brighter than 0.8 spreads
     hot = np.clip(lin - 0.8, 0, None)
     spread = sum(np.dstack([ndimage.gaussian_filter(hot[..., c], W * r) for c in range(3)]) * w
@@ -117,7 +132,7 @@ def compose(art_png, corner, lg, path):
 def make(out, key, capture, box, corner="br", changes=None):
     g = dict(GRADE, **(changes or {}))
     img = grade(crop(read(capture), *box), g)
-    art = out / "work" / f"art_{key}.png"
+    art = WORK / f"art_{key}.png"         # the graded frame without words, kept out of the handoff
     art.parent.mkdir(parents=True, exist_ok=True)
     hl.write_png(art, img)
     path = out / f"thumb_{key}.png"
@@ -144,7 +159,7 @@ def sheet(out, refs, beside_out):
              "king_legacy"]
     others = sorted(f.stem for f in refs.glob("*.png") if f.stem not in anime)
     order = [(refs / f"{n}.png", n.replace("_", " ").title()) for n in anime + others]
-    for i, k in zip((3, 9, 16), keys):
+    for i, k in zip((3, 9, 16, 22), keys):
         order.insert(i, (out / f"thumb_{k}.png", f"Grow your Anime: {TITLES[k]}"))
     beside_out.mkdir(parents=True, exist_ok=True)
     cols = 6
@@ -160,7 +175,8 @@ def sheet(out, refs, beside_out):
                         + "".join(tile(out / f"thumb_{k}.png", cw, ch, "Grow your Anime", fg) for k in keys) + "</div>"
                         for bg, fg in (("#111216", "#E8E2D6"), ("#F2F4F5", "#1B1D1F")))
     body = f'<h1>AR70, the thumbnails at half size, then at the card on the dark and light pages</h1><div class="grid">{big}</div>{rows_html}'
-    sf.shoot(pt.page(body, "#1A1C21"), out / "thumbs_sheet.png", 3 * 976 + 36, 70 + 590 + 2 * (ch + 80), scale=1)
+    big_rows = -(-len(keys) // 2)
+    sf.shoot(pt.page(body, "#1A1C21"), out / "thumbs_sheet.png", 2 * 976 + 36, 70 + big_rows * 590 + 2 * (ch + 80), scale=1)
     print(out / "thumbs_sheet.png")
 
 

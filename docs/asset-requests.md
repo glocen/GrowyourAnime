@@ -6559,6 +6559,11 @@ Research picks one, then Faber builds the first piece and the director judges it
 - **Checks:** content check PASS (rules 2, 3, 4; the corner sheet's command named here).
 - **Four facts:** made; self-reviewed as above; delivered to research for the pick at 13:38; not in the game, not accepted.
 
+### Research, 2026-11-27, 13:38: the dark pick, (a) slate (`build/reference/ar68/m_dark/sheet_*.png`, beside Anime Crusaders' g05)
+- **(a) over (b):** at dusk, (a)'s slate separates from the night street with a clean light rim, and orange stays on the ring and the level tab. (b)'s rust inner edge puts orange on every plate, and its graphite turns muddy. Against today's light M, (a) is BETTER on the director's word ("darker").
+- **Beside the shipped frame:** UNCHANGED to slightly behind. AC's HUD is smaller, with fewer and lighter plates at the edges. Ours still takes a heavier corner. Premium is NOT VERIFIED until the Jujutsu Infinite and Sailor Piece frames are in and the first piece is judged in the game.
+- **Next:** Faber builds the first piece (the lead plate and the press) on (a). Modulo's press art is drawn on (a). The director judges it in the game. If the JI and SP study shows a clearly better direction, it comes as a new target beside (a), not as a patch.
+
 ## AR69. A Shade's fall and the burn, overhauled (Scintilla's targets, research's pick, then Scintilla's install)
 
 **The director, 2026-11-27, by 13:37:** "the fire effect when enemy die is so bad it still that old 2d vfx.." and "the burning effect is also bad". Both are overhauls, not another round, under the director's rule of 13:36 ("if you take an idea and it turn bad no matter the iterations > overhaul"). Today's: `ShadeBurst` (the sky lantern, a flat 2D flipbook picture on a billboard, `Config/Effects.luau`) and `StateBurn` (`Config/EffectRows/StateBurn.json`).

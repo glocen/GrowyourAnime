@@ -67,8 +67,8 @@ local function shape(): Shape
 	local c = slate().Lead
 	local scale = Layers.Scale()
 	local inset = pt(c.Inset)
-	local nameSize = Text.Legible(pt(c.Name), scale)
-	local digits = Text.Legible(pt(c.Digits), scale)
+	local nameSize = Text.Legible(pt(c.Name), scale, Slate.Floor())
+	local digits = Text.Legible(pt(c.Digits), scale, Slate.Floor())
 	local barH = math.max(pt(c.Bar), digits + 1)
 	local barTop = math.max(pt(c.BarTop), pt(c.NameTop) + nameSize * LINE)
 	local threadTop = barTop + barH + pt(c.ThreadGap)
@@ -92,7 +92,7 @@ local function shape(): Shape
 		ThreadTop = threadTop,
 		ThreadH = threadH,
 		Digits = digits,
-		Level = Text.Legible(pt(slate().Badge.Text), scale),
+		Level = Text.Legible(pt(slate().Badge.Text), scale, Slate.Floor()),
 	}
 end
 

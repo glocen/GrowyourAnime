@@ -1150,8 +1150,11 @@ function HudCases.Cases(given: Given): { any }
 							t.Check(`{at.Name}: the band`, false)
 							continue
 						end
+						-- B (AR62) stood the eye beside the lead card's top, inside the band: where it reaches below, the plate
+						-- starts beside it; where it doesn't, the plate under the band can't meet it.
 						local foot = world.AbsolutePosition.Y + band * scale
-						t.Check(`{at.Name}: the eye reaches below the band`, eye.AbsolutePosition.Y + eye.AbsoluteSize.Y > foot, string.format("its foot %.1f, the band's %.1f", eye.AbsolutePosition.Y + eye.AbsoluteSize.Y, foot))
+						local below = eye.AbsolutePosition.Y + eye.AbsoluteSize.Y > foot
+						t.Row(`{at.Name}: the eye's foot past the band's`, nil, nil, eye.AbsolutePosition.Y + eye.AbsoluteSize.Y - foot, "px")
 						local inset = GuiService:GetGuiInset()
 						local x = eye.AbsolutePosition.X + eye.AbsoluteSize.X / 2 + inset.X
 						local y = world.AbsolutePosition.Y + band * scale * 0.5 + inset.Y
@@ -1163,7 +1166,13 @@ function HudCases.Cases(given: Given): { any }
 						end
 						local seen = camera:WorldToViewportPoint(point)
 						t.Check(`{at.Name}: the Breaker's point is over the eye`, math.abs(seen.X - x) < eye.AbsoluteSize.X / 2, string.format("%.1f against %.1f", seen.X, x))
-						t.Check(`{at.Name}: its plate shows`, plate.Visible and plate.Parent ~= nil)
+						if below then
+							t.Check(`{at.Name}: its plate shows`, plate.Visible and plate.Parent ~= nil)
+						else
+							-- With the eye in the band, the point over it can stand the plate over its own machine, where World
+							-- hides it (a plate over the landmark it names; this window, 2026-11-27). Its place is checked either way.
+							t.Check(`{at.Name}: its plate there, shown or hidden over its machine`, plate.Parent ~= nil, `shown {plate.Visible}`)
+						end
 						local p0, p1 = plate.AbsolutePosition, plate.AbsolutePosition + plate.AbsoluteSize
 						local function clear(frame: GuiObject): (boolean, string)
 							local a0, a1 = frame.AbsolutePosition, frame.AbsolutePosition + frame.AbsoluteSize
@@ -1175,7 +1184,11 @@ function HudCases.Cases(given: Given): { any }
 						local under = (p0.Y - world.AbsolutePosition.Y) / scale - band
 						t.Check(`{at.Name}: whole under the band`, under >= -1, string.format("its top %.1f px under the band", under))
 						local gap = (p0.X - (eye.AbsolutePosition.X + eye.AbsoluteSize.X)) / scale
-						t.Check(`{at.Name}: right beside the eye, not lost aside`, gap >= -0.5 and gap <= HudConfig.Numbers.Band + 2, string.format("%.1f px right of it", gap))
+						if below then
+							t.Check(`{at.Name}: right beside the eye, not lost aside`, gap >= -0.5 and gap <= HudConfig.Numbers.Band + 2, string.format("%.1f px right of it", gap))
+						else
+							t.Check(`{at.Name}: the eye in the band, the plate under it at its point, not pushed aside`, gap <= HudConfig.Numbers.Band + 2, string.format("%.1f px right of it", gap))
+						end
 					end
 					Layers.Box(nil)
 					Layers.Force(nil)

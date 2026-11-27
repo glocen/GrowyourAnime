@@ -7,6 +7,7 @@
 --   Text.new{ Name, Size, Font, ... }     a label
 --   Text.Face(root, face)                 every kit label under `root` in `face`, from now on
 --   Text.Wide(label, text)                how wide `text` draws in the label's own face and size, authored pixels
+--   Text.Floor(label, minimum?)           the label's own floor, rendered pixels on its TextSize, in place of the kit's
 --   Text.Epoch()                          goes up when a width asked of Text.Wide arrives: fit again
 
 local CollectionService = game:GetService("CollectionService")
@@ -37,20 +38,21 @@ local Text = {}
 
 local AUTHORED = "NL_TextSize" -- the attribute holding a label's authored size
 local ROLE = "NL_Font" -- and its role, one of Theme.Font's names, when it was made in one
+local FLOOR = "NL_TextFloor" -- a label's own floor in rendered pixels, when it has one (Text.Floor)
 
 -- Every label the kit made, by a tag: a weak table keyed by an instance loses it once no script holds its wrapper, though
 -- the label lives on, and a row's second line then missed a rescale (TR3's lint at the smallest phone).
 local TAG = "NL_Text"
 
--- The size a label authored at `authored` draws at, at `scale`.
-function Text.Legible(authored: number, scale: number): number
-	return math.max(authored, math.ceil(Theme.Text.Minimum / math.max(scale, 0.01)))
+-- The size a label authored at `authored` draws at, at `scale`: `minimum` rendered pixels at least, the kit's by default.
+function Text.Legible(authored: number, scale: number, minimum: number?): number
+	return math.max(authored, math.ceil((minimum or Theme.Text.Minimum) / math.max(scale, 0.01)))
 end
 
 local function apply(label: TextLabel, scale: number)
-	local authored = label:GetAttribute(AUTHORED)
+	local authored, floor = label:GetAttribute(AUTHORED), label:GetAttribute(FLOOR)
 	if type(authored) == "number" then
-		label.TextSize = Text.Legible(authored, scale)
+		label.TextSize = Text.Legible(authored, scale, if type(floor) == "number" then floor else nil)
 	end
 end
 
@@ -119,6 +121,13 @@ function Text.Resize(label: TextLabel, authored: number)
 			reface(label, face)
 		end
 	end
+end
+
+-- A label's own floor, rendered pixels on its TextSize, past the kit's: a face whose em is a share of its line holds its
+-- em at the kit's minimum (UI.Kit.Slate's words). Nil takes the kit's again.
+function Text.Floor(label: TextLabel, minimum: number?)
+	label:SetAttribute(FLOOR, minimum)
+	apply(label, Layers.Scale())
 end
 
 -- A label's authored size, for the lint: nil for a label the kit didn't make.

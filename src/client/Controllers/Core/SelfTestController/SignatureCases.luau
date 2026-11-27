@@ -85,9 +85,9 @@ function SignatureCases.Cases(given: Given): { any }
 					t.Check("its toggle turns Auto off", waitFor(t, 2, function(): boolean
 						return me:GetAttribute("SignatureAuto") == false
 					end))
-					t.Check("and says so, in the kit's sentence case", waitFor(t, 1, function(): boolean
-						return says(auto) == "Auto off"
-					end), says(auto))
+					t.Check("and says so: AUTO, off (AR62, B)", waitFor(t, 1, function(): boolean
+						return says(auto) == "AUTO" and auto:GetAttribute("On") == false
+					end), `{says(auto)}, on {tostring(auto:GetAttribute("On"))}`)
 					local pulses, last, fires = 0, 0, 0
 					local acted: { string } = {}
 					local pulseWatch = RunService.RenderStepped:Connect(function()
@@ -162,9 +162,9 @@ function SignatureCases.Cases(given: Given): { any }
 					t.Check("its toggle turns Auto back on", waitFor(t, 2, function(): boolean
 						return me:GetAttribute("SignatureAuto") ~= false
 					end))
-					t.Check("and says so", waitFor(t, 1, function(): boolean
-						return says(auto) == "Auto on"
-					end), says(auto))
+					t.Check("and says so: AUTO, on", waitFor(t, 1, function(): boolean
+						return says(auto) == "AUTO" and auto:GetAttribute("On") == true
+					end), `{says(auto)}, on {tostring(auto:GetAttribute("On"))}`)
 				end)
 				Net.Client.Invoke("Signature", "Auto", true)
 				t.Server("FightSpawn")

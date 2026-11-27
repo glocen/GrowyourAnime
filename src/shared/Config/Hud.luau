@@ -1104,7 +1104,8 @@ return {
 		},
 		-- The words: a display word's stroke a share of its size (the study: 18% of its cap, the cap 0.7 of the em), a number
 		-- on a bar's a little heavier (22%) in its bar's Outline, the level's on the gold in the gold's Line (20%).
-		Text = { Stroke = 0.126, OnBar = 0.154, Gold = 0.14 },
+		-- Em: the display face's em, of its TextSize (Fredoka One, measured), so a word's em holds docs/ui.md rule 1's 14 px.
+		Text = { Stroke = 0.126, OnBar = 0.154, Gold = 0.14, Em = 0.826 },
 		Face = "rbxasset://fonts/families/FredokaOne.json", -- names and numbers: one rounded heavy face from Roblox's own
 		Weight = "Regular", -- its weight (Fredoka One has the one)
 		Meta = "rbxasset://fonts/families/BuilderSans.json", -- meta words ("Lv 26"), Bold, flat
@@ -1146,7 +1147,8 @@ return {
 		},
 		-- The foe's card: 216 by 50, its top row (the skull, "Lv N" flat in the meta face, the name, the type's gem) and its
 		-- health 13 high. Poise's bar under it waits for poise (docs/design.md, "Poise": no fighter has one yet).
-		Foe = { Size = Vector2.new(216, 50), Inset = 8, RowTop = 6, Bar = 13, BarTop = 23.5, Digits = 10, Name = 13, Level = 10.5, Skull = 14.5, Gem = 12.5, Gap = 8 },
+		-- Wide: the most the card widens to hold its whole name, of Size.X (the floor lifts its words on a small phone).
+		Foe = { Size = Vector2.new(216, 50), Inset = 8, RowTop = 6, Bar = 13, BarTop = 23.5, Digits = 10, Name = 13, Level = 10.5, Skull = 14.5, Gem = 12.5, Gap = 8, Wide = 1.35 },
 		-- The level, white in the gold's stroke on a gold badge, 26 by 15 at At from the card's top left.
 		Badge = { Size = Vector2.new(26, 15), At = Vector2.new(-5, 39), Text = 10 },
 		-- The lead's damage taken, on its card over the health bar's draining end (research's must-fix 3), across the card's

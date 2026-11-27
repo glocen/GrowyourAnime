@@ -38,6 +38,7 @@ local CollectionService = game:GetService("CollectionService")
 local Shared = game:GetService("ReplicatedStorage").Shared
 local HudConfig = require(Shared.Config.Hud)
 local Text = require(script.Parent.Text)
+local Theme = require(script.Parent.Parent.Theme)
 
 local Slate = {}
 
@@ -516,6 +517,12 @@ local function paintWord(label: TextLabel)
 	end
 end
 
+-- A word's floor on its TextSize, rendered: its em, not its line, holds the kit's minimum (docs/ui.md rule 1, 14 px, as
+-- research and Modulo measure a word: its font size). A card lays its rows by Text.Legible at it.
+function Slate.Floor(): number
+	return Theme.Text.Minimum / (config().Text.Em or 1)
+end
+
 local function word(parent: Instance, name: string, size: number, colour: Color3, role: string): TextLabel
 	local label = Text.new({
 		Name = name,
@@ -525,6 +532,7 @@ local function word(parent: Instance, name: string, size: number, colour: Color3
 		Parent = parent,
 	})
 	label:SetAttribute("Role", role)
+	Text.Floor(label, Slate.Floor())
 	local stroke = Instance.new("UIStroke")
 	stroke.Name = "Stroke"
 	stroke.LineJoinMode = Enum.LineJoinMode.Round

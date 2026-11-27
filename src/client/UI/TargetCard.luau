@@ -47,9 +47,9 @@ type Shape = { W: number, H: number, In: number, RowY: number, Row: number, BarT
 local function shape(): Shape
 	local f = slate().Foe
 	local scale = Layers.Scale()
-	local name = Text.Legible(pt(f.Name), scale)
-	local level = Text.Legible(pt(f.Level), scale)
-	local digits = Text.Legible(pt(f.Digits), scale)
+	local name = Text.Legible(pt(f.Name), scale, Slate.Floor())
+	local level = Text.Legible(pt(f.Level), scale, Slate.Floor())
+	local digits = Text.Legible(pt(f.Digits), scale, Slate.Floor())
 	local row = math.max(name, level, pt(f.Skull)) * LINE
 	local barTop = math.max(pt(f.BarTop), pt(f.RowTop) + row)
 	local barH = math.max(pt(f.Bar), digits + 1)
@@ -77,14 +77,18 @@ local function place(card: Card)
 	local s = shape()
 	local f = slate().Foe
 	local frame = card.Frame
-	frame.Size = UDim2.fromOffset(s.W, s.H)
 	local skull = pt(f.Skull)
+	local levelX = s.In + skull + pt(5)
+	local x = levelX + (if card.Level.Text == "" then 0 else Text.Wide(card.Level, card.Level.Text) + pt(f.Gap))
+	-- Wide enough for its whole name where the floor lifts the words on a small phone, up to Wide of its own: centred,
+	-- it widens both ways.
+	local tail = s.W - nameEnd(s)
+	s.W = math.clamp(math.ceil(x + Text.Wide(card.Name, card.Name.Text) + 2 + tail), s.W, math.max(s.W, math.floor(pt(f.Size.X * (f.Wide or 1)))))
+	frame.Size = UDim2.fromOffset(s.W, s.H)
 	card.Skull.Position = UDim2.fromOffset(s.In, s.RowY - skull / 2)
 	card.Skull.Size = UDim2.fromOffset(skull, skull)
-	local levelX = s.In + skull + pt(5)
 	card.Level.Position = UDim2.fromOffset(levelX, s.RowY - s.Row / 2)
 	card.Level.Size = UDim2.fromOffset(Text.Wide(card.Level, card.Level.Text) + 2, s.Row)
-	local x = levelX + (if card.Level.Text == "" then 0 else Text.Wide(card.Level, card.Level.Text) + pt(f.Gap))
 	card.Name.Position = UDim2.fromOffset(x, s.RowY - s.Row / 2)
 	card.Name.Size = UDim2.fromOffset(math.max(0, nameEnd(s) - x), s.Row)
 	local gem = pt(f.Gem)

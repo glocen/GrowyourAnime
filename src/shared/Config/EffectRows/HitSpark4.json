@@ -38,7 +38,7 @@
         "Transparency": [
           [
             0,
-            0.5
+            0.62
           ],
           [
             1,
@@ -48,11 +48,11 @@
         "Color": {
           "Color3": [
             255,
-            207,
-            77
+            140,
+            36
           ]
         },
-        "LightEmission": 1,
+        "LightEmission": 0.5,
         "LightInfluence": 0,
         "ZOffset": 2.25
       },
@@ -76,7 +76,7 @@
           ]
         ]
       },
-      "Why": "the backlight: a soft flash under the star, at the contact, gone in a tenth of a second"
+      "Why": "the backlight: a soft gold flash under the star, at the contact, gone in a tenth of a second; half blended (LightEmission 0.5) so its gold holds at night's exposure instead of clipping white (AR61, 2026-11-27)"
     },
     "StarLine": {
       "Kind": "Emitter",
@@ -110,11 +110,11 @@
         "Color": {
           "Color3": [
             255,
-            255,
-            255
+            214,
+            150
           ]
         },
-        "LightEmission": 1,
+        "LightEmission": 0.45,
         "ZOffset": 2.55
       },
       "Emit": [
@@ -137,7 +137,7 @@
           ]
         ]
       },
-      "Why": "the hero: the star snapping open on the struck side and breaking outward"
+      "Why": "the hero: the star snapping open on the struck side and breaking outward; tinted deeper gold and under half blended (LightEmission 0.45), so at night's exposure it reads gold, not a pale yellow blob (AR61)"
     },
     "StarDark": {
       "Kind": "Emitter",
@@ -275,8 +275,8 @@
             {
               "Color3": [
                 255,
-                255,
-                255
+                236,
+                190
               ]
             }
           ],
@@ -285,8 +285,8 @@
             {
               "Color3": [
                 255,
-                207,
-                77
+                168,
+                46
               ]
             }
           ],
@@ -295,8 +295,8 @@
             {
               "Color3": [
                 255,
-                207,
-                77
+                168,
+                46
               ]
             }
           ]
@@ -393,8 +393,8 @@
         "Color": {
           "Color3": [
             255,
-            207,
-            77
+            168,
+            46
           ]
         },
         "LightEmission": 1,
@@ -519,8 +519,8 @@
             {
               "Color3": [
                 255,
-                207,
-                77
+                168,
+                46
               ]
             }
           ],
@@ -529,8 +529,8 @@
             {
               "Color3": [
                 255,
-                207,
-                77
+                168,
+                46
               ]
             }
           ],
@@ -538,9 +538,9 @@
             1,
             {
               "Color3": [
-                153,
-                124,
-                46
+                150,
+                92,
+                28
               ]
             }
           ]
@@ -576,8 +576,8 @@
       "Color": {
         "Color3": [
           255,
-          207,
-          77
+          160,
+          56
         ]
       },
       "Tracks": {

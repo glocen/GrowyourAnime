@@ -17,13 +17,13 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
   - Kirra's hair and map, and both portraits uploaded again (AR60, round 2).
 - **Now:** nothing running, no lock held. Next: AR68's full frames on research's brief and Faber's clean fight capture; Pip (AR63) once the director has seen Kirra's hair in the game.
 
-**Scintilla (effects).** 2026-11-27, 14:31. AR69's targets are in, for research's pick: two falls and two burns, with sheets in `build/handoff/ShadeFire/targets/` (AR69.md). No Studio turn held, nothing running.
-- **Next:** F1's round 2, reading the live rows at my next Studio turn; then rung 4's gold at night (AR61). AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.
+**Scintilla (effects).** 2026-11-27, 14:41. AR69: research picked fall A and burn A, with one must-fix each; the install is my piece now. Rung 4's gold at night now reads gold in play (AR61), for Faber's review. No Studio turn held, nothing running.
+- **Next:** AR69's install. F1's round 2 waits for a Festival turn; AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.
 
 **Sonus (sound).** 2026-11-27, 14:15 by the clock. **Music: stopped** on the director's word (14:15): the director handles the tracks, and none of my 12 unheard APM picks is offered (TR35). My 22 picks are in the game, unheard, each with its next take ready (TR42). No Studio turn held, nothing running.
 - **Next:** the director's word on the 22 in play (a bad one takes its next take); then research's next cue list.
 
-**Turns.** Studio: one at a time while memory is short. **Scintilla, from 14:34 (2026-11-27), on the main place,** from Faber after AR68 M (934553f8): F1's round 2 (reading the live rows) and rung 4's gold at night; Studio closes with nothing saved, then back to Faber for TR73. Blender: headless only while Studio is open, with 2 GB free. Timing tests: nobody.
+**Turns.** Studio: one at a time while memory is short. **Faber, from 14:41 (2026-11-27), on the main place,** for TR73: Scintilla's turn (14:34 to 14:41) took rung 4's gold at night (AR61), and its playtest is stopped with nothing saved; F1's round 2 waits for a Festival turn. Blender: headless only while Studio is open, with 2 GB free. Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

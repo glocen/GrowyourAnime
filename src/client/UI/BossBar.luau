@@ -80,7 +80,8 @@ export type Bar = {
 local BossBar = {}
 
 local TITLE = 16 -- the title's row, authored pixels
-local GEM, GAP = 20, 6 -- the type's gem; between the gem, the name and the level
+local GEM, GAP = 20, 6 -- the type's gem; between the gem and the name
+local LEVEL_GAP = 12 -- between the name and its level: GAP read as touching on a phone (research's nit on bug 3, 2026-11-27)
 local INSET = 9 -- the bar's ends in from the piece's, room for its caps
 local GLOW = 4 -- the glow past the bar, above and below
 local ART = UIKit.BossBar -- the frames as drawn: the bar's height they were drawn for, a cap's box, the crest's
@@ -315,13 +316,13 @@ local function fit(bar: Bar)
 	local named = measure(bar.Name) + 2
 	local levelled = if bar.Level.Text ~= "" then measure(bar.Level) + 2 else 0
 	local gem = if bar.Gem.Visible then GEM + GAP else 0
-	local total = gem + named + (if levelled > 0 then GAP + levelled else 0)
+	local total = gem + named + (if levelled > 0 then LEVEL_GAP + levelled else 0)
 	bar.NameRow.Size = UDim2.fromOffset(total, high)
 	bar.Gem.Position = UDim2.fromOffset(0, high / 2)
 	bar.Name.Size = UDim2.fromOffset(named, high)
 	bar.Name.Position = UDim2.fromOffset(gem, 0)
 	bar.Level.Size = UDim2.fromOffset(levelled, high)
-	bar.Level.Position = UDim2.fromOffset(gem + named + GAP, 1)
+	bar.Level.Position = UDim2.fromOffset(gem + named + LEVEL_GAP, 1)
 	bar.Fit = math.min(1, (bar.Width - 8) / math.max(total, 1))
 	-- Each rule's box: from its tip's outer point at the piece's edge to its taper's end, RULE_GAP short of the title; it
 	-- shows while the box holds its tip and its taper unstretched.

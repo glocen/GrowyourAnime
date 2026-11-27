@@ -83,6 +83,7 @@ type Line = {
 	End: Frame?,
 	Look: string, -- the end ring's: "Waiting", "Risen" or "Cleared"
 	Hard: boolean,
+	Compact: boolean, -- the pill under the keeper's bar (L.Pill): its name and an underline, nothing else
 }
 local line: Line? = nil
 
@@ -242,6 +243,69 @@ local function build(key: string, hard: boolean, stage: number, quota: number): 
 		End = nil,
 		Look = "",
 		Hard = hard,
+		Compact = false,
+	}
+end
+
+-- The pill's left: the screen's middle, under the keeper's bar (it holds the top middle).
+local P = L.Pill
+local function pillLeft(): number
+	local room = Layers.Get("Hud").AbsoluteSize / Layers.Scale()
+	return math.floor(room.X / 2 - P.Wide / 2 + 0.5)
+end
+
+-- The line while the keeper's bar is up (research's must-fix on launch bug 3, 2026-11-27): "Stretch 4/4" alone on a
+-- small plate under the bar's foot, the run's light a thin underline, so the keeper's body and the lead stay clear.
+local function pill(key: string, hard: boolean, stage: number): Line
+	local frame = Instance.new("Frame")
+	frame.Name = "StageRun"
+	frame.BackgroundTransparency = 1
+	frame.Size = UDim2.fromOffset(P.Wide, P.Tall)
+	frame.Position = UDim2.fromOffset(pillLeft(), lineDown)
+	StageScreen.Plate(frame, 0, 0, P.Wide, P.Tall, hard, P.Tall / 2, 1)
+	local stretches = #((Stages.Of(WorldConfig.Row.Ground) or {}) :: { any })
+	local name = Glass.Label(frame, "Name", `Stretch {stage}/{stretches}`, LOOK.Text.Title, SEAM.Text, 0, 0, P.Wide, P.Tall - P.Under, Enum.TextXAlignment.Center, true, 7)
+	local count = Glass.Label(frame, "Count", "", LOOK.Text.Small, SEAM.Text, 0, 0, 0, 0, Enum.TextXAlignment.Left, false, 7)
+	count.Visible = false
+	local words = Glass.Label(frame, "Words", "", LOOK.Text.Small, SEAM.Soft, 0, 0, 0, 0, Enum.TextXAlignment.Right, false, 7)
+	words.Visible = false
+	local span, y = P.Wide - 2 * P.Inset, P.Tall - P.Under - 3
+	local road = Instance.new("Frame")
+	road.Name = "Road"
+	road.BorderSizePixel = 0
+	road.BackgroundColor3 = SEAM.Channel :: Color3
+	road.Position = UDim2.fromOffset(P.Inset, y)
+	road.Size = UDim2.fromOffset(span, P.Under)
+	road.ZIndex = 7
+	road.Parent = frame
+	local lit = road:Clone()
+	lit.Name = "Lit"
+	lit.BackgroundColor3 = StageScreen.Accent(hard).Glow :: Color3
+	lit.ZIndex = 8
+	lit.Parent = frame
+	local flash = Glass.Bloom(frame, "Flash", P.Inset, y, 10, 6, WHITE, 0, 9)
+	flash.ImageTransparency = 1
+	local function run(share: number)
+		lit.Size = UDim2.fromOffset(math.floor(span * math.clamp(share, 0, 1) + 0.5), P.Under)
+	end
+	run(0)
+	frame.Parent = Layers.Get("Hud")
+	return {
+		Key = key,
+		Frame = frame,
+		Name = name,
+		Count = count,
+		Words = words,
+		Left = P.Inset,
+		Wide = P.Wide,
+		Tight = true,
+		Run = run,
+		Share = 0,
+		Flash = flash,
+		End = nil,
+		Look = "",
+		Hard = hard,
+		Compact = true,
 	}
 end
 
@@ -324,7 +388,7 @@ end
 
 local function showDare()
 	local made = line
-	if made == nil or made.Frame.Parent == nil then
+	if made == nil or made.Frame.Parent == nil or made.Compact then
 		return
 	end
 	local key = player:GetAttribute("StageDare")
@@ -371,8 +435,8 @@ local function showShard()
 		readyHad = count
 	end
 	local made = line
-	if made == nil or made.Frame.Parent == nil or not made.Frame.Visible then
-		return
+	if made == nil or made.Frame.Parent == nil or not made.Frame.Visible or made.Compact then
+		return -- the pill carries no tab: its notice waits for the line
 	end
 	local state = if view and not PlaceRole.Is("Main") then shardState(view) else nil
 	ShardTab.Show(made.Frame, made.Hard, state)
@@ -399,7 +463,8 @@ local function showLine()
 	local kills, quota, last = player:GetAttribute("StageKills"), player:GetAttribute("StageQuota"), player:GetAttribute("StageLast")
 	local q = if type(quota) == "number" then quota else 0
 	local k = if type(kills) == "number" then kills else 0
-	local key = `{run} {q}`
+	local compact = HudController.KeeperFoot() ~= nil
+	local key = `{run} {q}{if compact then " pill" else ""}`
 	local was = line
 	local fresh = was == nil or was.Key ~= key or was.Frame.Parent == nil
 	local now: Line
@@ -407,12 +472,19 @@ local function showLine()
 		if was then
 			was.Frame:Destroy()
 		end
-		now = build(key, difficulty == "Hard", stage or 1, q)
+		now = if compact then pill(key, difficulty == "Hard", stage or 1) else build(key, difficulty == "Hard", stage or 1, q)
 		line = now
 	else
 		now = was
 	end
 	now.Frame.Visible = true
+	if now.Compact then
+		-- The pill: its light alone, to the Shades fallen or whole once the last foe is up.
+		local share = if q <= 0 or k >= q then 1 else k / q
+		now.Share = share
+		now.Run(share)
+		return
+	end
 	now.Count.Text = if q <= 0 then "" elseif now.Tight then `{math.min(k, q)} / {q}` else `{math.min(k, q)} / {q} Shades`
 	-- Its last foe by name: the elite, or on the keeper's stretch the keeper (research's must-fix 4 on TR50).
 	local ground = WorldConfig.Row.Ground
@@ -572,6 +644,10 @@ function StageController.Start()
 	local function refit()
 		local made = line
 		if made and made.Frame.Parent then
+			if made.Compact then
+				made.Frame.Position = UDim2.fromOffset(pillLeft(), lineDown)
+				return
+			end
 			local wide, x0 = fit()
 			if wide ~= made.Wide then
 				made.Key = ""
@@ -593,6 +669,11 @@ function StageController.Start()
 	end)
 	local since, shardSince = 0, 0
 	RunService.Heartbeat:Connect(function(dt: number)
+		-- The keeper's bar came or went: the line becomes the pill under it, or the whole line again.
+		local shown = line
+		if shown and shown.Frame.Parent and shown.Frame.Visible and (HudController.KeeperFoot() ~= nil) ~= shown.Compact then
+			showLine()
+		end
 		local target = downTarget()
 		if lineDown ~= target then
 			lineDown = if math.abs(target - lineDown) < 0.5 then target else lineDown + (target - lineDown) * math.min(1, dt * L.Ease)
@@ -616,6 +697,12 @@ end
 
 function StageController.Down(): number
 	return lineDown
+end
+
+-- For tests: the run's line as it stands, or nil (research's must-fix on launch bug 3).
+function StageController.Line(): { Frame: Frame, Name: TextLabel, Compact: boolean }?
+	local now = line
+	return if now and now.Frame.Parent then { Frame = now.Frame, Name = now.Name, Compact = now.Compact } else nil
 end
 
 return StageController

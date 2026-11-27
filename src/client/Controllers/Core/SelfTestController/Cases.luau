@@ -5845,9 +5845,15 @@ local cases = {
 					stampedAt = workspace:GetServerTimeNow()
 				end
 			end)
+			local ranAlready = true -- a run's attributes this case set on this client (the pill's check, below), cleared after
 			local function restore()
 				watch:Disconnect()
 				t.Server("Tune", "Hud.Boss.Keeper", wasKeeper)
+				if not ranAlready then
+					for _, name in { "StageRun", "StageKills", "StageQuota", "StageLast" } do
+						Players.LocalPlayer:SetAttribute(name, nil)
+					end
+				end
 			end
 			t.Server("KeeperRest", 0) -- TR10: a win earlier in the run rests the keeper five minutes; this case tries it now.
 			local start = t.Server("KeeperTry")
@@ -5917,6 +5923,31 @@ local cases = {
 			t.Check("B: the run's line steps under the bar", HudController.KeeperFoot() == barFoot and waitFor(t, 1, function(): boolean
 				return StageController.Down() == barFoot + line.Gap
 			end), string.format("the line's top at %.1f, the bar's foot at %d", StageController.Down(), barFoot))
+			-- And it's a pill there (research's must-fix on bug 3, 2026-11-27): "Stretch 4/4" alone, centred under the bar,
+			-- no wider than it, the dare and the shard tab out, so the keeper's chest and up stay clear. A try outside a
+			-- run gets a run's attributes on this client alone, cleared after the bar leaves.
+			local me = Players.LocalPlayer
+			ranAlready = me:GetAttribute("StageRun") ~= nil
+			if not ranAlready then
+				me:SetAttribute("StageQuota", 10)
+				me:SetAttribute("StageKills", 10)
+				me:SetAttribute("StageLast", true)
+				me:SetAttribute("StageRun", "Normal 4")
+			end
+			local pillUp = waitFor(t, 1, function(): boolean
+				local now = StageController.Line()
+				return now ~= nil and now.Compact and now.Frame.Visible
+			end)
+			local shown = StageController.Line()
+			local said = if shown then shown.Name.Text else ""
+			t.Check("B: the run's line a pill under the bar, its stretch alone", pillUp and (ranAlready or string.match(said, "^Stretch 4/%d+$") ~= nil), said)
+			if shown then
+				local f, bar = shown.Frame, parts.Keeper
+				local off = (f.AbsolutePosition.X + f.AbsoluteSize.X / 2) - (bar.AbsolutePosition.X + bar.AbsoluteSize.X / 2)
+				t.Check("centred under the bar and narrower, no dare or shard tab", math.abs(off) <= 2 and f.AbsoluteSize.X < bar.AbsoluteSize.X
+					and f.AbsolutePosition.Y >= bar.AbsolutePosition.Y + bar.AbsoluteSize.Y and StageController.Dare() == nil and StageController.Shard() == nil,
+					string.format("%.1f off the bar's middle, %d wide", off, f.AbsoluteSize.X))
+			end
 			-- Its number on the bar, nothing of it below (research's verdict, 2026-11-14, fix 1).
 			local number = parts.Keeper:FindFirstChild("Number") :: GuiObject
 			local channel = parts.Keeper:FindFirstChild("Channel") :: GuiObject
@@ -5979,6 +6010,10 @@ local cases = {
 			t.Check("the run's line back at the top", HudController.KeeperFoot() == nil and waitFor(t, 1, function(): boolean
 				return StageController.Down() == HudConfig.Stages.Line.Down
 			end), string.format("the line's top at %.1f", StageController.Down()))
+			t.Check("and whole again, no longer the pill", waitFor(t, 1, function(): boolean
+				local now = StageController.Line()
+				return now ~= nil and not now.Compact
+			end))
 			restore()
 			t.Wait(math.max(0, keeper.WinPause + moved - (os.clock() - fellClock)))
 			t.Check("the try is over", Players.LocalPlayer:GetAttribute("Try") == nil)

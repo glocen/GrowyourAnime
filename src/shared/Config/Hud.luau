@@ -124,7 +124,11 @@ local stages = {
 	-- The run's line under Roblox's top bar, in the Hud layer.
 	-- It stands clear of the HUD's pieces named in Clear, Gap from them; between them it narrows, to Least at most: Hard's
 	-- longest head ("Hard Stage 3  10 / 10 Shades") still clears its words there.
-	Line = { Wide = 368, Least = 330, Down = 4, Tall = 44, Corner = 6, Edge = 1.2, Gap = 8, Ease = 12, Clear = { "Lead", "Credits", "Electricity" } }, -- Ease: per second, toward under the keeper's bar (Gap below its foot) and back
+	-- Pill: the line while the keeper's bar holds the top middle (research's must-fix on launch bug 3, 2026-11-27): "Stretch
+	-- 4/4" alone on a plate Wide by Tall, centred under the bar, the run's light an underline Under tall Inset in from its
+	-- ends; the dare and the shard tab step out.
+	Line = { Wide = 368, Least = 330, Down = 4, Tall = 44, Corner = 6, Edge = 1.2, Gap = 8, Ease = 12, Clear = { "Lead", "Credits", "Electricity" },
+		Pill = { Wide = 112, Tall = 26, Under = 2, Inset = 12 } }, -- Ease: per second, toward under the keeper's bar (Gap below its foot) and back
 	-- A stretch's dare under the line (AR53, build/handoff/UI/goals/goals.json, "dare"; TR54), from the line's glass's top
 	-- left. Open: its box from Left, Top to its foot by its rows (Foot, Corner), its words from the stretch's name's left at
 	-- Words.Y by its rows (capitals' top), the box Pad past the widest row and never past Limit short of the Electricity

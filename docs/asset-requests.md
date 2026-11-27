@@ -6282,3 +6282,24 @@ Research, 2026-11-27, 02:40.
   - R leaves the most world, and by day it leans on its scrim over the pale sky.
   - All four are clean vector stills. The material (a ceramic tooth, the glass's depth, the glints) and the motion aren't judged yet.
 - **Four facts:** made; self-reviewed; delivered to research for the brief and the pick; not accepted.
+
+### Research's brief for round 4: the four systems, finished for the pick (2026-11-27, 12:07)
+
+- **Felt (the specimens):** the four are one layout in four paints. The plates, the chips, the press and the foe tag sit in the same places with the same shapes, so a pick among them would be a palette pick, not a design pick. P and M read on both grounds; S's glass sinks into the dusk sky (the somber line); R leaves the most world. All four are flat vector stills, the damage numbers keep today's stroked face with a ghost double ("565" twice), and the foe tag weighs as much as the lead's plate.
+- **What round 4 makes, for each of P, S, M and R:**
+  1. **Its own composition, not only its paint.** The motif sets the shapes and the arrangement, inside the fixed places (the lead top left, the press at the left thumb, the centre 60% free):
+     - P, Porcelain Relay: the instrument: chamfered ceramic collars, the brass relay pin linking lead, eye and press.
+     - S, Smoked Prism: facets with break angles and one lit edge. Its glass is lifted to read light at dusk, or it fails the somber line.
+     - M, Match-Card: the broadcast match card: the lead and the foe as two sides of one band, mirrored.
+     - R, Resonance Sight: plateless: the cut-out bust on a feathered scrim, open brackets, no card.
+  2. **Composition first, beside a shipped frame** (the director, 02:16): each system's layout in grey, at 568, beside `build/reference/anime-crusaders-x/g05_full.png` and a Dragon Hunter arena frame at the same size, on one internal sheet. A composition that loses to them is redrawn before any surface.
+  3. **The finish as image art, not strokes** (the director, 02:04, "a sketch"): each system's material drawn as images (P's ceramic tooth and brass, S's glass depth and edge light, M's printed card, R's scrim and bracket glow), set over the game's capture.
+  4. **Every piece in the system's own type:** the damage numbers in its working face, no fat stroke, no ghost double; the critical stays gold `#FFD24C` (11-19).
+  5. **Hierarchy:** the foe tag is clearly lighter than the lead's plate: no portrait, a smaller face, its skull coloured by CR and the edge arrow kept (`docs/ui.md`).
+  6. **Health:** the ally's health is red in all four, each in the system's own red (the director's 11-13 word); the foe's is set apart by warmth and segments. No emerald variant: the director's word stands until the director changes it.
+  7. **The press:** the labelled art slot; it names the skill when it wakes and shows its share while filling; the five micro-states stay (B 23).
+  8. **Motion, one strip each:** the press waking, three frames, so a still that fails in motion shows it.
+- **The frame:** Faber's clean real fight capture at the phone's box, without today's HUD (3ff27e30's bridge). Until it comes, AR57's Lantern Row crops stand in, labelled as stand-ins.
+- **Deliver:** per system, the fight at 568 and 852, by day and at dusk; one sheet with today's game, the four and the shipped frame at the same size; the four motion strips. Home waits until after the pick.
+- **Cap:** 3 hours for all four (AGENTS.md, "A target before the hours").
+- **Then:** the content check, research's check against the three tests, Gemini's blind read, and the director's pick with no recommendation from research (03:35; "The pick", above).

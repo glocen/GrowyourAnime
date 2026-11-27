@@ -305,4 +305,4 @@ Written by `tools/fx/shade_tells.py`, from the kit's uploaded meshes and images 
 - [AR69](requests/AR69.md) · A Shade's fall and the burn, overhauled (Scintilla's targets, research's pick, then Scintilla's install) · 10 lines · see the piece
 - [AR70](requests/AR70.md) · The game page's icon and thumbnails (Modulo's targets, the director's pick) · 17 lines · see the piece
 - [AR71](requests/AR71.md) · The game page's words and the content rating (research's drafts, the director's hand) · 43 lines · see the piece
-- [AR72](requests/AR72.md) · The Guard's mask, one more paper detail (Modulo's targets, research's pick, then the build) · 22 lines · see the piece
+- [AR72](requests/AR72.md) · The Guard's mask, one more paper detail (Modulo's targets, research's pick, then the build) · 52 lines · see the piece

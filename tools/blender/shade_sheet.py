@@ -341,6 +341,72 @@ def mask(kind, m):
             *hung, *(pinned(eye(e, True), eye(e, False)) for e in (-1, 1)), *ties(m, 4.9, 0.9)]
 
 
+# The Guard's turned corner (AR72, research's pick of B, 2026-11-27, 20:03): its top corner on the Guard's right (+x)
+# folded over onto the face, the plainest of the masks given one more paper detail. It's made on the baked mask
+# (shade_model.py, after the bake), since the flap takes the tabs' paper, already in the atlas: no map changes.
+GUARD_FRONT = 0.9   # the Guard's face, in the model's y (its front is +y); the cuts' glowing slabs sit on it, to 0.92
+GUARD_BODY_Y = 0.5  # the mask's paper, rim, tabs and cuts are in front of this; its ties are behind
+GUARD_CORNER = ((0.52, 5.75), (1.0, 5.42), 172)  # the crease, from the top edge to the side (x, z), and the turn
+
+
+def fold(me, a, b, degrees, over=False):
+    """Folds a mask's paper along the line from a to b (x, z on the Guard's face), hinged on its front face: the part
+    on the side away from the mask's middle turns `degrees` about the line, toward us when positive. `over`: it's
+    turned right over and lies on the face. It's pressed paper-thin first (only its faces toward us kept, flattened
+    onto the face's plane), or its rim turns forward as a little pyramid and shades the face; once over, its faces are
+    turned to us again (a game mesh shows one side only) and take the tabs' paper."""
+    bm = bmesh.new()
+    bm.from_mesh(me)
+    pa, pb = Vector((a[0], GUARD_FRONT, a[1])), Vector((b[0], GUARD_FRONT, b[1]))
+    d = (pb - pa).normalized()
+    n = d.cross(Vector((0, 1, 0))).normalized()          # across the line, in the face's plane
+    if (Vector((0, GUARD_FRONT, 4.85)) - pa).dot(n) > 0:
+        n = -n                                           # pointing away from the middle
+    body = [f for f in bm.faces if f.calc_center_median().y > GUARD_BODY_Y]
+    geom = list({v for f in body for v in f.verts}) + list({e for f in body for e in f.edges}) + body
+    cut_ = bmesh.ops.bisect_plane(bm, geom=geom, plane_co=pa, plane_no=n)["geom_cut"]
+    bmesh.ops.split_edges(bm, edges=[e for e in cut_ if isinstance(e, bmesh.types.BMEdge)])
+    flap = [f for f in bm.faces if f.calc_center_median().y > GUARD_BODY_Y and (f.calc_center_median() - pa).dot(n) > 1e-4]
+    if over:
+        bmesh.ops.delete(bm, geom=[f for f in flap if f.normal.y < 0.2], context="FACES")
+        flap = [f for f in flap if f.is_valid]
+        for v in {v for f in flap for v in f.verts}:
+            v.co.y = GUARD_FRONT
+    far = {v for f in flap for v in f.verts}
+
+    def turn(deg):
+        return Matrix.Translation(pa) @ Matrix.Rotation(math.radians(deg), 4, d) @ Matrix.Translation(-pa)
+
+    sign = 1 if (turn(90) @ (pa + n)).y > GUARD_FRONT else -1   # positive turns toward us (+y)
+    m = turn(sign * degrees)
+    for v in far:
+        v.co = m @ v.co
+    bm.normal_update()
+    if over:
+        for v in far:
+            v.co.y += 0.03                               # clear of the face and the cuts' slabs (to 0.92)
+        bmesh.ops.reverse_faces(bm, faces=[f for f in flap if f.normal.y < 0])
+        bm.normal_update()
+        uv = bm.loops.layers.uv.active
+        tab = next(f for f in bm.faces if f.normal.y > 0.9 and (c := f.calc_center_median()).y > 0.8
+                   and abs(abs(c.x) - 1.0) < 0.05)
+        paper = sum((loop[uv].uv for loop in tab.loops), Vector((0, 0))) / len(tab.loops)
+        for f in flap:
+            for loop in f.loops:
+                loop[uv].uv = paper
+    bm.to_mesh(me)
+    bm.free()
+
+
+def turn_corner(me):
+    """The Guard's baked mask, its corner turned over (AR72). Once only: the mesh is marked."""
+    if me.get("turned_corner"):
+        raise SystemExit("turn_corner: this Guard mask's corner is already turned")
+    a, b, degrees = GUARD_CORNER
+    fold(me, a, b, degrees, over=True)
+    me["turned_corner"] = True
+
+
 def build(scene, kind, m):
     """The Shade, standing square, in one mask. Returns the joints: empties at R6's pivots, each piece on its part."""
     joints = {}

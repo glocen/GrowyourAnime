@@ -545,6 +545,7 @@ def main():
     print(f"settled: {ss.settle(whole)} points of the Brawler's cuts and teeth moved to today's shapes")
     paths = bake(whole, out)
     made = split(whole)
+    ss.turn_corner(made["MaskGuard"].data)  # AR72: the Guard's corner turned over, on the baked mask (it takes the tabs' paper)
     recipe = export(made, paths, out, density)
     tris = recipe["tris"]
     pts = [v.co for piece in R6 for v in made[piece].data.vertices]

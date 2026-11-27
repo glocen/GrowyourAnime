@@ -440,6 +440,14 @@ The director's words from 2026-11-27, 14:30 on, newest on top, in the table's ow
 
 | Date | The words | They cover |
 |---|---|---|
+| 2026-11-27, by 23:13 | "why it lantern row is still the old map it should be changed and overhauled and the lantern boss dont have a boss zone for him it plain same for the main map" | Lantern Row's map, the keeper's fight zone and the main map: each overhauled (the keeper today fights on a plain disc) |
+| 2026-11-27, by 23:13 | "we also need to improve the hud left" | the HUD's left cluster under the lead plate (the signature dial, AUTO, the eye): AR74 |
+| 2026-11-27, by 23:13 | "fuck  those old model why old rook and pip i thought we changed" | the game page images: no old Rook or Pip; asked why their redesigns aren't in the game |
+| 2026-11-27, by 23:13 | "why 2d fire in the icon still horrendous study or look. ask gemini and codex we have some free usage left" | the outlined 2D fire in the game page images; Gemini and Codex consulted |
+| 2026-11-27, by 23:13 | "faber can publish he is allowed" | Faber publishes the build to the main place; going public stays the director's |
+| 2026-11-27, by 23:13 | "ship at high quality ofc" | the launch: shipped at the bar, not rushed |
+| 2026-11-27, by 23:13 | "we need to ship the game" | the launch: shipping comes first |
+| 2026-11-27, by 23:13 | "250 duels for those low voidkin omgg that is way to much it will take to long finish it now" | TR73's poise measure: cut to 20 duels |
 | 2026-11-27, by 18:29 | "omfg horrible he cant make art he need to study and why kirra why not a robllx player or sum" | AR70 (b)'s three Kirra icons, rejected; Modulo studies before making art; the icon's subject: why not a Roblox player. A question, read as the director's wish for the subject |
 | 2026-11-27, by 17:10 | "Why rook stop making stuff then making it the center of the world" | the game page's icon and art (AR70): Rook isn't its centre. Whether it reaches past the game page isn't said |
 | 2026-11-27, by 17:10 | "Imfg what is this game page icon this is horrendous plain terribly bad do research ln tops game page browse roblox" | AR70's three icon targets (A, B, C), all rejected; research studies the top games' pages on Roblox |

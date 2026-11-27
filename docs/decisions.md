@@ -64,6 +64,7 @@ The decisions in force: what binds the work today, grouped, one line each. A sta
 - Festival parties wait until other work is done. Use reserved servers, carry saved health and progress, and return players home whole on transfer failure. L132,130 [2026-11-18, about 22:10] [2026-11-18, about 22:20]
 - Tower uses one Voidkin in a temporary circular room away from the map. Carry health, reset on death and seed weekly after floor five. Keep the entrance and record marker by the plot. L119,299,300,386 [2026-11-19, by 11:12] [2026-11-16, 16:50] [2026-11-16, 13:41] [2026-11-11]
 - No Tower landing or raised stand. Polish the cloud sea, add Leave with confirmation and revise two chat lines. L95,54 [2026-11-23, by 21:53] [2026-11-26, about 13:25 to 13:28]
+- Overhaul Lantern Row's map, give the keeper a fight zone of his own, and overhaul the main map ("it should be changed and overhauled"). The order and the launch date are the director's answer. Log, "Words after the split" [2026-11-27, by 23:13]
 - Cycle day, dusk and night. Festival dressing stays in Lantern Row. Give the Strip a void look and remove mist near the base. L302,301,298 [2026-11-16, night] [2026-11-16, 16:50]
 - Plots are 128 studs square. Launch caps base at 3, with 2/3/4 bays and machine caps of 2/6/15. Items are needed past 3. L262,333,133,84 [2026-11-17, by 11:40] [2026-11-15, night] [2026-11-18, about 22:10] [2026-11-24, 10:50]
 - Base levels change its look and capacity, with 20 as the longer-term top. Machine levels raise output. L207,335 [2026-11-12] [2026-11-15, night]

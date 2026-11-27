@@ -1,26 +1,28 @@
 {
- "Why": "Kirra's install (AR10): her meshes and maps as published under the group on 2026-11-15 (docs/asset-log.md). No glow (the recipe: nothing of hers is lit), and every piece casts its shadow, the scarf included: it's her one streak and reads on the ground.",
+ "Why": "Kirra's redesigned make (AR60, round 2's hair): her 19 meshes and two maps, published under the group on 2026-11-27 (docs/asset-log.md). No glow (nothing of hers is lit), and every piece casts its shadow, the scarf included: it's her one streak and reads on the ground. The first make's ids are in git before this commit.",
  "Meshes": {
-  "Kirra_Torso": 79808039000880,
-  "Kirra_Head": 91913421637517,
-  "Kirra_RightArm": 120891925448825,
-  "Kirra_LeftArm": 137144628073210,
-  "Kirra_RightLeg": 108961301557600,
-  "Kirra_LeftLeg": 93495769202299,
-  "Kirra_BladeR": 74561838613327,
-  "Kirra_BladeL": 73110345949043,
-  "Kirra_Scarf1": 107442783268865,
-  "Kirra_Scarf2": 139790454878412,
-  "Kirra_Scarf3": 81036559377551,
-  "Kirra_Scarf4": 117145353299955,
-  "Kirra_Scarf5": 99201374132675,
-  "Kirra_Scarf6": 88312892006988,
-  "Kirra_Scarf7": 78945785392319,
-  "Kirra_Scarf8": 85838483049628
+  "Kirra_Torso": 119323710640935,
+  "Kirra_Head": 114182605070027,
+  "Kirra_Hair": 83465668007539,
+  "Kirra_Tie": 130300587601919,
+  "Kirra_RightArm": 112484732580622,
+  "Kirra_LeftArm": 76612128687459,
+  "Kirra_RightLeg": 139549027264436,
+  "Kirra_LeftLeg": 75718377742437,
+  "Kirra_Scarf": 78595882092286,
+  "Kirra_BladeR": 115149301206417,
+  "Kirra_BladeL": 113305989755677,
+  "Kirra_Scarf1": 98814358505962,
+  "Kirra_Scarf2": 102568179512944,
+  "Kirra_Scarf3": 119736235128888,
+  "Kirra_Scarf4": 134329223381300,
+  "Kirra_Scarf5": 72416898811772,
+  "Kirra_Scarf6": 126700933201390,
+  "Kirra_Scarf7": 128943968929144,
+  "Kirra_Scarf8": 104024636605763
  },
  "Maps": {
-  "Color": "rbxassetid://72136512061563",
-  "Roughness": "rbxassetid://73329145196625",
-  "Metalness": "rbxassetid://101655537072816"
+  "Color": "rbxassetid://99608994120654",
+  "Roughness": "rbxassetid://133007182803709"
  }
 }

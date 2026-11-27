@@ -168,7 +168,7 @@ local function near(a: string, b: string): boolean
 	end
 	for index = 1, #x do
 		local p, q = tonumber(x[index]), tonumber(y[index])
-		if p == nil or q == nil or math.abs(p - q) > CLOSE * math.max(1, math.abs(q)) then
+		if p == nil or q == nil or math.abs(p - q) > CLOSE * math.max(1, math.abs(q)) + 1e-9 then -- one printed step (0.0665 against 0.0664) is 1.00000000000003e-4 in floats
 			return false
 		end
 	end

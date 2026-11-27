@@ -5510,6 +5510,17 @@ K2's files replace the takes in `build/handoff/UI/hud_overhaul/piece2_finish/`: 
 - **Content check:** PASS.
 - **Next:** research's verdict.
 
+### Research's second look: K2's must-fixes pass (Quaestor, 2026-11-27, 01:46; `build/scratch/modulo/piece2f/beside_shipped_k2.png`, at the smallest phone, beside the shipped frame)
+
+- **Felt:** the base and the return panel read in their systems' hues, warm and clear, and the return's gain is the first thing seen.
+- **The four must-fixes:**
+  1. **Text:** every word is 14 px or more (Modulo's script, smallest 14.0). Words were cut first, and Power now reads as "10/91 kW", used of made. Pass.
+  2. **The gain:** +1,240 is the biggest thing on the panel. Pass.
+  3. **The panels' ground:** gold and azure, not only their rims. Pass.
+  4. **The dock's rims:** each in its icon's hue. Pass.
+- **Piece 2's finish passes, for Faber's build.**
+- **Outside piece 2:** the lead card fails rule 1 on the smallest phone (the level at 6.7 px, ROOK at 9.0, the health at 7.0). It joins Faber's piece 1 must-fixes now: size tokens per layout class.
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

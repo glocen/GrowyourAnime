@@ -505,11 +505,17 @@ local function pointBefore(history: { { number } }, t: number): Vector3?
 	return Vector3.new(first[2], first[3], first[4])
 end
 
--- A row as it plays: a Tint row given a tint takes it for its Color.
+-- A row as it plays: a Tint row given a tint takes it for its Color, and an Emitter row for its Emitter.Color, one flat
+-- ColorSequence (AR69 round 2: the fall's ring, a light multiplier on fx_halo_Flame, takes Hard's Burst).
 local function tinted(row: EffectsConfig.Row, given: Options): EffectsConfig.Row
 	if row.Tint and given.Tint then
 		local copy = table.clone(row)
 		copy.Color = given.Tint
+		if row.Kind == "Emitter" then
+			local emitter = table.clone(row.Emitter or {})
+			emitter.Color = given.Tint -- convert makes it ColorSequence.new(tint), greyed on a grey block-in
+			copy.Emitter = emitter
+		end
 		return copy
 	end
 	return row

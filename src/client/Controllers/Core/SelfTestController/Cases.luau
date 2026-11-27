@@ -583,6 +583,62 @@ local cases = {
 		end,
 	},
 	{
+		Name = "Effects: an Emitter row with Tint takes a given tint for its particles' colour, else its own",
+		Stay = true,
+		Run = function(t: any)
+			-- AR69 round 2 (Scintilla): the fall's ring is one flat particle now, so its Tint (Hard's Burst) reaches the
+			-- emitter's Color as one flat ColorSequence. A written Emitter row copied into a scratch effect.
+			local source: any = nil
+			for _, effect in EffectsConfig.Rows :: any do
+				for _, row in effect.Rows do
+					if row.Kind == "Emitter" and not effect.Grey then
+						source = row
+						break
+					end
+				end
+				if source then
+					break
+				end
+			end
+			t.Check("a written Emitter row to copy", source ~= nil)
+			if source == nil then
+				return
+			end
+			local row = table.clone(source)
+			row.Tint, row.On, row.Body, row.From, row.Like = true, nil, nil, nil, nil
+			local NAME = "NL_TestEmitterTint"
+			local all = EffectsConfig.Rows :: any
+			all[NAME] = { Area = 1, Grey = false, Rows = { Ring = row } }
+			local root = t.Character():FindFirstChild("HumanoidRootPart") :: BasePart
+			local foot = root.Position + root.CFrame.LookVector * 20 - Vector3.new(0, 3, 0)
+			local anchor = CFrame.lookAt(foot, foot + root.CFrame.LookVector)
+			local tint = Color3.fromRGB(255, 170, 140)
+			local ok, problem = pcall(function()
+				local function colour(options: any): ColorSequence?
+					local player = Rows.Play(NAME, anchor, 1, options)
+					local emitter: ParticleEmitter? = nil
+					for _, made in player.Parts("Ring") do
+						emitter = (made:FindFirstChildOfClass("ParticleEmitter") :: ParticleEmitter?) or emitter
+					end
+					local got = if emitter then emitter.Color else nil
+					player.Destroy()
+					return got
+				end
+				local given = colour({ Tint = tint })
+				local plain = colour(nil)
+				local own = if source.Emitter and source.Emitter.Color ~= nil then source.Emitter.Color else nil
+				t.Check("given a tint: one flat sequence of it", given ~= nil and given == ColorSequence.new(tint), tostring(given))
+				t.Check("none given: its own Color, untouched", plain ~= nil and plain ~= ColorSequence.new(tint)
+					and (own == nil or typeof(own) ~= "Color3" or plain == ColorSequence.new(own)), tostring(plain))
+				t.Check("the written row left as it was", source.Tint ~= true and (source.Emitter == nil or source.Emitter.Color ~= tint))
+			end)
+			all[NAME] = nil
+			if not ok then
+				error(problem, 0)
+			end
+		end,
+	},
+	{
 		Name = "Effects: a Ground row stands on the effect's foot, lifted by its At",
 		Stay = true,
 		Run = function(t: any)
@@ -1530,7 +1586,9 @@ local cases = {
 					t.Check("drawn so: its housing see-through, its light nearly whole", housing ~= nil and light ~= nil and math.abs(housing.BackgroundTransparency - Hud.Faded(housingWhole, see.Target)) < 0.02 and math.abs(light.BackgroundTransparency - Hud.Faded(lightWhole, see.Bar)) < 0.02, string.format("housing %.2f, light %.2f", if housing then housing.BackgroundTransparency else -1, if light then light.BackgroundTransparency else -1))
 					hold(hud.Credits.Parent :: GuiObject, 0.7)
 					now = HudController.SeeThrough()
-					t.Check("under the Credits pill: it fades to a quarter", math.abs((now.Credits or 1) - see.Economy) < 0.02, string.format("at %.2f", now.Credits or 1))
+					-- In a fight the pills are hidden (AR62 B, 85c11e1b): hidden, there's nothing to fade
+					local pill = hud.Credits.Parent :: GuiObject
+					t.Check("under the Credits pill: it fades to a quarter, or it's hidden in the fight", not pill.Visible or math.abs((now.Credits or 1) - see.Economy) < 0.02, string.format("at %.2f, %s", now.Credits or 1, if pill.Visible then "shown" else "hidden"))
 					hold(nil, see.Hold + 0.7)
 					now = HudController.SeeThrough()
 					t.Check("out of view, every piece whole again", now.Target == 1 and now.TargetBar == 1 and now.Credits == 1 and now.Electricity == 1, string.format("target %.2f, bar %.2f, credits %.2f, electricity %.2f", now.Target or -1, now.TargetBar or -1, now.Credits or -1, now.Electricity or -1))

@@ -5,7 +5,7 @@ Run it from the game's folder:
     py tools/checks/luau_check.py                 new findings only; exit code 1 when there are any
     py tools/checks/luau_check.py src/server      the same, reporting only files under these paths
     py tools/checks/luau_check.py --all           every finding, known ones too
-    py tools/checks/luau_check.py --freeze        write today's findings as the known list
+    py tools/checks/luau_check.py --freeze        write today's findings as the known list; it only shrinks
 
 What it does: `rojo sourcemap`, so a require through the game tree resolves; Roblox's type definitions, fetched once for
 each luau-lsp version into the work folder; then `luau-lsp analyze` over the whole source folder, every time, because an
@@ -201,7 +201,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="Type-check a Rojo project's Luau without Studio, and report only what's new.")
     ap.add_argument("paths", nargs="*", help="report only findings in these files or folders (the whole source is still checked)")
     ap.add_argument("--all", action="store_true", help="report every finding, known ones too")
-    ap.add_argument("--freeze", action="store_true", help="write today's findings as the known list")
+    ap.add_argument("--freeze", action="store_true", help="write today's findings as the known list; refused while one is new")
     ap.add_argument("--known", default="tools/checks/luau-known.txt", help="the known list, kept in the game's repo")
     ap.add_argument("--project", default="default.project.json")
     ap.add_argument("--source", default="src")
@@ -228,8 +228,20 @@ def main() -> int:
         print(f"luau check: it couldn't run. {e}")
         return 2
     if args.freeze:
-        write_known(root / args.known, findings)
-        print(f"luau check: {len(findings)} findings frozen into {args.known} ({seconds:.1f} s)")
+        # Only shrinks (Turing, docs/turing.md): a fixed finding leaves the list, a new one never enters it. A first
+        # freeze, with no list yet, takes everything.
+        path = root / args.known
+        known = read_known(path)
+        if path.is_file():
+            lines, new, _ = split_new(findings, known)
+            if new:
+                print(f"luau check: not frozen. {new} new findings would enter {args.known}, and the list only "
+                      f"shrinks: fix them first ({seconds:.1f} s)")
+                print("\n".join(lines))
+                return 1
+        write_known(path, findings)
+        print(f"luau check: {len(findings)} findings frozen into {args.known}, from {sum(known.values())} "
+              f"({seconds:.1f} s)")
         return 0
     only = [p.replace("\\", "/").rstrip("/") for p in args.paths]
     seen = [f for f in findings if under(f.path, only)]

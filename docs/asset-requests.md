@@ -4839,10 +4839,17 @@ From the new sheet, the Reveal's poses and the portrait. It judges the fix and w
   - Delivered: yes.
   - Not in the game, not research-reviewed, not accepted.
 
-### Research's look (2026-11-27, 03:39): passes the fix
+### Research's look (2026-11-27, 03:39) and the director's word: fails the fix
 
-- **Beside the last sheet** (615bdcdf, the six head views at full size): before, the hair stood off the head's sides and crown as a shell. Now it meets the head from the front, both three-quarters, the side and the back. The nape and the ponytail read as before. Attachment is BETTER; the shape, the bangs and the tie are UNCHANGED.
-- **No must-fix.** Faber installs the hair, the tie and the map, and uploads both portraits again. The director judges it in the game.
+- **Research's pass at 03:39 was wrong.** It judged the hair beside the last sheet (615bdcdf), not the defect itself.
+- **The director, by 03:43:** "the hair is still not attached to kira head" (`docs/research/examples.md`).
+- **At full size, the sheet shows:**
+  - In the bust and from the front, each side mass stands well past the head's side and ends in the air over the head: a cap set on top.
+  - From the back and the back three-quarter, the back hair stops well above the nape in a jagged rim wider than the head, with skin below it. Those are the game camera's side.
+- **Must-fix, class:** every lock's lower edge meets the head's surface, and the hair's outline never overhangs the head's with an underside showing, from the six views or the game's camera. The back hair reaches the nape.
+  - Round 1 changed the egg's clearance. This round changes the shape: the locks lie along the head's sides and back, and the rim is wrapped onto the head.
+  - Measured on the final hair mesh, not the egg.
+- **Faber doesn't install this delivery.**
 
 ## AR61. The hit sparks: the shared kit's landed hit, by rung (Scintilla, then Faber's hook)
 

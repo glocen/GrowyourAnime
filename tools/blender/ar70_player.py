@@ -10,8 +10,8 @@ The study's DESIGN, as made here:
 - the player: a generic R6-shaped block player of our own (no real avatar, no catalog item), a hoodie, jeans and
   sneakers, swept hair of our own and a drawn face in three marks. The read is the pose;
 - the big thing: the shard's light, and a Voidkin rising out of it as a figure of that light, two to three times the
-  player and the brightest thing in the frame. The figure is Lyric's (build/handoff/Lyric), read by its outline: her
-  bob, her mic-staff, her two speakers; her paint isn't shown;
+  player and the brightest thing in the frame. The figure is Lyric's (build/handoff/Lyric): her bob, her mic-staff,
+  her two speakers, and her own paint read as light, so her face, hair and coat's lines show inside the glow;
 - the light: the shard's burst as the key on the player, the low sun behind as a warm rim, a cool fill;
 - a low, wide camera, the shard near the lens, the background soft.
 
@@ -79,51 +79,81 @@ def glow(name, colour, strength):
     return m
 
 
-def spirit(name, colour, strength, fade, hot_colour=GOLD_HOT):
-    """A figure of light: `colour` where it faces us, white-hot toward its outline, nearly opaque so its outline reads
-    at 150 px; clear below fade[0] up the figure (from the root its Texture Coordinate is pointed at), whole above
-    fade[1], so it rises out of the light."""
+def spirit(name, colour, strength, fade, hot_colour=GOLD_HOT, paint=None, deep=None):
+    """A figure of light, nearly opaque so its outline reads at 150 px; clear below fade[0] up the figure (from the
+    root its Texture Coordinate is pointed at), whole above fade[1], so it rises out of the light.
+
+    Without `paint`, it's `colour` facing us and white-hot toward its outline. With `paint` (a fighter's colour map on
+    its UVs), the paint is read as light: pale paint (hair, skin, trims, stripes) burns toward `hot_colour`, dark paint
+    (eyes, headphones, outlines) sinks to `deep`, the middle tones are `colour`; so its face, hair and outfit lines
+    read inside the glow, and the outline still burns a little hotter."""
     m = bpy.data.materials.new(name)
     m.use_nodes = True
     nodes, links = m.node_tree.nodes, m.node_tree.links
     nodes.clear()
-    out = nodes.new("ShaderNodeOutputMaterial")
-    em = nodes.new("ShaderNodeEmission")
-    clear = nodes.new("ShaderNodeBsdfTransparent")
-    lw = nodes.new("ShaderNodeLayerWeight")
+
+    def node(kind, **values):
+        n = nodes.new(kind)
+        for key, v in values.items():
+            setattr(n, key, v)
+        return n
+
+    def mix_rgb(a, b, factor):
+        mx = node("ShaderNodeMix", data_type="RGBA")
+        for socket, v in (("A", a), ("B", b), ("Factor", factor)):
+            if isinstance(v, bpy.types.NodeSocket):
+                links.new(v, mx.inputs[socket])
+            else:
+                mx.inputs[socket].default_value = v
+        return mx.outputs["Result"]
+
+    def op(op, a, b, c=None):
+        n = node("ShaderNodeMath", operation=op)
+        for k, v in enumerate((a, b, c)[:3 if c is not None else 2]):
+            if isinstance(v, bpy.types.NodeSocket):
+                links.new(v, n.inputs[k])
+            else:
+                n.inputs[k].default_value = v
+        return n.outputs[0]
+
+    out = node("ShaderNodeOutputMaterial")
+    em = node("ShaderNodeEmission")
+    clear = node("ShaderNodeBsdfTransparent")
+    tc = node("ShaderNodeTexCoord")
+    lw = node("ShaderNodeLayerWeight")
     lw.inputs["Blend"].default_value = 0.55
-    edge = nodes.new("ShaderNodeMapRange")
+    rim = op("POWER", lw.outputs["Facing"], 2.0)          # 0 facing us, 1 at the outline
+    if paint:
+        tex = node("ShaderNodeTexImage", interpolation="Closest")
+        tex.image = bpy.data.images.load(str(paint))
+        links.new(tc.outputs["UV"], tex.inputs["Vector"])
+        bw = node("ShaderNodeRGBToBW")
+        links.new(tex.outputs["Color"], bw.inputs["Color"])
+        val = node("ShaderNodeMapRange")
+        val.inputs["From Min"].default_value, val.inputs["From Max"].default_value = 0.03, 0.7
+        links.new(bw.outputs["Val"], val.inputs["Value"])
+        tone = val.outputs["Result"]
+        low = mix_rgb(srgb(deep), srgb(colour), op("MINIMUM", op("MULTIPLY", tone, 2.5), 1.0))
+        lit = mix_rgb(low, srgb(hot_colour), op("MAXIMUM", op("SUBTRACT", tone, 0.45), 0.0))
+        lit = mix_rgb(lit, srgb(hot_colour), op("MULTIPLY", rim, 0.45))
+        links.new(lit, em.inputs["Color"])
+        # the strength: dark paint dim, pale paint bright, the outline a little brighter
+        k = op("MULTIPLY_ADD", tone, strength * 2.6, strength * 0.3)
+        links.new(op("MULTIPLY_ADD", rim, strength * 1.2, k), em.inputs["Strength"])
+    else:
+        links.new(mix_rgb(srgb(colour), srgb(hot_colour), rim), em.inputs["Color"])
+        links.new(op("MULTIPLY_ADD", rim, strength * 2.2, strength), em.inputs["Strength"])
+    edge = node("ShaderNodeMapRange")
     edge.inputs["From Min"].default_value, edge.inputs["From Max"].default_value = 0.05, 0.75
     edge.inputs["To Min"].default_value = 0.98
     links.new(lw.outputs["Facing"], edge.inputs["Value"])
-    hot = nodes.new("ShaderNodeMix")   # the colour: white-hot facing us, deep gold toward the outline
-    hot.data_type = "RGBA"
-    hot.inputs["A"].default_value = srgb(colour)
-    hot.inputs["B"].default_value = srgb(hot_colour)
-    curve = nodes.new("ShaderNodeMath")
-    curve.operation = "POWER"
-    curve.inputs[1].default_value = 2.0
-    links.new(lw.outputs["Facing"], curve.inputs[0])
-    links.new(curve.outputs[0], hot.inputs["Factor"])
-    links.new(hot.outputs["Result"], em.inputs["Color"])
-    k = nodes.new("ShaderNodeMath")
-    k.operation = "MULTIPLY_ADD"
-    links.new(curve.outputs[0], k.inputs[0])
-    k.inputs[1].default_value = strength * 2.2
-    k.inputs[2].default_value = strength
-    links.new(k.outputs[0], em.inputs["Strength"])
-    tc = nodes.new("ShaderNodeTexCoord")
-    sep = nodes.new("ShaderNodeSeparateXYZ")
-    rise = nodes.new("ShaderNodeMapRange")
+    sep = node("ShaderNodeSeparateXYZ")
+    rise = node("ShaderNodeMapRange")
     rise.inputs["From Min"].default_value, rise.inputs["From Max"].default_value = fade
     links.new(tc.outputs["Object"], sep.inputs[0])
     links.new(sep.outputs["Z"], rise.inputs["Value"])
-    both = nodes.new("ShaderNodeMath")
-    both.operation = "MULTIPLY"
-    links.new(edge.outputs["Result"], both.inputs[0])
-    links.new(rise.outputs["Result"], both.inputs[1])
-    mix = nodes.new("ShaderNodeMixShader")
-    links.new(both.outputs[0], mix.inputs["Fac"])
+    mix = node("ShaderNodeMixShader")
+    links.new(op("MULTIPLY", edge.outputs["Result"], rise.outputs["Result"]), mix.inputs["Fac"])
     links.new(clear.outputs[0], mix.inputs[1])
     links.new(em.outputs[0], mix.inputs[2])
     links.new(mix.outputs[0], out.inputs["Surface"])
@@ -369,10 +399,11 @@ def burst(mats, at, reach, count, rng, up=(0, 0, 1), spread=1.0, thin=1.0):
         cone(f"Ray{i}", rng.uniform(0.05, 0.16) * thin, reach * rng.uniform(0.45, 1.0), at, d, mats["ray"], sides=4)
 
 
-def chips(mats, at, count, reach, rng, face=None):
-    """Splinters of the shard and sparks thrown up from it; none lands on the face (within 1.4 studs of `face`)."""
+def chips(mats, at, count, reach, rng, avoid=()):
+    """Splinters of the shard and sparks thrown up from it; none lands within `avoid`'s (point, radius) spheres: the
+    player's face and chest, and the lens."""
     def clear(where):
-        return face is None or (where - Vector(face)).length > 1.4
+        return all((where - Vector(point)).length > radius for point, radius in avoid)
     for i in range(count):
         d = Vector(rng.normal(0, 1, 3)).normalized()
         d.z = abs(d.z) * 0.8 + 0.2
@@ -403,7 +434,7 @@ JOINTS = {"Right Arm": (1.0, 0.0, 3.5), "Left Arm": (-1.0, 0.0, 3.5), "Right Leg
 def fighter_light(mats, fighter, at, scale, turn, pose):
     """One of our Voidkin as a figure of light: its handoff meshes (build/handoff/<fighter>), each on its rig part,
     the limbs turned about R6's joints by `pose` (degrees, in the fighter's own frame: it faces +Y as read), all in
-    the Voidkin's light. The figure reads by its outline, so its paint isn't shown. Returns its root and a pivot 0.6
+    the Voidkin's light, its own paint read as light (spirit). Returns its root and a pivot 0.6
     under its head's middle."""
     recipe = json.loads((HANDOFF / fighter / f"{fighter}.recipe.json").read_text(encoding="utf-8"))
     edges = set(recipe.get("edges", {}).get("pieces", []))
@@ -604,24 +635,24 @@ SHOTS = {
         light="rare", impact=True, core_k=12.0,
         player=dict(hips=(0, 0, 0), waist=(-28, 0, -10), neck=(14, 0, 14), armR=(-58, 0, 16), armL=(40, 0, -30),
                     legR=(-50, 0, 0), legL=(36, 0, 0)),
-        root=(1.0, 0.4, -0.45), turn=-58, shard_hand="R", shard_off=(0.0, -0.45, -1.2), shard_scale=0.95, part=0.36,
-        kin_screen=(0.33, 0.15), kin_far=25.0, kin_scale=3.4, kin_turn=14,
-        ray_up=(-0.2, -0.3, 1.0), ray_reach=3.4, rays=9, ray_thin=0.5,
-        dolly=0.62, cam=(-0.9, -4.4, 3.1), aim=(-0.4, 0.4, 2.15), lens=20, focus=(0.2, -0.4, 2.6), fstop=4.5,
+        root=(1.0, 0.4, -0.45), turn=-58, shard_hand="R", shard_off=(0.0, -0.45, -0.5), shard_scale=0.86, part=0.36,
+        kin_screen=(0.3, 0.16), kin_far=25.0, kin_scale=2.8, kin_turn=14,
+        ray_up=(-0.5, -0.3, 1.0), ray_reach=2.6, rays=6, ray_thin=0.5,
+        dolly=0.66, cam=(-0.9, -4.4, 3.1), aim=(-0.4, 0.4, 1.75), lens=20, focus=(0.2, -0.4, 2.6), fstop=4.5,
         sky=("#3F6FC4", "#F6B48A", "#FF9A5A"), sun=(-0.7, 0.7, 0.2),
     ),
 }
 
 
 LIGHTS = {  # the shard's light, by shot: (the Voidkin's body, its white-hot, the rays, the key light on the player,
-    # the body's strength: gold clips to lemon yellow above about 0.4, so it burns lower than the blue)
-    "gold": ("#FF8A0A", GOLD_HOT, GOLD, "#FFE2A6", 0.4),
-    "rare": ("#2E9BFF", "#E6F5FF", "#8CCBFF", "#CFE8FF", 0.85),   # Rare's own blue, Lyric's rarity (roster)
+    # the body's strength: gold clips to lemon yellow above about 0.4, so it burns lower than the blue; its dark paint)
+    "gold": ("#FF8A0A", GOLD_HOT, GOLD, "#FFE2A6", 0.4, "#6A2A00"),
+    "rare": ("#2E9BFF", "#E6F5FF", "#8CCBFF", "#CFE8FF", 0.85, "#0B2A78"),   # Rare's own blue, Lyric's rarity (roster)
 }
 
 
 def materials(face_png, light="gold", core_k=24.0):
-    body, hot, ray, _, body_k = LIGHTS[light]
+    body, hot, ray, _, body_k, deep = LIGHTS[light]
     mats = {k: cloth(k, LOOK[k]) for k in ("hoodie", "tee", "jeans", "shoe", "sole")}
     mats["hoodie_dark"] = cloth("hoodie_dark", "#B8301F")
     mats["skin"] = cloth("skin", LOOK["skin"], rough=0.5, sheen=0.0)
@@ -631,7 +662,8 @@ def materials(face_png, light="gold", core_k=24.0):
     mats["core"] = glow("core", hot, core_k)
     mats["ray"] = glow("ray", ray, 6.0)
     mats["spark"] = glow("spark", hot, 10.0)
-    mats["kin"] = spirit("kin", body, body_k, fade=(0.3, 2.6), hot_colour=hot)
+    mats["kin"] = spirit("kin", body, body_k, fade=(0.3, 2.6), hot_colour=hot,
+                         paint=HANDOFF / "Lyric" / "Lyric_Color.png", deep=deep)
     mats["paving"] = paving("paving", "#8C8A96")
     return mats
 
@@ -695,7 +727,6 @@ def run(out, name, samples, size):
     shard(mats, shot["shard_at"], shot["shard_scale"], (0, 0, 20), shot["part"], rng)
     burst(mats, shot["shard_at"], shot.get("ray_reach", 5.0), shot.get("rays", 18), rng, up=shot.get("ray_up", (0, 0, 1)),
           spread=0.7, thin=shot.get("ray_thin", 1.0))
-    chips(mats, shot["shard_at"], 14, 3.2, rng, face=neck.matrix_world @ Vector((0, 0, 0.7)))
     kin_root, kin_neck = fighter_light(mats, "Lyric", (0, 12, 6), shot["kin_scale"], shot["kin_turn"], LYRIC_POSE)
     for node in mats["kin"].node_tree.nodes:  # the rise is measured up the whole figure, from its own root
         if node.type == "TEX_COORD":
@@ -708,6 +739,9 @@ def run(out, name, samples, size):
         for key in ("cam", "aim", "focus"):
             shot[key] = tuple(Vector(shot[key]) + now - was)
     cam = camera(scene, shot, size)
+    chips(mats, shot["shard_at"], 14, 3.2, rng, avoid=((neck.matrix_world @ Vector((0, 0, 0.7)), 1.4),
+                                                       (neck.matrix_world @ Vector((0, 0, -1.0)), 1.3),
+                                                       (cam.location, 2.6)))
     # the Voidkin turned to the lens, upright in the frame, so its shape reads whole
     bpy.context.view_layer.update()
     r = cam.matrix_world.to_3x3()

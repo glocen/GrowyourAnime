@@ -72,8 +72,9 @@ def shard_glyph(h, w):
     return "".join(out)
 
 
-def logo_svg(cx, base, size=1.0, lean=-9):
-    """The logotype, its ANIME's baseline at `base`, centred on `cx`, at `size` (1: ANIME 96 points tall)."""
+def logo_svg(cx, base, size=1.0, lean=-9, grow=("Sarpanch", 30, 5, 0.8)):
+    """The logotype, its ANIME's baseline at `base`, centred on `cx`, at `size` (1: ANIME 96 points tall). `grow` sets
+    GROW YOUR: its face, its size and letter spacing at size 1, and its baseline above ANIME's, in ANIME's heights."""
     big = 104 * size
     gap = 17 * size                    # the shard's half-width with its air
     sh, sw = big * 0.86, 26 * size     # the shard's height and width
@@ -105,11 +106,11 @@ def logo_svg(cx, base, size=1.0, lean=-9):
     shine = (f'<clipPath id="shine"><rect x="{-400 * size:.1f}" y="{-big * 0.74:.1f}" width="{800 * size:.1f}" '
              f'height="{big * 0.1:.1f}"/></clipPath>')
     shard = f'<g transform="translate(0 {2 * size:.1f})">{shard_glyph(sh, sw)}</g>'
-    small = 30 * size
-    grow = (f'<g transform="translate({-gap * 0.2:.1f} {-big * 0.8:.1f})">'
-            f'<text x="0" y="0" text-anchor="middle" font-family="Sarpanch" font-size="{small:.1f}" letter-spacing="{5 * size:.1f}" '
+    face, small, spacing, lift = grow[0], grow[1] * size, grow[2] * size, grow[3]
+    grow = (f'<g transform="translate({-gap * 0.2:.1f} {-big * lift:.1f})">'
+            f'<text x="0" y="0" text-anchor="middle" font-family="{face}" font-size="{small:.1f}" letter-spacing="{spacing:.1f}" '
             f'fill="{INK}" stroke="{INK}" stroke-width="{9 * size:.1f}" stroke-linejoin="round" dy="{3 * size:.1f}">GROW YOUR</text>'
-            f'<text x="0" y="0" text-anchor="middle" font-family="Sarpanch" font-size="{small:.1f}" letter-spacing="{5 * size:.1f}" '
+            f'<text x="0" y="0" text-anchor="middle" font-family="{face}" font-size="{small:.1f}" letter-spacing="{spacing:.1f}" '
             f'fill="url(#white)" stroke="{INK}" stroke-width="{7 * size:.1f}" stroke-linejoin="round" paint-order="stroke">GROW YOUR</text></g>')
     return (f'{defs}<g transform="translate({cx:.1f} {base:.1f}) skewX({lean})"><defs>{shine}</defs>'
             f'{"".join(body)}{shard}{grow}</g>')

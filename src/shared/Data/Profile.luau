@@ -341,10 +341,15 @@ local function deepCopy(value: any): any
 end
 Profile.DeepCopy = deepCopy
 
--- A client's copy: everything but the ledger, whose answers are the server's business.
+-- A client's copy: everything but the ledger, whose answers are the server's business, and with every nickname ""
+-- (docs/roblox-rules.md, "Nicknames"): a raw one never leaves the server. The owner's are filled only from the filter's
+-- answer (Rules.Collection.ShowNicknames, through the save's shaper), so a shaper that fails or isn't there yet shows none.
 function Profile.View(data: Data): View
 	local view = deepCopy(data)
 	view.Ops = OpLedger.New()
+	for _, owned in view.Voidkin do
+		owned.Nickname = ""
+	end
 	return view
 end
 

@@ -261,6 +261,22 @@ function Collection.SetNickname(data: Profile.Data, id: any, raw: any): { [strin
 	return { Ok = true, Id = owned.Id, Nickname = name }
 end
 
+-- The owner's copy's nicknames (docs/roblox-rules.md, "Nicknames"): Profile.View leaves each "", and each is filled here
+-- only from `seen(raw)`, the filter's answer for its owner, a string. Anything else (none yet, no filter) leaves it "";
+-- an error stops the fill, the rest staying "". The saved names (`data`) are only read.
+function Collection.ShowNicknames(view: Profile.View, data: Profile.Data, seen: (string) -> string?)
+	for id, owned in view.Voidkin do
+		local saved = data.Voidkin[id]
+		local raw = if saved then saved.Nickname else ""
+		if raw ~= "" then
+			local shown = seen(raw)
+			if type(shown) == "string" then
+				owned.Nickname = shown
+			end
+		end
+	end
+end
+
 local function voidkinArg(args: any): any
 	return if type(args) == "table" then args.Voidkin else nil
 end

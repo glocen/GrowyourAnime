@@ -114,7 +114,7 @@ export type Base = {
 
 -- The base as it stands at server time `now`, from the server's copy `view`.
 function Read.Base(view: Profile.View, now: number): Base
-	local data = Profile.View(view :: any) -- a copy that shares no table with the server's
+	local data = Profile.DeepCopy(view) :: Profile.View -- a copy that shares no table with the server's, its nicknames kept
 	if data.Base.Stamp > 0 and now > data.Base.Stamp then
 		Breaker.Advance(data :: any, now)
 	end

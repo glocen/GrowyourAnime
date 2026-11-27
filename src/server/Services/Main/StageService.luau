@@ -291,7 +291,7 @@ end
 -- The run's end on its lead's fall: its card says so, and where the next run on its difficulty begins.
 local function lose(player: Player, run: Run)
 	logRun(player, run, "Fell")
-	local results = Stages.Lost(run.Rule, DataService.Get(player))
+	local results = Stages.Lost(run.Rule, DataService.View(player)) -- the owner's copy: its lead's nickname filtered
 	results.Dares = GoalService.Card(player) -- a fall takes back no dare kept before it
 	StageService.End(player)
 	Net.Server.Fire("StageDone", player, results)

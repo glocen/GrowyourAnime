@@ -67,13 +67,12 @@ function VoidkinService.Init()
 			return action(draft, args, workspace:GetServerTimeNow(), 0, facts)
 		end, BEFORE[name])
 	end
-	-- The owner's copy carries each nickname filtered for them; one not filtered yet shows as none until it is.
-	DataService.Shape(function(player: Player, view: Profile.View)
-		for _, owned in view.Voidkin do
-			if owned.Nickname ~= "" then
-				owned.Nickname = TextFilterService.Cached(player, owned.Nickname, player) or ""
-			end
-		end
+	-- The owner's copy carries each nickname filtered for them; one not filtered yet shows as none until it is. The view
+	-- comes with every nickname "" (Profile.View), so only the filter's answer is ever shown.
+	DataService.Shape(function(player: Player, view: Profile.View, data: Profile.Data)
+		Collection.ShowNicknames(view, data, function(raw: string): string?
+			return TextFilterService.Cached(player, raw, player)
+		end)
 	end)
 	TextFilterService.Filtered:Connect(function(author: Player, viewer: Player)
 		if author == viewer then

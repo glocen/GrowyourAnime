@@ -164,6 +164,68 @@ return {
 		end,
 	},
 	{
+		Name = "Collection: the owner's copy shows a nickname only as the filter answered it, never raw",
+		Run = function(t: any)
+			-- research's item 1 (2026-11-27, from the director's Turing document): Profile.View leaves every nickname "",
+			-- and Collection.ShowNicknames fills each only from the filter's answer (VoidkinService's shaper)
+			local data = fresh()
+			local names: { [string]: string } = { rook = "Iron Fist", kirra = "Night Bloom", pip = "Spark" }
+			local ids: { [string]: string } = {}
+			for def, name in names do
+				local id = Collection.Uncover(data, def, NOW).Id
+				Collection.SetNickname(data, id, name)
+				ids[id] = name
+			end
+			local function shown(view: Profile.View): (number, number)
+				local filled, blank = 0, 0
+				for id in ids do
+					if view.Voidkin[id].Nickname == "" then
+						blank += 1
+					else
+						filled += 1
+					end
+				end
+				return filled, blank
+			end
+			local view = Profile.View(data)
+			t.Equal("the view alone: every nickname blank", select(2, shown(view)), 3)
+			Collection.ShowNicknames(view, data, function(): string?
+				return nil
+			end)
+			t.Equal("no filter, or a cache miss: blank", select(2, shown(view)), 3)
+			view = Profile.View(data)
+			Collection.ShowNicknames(view, data, function(): string?
+				return 7 :: any
+			end)
+			t.Equal("an answer that isn't text: blank", select(2, shown(view)), 3)
+			view = Profile.View(data)
+			local calls = 0
+			local ok = pcall(Collection.ShowNicknames, view, data, function(raw: string): string?
+				calls += 1
+				if calls > 1 then
+					error("the filter failed")
+				end
+				return raw
+			end)
+			local filled, blank = shown(view)
+			t.Check("a failure after one of several: that one shown, the rest blank", ok == false and filled == 1 and blank == 2, `{filled} shown, {blank} blank`)
+			view = Profile.View(data)
+			Collection.ShowNicknames(view, data, function(raw: string): string?
+				return raw
+			end)
+			local all = true
+			for id, name in ids do
+				all = all and view.Voidkin[id].Nickname == name
+			end
+			t.Check("valid names, filtered whole, still show", all)
+			local kept = true
+			for id, name in ids do
+				kept = kept and data.Voidkin[id].Nickname == name
+			end
+			t.Check("the saved names untouched", kept)
+		end,
+	},
+	{
 		Name = "Collection: every Voidkin names its signature and its passive in plain words, and Kirra's and Rook's are the roster's",
 		Run = function(t: any)
 			-- One Voidkin's screen reads them in its Kit tab (TR17): "Name: what it does", the roster's columns.

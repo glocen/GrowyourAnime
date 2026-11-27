@@ -30,7 +30,7 @@ export type Action = (draft: Profile.Data, args: any, player: Player) -> Transac
 -- What runs before an action, outside its transaction, and may yield: a refusal's code, or nil to go on.
 export type Before = (player: Player, args: any) -> string?
 -- A change to the owner's copy before it's sent, never to the save: no yields.
-export type Shaper = (player: Player, view: Profile.View) -> ()
+export type Shaper = (player: Player, view: Profile.View, data: Profile.Data) -> () -- `data` read only
 
 type Session = {
 	Profile: any, -- ProfileStore's profile. Its Data is read from it every time, never kept elsewhere: one reference to the save
@@ -60,11 +60,12 @@ local shapers: { Shaper } = {}
 DataService.NoAction = "NoAction" -- no action by that name
 DataService.NoProfile = "NoProfile" -- the player's save isn't open (still loading past the wait, or gone)
 
--- The owner's copy, shaped.
+-- The owner's copy, shaped. Profile.View leaves every nickname ""; a shaper fills what the owner may see from `data`,
+-- so one that errors partway leaves the rest unshown, never raw.
 local function viewFor(player: Player, data: Profile.Data): Profile.View
 	local view = Profile.View(data)
 	for _, shape in shapers do
-		local ok, err = pcall(shape, player, view)
+		local ok, err = pcall(shape, player, view, data)
 		if not ok then
 			Log.Error("DataService", `a view's shaper errored for {player.Name}: {err}`)
 		end
@@ -125,6 +126,13 @@ end
 -- Registers a change every owner's copy gets before it's sent (never the save's). It must not yield.
 function DataService.Shape(shaper: Shaper)
 	table.insert(shapers, shaper)
+end
+
+-- The owner's copy as its client gets it, shaped (each nickname filtered for it): for an answer that names something
+-- the player owns, as the stage's card names its lead. Nil with no save open.
+function DataService.View(player: Player): Profile.View?
+	local session = sessions[player]
+	return if session then viewFor(player, session.Profile.Data) else nil
 end
 
 -- Sends a player their copy again, as after a change: for a shaper whose answer has come in since.
@@ -205,7 +213,11 @@ local function registerDebug()
 	DebugService.Register("Data", function(who: any): any
 		local player = DebugService.ResolvePlayer(who)
 		local data = player and DataService.Get(player)
-		return if data then Profile.View(data) else nil
+		local copy = if data then Profile.DeepCopy(data) else nil -- the save as it is (Studio only), raw nicknames included
+		if copy then
+			copy.Ops = nil -- less its ledger's answers
+		end
+		return copy
 	end)
 	DebugService.Register("DataWipe", function(who: any): any
 		local player = DebugService.ResolvePlayer(who)

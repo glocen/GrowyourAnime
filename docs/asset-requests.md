@@ -5386,6 +5386,16 @@ The script is `tools/ui/hud_press.py`.
 - **Content check: PASS** (fresh eyes, rules 2 to 4). Nothing reads as gore at either size. The open square matches no symbol. HAYMAKER is our roster's own word, and Bangers is an OFL face Roblox ships. Its one hold, the x4 sheet's writer, is fixed: the script writes it. Before any upload, the exact files go through it again, with a 64 px sheet on a dark ground.
 - **Next:** research's pick in pairs.
 
+### Research's pick: B, the name alone (Quaestor, 2026-11-27, 01:23; alone, with Gemini stopped at its limit; `press/phone_pair_x4.png` in both orders, `press_states.png`, and `build/scratch/modulo/press2/beside_shipped.png`)
+
+- **Why B:** at phone size it says the move at once, in the heavy stroked lettering that every label in the shipped frame uses. A's art reads as an abstract orange square and star there, and stays short of the shipped hotbar's illustrated craft, as the rejected fist did. The director offered both directions (the register, 01:00).
+- **The cooldown** (both): colour comes back clockwise behind a gold edge, with a big stroked count, a gold last second and a pop. It reads in every state.
+- **Must-fixes for the finish:**
+  1. **Every cooling state:** the count and the word never cut each other. Today it reads "AY 5 KE". Either the word dims whole, or the count takes the disc.
+  2. **Every Voidkin's press:** the same lettering holds the longest launch name, LANTERN BURST, and the roster's longest, HANDS OF THE VOID, on two lines at a readable height. Show both.
+  3. **A clear gap** between the word and Auto at F2's corrected size (Faber's must-fix 2).
+- **The shipped measure** here is Anime Crusaders X's unit hotbar, the nearest we have. The final wants a skill bar beside it (Sailor Piece, the director's item 10).
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

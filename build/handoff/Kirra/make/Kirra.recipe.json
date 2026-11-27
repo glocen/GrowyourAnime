@@ -2,7 +2,7 @@
  "name": "Kirra",
  "frame": "Roblox studs: Y up, the model on y = 0 facing -Z, HumanoidRootPart at (0, 3, 0)",
  "rig": "R6. Every piece carries the body's own surface: the six rig parts are hidden (Transparency 1).",
- "make": "tools/blender/anime_make.py and kirra_make.py: R6's own blocks and round head with the clothes and the face drawn on them, the hair one mesh with its tie; built pieces: the scarf's turn and knot, its long tail as a chain, the two blades on joints of their own.",
+ "make": "tools/blender/anime_make.py and kirra_make.py: R6's own blocks and round head with the clothes and the face drawn on them, the hair one mesh with its tie; built pieces: the scarf's turn and knot, its long tail as a chain, the two blades on joints of their own, their sheaths one piece on the torso.",
  "maps": {
   "Color": "Kirra_Color.png",
   "Roughness": "Kirra_Roughness.png"
@@ -142,16 +142,16 @@
    "mesh": "Kirra_BladeR.json",
    "on": "Torso",
    "centre": [
-    0.08307,
-    3.5262,
+    0.27254,
+    3.77259,
     0.68
    ],
    "size": [
-    1.411,
-    1.808,
-    0.13
+    1.121,
+    1.428,
+    0.277
    ],
-   "tris": 38,
+   "tris": 560,
    "motor": "BladeR",
    "pivot": [
     0.5914,
@@ -181,16 +181,16 @@
    "mesh": "Kirra_BladeL.json",
    "on": "Torso",
    "centre": [
-    -0.08307,
-    3.5262,
+    -0.27254,
+    3.77259,
     0.84
    ],
    "size": [
-    1.411,
-    1.808,
-    0.13
+    1.121,
+    1.428,
+    0.277
    ],
-   "tris": 38,
+   "tris": 560,
    "motor": "BladeL",
    "pivot": [
     -0.5914,
@@ -214,6 +214,22 @@
      -0.0
     ]
    }
+  },
+  {
+   "name": "Kirra_Sheaths",
+   "mesh": "Kirra_Sheaths.json",
+   "on": "Torso",
+   "centre": [
+    0.0,
+    3.48435,
+    0.76
+   ],
+   "size": [
+    0.984,
+    1.077,
+    0.323
+   ],
+   "tris": 400
   },
   {
    "name": "Kirra_Scarf1",
@@ -523,8 +539,8 @@
    "name": "TipR",
    "on": "Kirra_BladeR",
    "at": [
-    -0.6192,
-    2.6245,
+    -0.2846,
+    3.0611,
     0.68
    ],
    "note": "the blade's point: a cut's arc"
@@ -533,14 +549,14 @@
    "name": "TipL",
    "on": "Kirra_BladeL",
    "at": [
-    0.6192,
-    2.6245,
+    0.2846,
+    3.0611,
     0.84
    ],
    "note": "the blade's point: a cut's arc"
   }
  ],
- "tris": 5214,
+ "tris": 6658,
  "scarf": {
   "joints": [
    "Scarf1",

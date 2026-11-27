@@ -173,10 +173,11 @@ def bound_grip(b, side, a, b_, w, t, base, cord, turns, cw=0.022, rise=0.01):
 
 
 def lacquer(guards):
-    """1, the lacquered pair: a pewter cap, a grip in teal cord bound with fine dark turns, a round iron guard with a pewter rim,
-    a pewter collar; each in a slim black lacquer sheath with a pewter mouth and tip, one teal cord, and a dark
+    """1, the lacquered pair (research's pick, 13:04): a pewter cap, a grip in teal cord bound with fine dark turns, a round iron guard with a pewter rim,
+    a pewter collar; each in a slim black lacquer sheath with a light throat and chape, one teal cord, and a dark
     leather loop on the strap. 1.75 studs, the first was 2.3. (Round 1's navy lacquer sank into her navy top.)"""
     sheath_col = "#12151D"
+    FITTING = "#C9CFDA"   # the guards' metal, its rim's pewter lifted: the throat and the chape
 
     def blade_(piece):
         side = BLADES[piece]
@@ -191,15 +192,19 @@ def lacquer(guards):
     def sheaths():
         b = am.Built("Sheaths")
         for side in BLADES.values():
-            r = [(0.63, 0.128, 0.072), (0.72, 0.128, 0.072), (0.72, 0.124, 0.068), (0.9, 0.124, 0.068), (0.9, 0.134, 0.078),
-                 (0.94, 0.134, 0.078), (0.94, 0.124, 0.068), (1.7, 0.112, 0.062), (1.7, 0.118, 0.066), (1.82, 0.09, 0.05),
+            r = [(0.63, 0.13, 0.074), (0.77, 0.13, 0.074), (0.77, 0.124, 0.068), (0.92, 0.124, 0.068), (0.92, 0.134, 0.078),
+                 (0.96, 0.134, 0.078), (0.96, 0.124, 0.068), (1.56, 0.114, 0.063), (1.56, 0.12, 0.068), (1.8, 0.096, 0.054),
                  (1.86, 0.05, 0.03)]
-            cols = [PEWTER, sheath_col, sheath_col, TEAL, TEAL, sheath_col, sheath_col, PEWTER, PEWTER, PEWTER]   # a colour a
-            # stretch between two rings: the mouth, one cord (two, beside the grip's turns, read as stripes), the tip
+            cols = [FITTING, sheath_col, sheath_col, TEAL, TEAL, sheath_col, sheath_col, FITTING, FITTING, FITTING]   # a colour
+            # a stretch between two rings: the throat, one cord (two, beside the grip's turns, read as stripes), the chape.
+            # Research's pick (13:04): a light throat and chape, so the pair isn't a dark X on her navy at 64 px.
             turned(b, side, r, cols)
             turned(b, side, [(1.24, 0.15, 0.088), (1.34, 0.15, 0.088)], [guards])   # the strap's loop
         return b
     return blade_, sheaths
+
+
+lacquer.tip = 1.75   # the blade's point from the pommel's end
 
 
 def knives(guards):
@@ -234,6 +239,9 @@ def knives(guards):
                 turned(b, side, [(at - 0.03, 0.04, 0.012, -0.09), (at + 0.03, 0.04, 0.012, -0.09)], [PEWTER], sides=4, offset=45.0)
         return b
     return blade_, sheaths
+
+
+knives.tip = 1.5
 
 
 def gear_pieces(option):
@@ -370,11 +378,12 @@ def points():
            ("Chest", "Torso", (0, 0.6, 3.2), "where a hit lands")]
     for piece, side in BLADES.items():
         top, d, _ = sheath_line(side)
-        out.append((f"Tip{piece[-1]}", f"{NAME}_{piece}", tuple(top + d * TIP), "the blade's point: a cut's arc"))
+        tip = getattr(PICK["gear"], "tip", TIP)
+        out.append((f"Tip{piece[-1]}", f"{NAME}_{piece}", tuple(top + d * tip), "the blade's point: a cut's arc"))
     return out
 
 
-PICK = dict(gear=None, face=None)   # research's pick of the reopened targets: lacquer or knives; kt.face_cut or kt.face_still
+PICK = dict(gear=lacquer, face=kt.face_cut)   # research's pick of the reopened targets (13:04): 1, the cut, whole
 
 
 def made_pieces():
@@ -400,6 +409,7 @@ def finish(key, made, out):
 
 
 def model_run(out):
+    rmt.VIEWS.update(back=(0, 6), back34=(326, 6))   # her gear from behind, for the sheet's 64 px look over dark
     rmt.TAKES[TAKE] = lambda joints, folder: kt.take_a(joints, folder, pieces=made_pieces(), face_draw=PICK["face"])
     rmt.takes_run(out, [TAKE], finish=lambda key, made: finish(key, made, out))
 
@@ -420,7 +430,7 @@ def sheet_run(out):
     facts = [f"{recipe['tris']} triangles in {len(recipe['pieces'])} pieces", f"{recipe['texels_per_stud']} texels a stud on the body",
              "pieces: " + ", ".join(f"{p['name'][len(NAME) + 1:]} {p['tris']}" for p in recipe["pieces"][:9]),
              "  " + ", ".join(f"{p['name'][len(NAME) + 1:]} {p['tris']}" for p in recipe["pieces"][9:]),
-             "joints of their own: BladeR, BladeL (on the Torso, at the grip),",
+             "joints of their own: BladeR, BladeL (on the Torso, at the grip; their Sheaths ride the Torso),",
              f"  Scarf1 to Scarf{LINKS} (a chain from the knot, {recipe['scarf']['length']} studs)",
              "points: " + ", ".join(p["name"] for p in recipe["points"])]
     text += [(x, 60 + i * 24, 15, line, soft) for i, line in enumerate(facts)]
@@ -432,7 +442,7 @@ def sheet_run(out):
 
 if __name__ == "__main__":
     rmt.TAKES, rmt.SAID = dict(kt.TAKES), dict(kt.SAID)
-    rmt.SAID[TAKE] = ("Kirra, the finish", ("A, the night runner, with research's three must-fixes",))
+    rmt.SAID[TAKE] = ("Kirra, the finish", ("A, the night runner, with the cut's gear and face (research's pick, 13:04)",))
     OUT = rs.OUT = bl.out_dir()
     rest = sys.argv[sys.argv.index("--") + 2:]
     if rest and rest[0] == "targets":

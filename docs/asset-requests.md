@@ -4967,6 +4967,30 @@ From the new sheet, the Reveal's poses and the portrait. It judges the fix and w
 - **Face 1:** the lifted almond eye and the winged lash read as hers at card size. Next to Rook's straight-browed eyes and Pip's round ones, the three are no longer one face. Face 2 stays too close to the kit's face. The slit pupil and the mark don't read at card size, so they can stay or go.
 - **Then:** into the make, the content check at 64 px over dark, and Faber's capture at the game camera beside Rook. The director judges it in the game.
 
+### Modulo: the cut, in the make (2026-11-27, 13:09; started 13:04)
+
+- **Made** with `tools/blender/kirra_make.py` (`model`, `sheet`; `PICK` holds research's pick) and `hud_art.py`, `make Kirra`, over the files in `build/handoff/Kirra/make/`:
+  - **Gear 1, with research's condition.** Each sheath has a light throat under the guard (0.63 to 0.77 along the line) and a light chape at its tip (1.56 to 1.86), in `#C9CFDA`. The guards' iron is dark (`#343947`), so the fittings take the guards' rim, the pewter, lifted.
+  - **Face 1** (`kirra_make_takes.face_cut`) on her head's picture.
+  - **`Kirra_Sheaths`:** a new piece riding the Torso, 400 triangles. Each blade is 560 triangles (38 before). The recipe has 6,658 triangles in 20 pieces (5,214 in 19 before).
+  - **The joints are unchanged.** The blades keep their motors and pivots, so the eight uploaded clips stay as they are. The points `TipR` and `TipL` moved to the new blades' points (1.75 along the line, 2.3 before).
+  - **`kirra_back_64.png`:** her back at 64 px over dark, 4x, from behind and from behind three-quarter. Left to right: today, the 12:56 target, the make. Composed with ffmpeg from each take's `back` and `back34` shots, area-scaled to 101 px (64 px to a 5-stud body) over `#101117`, then 4x nearest.
+- **What Faber uploads again:**
+  - BladeR and BladeL;
+  - Sheaths, which is new;
+  - Scarf, Scarf1 to Scarf8 and Tie, for their UVs only: the atlas packed again round the sheaths, and their shapes are the same bytes;
+  - `Kirra_Color.png` (sha1 `5b0fa316`);
+  - both portraits, `PortraitKirra.png` (`5fc48bef`) and `PortraitKirraSmall.png` (`58103d9a`).
+  - Unchanged: the Head, Torso, arms, legs, Hair, Roughness and the clips.
+  - `tools/studio/Models/Kirra.json` takes the Sheaths' mesh id.
+  - The sheet is `kirra_make_sheet.png` (`bd3ef81b`).
+- **Self-review:**
+  - At 64 px over dark, today's blades read as a bright toy X, and the target's as a dark X lost on her navy. In the make, the chapes are two light points at the X's feet and the throats light up under the guards, so it reads as two sheathed blades. The lacquer between stays dark.
+  - The portrait has her own face at card size and a bound hilt over her shoulder, where today's shows a bare black bar.
+  - From the front, the caps beside her head are small and dark: no earrings.
+- **Checks:** content check PASS (a fresh agent, on the sheet, the colour picture, both portraits and the 64 px look): nothing gory or sexualised, the round guards and the neck scarf keep 13:02's conditions, no text in an uploaded picture.
+- **Four facts:** made; self-reviewed as above; delivered to Faber at 13:09 for the upload and the capture at the game's camera beside Rook; not in the game, not accepted. The director judges it in the game.
+
 ## AR61. The hit sparks: the shared kit's landed hit, by rung (Scintilla, then Faber's hook)
 
 Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit first", `docs/decisions.md`; `docs/briefs/effects.md`, "Your queue", 1). Research hadn't written this request when the seat opened (2026-11-24, 10:44), so Scintilla wrote it from the brief, AR8 A and the study's rules; research confirms or corrects it at the blockout's verdict.

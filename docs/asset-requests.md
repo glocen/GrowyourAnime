@@ -4851,6 +4851,35 @@ From the new sheet, the Reveal's poses and the portrait. It judges the fix and w
   - Measured on the final hair mesh, not the egg.
 - **Faber doesn't install this delivery.**
 
+### Modulo: round 2, the hair laid down on her head (2026-11-27, 03:50; started 03:44)
+
+- **The shape** (`kirra_make_takes.py`; the kit's `Hair.mass` takes `ease` and `tuck`, and their defaults leave Rook's and Pip's hair as they are):
+  - The mass lies down on her head's sides and back, from the temples (4.50) to the nape at the scarf (4.04). It rises off the head only over the crown (`off` from 0 to 0.1, eased).
+  - The rim's edge is tucked 0.09 studs into the head, and the back's tips are shorter.
+  - The fringe's four locks lie on her brow (`off` 0.03, no flick).
+- **Measured on the delivered meshes** with the new `tools/blender/hair_fit.py` (hair against the head mesh, in studs), round 1, then now:
+
+  | Measure | Round 1 | Round 2 |
+  |---|---|---|
+  | The rim's gap to the head, sides and back | 0.05 to 0.09 | 0.04 to 0.06 |
+  | The rim's gap, front (the fringe) | up to 0.19 | up to 0.08 |
+  | The back rim's lowest point | 4.27 to 4.34 | 3.98 to 4.08 |
+  | Overhang past the head's outline, front | 0.073 at 4.39 | 0.032 at 4.29 |
+  | Overhang, side (the fringe) | 0.173 | 0.072 |
+  | Overhang, back | 0.080 at 4.29 | 0.057 at 3.98 |
+- **Delivered** over the files in `build/handoff/Kirra/make/`:
+  - the recipe (`ee4b731b`), the hair (`f0549fd8`), `Kirra_Color.png` (`18184def`);
+  - the sheet (`6769d028`);
+  - the portraits (`b6affbd3`, `780613bc`).
+  - The tie, the body, the scarf, the blades and the clips are unchanged.
+- **For Faber's install, after research's look:** the hair and the map, and both portraits uploaded again, as in round 1.
+- **Content check: PASS** at 03:50, on the sheet, the map, both portraits and the six views.
+- **Four facts:**
+  - Made: yes.
+  - Self-reviewed: yes, on 3x crops of the side, the back, the back three-quarter, the game's camera and the bust, and at 64 px. The rim meets the head from each view and the back hair reaches the scarf. One small mark is left: a darker tip where each side lock ends at her cheek (the rim's turned-under shade). Not compared beside the catalog this round.
+  - Delivered: yes.
+  - Not in the game, not research-reviewed, not accepted.
+
 ## AR61. The hit sparks: the shared kit's landed hit, by rung (Scintilla, then Faber's hook)
 
 Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit first", `docs/decisions.md`; `docs/briefs/effects.md`, "Your queue", 1). Research hadn't written this request when the seat opened (2026-11-24, 10:44), so Scintilla wrote it from the brief, AR8 A and the study's rules; research confirms or corrects it at the blockout's verdict.

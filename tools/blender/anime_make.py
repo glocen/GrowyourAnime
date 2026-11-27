@@ -716,12 +716,14 @@ class Hair:
         return k
 
     def mass(self, hairline, tie, opening=0.12, tips=(), rows=14, cols=72, off=(0.03, 0.1), lift=0.06, grooves=24, seed=1,
-             size=(200, 64), k=1.0, inside=6):
+             size=(200, 64), k=1.0, inside=6, ease=1.0, tuck=0.07):
         """The hair's whole mass in one piece, combed from its edge to a tie at `tie` (degrees round, down), where it
         leaves an `opening` (studs) under the tie: rows from the edge up, each line the shortest way over the egg.
         `hairline(degrees round)` is the edge's height; `tips`, each (degrees round, half its width, degrees down),
         are the points it hangs past it. It stands `off` over the head from the edge to the tie and `lift` more at
-        its middle; a rim turned under at its edge gives it a thickness."""
+        its middle; a rim turned under at its edge, `tuck` studs, gives it a thickness. `ease` over 1 keeps the
+        lower rows down on the head and gives the volume to the crown: with the rim tucked into the head, its edge
+        meets the head's surface and never stands off it (AR60, 2026-11-27: "still not attached to kira head")."""
         T = (self.at(*tie)[0] - CENTRE).normalized()
         grid = []
         for c in range(cols):
@@ -738,9 +740,9 @@ class Hair:
             for r in range(rows):
                 s = (r / (rows - 1)) ** 0.85
                 p, nrm = self.at(*self.where(CENTRE + A.slerp(E, s)))[:2]
-                line.append(p + nrm * (off[0] + (off[1] - off[0]) * s + lift * math.sin(math.pi * s)))
+                line.append(p + nrm * (off[0] + (off[1] - off[0]) * s ** ease + lift * math.sin(math.pi * s) ** ease))
             p0, n0 = self.at(a, ph)[:2]
-            rim = line[0] - n0 * 0.07 + (line[1] - line[0]).normalized() * 0.04
+            rim = line[0] - n0 * tuck + (line[1] - line[0]).normalized() * 0.04
             grid.append([rim] + line)
         grid = [list(row) for row in zip(*grid)]   # rows round the head, from the rim up to the tie
         top, band = self.pair[1], self.band

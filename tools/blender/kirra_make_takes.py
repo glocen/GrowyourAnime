@@ -248,11 +248,15 @@ def take_a(joints, folder, pieces=None):
     # One solid lit mass combed up to the tie behind the crown, its locks drawn as parted lines on it, never as
     # leaves whose edges and undersides catch the light (research's must-fix 1, then the director's "messy", 11:2x)
     TIE = (180, 24)
-    hair.mass(am.hairline(front=4.98, temple=4.62, nape=4.34), TIE, opening=0.12, seed=31,
-              tips=((180, 16, 6), (154, 12, 8), (206, 12, 8), (128, 14, 10), (232, 14, 10), (78, 20, 20), (-78, 20, 20)), lift=0.07, off=(0.04, 0.12))
-    # the side-swept fringe, from her right parting across to her left, four broad locks; the mass hangs to a point before each ear
+    # it lies down on her head's sides and back, down to the nape at the scarf, its edge tucked into the head, and
+    # takes its volume over the crown (the director, 2026-11-27: "the hair is still not attached to kira head")
+    hair.mass(am.hairline(front=4.98, temple=4.5, nape=4.04), TIE, opening=0.12, seed=31,
+              tips=((180, 16, 5), (154, 12, 6), (206, 12, 6), (128, 14, 8), (232, 14, 8), (78, 20, 20), (-78, 20, 20)),
+              lift=0.05, off=(0.0, 0.1), ease=2.0, tuck=0.09)
+    # the side-swept fringe, from her right parting across to her left, four broad locks lying on her brow; the mass
+    # hangs to a point before each ear
     for a, length, width, heading, bend in ((-34, 0.7, 0.46, 30, 10), (-12, 0.78, 0.5, 36, 14), (10, 0.72, 0.46, 40, 14), (30, 0.6, 0.4, 38, 8)):
-        hair.clump(a, 30, length, width, heading=heading, bend=bend, off=0.1, flick=12, hold=0.75, k=1.02, thick=width * 0.26)
+        hair.clump(a, 30, length, width, heading=heading, bend=bend, off=0.03, flick=0, hold=0.95, k=1.02, thick=width * 0.26)
     # the high tail, one solid lock: from the tie, up, over and down her back, with two locks parting from its end;
     # the crown's own silver, a band of light where it turns over
     tie = hair.at(*TIE)[0] + hair.at(*TIE)[1] * 0.12

@@ -15,13 +15,13 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Now:** AR63, the back locks seated against the collar's roll. Then AR78, Kirra's blades: two or three targets beside today's, for research's pick.
 - **Next:** AR75's Shades, round 3 (designed in `build/scratch/modulo/shade_mesh/design.md`).
 
-**Scintilla (effects).** 2026-11-28, 10:47 by the clock. **AR69's burn:** round 3 is in src (Faber's review passed). Research's pass: both must-fixes pass, with one new one, unity of the mass. **Round 4** is written (four roots, mixed lengths, tips that split, gutter and shed small flames; handoff rows, 76) and waits on one Studio take. **AR77's targets:** the three foe takes are drawn; our fighter's two sheets were stopped for low memory and wait on the director's go to run again.
-- **Now:** AR69 round 4's Studio take on the next turn (~15 min), then AR77's fighter sheets on the go, then AR76 round 2 (Mantaflow).
+**Scintilla (effects).** 2026-11-28, 10:59 by the clock. **AR69's burn:** round 4 (four roots, mixed lengths, tips that split and shed) is taken in Studio (`checkpoint/ar69_take_burn_r4.png`) and sits in src for Faber's review; research's pass waits. Maker's read: the shoulders read as one body, the arm and the hem still as spots. **AR77's targets:** the three foe takes are drawn; our fighter's two sheets were stopped for low memory and wait on the director's go to run again.
+- **Now:** Faber's review and research's pass on AR69 round 4; meanwhile AR76 round 2 (Mantaflow), the next free piece.
 
 **Sonus (sound).** 2026-11-28, 10:16 by the clock. **TR69 A's PackClear, picked unheard** (research's call): a ProSoundEffects tonal airy whoosh, next take ready, for Faber's install (TR69, "PackClear, picked unheard"). The 22, TR57's plate and the seven gaps are in the game, unheard. Studio handed to Scintilla; nothing running.
 - **Next:** the director's word in play on the 22 and the 7 (a miss takes its next); then research's next cue list.
 
-**Turns.** Studio: Scintilla (AR69 round 4's take, Play, ~15 min; handed over by Faber at 10:56). The Festival place is open in Edit, Rojo connected, saved v97 with PackClear's audition tab. Blender: nobody (headless only, with 2 GB free). Timing tests: nobody.
+**Turns.** Studio: free (Scintilla handed it back at 10:58: Play stopped, Edit, nothing saved). The Festival place is open in Edit, Rojo connected, saved v97 with PackClear's audition tab. Blender: nobody (headless only, with 2 GB free). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

@@ -18,8 +18,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Now:** AR75's Shades, round 2 (from B, a Void creature with built pieces), beside the JJI frames and today's Brawler.
 - **Next:** Rook's and Kirra's folds by `am.cel`, each beside its current self.
 
-**Scintilla (effects).** 2026-11-28, 01:43. AR69's round 2 must-fixes are on the offline sheet (`checkpoint/ar69_checkpoint_burn.png`, `_fall.png`, AR69.md): six tongues a side on the burn, the fall's plume in place of its rays, and its ring a thin gold band in a flipbook. The three pictures passed the content check and are in `build/upload/` for Faber's upload (the director's OK). Then the rows go into src for Faber's review and get a Studio take. No Studio turn held, nothing running.
-- **Next:** research's read of the sheet, then the ids, the install and a Studio take. Haymaker's overhaul once AR69 passes. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.
+**Scintilla (effects).** 2026-11-28, 02:00. AR69's offline checkpoint passed (research, 01:5x), and the stray streak is fixed (029c63f8). The three pictures are in `build/upload/`, content check PASS. Faber uploads them on the director's own word (asked), and then the rows go into src for Faber's review and get a Studio take, day and night. No Studio turn held, nothing running.
+- **Next:** while AR69 waits, Haymaker's look overhaul (AR59.md, research's note). B5's composition is the director's (2026-11-12), so only its look changes, to the fire kit. Its request and scope are asked of research. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.
 
 **Sonus (sound).** 2026-11-28, 00:25 by the clock. **The seven gaps are in the game, unheard** (TR64; Faber's dc8a4f97): seven hooked, GearDrop unhooked (no gear drops in a fight). My 22 earlier picks too (TR42). Launch work done; no Studio turn held, nothing running.
 - **Next:** the director's word in play on the 22 and the 7 (a miss takes its next); then research's next cue list.

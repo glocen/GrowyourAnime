@@ -66,7 +66,9 @@ def build(level, ground, frac, rarity="Common", cls="Warrior", spec="balanced"):
         gear = sh["gear"] * unit[k] * S["gearRarity"][av["gear"]] * gt * frac
         forge = gear * S["forge"]["fullBonusOfGearBase"] * av["forge"] / S["forge"]["maxRank"]
         res = sh["research"] * unit[k] * av["research"] * frac * g60
-        st[k] = own + gear + forge + res
+        mastery = sh.get("mastery", 0) * unit[k] * gl * frac      # TR76: the Voidkin's own Mastery, on its level
+        index = sh.get("index", 0) * unit[k] * gt * frac          # TR76: the Index's milestones, account-wide
+        st[k] = own + gear + forge + res + mastery + index
     sp = SPECS[spec]
     # A choosable point spent on one stat alone buys three times that stat: it gives up the other two.
     # Defence and elemental attack have their own price, set so a point of each is worth about a point of the others.

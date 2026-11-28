@@ -24,15 +24,17 @@ One curve, `G(level)`, gives the size of everything at a level: a Voidkin's base
 
 ## Where power comes from
 
-Shares of a full launch build's stat points, at level 60:
+Shares of a full launch build's stat points, at level 60: (TR76, 2026-11-28: Mastery's 6 replace 4 of gear's and the Reinforce on them, the Index's 2.5 come from emblems; the full build is the same size as before, 49,793 health and 6,224 attack in the simulation)
 
 | Source | Share | How it's earned |
 |---|---|---|
 | The Voidkin's own base (level and rarity) | 35 | fighting |
 | Its stars | 3.5 | duplicates |
-| Gear | 27 | drops, the shop |
+| Its Mastery | 6 | fighting with it as the lead (TR76) |
+| Gear | 23 | drops, the shop |
 | Reinforce levels | 13.5 | stones and Credits, by chance past +5 |
-| War Emblems | 11 | drops, the Tower's cases |
+| War Emblems | 8.5 | drops, the Tower's cases |
+| The Index | 2.5 | its milestones (TR76) |
 | Jewels | 7 | Hard keepers, the Condenser |
 | Research | 3 | Research Points |
 

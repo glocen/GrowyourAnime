@@ -12,7 +12,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - Done: Pip's round collar in the dev build (836831a2), zoomed 4x front and 3/4; AR69's burn reviewed (effects case 304/0 with StateBurn). Pip's portraits and card wait on Modulo's back fix of the collar.
 - Next: TR72's back-to-back session (the keeper's rest included) for KillsPerHour; then Pip's collar and the four images once Modulo sends them.
 
-**Modulo (assets).** 2026-11-28, 03:09. **AR63, Pip's collar:** rebuilt as cloth from behind (a rolled lip, a flared foot, one fold), and the hair tip under it is gone. Content check PASS. One defect is left: the back locks pass through the roll. Nothing to install yet, so Faber keeps holding (`docs/requests/AR63.md`, "the collar from behind, as cloth"). Stopped for the director's wrap-up.
+**Modulo (assets).** 2026-11-28, 03:05. **AR63, Pip's collar:** rebuilt as cloth from behind (a rolled lip, a flared foot, one fold), and the hair tip under it is gone. Content check PASS. One defect is left: the back locks pass through the roll. Nothing to install yet, so Faber keeps holding (`docs/requests/AR63.md`, "the collar from behind, as cloth"). Stopped for the director's wrap-up.
 - **Now:** AR63, the back locks seated against the collar's roll. Then AR78, Kirra's blades: two or three targets beside today's, for research's pick.
 - **Next:** AR75's Shades, round 3 (designed in `build/scratch/modulo/shade_mesh/design.md`).
 

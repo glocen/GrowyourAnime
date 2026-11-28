@@ -72,6 +72,10 @@ local Refusals = {
 			Working = "Working in a bay. Take it out first.",
 			NotEnough = { Words = "Need {Need} more copies", Plain = "Not enough copies" },
 			MaxStars = "All seven stars already",
+			-- Rules.Signature (TR76): a signature's next level
+			NoManuals = { Words = "Need {Need} more Skill Manuals", Plain = "Not enough Skill Manuals" },
+			NoCredits = CREDITS,
+			MaxLevel = "Signature at its top level",
 			Filtered = "Try another name",
 			BadName = "Try another name",
 			TooLong = `At most {Voidkin.Nickname.Max} characters`,

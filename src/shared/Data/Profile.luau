@@ -29,6 +29,10 @@ export type OwnedVoidkin = {
 	Born: number, -- os.time() when it was uncovered
 	No: number?, -- its kind's number, the server's once it holds one (Rules.Exist; docs/design.md, "How many exist"); a
 	-- number is never reused, and nil until it comes, never waited on
+	-- Growing a Voidkin (docs/design.md, "Growing a Voidkin"; TR76): its Mastery experience in all, from leading it
+	-- (Rules.Mastery; nil, none yet), and its signature's level, 1 to Config.Signature.MaxLevel (Rules.Signature; nil, 1).
+	Mastery: number?,
+	Signature: number?,
 }
 
 export type ItemLine = { Stat: string, Value: number }
@@ -195,6 +199,7 @@ export type Data = {
 		Stones: { [string]: number }, -- forge stones, count by grade (Config.Reinforce.Grades; TR47)
 		Emblems: { [string]: number }, -- War Emblems, count by key, "set:stat" (Rules.Emblems), so identical ones stack
 		Jewels: { [string]: number }, -- jewels, count by "Colour:level" (TR47 part B)
+		Tokens: { [string]: number }, -- Skill Manuals, Arena Seals, Tower Crests: count by id (Definitions.Tokens; TR76)
 		-- The item rarities from Rare up this account has kept, so each one's first plays once (TR57's firsts;
 		-- Rules.Chests.Firsts); nil on a save from before, read once from the items it holds.
 		Seen: { [string]: boolean }?,
@@ -279,7 +284,7 @@ function Profile.Template(): Data
 		Index = {},
 		Items = {},
 		Presets = { { Slots = {}, Hands = {} } },
-		Bag = { Shards = {}, Chests = {}, Stones = {}, Emblems = {}, Jewels = {} },
+		Bag = { Shards = {}, Chests = {}, Stones = {}, Emblems = {}, Jewels = {}, Tokens = {} },
 		Settings = { Salvage = "", Music = 1, Sound = 1, Effects = 1, ShareFinds = true, ShowFinds = true },
 		Currency = { Credits = 0, Research = 0 },
 		Shop = { Stock = 0, Bought = {} },

@@ -751,12 +751,12 @@ function Hud.Cost(lead: Stats.Block, foe: Stats.Block): number
 	if not (lead.Health > 0) then
 		return math.huge
 	end
-	local leadRate, kindle = Stats.Rate(lead.Def)
-	local foeRate, foeKindle = Stats.Rate(foe.Def)
+	local leadRate, kindle = Stats.Rate(lead.Def, lead.Signature, lead.Stars)
+	local foeRate, foeKindle = Stats.Rate(foe.Def, foe.Signature, foe.Stars)
 	local dealt = leadRate
-		* Hit.Expected(lead, foe, { Extra = kindle, Resist = Passive.Resist(Passives.ById[foe.Def]) })
+		* Hit.Expected(lead, foe, { Extra = kindle, Resist = Passive.Resist(Passive.At(Passives.ById[foe.Def], foe.Stars)) })
 	local taken = foeRate
-		* Hit.Expected(foe, lead, { Extra = foeKindle, Resist = Passive.Resist(Passives.ById[lead.Def]) })
+		* Hit.Expected(foe, lead, { Extra = foeKindle, Resist = Passive.Resist(Passive.At(Passives.ById[lead.Def], lead.Stars)) })
 	if not (taken > 0) then
 		return 0
 	end

@@ -10,6 +10,10 @@ return {
 	-- every rarity, so one list).
 	StarCopies = { 1, 2, 4, 8, 16, 32, 64 },
 	StarShareOfBase = 0.0143, -- each star adds this share of the Voidkin's base stats (seeds "starPctOfBase")
+	-- The stars that add what a player can see (docs/design.md, "Growing a Voidkin", "Star perks"; TR76, the director's
+	-- yes of 2026-11-28, 11:32): a colour on its signature's effect, one step on its passive's row (Definitions.Passives'
+	-- Step), its frame in gold with a message to the server. Rules.Collection.Perks reads them.
+	Perks = { Colour = 3, Passive = 5, Gold = 7 },
 	-- Credits one copy sells for past the last star, by rarity. The builder's seed, 2026-11-12: ten times the seeds'
 	-- "shards.value", so a Common copy pays one ground-1 kill ("pace.creditsPerKillPerG").
 	SellCredits = { Common = 10, Uncommon = 30, Rare = 100, Epic = 400, Legendary = 2000, Mythical = 10000 } :: { [string]: number },

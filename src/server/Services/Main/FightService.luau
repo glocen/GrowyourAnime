@@ -45,6 +45,7 @@ local Tower = require(Shared.Rules.Tower)
 local Carry = require(Shared.Rules.Carry)
 local Markers = require(Shared.World.Markers)
 local Passive = require(Shared.Rules.Passive)
+local Signature = require(Shared.Rules.Signature)
 local MarkRule = require(Shared.Rules.Mark)
 local Hands = require(Shared.Rules.Hands)
 local TapMoveRule = require(Shared.Rules.TapMove)
@@ -275,9 +276,10 @@ local function setState(f: Fighter, state: State, untilTime: number?)
 	f.Model:SetAttribute("State", state)
 end
 
--- A lead's passive (Definitions.Passives), while Combat.Passives is on; a Shade has none.
+-- A lead's passive (Definitions.Passives), while Combat.Passives is on, one step on from star 5 (Rules.Passive.At; TR76);
+-- a Shade has none.
 local function passiveOf(f: Fighter): Passives.Row?
-	return if f.Side == "Lead" and Combat.Passives.On then Passives.ById[f.Def] else nil
+	return if f.Side == "Lead" and Combat.Passives.On then Passive.At(Passives.ById[f.Def], f.Block.Stars) else nil
 end
 
 local function setHealth(f: Fighter, health: number)
@@ -1175,7 +1177,9 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 		-- Kindle (TR49, the combat review): its Extra in the hit, through the elemental path, behind the element's gate.
 		Extra = Passive.Extra(own, action.Id, beat, 1),
 	}
-	local result = Hit.Resolve(f.Block, target.Block, hit.Coefficient, rolls, effects)
+	-- its signature's level picks its hit's row (Rules.Signature; TR76): level 1, or no row, is the action's own
+	local coefficient = Signature.Coefficient(action.Id, beat, f.Block.Signature, hit.Coefficient)
+	local result = Hit.Resolve(f.Block, target.Block, coefficient, rolls, effects)
 	-- A Guard's raised shield (AR52): a heavy hit or its fighter's signature breaks it open, landing whole and staggering
 	-- it; any other glances off, Keep of it going through and its push with it.
 	local keep = Fight.Guarded(target.Guard, at)

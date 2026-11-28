@@ -12,6 +12,7 @@ local GrowthConfig = require(Shared.Config.Growth)
 local Grounds = require(Shared.Definitions.Grounds)
 local Shards = require(Shared.Definitions.Shards)
 local Growth = require(Shared.Rules.Growth)
+local Mastery = require(Shared.Rules.Mastery)
 local Chests = require(Shared.Rules.Chests)
 local ChestsConfig = require(Shared.Config.Chests)
 local ReinforceConfig = require(Shared.Config.Reinforce)
@@ -117,7 +118,8 @@ end
 -- `chestRoll` drops (Rules.Chests.Dropped; the sure one needs no roll), and with `loot`'s rolls, its stones and an
 -- elite's Emblem Case (TR47; TR56), at `place`'s difficulty and from its stage's chests (TR48; Normal when nil); the case
 -- stands for the elite's own chest. A keeper's case comes with its win (Rules.Progress.KeeperWon), never here.
--- { Ok, Credits, Xp, Levels, Shard, First, Chest, Stone, Stones, Case, Kills } where Shard, First, Chest, Stone and
+-- The lead also earns its kind's Mastery (Rules.Mastery; TR76), never multiplied.
+-- { Ok, Credits, Xp, Levels, Mastery, Ranks, Shard, First, Chest, Stone, Stones, Case, Kills } where Shard, First, Chest, Stone and
 -- Case are "" when nothing dropped. A player without a lead still gets the rest.
 function Drops.Give(data: Profile.Data, kind: any, level: any, ground: any, roll: any, chestRoll: number?, loot: Loot?, place: Place?): { [string]: any }
 	local drop, problem = Drops.Roll(kind, level, ground, roll)
@@ -128,6 +130,8 @@ function Drops.Give(data: Profile.Data, kind: any, level: any, ground: any, roll
 	local lead = data.Voidkin[data.Roles.Lead]
 	local xp = if lead then round(drop.Xp * Growth.CatchUp(data, lead)) else 0 -- a lead far behind earns faster (TR72, item 3)
 	local levels = if lead then Growth.AddXp(lead, xp) else 0
+	local mastery = if lead then Mastery.Earned(kind) else 0
+	local ranks = if lead then Mastery.Add(lead, mastery) else 0
 	Goals.Note(data, "LevelUp", levels) -- today's "raise a Voidkin a level" (TR54)
 	local bag = data.Bag.Shards
 	if drop.Shard ~= "" then
@@ -163,6 +167,8 @@ function Drops.Give(data: Profile.Data, kind: any, level: any, ground: any, roll
 		Credits = drop.Credits,
 		Xp = xp,
 		Levels = levels,
+		Mastery = mastery,
+		Ranks = ranks,
 		Shard = drop.Shard,
 		First = first,
 		Chest = chest or "",

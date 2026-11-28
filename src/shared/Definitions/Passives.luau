@@ -22,6 +22,10 @@ export type Row = {
 	Kind: Kind,
 	Share: number, -- of the damage taken, of the hit, of the cooldown
 	Below: number?, -- Reduction: a share of its most health
+	-- Star 5's step (docs/design.md, "Star perks"; Config.Voidkin.Perks.Passive): added to Share from that star on
+	-- (Rules.Passive.At). nil: no step yet. PLACEHOLDERS, the builder's of 2026-11-28, until research writes each step
+	-- with its kit; First Strike's Share is already whole, so its step is something else, research's to write.
+	Step: number?,
 	Action: string?, -- Extra and Cooldown: the action's id (Definitions.Actions)
 	Beat: string?, -- Extra: the beat its hit lands on
 	-- Its look (FighterController/Passives): "Shell" round the body while a Reduction holds, "Flare" at an attachment of
@@ -32,15 +36,15 @@ export type Row = {
 
 local rows: { Row } = {
 	-- Second Wind: below 30% health he takes 20% less damage. A faint shell round him while it holds.
-	{ Id = "rook", Name = "Second Wind", Kind = "Reduction", Share = 0.2, Below = 0.3, Cue = "Shell" },
+	{ Id = "rook", Name = "Second Wind", Kind = "Reduction", Share = 0.2, Below = 0.3, Step = 0.05, Cue = "Shell" },
 	-- Kindle: his combo's third shot adds Fire worth 40% of the shot, as its own number. The lantern flares on it.
-	{ Id = "pip", Name = "Kindle", Kind = "Extra", Share = 0.4, Action = "PipCombo", Beat = "Shot3", Cue = "Flare", At = "Lantern" },
+	{ Id = "pip", Name = "Kindle", Kind = "Extra", Share = 0.4, Step = 0.1, Action = "PipCombo", Beat = "Shot3", Cue = "Flare", At = "Lantern" },
 	-- Tempo: Held Note's cooldown is 20% shorter. No cue: the song comes round more often.
-	{ Id = "lyric", Name = "Tempo", Kind = "Cooldown", Share = 0.2, Action = "LyricHeldNote" },
+	{ Id = "lyric", Name = "Tempo", Kind = "Cooldown", Share = 0.2, Step = 0.05, Action = "LyricHeldNote" },
 	-- First Strike: her first hit on a new target always crits (docs/roster.md). No cue of its own: the critical's number.
 	{ Id = "kirra", Name = "First Strike", Kind = "Opener", Share = 1 },
 	-- Insulated: he takes 25% less elemental damage (docs/roster.md). No cue: it's in his gloves and boots (AR11). A seed.
-	{ Id = "watt", Name = "Insulated", Kind = "Resist", Share = 0.25 },
+	{ Id = "watt", Name = "Insulated", Kind = "Resist", Share = 0.25, Step = 0.05 },
 }
 
 local Passives = {}

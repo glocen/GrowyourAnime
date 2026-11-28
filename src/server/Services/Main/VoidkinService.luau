@@ -26,7 +26,7 @@ local GUARDS: { [string]: (Player, any) -> string? } = {
 }
 
 -- What a keeper's try or a Tower run holds as it started, for the lead alone: its stars wait for the end (D10).
-local FROZEN: { [string]: boolean } = { SpendCopies = true }
+local FROZEN: { [string]: boolean } = { SpendCopies = true, RaiseSignature = true }
 
 VoidkinService.Filtered = "Filtered" -- a nickname the filter changes: refused, and the Voidkin keeps its name
 VoidkinService.FilterFailed = "FilterFailed" -- the filter couldn't answer: refused, to try again

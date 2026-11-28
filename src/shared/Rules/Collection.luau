@@ -11,6 +11,7 @@ local Voidkin = require(Shared.Definitions.Voidkin)
 local Profile = require(Shared.Data.Profile)
 local Stats = require(Shared.Rules.Stats)
 local Breaker = require(Shared.Rules.Breaker)
+local Signature = require(Shared.Rules.Signature)
 
 local Collection = {}
 
@@ -73,6 +74,13 @@ function Collection.Uncover(data: Profile.Data, def: string, now: number): { [st
 	end
 	owned.Copies += 1
 	return { Ok = true, Outcome = "Copy", Id = owned.Id, Def = def, Credits = 0 }
+end
+
+-- What its stars show (docs/design.md, "Star perks"; Config.Voidkin.Perks): Colour, its signature's effect in its
+-- star colour; Passive, its passive one step on (Rules.Passive.At); Gold, its frame in gold.
+function Collection.Perks(stars: number): { Colour: boolean, Passive: boolean, Gold: boolean }
+	local at = VoidkinConfig.Perks
+	return { Colour = stars >= at.Colour, Passive = stars >= at.Passive, Gold = stars >= at.Gold }
 end
 
 -- The copies the next star costs, or nil at the last star.
@@ -289,6 +297,7 @@ export type Facts = {
 -- What a client may ask, by name, with the same shape as Rules.Base's actions (VoidkinService registers them).
 --   SetLead { Voidkin }       the lead; the old lead takes a worker's bay unless facts say it's healing
 --   SpendCopies { Voidkin }   the next star
+--   RaiseSignature { Voidkin }   its signature's next level, for Skill Manuals and Credits (Rules.Signature; TR76)
 --   SetMark { Voidkin, Mark, On }   Mark "Favourite" or "Locked", On true or false
 --   SetNickname { Voidkin, Name }   "" takes it off; the server's filter passes it first
 --   SetShowcase { Voidkin }   the one the showcase at the gate stands (TR22); "" for the strongest
@@ -298,6 +307,9 @@ Collection.Actions = {
 	end,
 	SpendCopies = function(data: Profile.Data, args: any): { [string]: any }
 		return Collection.SpendCopies(data, voidkinArg(args))
+	end,
+	RaiseSignature = function(data: Profile.Data, args: any): { [string]: any }
+		return Signature.Raise(data, voidkinArg(args))
 	end,
 	SetMark = function(data: Profile.Data, args: any): { [string]: any }
 		local given = if type(args) == "table" then args else {}

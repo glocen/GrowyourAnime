@@ -6,6 +6,7 @@
 --      Base     the Voidkin's own points at level 1: its class's shape times its rarity times G(1); the level's own Regen
 --      Level    what its level adds to the same, times G(level) - G(1): the two make the own figure
 --      Stars    a share of the own attribute points (base and level) per star, linear, never of Regen
+--      Mastery  its Mastery rank's points to its class's Main, on G(level) (Rules.Mastery; TR76)
 --      Item     each line of each item worn, as it is: to an attribute or to a Battle Attribute. Worn means the preset's
 --               twelve shared slots and its pair for the Voidkin's own class, in Gear's order, and only an item whose row
 --               fits there (Definitions.Items.Fits), so a save edited by hand applies no wrong weapon (TR26)
@@ -37,6 +38,8 @@ local Jewels = require(Shared.Rules.Jewels)
 local JewelsConfig = require(Shared.Config.Jewels)
 local Regalia = require(Shared.Rules.Regalia)
 local Passive = require(Shared.Rules.Passive)
+local Mastery = require(Shared.Rules.Mastery)
+local Signature = require(Shared.Rules.Signature)
 local Actions = require(Shared.Definitions.Actions)
 local Passives = require(Shared.Definitions.Passives)
 
@@ -90,6 +93,10 @@ export type Block = {
 	Speed: number, -- a lead's walk in a fight, studs a second (Stats.SpeedOf); 0 for an enemy, which walks at its kind's (Config.Combat)
 	Attributes: { [string]: number }, -- each Basic Attribute's total, by its id; read by the sheet, never by a fight or Power
 	Main: string, -- its class's Main attribute's id, or "" (an enemy, an unknown class)
+	-- What its growth gives its kit, not its points (TR76): its stars, for star 5's passive step (Rules.Passive.At), and its
+	-- signature's level, for its hits' rows (Rules.Signature.Coefficient). An enemy's are 0 and 1, which change nothing.
+	Stars: number,
+	Signature: number,
 }
 
 export type Line = { Source: string, Stat: string, Value: number }
@@ -130,6 +137,8 @@ function Stats.Empty(level: number): Block
 		Speed = 0,
 		Attributes = Stats.NoPoints(),
 		Main = "",
+		Stars = 0,
+		Signature = 1,
 	}
 end
 
@@ -192,6 +201,11 @@ function Stats.Resolve(owned: Profile.OwnedVoidkin, preset: Profile.Preset?, dat
 		point("Level", id, whole - first)
 		point("Stars", id, whole * VoidkinConfig.StarShareOfBase * stars)
 	end
+	local masteryMain = attributes.Main[row.Class]
+	if masteryMain then
+		point("Mastery", masteryMain.Attribute, Mastery.Points(Mastery.Rank(Mastery.Xp(owned)), level))
+	end
+	block.Stars, block.Signature = stars, Signature.Level(owned)
 	local regen, firstRegen = Stats.Own(row, "Regen", level), Stats.Own(row, "Regen", 1)
 	add("Base", "Regen", firstRegen) -- no star share: the level's Regen is a value a second, never a share
 	add("Level", "Regen", regen - firstRegen)
@@ -266,8 +280,9 @@ end
 -- FightService runs it: one action at a time, each busy to its CancelFrom, the signature first whenever it's ready, its
 -- cooldown (a Cooldown passive's, Lyric's Tempo) counted from its start. A Voidkin without a kit fights with the
 -- stand-in's (Actions.KitOf); an enemy with its row's Action and Signature. A keeper's opening (its Enter, its first
--- slam Keeper.First in) isn't here: over a long fight it's the same rate. 0 for no attack.
-function Stats.Rate(def: string): (number, number)
+-- slam Keeper.First in) isn't here: over a long fight it's the same rate. 0 for no attack. `level` is its signature's
+-- level (Rules.Signature; nil, 1) and `stars` its stars, for star 5's passive step (nil, none).
+function Stats.Rate(def: string, level: number?, stars: number?): (number, number)
 	local enemy = Enemies.ById[def]
 	local kit: { Actions.Action } = {}
 	if enemy then
@@ -280,7 +295,7 @@ function Stats.Rate(def: string): (number, number)
 	else
 		kit = Actions.KitOf(def)
 	end
-	local row = Passives.ById[def]
+	local row = Passive.At(Passives.ById[def], stars or 0)
 	local combo: Actions.Action?, signature: Actions.Action? = nil, nil
 	for _, action in kit do
 		if action.Cooldown > 0 then
@@ -292,8 +307,9 @@ function Stats.Rate(def: string): (number, number)
 	local function sum(action: Actions.Action): (number, number)
 		local all, extra = 0, 0
 		for beat, hit in action.Hits do
-			all += hit.Coefficient
-			extra += hit.Coefficient * Passive.Extra(row, action.Id, beat, 1)
+			local coefficient = Signature.Coefficient(action.Id, beat, level or 1, hit.Coefficient)
+			all += coefficient
+			extra += coefficient * Passive.Extra(row, action.Id, beat, 1)
 		end
 		return all, extra
 	end
@@ -343,10 +359,10 @@ function Stats.Sum(block: Block): number
 	for _, stat in BARE do
 		(bare :: any)[stat] = 0
 	end
-	local rate, kindle = Stats.Rate(block.Def)
+	local rate, kindle = Stats.Rate(block.Def, block.Signature, block.Stars)
 	local dps = rate * hitRules.Expected(block, reference, { Extra = kindle })
 	local each = Actions.EnemyPerSecond
-	local taken = each * hitRules.Expected(reference, block, { Resist = Passive.Resist(Passives.ById[block.Def]) })
+	local taken = each * hitRules.Expected(reference, block, { Resist = Passive.Resist(Passive.At(Passives.ById[block.Def], block.Stars)) })
 	local unit = each * hitRules.Expected(reference, bare)
 	local lifesteal = StatsConfig.Lifesteal
 	local heal = block.Regen * StatsConfig.Regen.Share

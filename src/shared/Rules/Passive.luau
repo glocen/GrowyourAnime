@@ -3,9 +3,22 @@
 -- Each returns what nothing changes when the row is nil or of another kind, so a fighter without a passive needs no branch.
 -- No Roblox API: it runs with Studio closed.
 
-local Passives = require(game:GetService("ReplicatedStorage").Shared.Definitions.Passives)
+local Shared = game:GetService("ReplicatedStorage").Shared
+local Passives = require(Shared.Definitions.Passives)
+local VoidkinConfig = require(Shared.Config.Voidkin)
 
 local Passive = {}
+
+-- The row a Voidkin with `stars` fights with: from star 5 on (Config.Voidkin.Perks.Passive), its Share one Step further
+-- (docs/design.md, "Star perks"), a copy, never the definition. The row itself below that star, or without a step.
+function Passive.At(row: Passives.Row?, stars: number): Passives.Row?
+	if row == nil or row.Step == nil or not (stars >= VoidkinConfig.Perks.Passive) then
+		return row
+	end
+	local stepped = table.clone(row)
+	stepped.Share = row.Share + row.Step
+	return stepped
+end
 
 -- Whether a Reduction holds at `health` of `most`: standing, and under its share.
 function Passive.Holds(row: Passives.Row?, health: number, most: number): boolean

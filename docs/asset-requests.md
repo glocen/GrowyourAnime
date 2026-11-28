@@ -310,3 +310,4 @@ Written by `tools/fx/shade_tells.py`, from the kit's uploaded meshes and images 
 - [AR74](requests/AR74.md) · The HUD's left cluster · replaced by AR75 before any work
 - [AR75](requests/AR75.md) · The whole frame: the fight HUD and the base, one composition · see the piece
 - [AR76](requests/AR76.md) · Rook's Haymaker, its look overhauled · Scintilla, the target first
+- [AR77](requests/AR77.md) · The fall, overhauled: a foe implodes into the Void, our fighter goes back to its shard · Scintilla, the targets first

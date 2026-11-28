@@ -38,7 +38,7 @@ HANDOFF = REPO / "build" / "handoff"
 # Whose model is read from its delivery (build/handoff/<Name>: the recipe, its meshes and its maps), not from a .blend.
 # Watt's only .blend is the first design's, which left the game (AR11, delivery 3).
 DELIVERED = ("Watt", "Kirra")
-MADE = {"Rook": HANDOFF / "Rook" / "make", "Kirra": HANDOFF / "Kirra" / "make", "Pip": HANDOFF / "Pip" / "make"}   # in the kit's make (anime_make.py's handoff): where its files are
+MADE = {"Rook": HANDOFF / "Rook" / "make", "Kirra": HANDOFF / "Kirra" / "make", "Pip": HANDOFF / "Pip"}   # in the kit's make (anime_make.py's handoff): where its files are
 KIT = REPO / "build" / "handoff" / "UI" / "kit"
 K = 4            # pixels a point in a slice, the kit's
 NECK = Vector((0.0, 0.0, 4.0))  # R6's neck: the head turns about it
@@ -53,10 +53,10 @@ PORTRAITS = {
     # crop is wider than the first Rook's, for the hair (AR59).
     "Rook": dict(side=1, body=34, turn=22, tilt=-3, nod=5, elevation=3, centre=(-0.1, 0, 4.72), span=2.9,
                  head=("Rook_Head", "Rook_Hair"), hide=()),
-    # An apprentice under a hat too big: head cocked up at you from under the brim, eager, a little unsure. The crop is
-    # wider and higher than the first Pip's, so the finish's broad brim and its crown stand inside the frame (AR63).
-    "Pip": dict(side=-1, body=30, turn=20, tilt=8, nod=-4, elevation=-2, centre=(0.0, 0, 5.0), span=3.1,
-                head=("Pip_Head", "Pip_Hair", "Pip_Hat"), hide=("Pip_Lamp",)),
+    # An apprentice over his high collar: head cocked up at you, eager, a little unsure. C's finish (AR63): no hat, so
+    # the crop is Rook's height, and the collar turns with the head here, or its high side cuts across his mouth.
+    "Pip": dict(side=-1, body=30, turn=20, tilt=8, nod=-4, elevation=-2, centre=(0.0, 0, 4.66), span=2.8,
+                head=("Pip_Head", "Pip_Hair", "Pip_Collar"), hide=("Pip_Lamp",)),
     # A singer between songs: composed, chin a touch up, the headset to the camera. Her staff stands out of the crop:
     # at the card's size it's a line through her face.
     "Lyric": dict(side=1, body=32, turn=22, tilt=4, nod=-2, elevation=2, centre=(0.0, 0, 4.56), span=2.55,
@@ -400,7 +400,7 @@ def stroke(out: Path):
 
 LOOK = MODELS / "lanternrow"   # the merge's frames (tools/blender/lantern_row_look.py, `M` and `M far`): the street to read over
 WHO = {"Rook": "sizing you up: his right shoulder forward, chin down, a level look from under the brow",
-       "Pip": "looking up from under a hat too big, head cocked, eager and a little unsure",
+       "Pip": "looking up over his high collar, head cocked, eager and a little unsure",
        "Lyric": "between songs: composed, chin a touch up, the headset to the camera",
        "Watt": "the quiet wall: the collar up to his nose, a level, steady look over it",
        "Kirra": "a quick sideways look back over the shoulder, a touch sly"}

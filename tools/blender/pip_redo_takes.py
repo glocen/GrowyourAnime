@@ -188,17 +188,71 @@ def wide_hat(base, r_in, brim, crown, height, colour, band_, pitch=-5.0, roll=7.
 def standing_collar(colour, inside, edge):
     """A tall collar standing round his jaw from the jacket's neck, open at the front: low there, highest at the back.
     On the torso: it does not turn with his head.
-    It is round and clears the head all the way round, so the head turns inside it: squashed front to back (0.86),
-    its front wall stood on the head's own surface (0.625), and the head showed through it under his mouth (the
-    director, 2026-11-28). Its inside is now 0.69 from his middle and the lining's 0.665, the head 0.625. Its front is
-    lower, 0.06 where it was 0.16, so the rounder ring, further out, still leaves his mouth clear."""
+    - It is round and clears the head all the way round, so the head turns inside it. Squashed front to back (0.86),
+      its front wall stood on the head's own surface (0.625), and the head showed through it under his mouth (the
+      director, 2026-11-28). Its inside is 0.69 from his middle, the head 0.625. Its front is low (0.06), so his
+      mouth stays clear.
+    - It is cloth, not a drum (research, 2026-11-28: from behind, "a hard drum with straight sides, plastic"):
+      - its top is a round roll turned out past the wall, with a shadow line under it;
+      - its wall bows in under the roll and flares at its foot;
+      - one crease, at his back on his right where the game's camera sees it under his hair, from the roll to the
+        foot, deepest at the top: shaded by its own shape, as painted tones stepped into stairs up close (its rows
+        are closer there: 2.5 degrees, 7.5 elsewhere);
+      - where it stands out past his back, its foot settles down onto the back and never floats over it.
+    Its inside is `inside`, its outside `colour`: six tones, painted as the light falls."""
     b = am.Built("Collar")
-    b.loop((0.0, 0.0, 3.98), 0.74, 0.5, colour, thick=0.1, segments=24, squash=1.0,
-           lean=lambda deg: 0.06 + 0.52 * min(1.0, abs(deg) / 130) ** 1.2,
-           shades=(1.25, 1.0, 0.7, 0.5))
-    # its inside, ivory: a thin ring just within it, as tall
-    b.loop((0.0, 0.0, 3.99), 0.68, 0.5, inside, thick=0.03, segments=24, squash=1.0,
-           lean=lambda deg: 0.02 + 0.52 * min(1.0, abs(deg) / 130) ** 1.2, shades=(1.0, 0.92, 0.9, 0.8))
+    z0, r0 = 3.98, 0.69
+    fold = 157.5   # degrees round from his front, on his right
+    angles = sorted({i * 7.5 for i in range(48)} | {135 + j * 2.5 for j in range(18)})
+    segments = len(angles)
+
+    def height(deg):
+        return 0.06 + 0.52 * min(1.0, abs(deg) / 130) ** 1.2
+
+    def crease(deg):   # 1 on the fold, 0 from 12 degrees either side
+        off = abs(deg - fold)
+        return 0.5 + 0.5 * math.cos(math.pi * off / 12) if off < 12 else 0.0
+
+    def section(deg):
+        """The profile at `deg`, as (out from r0, up from z0): from the inside's foot up the inside, round the roll, down
+        the outside to its foot."""
+        h = height(deg)
+        roll = min(0.055, 0.3 * h)
+        cx, cz = 0.01 + roll, h - roll
+        arc = [(cx + roll * math.cos(math.radians(t)), cz + roll * math.sin(math.radians(t)))
+               for t in (135, 90, 45, 0, -45, -85)]
+        wall = cx + 0.4 * roll   # under the roll: it stands 0.6 of the roll's size out past this
+        return [(0.0, 0.0), (0.004, 0.55 * cz), (0.01, cz), *arc, (wall, 0.75 * cz), (wall + 0.014, 0.42 * cz),
+                (wall + 0.07, 0.0)]
+
+    rings = []
+    for i in range(segments):
+        ang = math.radians(angles[i])
+        deg = math.degrees(ang) if ang <= math.pi else math.degrees(ang) - 360
+        h, w = height(deg), crease(deg)
+        out = Vector((math.sin(ang), math.cos(ang), 0.0))
+        ring = []
+        for k, (dr, up) in enumerate(section(deg)):
+            t = min(1.0, max(0.0, (up / h - 0.15) / 0.65))
+            pull = w * (0.03 + 0.05 * t * t * (3 - 2 * t)) * (0.6 if k < 3 else 1.0)
+            ring.append(Vector((0, 0, z0 + up * (1 - 0.05 * w))) + out * (r0 + dr - pull))
+        # the foot's last point: tucked into the jacket, or, where the foot stands out past his back, settled down onto it
+        foot = ring[-1]
+        excess = max(0.0, -foot.y - 0.5)
+        inward = 0.06 + (excess / max(0.2, -out.y) if excess else 0.0)
+        ring.append(Vector((0, 0, z0 - min(0.3, 0.85 * excess))) + out * (foot.xy.length - inward))
+        rings.append([b.bm.verts.new(tuple(v)) for v in ring])
+    t_in, t_top, t_out, t_under, t_wall, t_close = (
+        tone(inside, 0.9), tone(colour, 1.24), tone(colour, 1.08), tone(colour, 0.66), tone(colour, 0.95),
+        tone(colour, 0.55))
+    parts = [t_in, t_in, t_in, t_top, t_top, t_out, t_out, t_under, t_wall, t_wall, t_wall]
+    for i in range(segments):
+        a_, b_ = rings[i], rings[(i + 1) % segments]
+        for k, c in enumerate(parts):
+            b.face((a_[k], b_[k], b_[k + 1], a_[k + 1]), c)
+        settled = a_[-1].co.z < z0 - 0.01 or b_[-1].co.z < z0 - 0.01
+        b.face((a_[-2], b_[-2], b_[-1], a_[-1]), t_under if settled else t_close)
+        b.face((a_[-1], b_[-1], b_[0], a_[0]), t_close)
     return b
 
 
@@ -587,7 +641,9 @@ def finish_c(joints, folder):
     # mass under them darker
     hair = am.Hair("#4E3216", "#F0BE56", seed=107, band=(0.52, 0.1, 0.42), scalp=am.HEAD_EGG, gap=0.12)
     hair.mass(am.hairline(front=4.98, temple=4.5, nape=4.0), (180, 10), opening=0.1, seed=107, k=0.5,
-              tips=((180, 18, 12), (148, 12, 12), (212, 12, 12), (120, 12, 10), (240, 12, 10), (82, 18, 18), (-82, 18, 18)),
+              tips=((180, 18, 2), (148, 12, 4), (212, 12, 4), (120, 12, 10), (240, 12, 10), (82, 18, 18), (-82, 18, 18)),
+              # the three at his back end inside the collar: at 12 degrees down they hung below his torso's top, behind
+              # his back, under it
               lift=0.06, off=(0.0, 0.11), ease=2.0, tuck=0.09)
     # the crown: seven locks, narrower than the take's five, flicked up and back, each lying a little over the next
     for i, (a, ph, length, width, heading) in enumerate(((-84, 16, 0.8, 0.38, 22), (-56, 11, 0.9, 0.4, 14), (-28, 8, 0.96, 0.42, 6),
@@ -602,7 +658,8 @@ def finish_c(joints, folder):
     for s in (-1, 1):
         for a, length in ((s * 72, 0.62), (s * 92, 0.66), (s * 112, 0.58)):
             hair.clump(a, 52, length, 0.34, heading=-s * 10, off=0.06, flick=32, hold=0.6, comb=(0, -0.2, -1), thick=0.1, taper=2.2)
-    for a, length in ((156, 0.6), (180, 0.7), (204, 0.6)):
+    for a, length in ((156, 0.5), (180, 0.54), (204, 0.5)):   # their ends inside the collar (the middle one hung
+        # below his torso's top, behind his back: 0.6, 0.7, 0.6 before)
         hair.clump(a, 76, length, 0.42, heading=0, off=0.05, flick=14, hold=0.7, comb=(0, -0.2, -1), thick=0.1, taper=2.2)
     # the fringe over his right eye: five locks, parted, the longest down past the eye
     for a, ph, length, width, comb in ((-36, 28, 1.04, 0.4, (0.25, 0.7, -1.2)), (-18, 26, 0.96, 0.4, (0.15, 0.7, -1.1)),

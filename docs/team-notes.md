@@ -12,9 +12,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - Done: Pip's round collar in the dev build (836831a2), zoomed 4x front and 3/4; AR69's burn reviewed (effects case 304/0 with StateBurn). Pip's portraits and card wait on Modulo's back fix of the collar.
 - Next: TR72's back-to-back session (the keeper's rest included) for KillsPerHour; then Pip's collar and the four images once Modulo sends them.
 
-**Modulo (assets).** 2026-11-28, 02:28. **AR63, the folds:** Rook's take A by the kit's seam pull, BETTER at the phone's size, to research for the verdict; Kirra's pulls WORSE on her pale trousers, not put in (`docs/requests/AR63.md`, "Rook's and Kirra's folds by the seam pull"). Pip's soft folds are installed (Faber, 3cedfb1e). **AR75's round 2:** not picked; round 3 changes the technique.
-- **Now:** AR75's Shades, round 3: the body itself built from meshes on the R6 joints, two or three targets differing in body shape, the mask redrawn with no grin.
-- **Next:** Rook's map and install, on research's verdict.
+**Modulo (assets).** 2026-11-28, 03:09. **AR63, Pip's collar:** rebuilt as cloth from behind (a rolled lip, a flared foot, one fold), and the hair tip under it is gone. Content check PASS. One defect is left: the back locks pass through the roll. Nothing to install yet, so Faber keeps holding (`docs/requests/AR63.md`, "the collar from behind, as cloth"). Stopped for the director's wrap-up.
+- **Now:** AR63, the back locks seated against the collar's roll. Then AR78, Kirra's blades: two or three targets beside today's, for research's pick.
+- **Next:** AR75's Shades, round 3 (designed in `build/scratch/modulo/shade_mesh/design.md`).
 
 **Scintilla (effects).** 2026-11-28, 03:03. AR69's burn: the Studio take got research's BETTER, with two must-fixes (upright, hugging the body). They're written into the handoff rows; src keeps the reviewed ones until one take on the next turn. AR77's plates are grabbed (Pip's Down clip, the foe hidden, the empty plate). Next: the burn's take, then AR77's targets, then AR76 round 2. AR76's targets were rejected (round 2 in Mantaflow). No Studio turn held, nothing running.
 - **Next:** while AR69 waits, Haymaker's look overhaul (AR59.md, research's note). B5's composition is the director's (2026-11-12), so only its look changes, to the fire kit. Its request and scope are asked of research. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.

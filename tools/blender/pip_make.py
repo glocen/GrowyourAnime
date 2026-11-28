@@ -287,20 +287,22 @@ def points():
             ("Chest", "Torso", (0.0, 0.6, 3.2), "where a hit lands")]
 
 
-def recipe_joints(recipe):
-    """The first Pip's two joints, his clips' (pip_model.py's recipe), on the new pieces; his glow as the first's."""
+def recipe_joints(recipe, hat=True):
+    """The first Pip's two joints, his clips' (pip_model.py's recipe), on the new pieces; his glow as the first's.
+    Without `hat` (AR63's C, the high collar), the lantern's joint alone: the collar is welded to the torso."""
     for entry in recipe["pieces"]:
         piece = entry["name"][len(NAME) + 1:]
         if piece == "Hat":
             entry.update({"motor": "Hat", "pivot": turn(HAT_PIVOT)})
         elif piece == "Lamp":
             entry.update({"motor": "Lamp", "pivot": turn(HOME)})
-    recipe["motors"] = {
+    recipe["motors"] = {} if not hat else {
         "Hat": {"note": "Turns about its pivot on the head: it lags every move and lifts on the send. Its rest tilt is in "
-                        "the mesh. CastShadow off on this piece, or the brim puts his face in the dark."},
+                        "the mesh. CastShadow off on this piece, or the brim puts his face in the dark."}}
+    recipe["motors"].update({
         "Lamp": {"note": "Floats beside his right shoulder, held by nothing. Its joint is on the Torso, and the clips move and "
                          "turn it; Lantern Burst sends it. CastShadow off: it's a light. A light in the tint around it is "
-                         "the builder's call, tuned in the engine."}}
+                         "the builder's call, tuned in the engine."}})
     recipe["stride"] = {"degrees": 25, "note": "the clips keep the first Pip's 25 degrees a leg; his trousers would allow more"}
     recipe["emissive"].update({
         "tint": "#FFFFFF", "cold": COLD, "hot": HOT,
@@ -310,14 +312,18 @@ def recipe_joints(recipe):
     return recipe
 
 
-def finish(key, made, out):
+FIRST_MAKE = ("tools/blender/anime_make.py and pip_make.py: R6's own blocks and round head with the clothes and the face "
+              "drawn on them, the hair one mesh; built pieces: the hat and the lantern, each on a joint of its own (the "
+              "first Pip's).")
+
+
+def finish(key, made, out, extra=None, make=FIRST_MAKE, hat=True):
+    """The install's files from `made`: `extra` its built pieces, {key: (piece, what it rides)} (the first Pip's hat
+    and lantern when None), `hat` whether the Hat joint is in it."""
     hand = out / "handoff"
     recipe = am.handoff(NAME, made, hand, points(), tint="#FFFFFF", hot=HOT,
-                        extra={"Hat": ("Hat", "Head"), "Lamp": ("Lamp", "Torso")},
-                        make="tools/blender/anime_make.py and pip_make.py: R6's own blocks and round head with the clothes and "
-                             "the face drawn on them, the hair one mesh; built pieces: the hat and the lantern, each on a joint "
-                             "of its own (the first Pip's).")
-    (hand / f"{NAME}.recipe.json").write_text(json.dumps(recipe_joints(recipe), indent=1))
+                        extra=extra or {"Hat": ("Hat", "Head"), "Lamp": ("Lamp", "Torso")}, make=make)
+    (hand / f"{NAME}.recipe.json").write_text(json.dumps(recipe_joints(recipe, hat), indent=1))
     emit(made["torso"].active_material, hand / f"{NAME}_Emissive.png", COLD)   # one material for every piece
     folder = hand / "model"
     folder.mkdir(parents=True, exist_ok=True)
@@ -331,11 +337,12 @@ def model_run(out):
     rmt.takes_run(out, [TAKE], finish=lambda key, made: finish(key, made, out))
 
 
-def sheet_run(out):
+def sheet_run(out, key=TAKE, title="PIP IN THE MAKE: THE MODEL FOR THE INSTALL", tag="AR63: the finish",
+              joints="Hat (on the Head), Lamp (on the Torso), the first Pip's"):
     if not (out / "layers" / "Shade_foe.npz").exists():
         rmt.shade_run(out)
-    rmt.proof_run(out, TAKE, title="PIP IN THE MAKE: THE MODEL FOR THE INSTALL", about="Common / Purple / Mage / Fire.",
-                  whose="his", stem="pip_make", beside=list(kt.BESIDE), tag="AR63: the finish")
+    rmt.proof_run(out, key, title=title, about="Common / Purple / Mage / Fire.",
+                  whose="his", stem="pip_make", beside=list(kt.BESIDE), tag=tag)
     proof = rs.load(out / "pip_make.png")
     recipe = json.loads((out / "handoff" / f"{NAME}.recipe.json").read_text())
     gap, W, side = 24, proof.shape[1], 560
@@ -350,7 +357,7 @@ def sheet_run(out):
         x += side + gap
     facts = [f"{recipe['tris']} triangles in {len(recipe['pieces'])} pieces", f"{recipe['texels_per_stud']} texels a stud on the body",
              "pieces: " + ", ".join(f"{p['name'][len(NAME) + 1:]} {p['tris']}" for p in recipe["pieces"]),
-             "joints of their own: Hat (on the Head), Lamp (on the Torso), the first Pip's",
+             "joints of their own: " + joints,
              f"the glow: the lantern's panes, {COLD} at rest, {HOT} through the send",
              "points: " + ", ".join(p["name"] for p in recipe["points"])]
     text += [(x, 60 + i * 24, 15, line, soft) for i, line in enumerate(facts)]

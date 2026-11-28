@@ -20,8 +20,11 @@ on between the same two Anime Vanguards units (internal: build/reference/takes/p
 
     blender.exe -b --factory-startup --python tools/blender/pip_redo_takes.py -- <out_dir> takes [Pip A B C]
     blender.exe -b --factory-startup --python tools/blender/pip_redo_takes.py -- <out_dir> shade|sheet|proof
+    blender.exe -b --factory-startup --python tools/blender/pip_redo_takes.py -- <out_dir> model|modelsheet
 
-`F` is C's finish (finish_c), with research's must-fixes; `proof` lays it alone as a finish is judged.
+`F` is C's finish (finish_c), with research's must-fixes; `proof` lays it alone as a finish is judged. `model` writes
+its install's files to <out_dir>/handoff (pip_make.finish: no hat, the collar welded to the torso), and the model
+pip_clips.py reads (PIP_MODEL=<out_dir>/handoff/model); `modelsheet` lays pip_make_sheet.png from them.
 """
 import math
 import sys
@@ -471,12 +474,13 @@ def take_c(joints, folder):
 
 # --- C, the finish: research's pick and its four must-fixes ------------------------------------------------------------
 
-def cel_sleeve(a, cloth, cuff, piping=None, seed=1, depth=0.72, edge=0.4):
-    """`sleeves` with its folds painted per side (am.cel_sides, the kit's sleeve), never one curve on all four."""
+def cel_sleeve(a, cloth, cuff, piping=None, seed=1, depth=0.72, edge=0.4, folds=None, rim=0.16):
+    """`sleeves` with its folds painted per side (am.cel_sides; `folds` the kit's sleeve when None), never one curve
+    on all four."""
     w = a.wrap
     w.lay(w.rect(-9, 0.0, 9, 2.0), cloth)
     band(w, 0.0, 0.26, cuff, tone(cuff, 0.5))
-    am.cel_sides(a, am.SLEEVE_CEL, cloth, depth, edge)
+    am.cel_sides(a, folds or am.SLEEVE_CEL, cloth, depth, edge, rim=rim)
     for q in a.sides:
         dark(q, q.soft(q.rect(-9, 0.26, 9, 0.3), 0.02), 0.3)
     if piping is not None:
@@ -491,6 +495,12 @@ def cel_sleeve(a, cloth, cuff, piping=None, seed=1, depth=0.72, edge=0.4):
 
 # On the black, a fold is its lit ridge, long and thin, as AV's black cloth has them (the first finish's short leaves
 # read as grey commas, 2026-11-28): the top's in its opening and under the jacket, the trousers' from the hip to the knee.
+# On the brick, fewer folds and larger, deep with a wide dark edge (research's checkpoint, 2026-11-28: "faint on one
+# bright red"): one on each face of a sleeve, one each side of the jacket's front and back.
+BRICK_SLEEVE = {"out": [([(-0.5, 1.94), (-0.12, 1.5), (0.2, 1.22)], 0.36)],
+                "front": [([(0.46, 1.2), (0.12, 0.96), (-0.24, 1.0)], 0.3)],
+                "back": [([(0.42, 1.9), (0.12, 1.4), (-0.08, 0.98)], 0.32)]}
+BRICK = dict(depth=0.5, edge=0.26, rim=0.26)
 BLACK_TOP = [([(-0.12, 1.72), (-0.08, 1.3), (-0.12, 0.98)], 0.035), ([(-0.24, 0.8), (-0.1, 0.5), (0.0, 0.3)], 0.04),
              ([(0.26, 0.78), (0.2, 0.5), (0.24, 0.3)], 0.035)]
 BLACK_LEG = {"front": [([(-0.3, 1.96), (-0.12, 1.4), (-0.04, 0.96)], 0.05), ([(0.32, 1.3), (0.24, 1.08), (0.26, 0.94)], 0.035)],
@@ -522,8 +532,7 @@ def finish_c(joints, folder):
     w.lay(w.rect(-9, crop, 9, 2.0), brick)
     f.lay(f.poly([(-0.28, 2.0), (0.28, 2.0), (0.36, crop), (-0.36, crop)]), black)
     for s in (-1, 1):
-        cel(f, [(s * 0.98, 1.94), (s * 0.8, 1.6), (s * 0.58, 1.26)], 0.2, brick, 0.7, 0.4)   # pulled from the shoulder
-        cel(f, [(s * 0.98, 1.22), (s * 0.82, 1.06), (s * 0.62, 1.0)], 0.12, brick, 0.7, 0.4)  # gathered over the hem
+        cel(f, [(s * 1.0, 1.96), (s * 0.82, 1.5), (s * 0.56, 1.06)], 0.34, brick, **BRICK)   # pulled from the shoulder
         f.lay(f.poly([(s * 0.28, 2.0), (s * 0.4, 2.0), (s * 0.48, crop), (s * 0.36, crop)]), facing)
         line(f, [(s * 0.28, 2.0), (s * 0.36, crop)], 0.026, edge)
         line(f, [(s * 0.4, 2.0), (s * 0.48, crop)], 0.018, edge, 0.85)
@@ -536,8 +545,7 @@ def finish_c(joints, folder):
     line(back, [(-1.0, 1.6), (0.0, 1.66), (1.0, 1.6)], 0.016, edge, 0.75)
     line(back, [(0.0, 1.62), (0.0, crop + 0.12)], 0.016, edge, 0.65)
     for s in (-1, 1):
-        cel(back, [(s * 0.96, 1.52), (s * 0.72, 1.22), (s * 0.5, 1.0)], 0.2, brick, 0.7, 0.4)
-        cel(back, [(s * 0.3, 1.56), (s * 0.24, 1.26), (s * 0.28, 1.0)], 0.1, brick, 0.74, 0.42)
+        cel(back, [(s * 0.96, 1.56), (s * 0.68, 1.22), (s * 0.42, 1.02)], 0.34, brick, **BRICK)
     band(w, 0.12, 0.26, ivory, tone(ivory, 0.6))
     f.lay(f.rect(-0.1, 0.12, 0.1, 0.26), "#3A3B44")
     shadow(t, 0.4)
@@ -547,7 +555,7 @@ def finish_c(joints, folder):
 
     for i, key in enumerate(("rs", "ls")):
         a = b[key]
-        cel_sleeve(a, brick, black, piping=ember, seed=102 + i)
+        cel_sleeve(a, brick, black, piping=ember, seed=102 + i, folds=BRICK_SLEEVE, **BRICK)
         band(a.wrap, 1.02, 1.08, tone(brick, 0.66), None)
     tops(b, brick)
 
@@ -562,8 +570,10 @@ def finish_c(joints, folder):
 
     head = am.Head(skin)
     face(head, skin, "#E5542A", "#6A4A26")
-    hair = am.Hair("#4E3216", "#F0BE56", seed=107, band=(0.52, 0.1, 0.42), scalp=am.HEAD_EGG)
-    hair.mass(am.hairline(front=4.98, temple=4.5, nape=4.0), (180, 10), opening=0.1, seed=107,
+    # dark between the locks (research's checkpoint, 2026-11-28): each lock's edges in shade beside its lit ridge, the
+    # mass under them darker
+    hair = am.Hair("#4E3216", "#F0BE56", seed=107, band=(0.52, 0.1, 0.42), scalp=am.HEAD_EGG, gap=0.12)
+    hair.mass(am.hairline(front=4.98, temple=4.5, nape=4.0), (180, 10), opening=0.1, seed=107, k=0.5,
               tips=((180, 18, 12), (148, 12, 12), (212, 12, 12), (120, 12, 10), (240, 12, 10), (82, 18, 18), (-82, 18, 18)),
               lift=0.06, off=(0.0, 0.11), ease=2.0, tuck=0.09)
     # the crown: seven locks, narrower than the take's five, flicked up and back, each lying a little over the next
@@ -598,6 +608,12 @@ def today(joints, folder):
 
 TAKES = {"Pip": today, "A": take_a, "B": take_b, "C": take_c, "F": finish_c}
 
+# C's finish for the install (pip_make.finish): no hat; the collar welded to the torso, the lantern on its own joint
+C_PIECES = {"Collar": ("Collar", "Torso"), "Lamp": ("Lamp", "Torso")}
+C_MAKE = ("tools/blender/anime_make.py, pip_make.py and pip_redo_takes.py (finish_c): R6's own blocks and round head with "
+          "the clothes and the face drawn on them, the hair one mesh; built pieces: the standing collar, welded to the "
+          "torso, and the lantern on a joint of its own (the first Pip's).")
+
 
 if __name__ == "__main__":
     rt.TAKES, rt.SAID, rt.WHO = TAKES, SAID, tuple(TAKES)
@@ -610,6 +626,11 @@ if __name__ == "__main__":
         rt.shade_run(OUT)
     elif mode == "sheet":
         rt.sheet_run(OUT, WORDS, BESIDE)
+    elif mode == "model":   # C's finish drawn again, and the install's files in <out>/handoff
+        rt.takes_run(OUT, ["F"], finish=lambda key, made: pm.finish(key, made, OUT, extra=C_PIECES, make=C_MAKE, hat=False))
+    elif mode == "modelsheet":
+        pm.sheet_run(OUT, key="F", title="PIP, C'S FINISH: THE MODEL FOR THE INSTALL", tag="AR63: C's finish",
+                     joints="Lamp (on the Torso), the first Pip's; the collar welded to the Torso")
     elif mode == "proof":   # C's finish alone, as a finish is judged (rook_make_takes.proof_run)
         rt.proof_run(OUT, "F", title="AR63: PIP, C'S FINISH", about="Common / Purple / Mage / Fire.", whose="his",
                      stem="pip_finish", beside=list(BESIDE), tag="AR63: C's finish")

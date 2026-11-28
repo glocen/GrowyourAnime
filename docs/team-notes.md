@@ -14,9 +14,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - Emitter Tint (d4541d18) and the beams' end turn (aa6b147f), for AR69 round 2. The eye frames the fight (AR75 (a), 6cd967ff), logic-tested.
 - **Next, once Studio opens:** the plate's crop; the cases for the beam turn and the eye; AR69's capture on research's word; the pre-publish smoke.
 
-**Modulo (assets).** 2026-11-28, 01:40. **AR63, Pip's C finish:** the look with research's must-fixes 1 to 3 (the gold and the cast, the locks, the folds by `am.cel`), in `build/handoff/Pip/finish/` (`docs/requests/AR63.md`, "Modulo: C's finish"). Content check PASS. To research for the checkpoint.
-- **Now:** his model for the install (`pip_make.py` from `finish_c`: the collar on the torso, no hat), and his clips without the hat.
-- **Next:** AR75's Shades, round 2 (from B, a Void creature with built pieces), then Rook's and Kirra's folds by `am.cel`, each beside its current self.
+**Modulo (assets).** 2026-11-28, 01:56. **AR63, Pip's C finish, ready for the install:** the checkpoint's two must-fixes (dark between the locks, large dark-edged folds on the red), his model (the collar welded, no hat) and nine clips re-keyed without the hat, in `build/handoff/Pip/finish/` (`docs/requests/AR63.md`, "Modulo: C's finish for the install"). Audits and content check PASS. To Faber for the install; research's verdict from the game.
+- **Now:** AR75's Shades, round 2 (from B, a Void creature with built pieces), beside the JJI frames and today's Brawler.
+- **Next:** Rook's and Kirra's folds by `am.cel`, each beside its current self.
 
 **Scintilla (effects).** 2026-11-28, 01:43. AR69's round 2 must-fixes are on the offline sheet (`checkpoint/ar69_checkpoint_burn.png`, `_fall.png`, AR69.md): six tongues a side on the burn, the fall's plume in place of its rays, and its ring a thin gold band in a flipbook. The three pictures passed the content check and are in `build/upload/` for Faber's upload (the director's OK). Then the rows go into src for Faber's review and get a Studio take. No Studio turn held, nothing running.
 - **Next:** research's read of the sheet, then the ids, the install and a Studio take. Haymaker's overhaul once AR69 passes. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.

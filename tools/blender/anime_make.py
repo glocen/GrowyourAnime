@@ -335,7 +335,7 @@ def creases(p, lines, amount=0.4, wide=0.03):
 FOLD = 1.2   # the folds' depth over AR59's (polish-later's "one step deeper", pulled forward by AR60)
 
 
-def cel(p, pts, width, cloth, depth=0.78, edge=0.52):
+def cel(p, pts, width, cloth, depth=0.78, edge=0.52, rim=0.16):
     """A fold as anime cloth is painted (AR63's must-fix 3, 2026-11-28: `creases`' one soft crescent, tiled over
     every garment, read as a print): a broad shade shape with a hard edge, swelling from where the cloth pulls and
     running out, in the cloth's own shade (`depth` of its colour), its crease line along one edge only (`edge`).
@@ -346,7 +346,7 @@ def cel(p, pts, width, cloth, depth=0.78, edge=0.52):
     d = np.gradient(P, axis=0)
     n = np.stack([-d[:, 1], d[:, 0]], axis=1)
     n /= np.maximum(np.linalg.norm(n, axis=1, keepdims=True), 1e-6)
-    p.lay(p.stroke(P + n * width * 0.34, (width * 0.1, width * 0.16, width * 0.1, 0.0), n=24), tone(cloth, edge), 0.9)
+    p.lay(p.stroke(P + n * width * 0.34, (width * rim * 0.625, width * rim, width * rim * 0.625, 0.0), n=24), tone(cloth, edge), 0.9)
 
 
 SLEEVE_CEL = {   # a sleeve's folds, side by side (cel_sides): pulled from the shoulder and gathered at the cuff outside,
@@ -363,7 +363,7 @@ LEG_CEL = {      # a trouser leg's: from the hip across the thigh and at the kne
 }
 
 
-def cel_sides(block, folds, cloth, depth=0.78, edge=0.52, scale=1.0):
+def cel_sides(block, folds, cloth, depth=0.78, edge=0.52, scale=1.0, rim=0.16):
     """`cel` round a limb, each side its own folds, so no one curve is stamped on all four (AR63's must-fix 3):
     `folds` maps "out" (away from the body), "in", "front" and "back" to [(points, width)] as the right side's limb
     has them; the left side's are mirrored. `scale` widens or narrows every fold."""
@@ -371,7 +371,7 @@ def cel_sides(block, folds, cloth, depth=0.78, edge=0.52, scale=1.0):
     names = {"out": "left" if left else "right", "in": "right" if left else "left", "front": "front", "back": "back"}
     for side, lines in folds.items():
         for pts, wide in lines:
-            cel(block.faces[names[side]], [(-x if left else x, y) for x, y in pts], wide * scale, cloth, depth, edge)
+            cel(block.faces[names[side]], [(-x if left else x, y) for x, y in pts], wide * scale, cloth, depth, edge, rim)
 
 
 def grain(block, amount=0.06, seed=1):
@@ -492,8 +492,12 @@ class Hair:
     mesh by a picture, never by colours on its points). What makes it read as hair, and not as spines: few clumps, of three sizes;
     each lying on the one below; the tips turned out, never the whole clump; one way round the crown for all."""
 
-    def __init__(self, root, tip, seed=1, band=(0.5, 0.11, 0.4), scalp=None):
+    def __init__(self, root, tip, seed=1, band=(0.5, 0.11, 0.4), scalp=None, gap=None):
         self.bm = bmesh.new()
+        # how much of a lock's own colour its two edges keep, the rest the root's dark: the valley between it and the
+        # next, as the genre's spikes have it (AR63's must-fix, 2026-11-28). None: the kit's first, 0.82 of it, lit by
+        # the band
+        self.gap = gap
         # the egg the hair lies on: the kit's (SCALP, SCALP_TOP), or `scalp`, (radius, top, power, the face's
         # clearance), a squared egg laid out by the true angle down from the crown (HEAD_EGG)
         self.egg = scalp or (SCALP, SCALP_TOP, None, FACE)
@@ -654,7 +658,12 @@ class Hair:
             left, right = q + side * (width / 2 * s), q - side * (width / 2 * s)
             top = q + side * (width / 2 * s * ridge) + out * (thick * s)
             rings.append([self._vert(at) for at in (left, top, right, right, left)])
-            shades.append([self.shine(left, c * 0.82), self.shine(top, c * 1.04), self.shine(right, c * 0.82), c * 0.56, c * 0.56])
+            if self.gap is None:
+                edges = self.shine(left, c * 0.82), self.shine(right, c * 0.82)
+            else:
+                deep = lambda q: self.shine(q, c) + (self.pair[0] - self.shine(q, c)) * (1 - self.gap)  # noqa: E731
+                edges = deep(left), deep(right)   # toward the root's dark, warm, never the gold made grey
+            shades.append([edges[0], self.shine(top, c * 1.04), edges[1], c * 0.56, c * 0.56])
         strip = len(self.strips)
         self.strips.append(np.clip(np.array(shades, np.float32), 0, 1))
         for j, (lo, hi) in enumerate(zip(rings, rings[1:])):
@@ -891,18 +900,21 @@ class Hair:
             h, w = pic.shape[:2]
             px[y0 - 1:y0 + h + 1, x0 - 1:x0 + w + 1] = np.pad(pic, ((1, 1), (1, 1), (0, 0)), mode="edge")
 
-        def spread(grid):
+        def spread(grid, valley=False):
             n, k = grid.shape[:2]
             rows, cols = np.linspace(0, n - 1, (n - 1) * step + 1), np.linspace(0, k - 1, (k - 1) * step + 1)
             r0, c0 = np.minimum(rows.astype(int), n - 2), np.minimum(cols.astype(int), k - 2)
-            fr, fc = (rows - r0)[:, None, None], (cols - c0)[None, :, None]
+            fr, fc = (rows - r0)[:, None, None], (cols - c0)
+            if valley:   # the light held across the lit face, the dark only near each edge (`gap`)
+                fc = np.where(c0 % 2 == 0, 1 - (1 - fc) ** 2, fc ** 2)
+            fc = fc[None, :, None]
             g = grid[r0] * (1 - fr) + grid[r0 + 1] * fr
             return np.pad(g[:, c0] * (1 - fc) + g[:, c0 + 1] * fc, ((1, 1), (1, 1), (0, 0)), mode="edge")
 
         corner = lambda i: ((i % per_row) * cell, (i // per_row) * pitch)  # noqa: E731
         for i, s in enumerate(self.strips):
             x0, y0 = corner(i)
-            lit, under = spread(s[:, :3]), spread(s[:, 3:])
+            lit, under = spread(s[:, :3], self.gap is not None), spread(s[:, 3:])
             px[y0:y0 + lit.shape[0], x0:x0 + lit.shape[1]] = lit
             px[y0:y0 + under.shape[0], x0 + 11:x0 + 11 + under.shape[1]] = under
         px = np.clip(px, 0, 1)   # the clumps' colours are light's own measure; a picture holds the screen's

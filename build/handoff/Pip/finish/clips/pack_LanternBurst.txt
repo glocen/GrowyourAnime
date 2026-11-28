@@ -1,0 +1,21 @@
+LanternBurst: 133 frames, 2.20 s
+  the lantern's nearest, in studs: Torso 0.35 at 18; Head 1.25 at 32; over the floor 1.39 at 65
+  a leg's widest swing: 24 of 25 degrees, at 61
+  the longest an arm is nearly still at 20 to 70 degrees up, of 6 frames: right 0 (to 132), left 0 (to 132)
+[audit] Pip_LanternBurst.json (export, 133 poses)
+  Legs cross            0.005 studs at 1.0167 (the legs)
+  Arm through body      0.036 studs at 0.3167 (Right Arm into Torso)
+  Leg out of hip        0.006 studs at 0.8 (Right Leg)
+  Weapon through body   0.000 studs
+  Under the floor       0.000 studs at 1.1 (Right Leg)
+  Pop                   1.698x at 1.7667 (Left Leg turns 2.3 deg in one frame)
+  Seam                  0.000 deg
+  Limb flip             8.741 deg at 0.7833 (Right Leg turns about its own length in one frame)
+  Wrist flip            0.000 deg
+  Salute held           0.000 s
+  Neck offset           0.000 studs at 1.35 (the head off its neck)
+  Nod                  16.000 deg at 1.7667 (the head against the torso)
+  Beat                  1.451x at 1.1 (Right Arm turns 6.1 deg in one frame, on the marker Burst; the clip's own beat, for information)
+  Shoulder cap          0.321 studs at 1.0167 (Left Arm; inherent to R6, for information)
+  Eyes                 -12.0 to +35.6 deg (at 1.7667 and 0.9333; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
+AUDIT PASS

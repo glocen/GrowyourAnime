@@ -1,0 +1,123 @@
+{
+  "Fps": 60,
+  "Clips": {
+    "Idle": {
+      "File": "Pip_Idle.json",
+      "Frames": 193,
+      "Seconds": 3.2,
+      "Loop": true,
+      "Markers": []
+    },
+    "Combo": {
+      "File": "Pip_Combo.json",
+      "Frames": 101,
+      "Seconds": 1.667,
+      "Loop": false,
+      "Markers": [
+        [
+          10,
+          "Shot1"
+        ],
+        [
+          26,
+          "Shot2"
+        ],
+        [
+          62,
+          "Shot3"
+        ]
+      ]
+    },
+    "LanternBurst": {
+      "File": "Pip_LanternBurst.json",
+      "Frames": 133,
+      "Seconds": 2.2,
+      "Loop": false,
+      "Markers": [
+        [
+          8,
+          "Heat"
+        ],
+        [
+          51,
+          "Send"
+        ],
+        [
+          66,
+          "Burst"
+        ],
+        [
+          98,
+          "Return"
+        ]
+      ],
+      "Flight": 12.0
+    },
+    "Hit": {
+      "File": "Pip_Hit.json",
+      "Frames": 21,
+      "Seconds": 0.333,
+      "Loop": false,
+      "Markers": []
+    },
+    "Down": {
+      "File": "Pip_Down.json",
+      "Frames": 67,
+      "Seconds": 1.1,
+      "Loop": false,
+      "Markers": [
+        [
+          29,
+          "Land"
+        ]
+      ]
+    },
+    "Up": {
+      "File": "Pip_Up.json",
+      "Frames": 59,
+      "Seconds": 0.967,
+      "Loop": false,
+      "Markers": []
+    },
+    "Reveal": {
+      "File": "Pip_Reveal.json",
+      "Frames": 97,
+      "Seconds": 1.6,
+      "Loop": false,
+      "Markers": [
+        [
+          24,
+          "Kindle"
+        ],
+        [
+          58,
+          "Flourish"
+        ]
+      ]
+    },
+    "Work": {
+      "File": "Pip_Work.json",
+      "Frames": 121,
+      "Seconds": 2.0,
+      "Loop": true,
+      "Markers": [
+        [
+          27,
+          "Pump"
+        ]
+      ]
+    },
+    "Skip": {
+      "File": "Pip_Skip.json",
+      "Frames": 33,
+      "Seconds": 0.533,
+      "Loop": false,
+      "Markers": [
+        [
+          21,
+          "Land"
+        ]
+      ]
+    }
+  }
+}

@@ -1,0 +1,21 @@
+Up: 59 frames, 0.97 s
+  the lantern's nearest, in studs: Torso 0.82 at 58; Head 1.14 at 4; over the floor 0.91 at 0
+  a leg's widest swing: 12 of 25 degrees, at 10
+  the longest an arm is nearly still at 20 to 70 degrees up, of 6 frames: right 0 (to 58), left 2 (to 24)
+[audit] Pip_Up.json (export, 59 poses)
+  Legs cross            0.000 studs at 0.6 (the legs)
+  Arm through body      0.017 studs at 0.2667 (Left Arm into Torso)
+  Leg out of hip        0.000 studs at 0.9 (Right Leg)
+  Weapon through body   0.000 studs
+  Under the floor       0.000 studs at 0.9167 (Right Leg)
+  Pop                   1.021x at 0.6833 (Left Leg turns 2.7 deg in one frame)
+  Seam                  0.000 deg
+  Limb flip             3.165 deg at 0.4833 (Right Arm turns about its own length in one frame)
+  Wrist flip            0.000 deg
+  Salute held           0.000 s
+  Neck offset           0.000 studs at 0.0 (the head off its neck)
+  Nod                  24.001 deg at 0.1667 (the head against the torso)
+  Shoulder cap          0.424 studs at 0.0 (Right Arm; inherent to R6, for information)
+  Salute tilted         0.150 s at 0.2833 (Left Arm 26 up, 28 off its facing, in the zone to 0.4167; the body tilted past 30 deg, so no salute: for information)
+  Eyes                 +4.2 to +65.5 deg (at 0.6 and 0.0833; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
+AUDIT PASS

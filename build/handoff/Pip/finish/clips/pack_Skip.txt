@@ -1,0 +1,21 @@
+Skip: 33 frames, 0.53 s
+  the lantern's nearest, in studs: Torso 0.79 at 9; Head 1.64 at 5; over the floor 3.18 at 25
+  a leg's widest swing: 8 of 25 degrees, at 15
+  the longest an arm is nearly still at 20 to 70 degrees up, of 6 frames: right 0 (to 32), left 0 (to 32)
+[audit] Pip_Skip.json (export, 33 poses)
+  Legs cross            0.000 studs at 0.1333 (the legs)
+  Arm through body      0.002 studs at 0.1333 (Left Arm into Torso)
+  Leg out of hip        0.001 studs at 0.2333 (Right Leg)
+  Weapon through body   0.000 studs
+  Under the floor       0.000 studs at 0.0333 (Right Leg)
+  Pop                   2.092x at 0.15 (Right Leg turns 5.3 deg in one frame)
+  Seam                  0.000 deg
+  Limb flip             7.228 deg at 0.15 (Right Arm turns about its own length in one frame)
+  Wrist flip            0.000 deg
+  Salute held           0.000 s
+  Neck offset           0.000 studs at 0.2333 (the head off its neck)
+  Nod                   1.800 deg at 0.15 (the head against the torso)
+  Beat                  1.484x at 0.35 (Left Arm turns 11.8 deg in one frame, on the marker Land; the clip's own beat, for information)
+  Shoulder cap          0.155 studs at 0.25 (Right Arm; inherent to R6, for information)
+  Eyes                 +4.2 to +5.2 deg (at 0.15 and 0.35; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
+AUDIT PASS

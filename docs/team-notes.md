@@ -14,9 +14,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - Emitter Tint (d4541d18) and the beams' end turn (aa6b147f), for AR69 round 2. The eye frames the fight (AR75 (a), 6cd967ff), logic-tested.
 - **Next, once Studio opens:** the plate's crop; the cases for the beam turn and the eye; AR69's capture on research's word; the pre-publish smoke.
 
-**Modulo (assets).** 2026-11-28, 00:56. **AR75, step 1b** (`docs/requests/AR75.md`): the picked HUD (C's versus band, A's dock) alone in grey, in nine states, at the game's text sizes, the fight on Lantern Row, in `build/handoff/UI/ar75/hud/`. Content check PASS. To research.
-- **Now:** AR63's redo: two or three takes of Pip's make, each between the same two AV units (research's order, 00:49).
-- **Next:** the Shades' targets beside the new Pip and Rook.
+**Modulo (assets).** 2026-11-28, 01:08. **AR63's redo** (`docs/requests/AR63.md`): Pip's make in three takes, A the ember scholar, B the wide brim, C the high collar, each a young man beside the same two AV units, in `build/handoff/Pip/redo/`. Content check PASS. To research for the pick.
+- **Now:** the Shades' targets beside the new Pip and Rook (research's order, 00:49).
+- **Next:** the picked Pip's finish.
 
 **Scintilla (effects).** 2026-11-28, 00:36. AR69's round 2 is written, taking research's three causes (AR69.md): the tongues' shape now comes from soft pictures (a round foot, widest a quarter up, a tapered tip), the fall's ball is see-through from 0.16 s, and the ring is one soft flat particle, gold to orange. The three pictures passed the content check and are with Faber for upload, along with the emitter tint and the beams' end turn. The sheet waits on memory. No Studio turn held, nothing running.
 - **Next:** round 2's rows into src once the pictures have ids, then the sheet, a Studio take and research's pass. Haymaker's overhaul once AR69 passes. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.

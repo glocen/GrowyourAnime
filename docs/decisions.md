@@ -17,6 +17,8 @@ The decisions in force: what binds the work today, grouped, one line each. A sta
 - The five launch Voidkin get earned cosmetic forms "post early access", with no stats or sales. L137,140 [2026-11-18, 22:00]
 - Aim at a fuller launch, with global messages and a chest for each launch item, plus additions the team proposes, each through its tier. L85 [2026-11-24, by 10:45]
 
+- The game's shape for launch is TR76 (`docs/requests/TR76.md`), yes as restated: each Voidkin grows itself (Mastery 1 to 5, Signature levels 1 to 5, Star perks), the Lantern District, the Void Colosseum (replaces the Clash Grounds), the Void Shop rework with a weekly Exchange, the Index, the Tower upgrade, and the shop's share of Credits from hour 0. Gemini's numbers are seeds until research checks them. Research overhauls whatever needs it without waiting to be asked; the UI is overhauled. Log, "Words after the split" [2026-11-28, by 11:32]
+
 ## The rules of work
 
 - Shorten AGENTS.md with the supreme rules word for word and Codex's lost-rule check. Split decisions.md into the decisions in force and the words kept whole in a monthly log. One file per open piece, with the request files as indexes, after a pilot. Then the game first. L14 [2026-11-27, by 13:39]
@@ -59,7 +61,8 @@ The decisions in force: what binds the work today, grouped, one line each. A sta
 
 - Use eight plots in two rows around the Void Shop, Void Clash and Calamity sites. Save bases to accounts. Vacant plots stay bare. L167,392,324 [2026-11-09] [2026-11-11] [2026-11-15, night]
 - Give each Arc one place for both difficulties. The Festival Door connects base and Arc. L118,209 [2026-11-19, by 11:16] [2026-11-12]
-- The Festival of Battles is reimagined, with research's creative freedom: how it works and Lantern Row's map. The four stretches and the checkpoints are dropped ("didnt made any sense"). The new direction is the director's pick (TR75). Until the pick, the old run stands in the build. Log, "Words after the split" [2026-11-28, by 11:05]. Replaces: one Normal or Hard mission per Arc, four stretches, 10–15 minutes, checkpoints, the keeper-only fight. L106,102,19
+- The Festival of Battles becomes the Lantern District (TR76): an open district shared by the server, four wings each paying one kind of upgrade, camps back in 10 to 18 s, three camps open the player's own Lamplighter at the Belfry (Normal or Hard), and a server brazier sets off a 90 s Festival Surge with a shared Envoy. Until it's built, the old run stands in the build. Log, "Words after the split" [2026-11-28, by 11:05] [2026-11-28, by 11:32]. Replaces: one Normal or Hard mission per Arc, four stretches, 10–15 minutes, checkpoints, the keeper-only fight. L106,102,19
+- The base's whole concept is overhauled ("horrendous"): research brings the new directions side by side for the director's pick. Until the pick, the base stands as it is. Log, "Words after the split" [2026-11-28, by 11:32]
 - Use a server timer for elites and "Per player" for keepers. While down, show timer, loot and drop rates. L232 [2026-11-14]
 - Festival parties wait until other work is done. Use reserved servers, carry saved health and progress, and return players home whole on transfer failure. L132,130 [2026-11-18, about 22:10] [2026-11-18, about 22:20]
 - Tower uses one Voidkin in a temporary circular room away from the map. Carry health, reset on death and seed weekly after floor five. Keep the entrance and record marker by the plot. L119,299,300,386 [2026-11-19, by 11:12] [2026-11-16, 16:50] [2026-11-16, 13:41] [2026-11-11]

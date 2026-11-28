@@ -12,6 +12,7 @@ local Profile = require(Shared.Data.Profile)
 local DropsConfig = require(Shared.Config.Drops)
 local Shards = require(Shared.Definitions.Shards)
 local Drops = require(Shared.Rules.Drops)
+local IndexBook = require(Shared.Rules.IndexBook)
 local Log = require(Shared.Util.Log)
 local Core = script.Parent.Parent.Core
 local DataService = require(Core.DataService)
@@ -34,7 +35,11 @@ local function give(player: Player, f: FightService.Fighter)
 		Stat = rng:NextNumber(),
 	}
 	local answer = DataService.Change(player, "Drop", function(draft: Profile.Data): { [string]: any }
-		return Drops.Give(draft, f.Kind, f.Block.Level, f.Ground, roll, chestRoll, loot, { Difficulty = f.Difficulty or "Normal", Stage = f.Stage or 0 })
+		local given = Drops.Give(draft, f.Kind, f.Block.Level, f.Ground, roll, chestRoll, loot, { Difficulty = f.Difficulty or "Normal", Stage = f.Stage or 0 })
+		if given.Ok == true then
+			IndexBook.Fell(draft, f.Def) -- the Index's kill count (TR76), in the fall's own step
+		end
+		return given
 	end)
 	if answer.Ok ~= true and answer.Error ~= DataService.NoProfile then
 		Log.Warn("DropService", `{f.Def} at level {f.Block.Level} in {tostring(f.Ground)} paid {player.Name} nothing: {tostring(answer.Error)}`)

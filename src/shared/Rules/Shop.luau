@@ -35,6 +35,7 @@ local Chests = require(Shared.Rules.Chests)
 local Emblems = require(Shared.Rules.Emblems)
 local Jewels = require(Shared.Rules.Jewels)
 local Breaker = require(Shared.Rules.Breaker)
+local IndexBook = require(Shared.Rules.IndexBook)
 
 local Shop = {}
 
@@ -329,6 +330,7 @@ function Shop.Buy(data: Profile.Data, shelf: Shelf, args: any, now: number): { [
 		end
 		for _ = 1, count do
 			local rolled = Profile.DeepCopy(held.Item) :: Chests.Rolled
+			IndexBook.Saw(data, rolled.Def, rolled.Rarity, rolled.Design) -- found for the Index (TR76)
 			local id = Profile.NewId(data)
 			data.Items[id] = {
 				Id = id,

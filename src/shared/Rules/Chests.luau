@@ -30,6 +30,7 @@ local Stats = require(Shared.Rules.Stats)
 local Price = require(Shared.Rules.Price)
 local Emblems = require(Shared.Rules.Emblems)
 local Jewels = require(Shared.Rules.Jewels)
+local IndexBook = require(Shared.Rules.IndexBook)
 
 local Chests = {}
 
@@ -495,6 +496,7 @@ function Chests.Open(data: Profile.Data, id: any, count: any, draw: Draw): { [st
 	local kept, salvaged, credits = {}, 0, 0
 	for _ = 1, count do
 		local rolled = Chests.Roll(chest, classes, draw)
+		IndexBook.Saw(data, rolled.Def, rolled.Rarity, rolled.Design) -- found for the Index, auto-salvaged or not (TR76)
 		local itemId = Profile.NewId(data)
 		data.Items[itemId] = {
 			Id = itemId,

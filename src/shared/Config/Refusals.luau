@@ -65,6 +65,11 @@ local Refusals = {
 			Closed = "The Shop is closed for a moment",
 			NoAnswer = TRY_AGAIN,
 		},
+		-- Rules.Index (the Index's Claim all, TR76).
+		Index = {
+			Nothing = "Nothing to claim yet",
+			NoAnswer = TRY_AGAIN,
+		},
 		-- Rules.Exchange (the Shop's Exchange tab, TR76).
 		Exchange = {
 			Gone = "A new week came in. Pick again.",

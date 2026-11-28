@@ -7,6 +7,7 @@
 --      Level    what its level adds to the same, times G(level) - G(1): the two make the own figure
 --      Stars    a share of the own attribute points (base and level) per star, linear, never of Regen
 --      Mastery  its Mastery rank's points to its class's Main, on G(level) (Rules.Mastery; TR76)
+--      Index    the account's claimed Index milestones' flat points, to each Basic Attribute (Rules.IndexBook; TR76)
 --      Item     each line of each item worn, as it is: to an attribute or to a Battle Attribute. Worn means the preset's
 --               twelve shared slots and its pair for the Voidkin's own class, in Gear's order, and only an item whose row
 --               fits there (Definitions.Items.Fits), so a save edited by hand applies no wrong weapon (TR26)
@@ -39,6 +40,7 @@ local JewelsConfig = require(Shared.Config.Jewels)
 local Regalia = require(Shared.Rules.Regalia)
 local Passive = require(Shared.Rules.Passive)
 local Mastery = require(Shared.Rules.Mastery)
+local IndexBook = require(Shared.Rules.IndexBook)
 local Signature = require(Shared.Rules.Signature)
 local Actions = require(Shared.Definitions.Actions)
 local Passives = require(Shared.Definitions.Passives)
@@ -204,6 +206,10 @@ function Stats.Resolve(owned: Profile.OwnedVoidkin, preset: Profile.Preset?, dat
 	local masteryMain = attributes.Main[row.Class]
 	if masteryMain then
 		point("Mastery", masteryMain.Attribute, Mastery.Points(Mastery.Rank(Mastery.Xp(owned)), level))
+	end
+	local book = IndexBook.Attributes(data) -- the Index's claimed milestones, flat, to all five, every Voidkin (TR76)
+	for _, id in Attributes.Ids do
+		point("Index", id, book)
 	end
 	block.Stars, block.Signature = stars, Signature.Level(owned)
 	local regen, firstRegen = Stats.Own(row, "Regen", level), Stats.Own(row, "Regen", 1)

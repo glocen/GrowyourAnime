@@ -57,6 +57,17 @@ export type Preset = {
 	Hands: { [string]: { [string]: string } }, -- a class to its pair: "Main Hand" and "Off Hand" to an item id (TR26)
 }
 
+-- The Index's own records (TR76, Rules.IndexBook, Rules.Index): what the rest of the save can't give back later, and
+-- what's been claimed. Absent until the book is first used.
+export type Book = {
+	Kills: { [string]: number }, -- a Shade's kills, by enemy definition
+	Gear: { [string]: boolean }, -- gear designs seen, by "def:rarity:design", auto-salvaged or not
+	Emblems: { [string]: boolean }, -- emblem sets seen, by set id
+	Jewels: { [string]: boolean }, -- jewels seen, by "Colour:tier"
+	Claimed: { [string]: boolean }, -- stamps claimed, by Rules.Index's stamp key
+	Milestones: { [string]: boolean }, -- milestones claimed, by their points as a string ("25")
+}
+
 export type IndexEntry = {
 	First: number, -- os.time() when the first one was found
 	Count: number, -- how many were ever found, duplicates included
@@ -228,6 +239,7 @@ export type Data = {
 		Week: number,
 		Bought: { [string]: number }, -- by offer id (Config.Exchange.Offers)
 	},
+	Book: Book?, -- the Index's records (TR76): absent until first used
 	Roles: {
 		Lead: string, -- the lead's Id, or ""
 	},

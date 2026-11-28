@@ -14,20 +14,20 @@ LEAD frames later, when the body hides. The Shade comes apart into it, never sta
 clock, where 0 is the moment the body goes; the file counts from LEAD frames before it (the effect's start).
 
 Hero shape: a ball of fire where the body was, swelling to about the body's size in four frames with a white-hot middle,
-cooling from orange to deep red and rising into a soft dark puff, gone by 0.6 s. Flame licks rise off its top and a few
-thin spikes are thrown along the blow; gold chips (shards of light, never body pieces) fly out with the blow and fall;
-a ring of light runs out over the floor.
+cooling from orange to deep red and rising into a soft dark puff, gone by 0.6 s. A plume of six broad soft flame licks rises
+off it as it cools, tallest from 0.15 to 0.22 s, and three short orange spikes are thrown along the blow (round 2); gold chips
+(shards of light, never body pieces) fly out with the blow and fall; a ring of light runs out over the floor.
 
 The hook (Faber's, asked 2026-11-27): on the Down clip's Burst marker (where ShadeBurst plays today), play ShadeFall at
 the body's foot, facing along the defeating blow (its -Z the blow's way, from the one who struck it), and hide the body
 LEAD frames later (0.067 s), not at the marker; no row rides the body, so the server may take it once it's hidden.
 
 The technique, from the kit: the ball and its rim are the kit's shell (FxShell) in the flame's rise look, alpha-blended,
-so its white-hot middle is one additive particle (fx_glow) drawn toward the camera; the licks and spikes are the burn's
-soft tapered streak (round 1: an opaque orange body and an added white-gold core, in the kit's fx_beam) along an unseen
-guide, foot to tip; sparks of light (fx_streak) drawn out along their flight; the chips are the kit's chips in a flat
-light; the puff is soft grey particles, lit by the scene so it darkens at night; the ring is one flat particle of its
-own picture a little over the floor (round 2).
+so its white-hot middle is one additive particle (fx_glow) drawn toward the camera; the plume is the burn's soft
+tongue (fx_lick_Soft and fx_lick_Core) along an unseen guide, tip-up; the spikes are round 1's streak (fx_beam), its
+orange body only; sparks of light (fx_streak) drawn out along their flight; the chips are the kit's chips in a flat
+light; the puff is soft grey particles, lit by the scene so it darkens at night; the ring is one flat particle a little over
+the floor, its band in its flipbook's alpha (round 2).
 
 Written at a body of scale 1 (R6, 5 studs, the root 3 over the foot): Area 1, so a Shade's scale scales it.
 """
@@ -38,7 +38,8 @@ from pathlib import Path
 
 import numpy as np
 
-from ar69_burn import BEAM_WIDE, CORE, GOLD, ORANGE, PICTURES, RIM, angles, smooth, streak, write_rgba
+from ar69_burn import (BEAM_WIDE, CORE, GOLD, ORANGE, PICTURES, RIM, SOFT_WIDE, angles, smooth, soft_streak, streak,
+                       write_rgba)
 from element_states import compact
 from hit_sparks import c3, v3
 
@@ -155,26 +156,68 @@ def unit(d):
     return tuple(c / m for c in d)
 
 
+PLUME_UP = 0.8  # the plume's chord: its lick's direction plus this much up (the target's bend, 0.5, drawn as a curve)
+PLUME_LONG = 1.35  # and its length against the target's lick: a straight tongue's tip half in the ball reads short
+
+
+def plume_tongue(name, d, length, width, delay):
+    """One soft tongue of the plume (round 2, research 01:12): the burn's soft tongue (fx_lick_Soft and its core, tip-up,
+    the content check's conditions) on an unseen guide. As the target's licks: its foot three quarters of the ball's
+    radius out along d and rising with the ball; its chord along d bent up (PLUME_UP) and longer (PLUME_LONG): the target's
+    curve stood tall above the ball, a straight tongue half in it read as a low crown (01:3x); grown over five frames from `delay`, stretching a third as the ball rises, fading from 0.16 s to 0.38 s
+    after its delay, thinning by two fifths."""
+    up = (0, 1, 0)
+    chord = tuple(d[i] + PLUME_UP * up[i] for i in range(3))
+    reach = math.sqrt(sum(c * c for c in chord)) * PLUME_LONG
+    ax, az = angles(unit(chord))
+    foot = [[delay, v3(*(round(MIDDLE[i] + d[i] * BALL * 0.75, 3) for i in range(3))), EASE_OUT],
+            [26, v3(*(round(MIDDLE[i] + d[i] * BALL * 0.9 + (1.1 if i == 1 else 0), 3) for i in range(3)))]]
+    guide = {
+        "Kind": "Beam",
+        "From": "Burst",
+        "Image": "fx_beam",
+        "Beam": {"Segments": 1},
+        "Tracks": {
+            "At": foot,
+            "Tilt": [[delay, v3(round(ax, 2), 0, round(az, 2))]],
+            "Top": [[delay, 0.2, EASE_OUT], [delay + 5, round(length * reach, 2)], [26, round(length * reach * 1.3, 2)]],
+            "Width": [[delay, 0]],  # never drawn, and clear: its ends are the flame's
+            "Transparency": [[delay, 1]],
+        },
+        "Why": f"{name}'s guide, unseen: its foot in the ball and its tip, rising",
+    }
+    wide = width * SOFT_WIDE
+    flame = soft_streak(name, f"{name}Guide", [[delay, round(wide * 0.3, 3), EASE_OUT], [delay + 5, round(wide, 3)],
+                                               [9, round(wide, 3)], [23, round(wide * 0.6, 3)]],
+                        [[delay, 1, EASE_OUT], [delay + 2, 0], [10 + delay, 0, EASE_IN], [23 + delay, 1]],
+                        "the plume: a broad soft flame tongue off the ball, rising as it cools", curve=None)
+    for row in flame.values():
+        row["From"] = "Burst"
+    return {f"{name}Guide": guide, **flame}
+
+
 def licks():
+    """Round 2 (research, 01:12): round 1's six licks and six spikes, long, thin and white-cored, read as a starburst. The
+    target's six licks are now its plume, broad soft tongues (the burn's) off the ball, bent up and tallest from 0.15 to
+    0.22 s; three short spikes along the blow, orange body only."""
     rows = {}
     rnd = random.Random(17)  # the target's seeds, drawn in its order
     for n in range(6):
         d = unit(blender(rnd.uniform(-1, 1), rnd.uniform(-1, 1), rnd.uniform(0.6, 1.4)))
         d = unit((d[0], d[1], d[2] - rnd.uniform(0.1, 0.5)))  # and along the blow
         length, width, delay = rnd.uniform(1.6, 2.6), rnd.uniform(1.5, 2.1), round(rnd.uniform(1, 3))
-        foot = [[delay, v3(*(round(MIDDLE[i] + d[i] * BALL * 0.75, 3) for i in range(3))), EASE_OUT],
-                [24, v3(*(round(MIDDLE[i] + d[i] * BALL * 0.9 + (1.1 if i == 1 else 0), 3) for i in range(3)))]]
-        rows.update(lick(f"Lick{n + 1}", delay, foot, d, length, width, 5, 10 + delay, 23 + delay,
-                         "a flame lick off the ball's top, rising", rise=0.3))
-    rnd = random.Random(11)
-    for n in range(6):
+        rows.update(plume_tongue(f"Plume{n + 1}", d, length, width, delay))
+    rnd = random.Random(11)  # the target's seed, its first three
+    for n in range(3):
         a, e = rnd.uniform(-0.9, 0.9), rnd.uniform(-0.2, 0.8)
         d = (math.sin(a) * math.cos(e), math.sin(e), -math.cos(a) * math.cos(e))  # along the blow, spread
-        length, delay, width = rnd.uniform(2.4, 3.8), round(rnd.uniform(0, 1.5)), rnd.uniform(0.4, 0.6)
+        length, delay, width = rnd.uniform(2.4, 3.8) * 0.45, round(rnd.uniform(0, 1.5)), rnd.uniform(0.4, 0.6)
         foot = [[delay, v3(*(round(CENTRE[i] + d[i] * 1.6, 3) for i in range(3))), EASE_OUT],
-                [12, v3(*(round(CENTRE[i] + d[i] * 3.6, 3) for i in range(3)))]]
-        rows.update(lick(f"Spike{n + 1}", delay, foot, d, length, width, 4, 4 + delay, 11 + delay,
-                         "a thin spike of flame thrown along the blow, quick", bright=1.3))
+                [12, v3(*(round(CENTRE[i] + d[i] * 2.6, 3) for i in range(3)))]]
+        spike = lick(f"Spike{n + 1}", delay, foot, d, length, width, 4, 4 + delay, 11 + delay,
+                     "a short spike of flame thrown along the blow, orange, quick", bright=1.2)
+        spike.pop(f"Spike{n + 1}Core")  # orange only: a white core read as a starburst's ray
+        rows.update(spike)
     return rows
 
 
@@ -239,46 +282,58 @@ def puff(tone, near, why):
     }
 
 
-RING_EDGE = 0.92  # the halo's outer edge, a share of its quad's half width (the particle's Size)
-RING_BAND = 0.3  # its band, a share of its radius (round 1's hoop's)
-HALO_BACK = tuple(0.7 * o / g + 0.3 for o, g in zip(ORANGE, GOLD))  # behind its front: gold times this is a light orange
+RING_EDGE = 0.92  # the ring's outer edge in each frame, a share of the quad's half width (the particle's Size)
+RING_LIFE = 21  # frames, 1 to 22 (0.35 s, the target's)
+RING_GRID = 4  # its flipbook: Grid4x4, played once over its life
+HALO_TAIL = (1.0, 0.9, 0.8)  # its fading outer tail: gold times this is a warmer gold (round 2's light orange read pink)
+
+
+def ring_radius(u):
+    """The target's ring: its outer edge out from 1 to 6.5 studs, ease_out(u, 2.6)."""
+    return 1 + 5.5 * (1 - (1 - u) ** 2.6)
+
+
+def ring_band(u):
+    """The target's band, studs across: 0.55 thickening to 1.45 as it runs out (research, 2026-11-28, 01:2x)."""
+    return 0.55 + 0.9 * u
 
 
 def ring():
-    """A ring of light running out over the floor. Round 2 (research, 2026-11-28): round 1's hoop read as a flat,
-    hard-edged lime band in the engine (Neon gold, its upright lip a hard outer edge). The ring is one particle of
-    fx_halo_Flame lying flat on the floor (VelocityPerpendicular, rising at 0.01): its band soft on both edges, gold
-    at its leading edge to orange behind, cooling a little as it goes. The picture holds the band's shape and its fall
-    from white to HALO_BACK; the gold is the particle's Color, so a Tint (a Hard Shade's Shades.Hard.Burst, AR46)
-    replaces the gold and keeps the gradient, once emitters take a Tint (Faber, asked 2026-11-28). Its run and fade are
-    round 1's: out to 6.5 studs with an ease near Cubic Out over 0.35 s (keys on Size, which is half the quad's width),
-    fading u^1.5 in two pieces."""
-    life = 21  # frames, 1 to 22
-    size = [[u, round((1 + 5.5 * (1 - (1 - u) ** 3)) / RING_EDGE, 3)] for u in (0, 0.08, 0.18, 0.3, 0.45, 0.65, 1)]
+    """A ring of light running out over the floor. Round 2 (research, 2026-11-28): the hoop (round 1) read as a flat
+    hard-edged lime band, and one soft halo scaled up (round 2's first sheet) as a soft pale disc at night: the technique
+    changes. The band is in the picture's alpha, and its picture is a flipbook (fx_halo_Flame, Grid4x4, OneShot): frame by
+    frame the band thins against the ring's radius, so at every moment it is the target's, 0.55 to 1.45 studs across
+    while the ring runs out from 1 to 6.5 (its share of the radius 0.55 down to 0.22). Thin warm gold, soft at both
+    edges (bright toward its inner edge, its soft tail outward, the target's), clear inside and out. One particle lying flat on the floor (VelocityPerpendicular, rising at 0.01), its Size
+    (half the quad's width) on the target's ease, fading u^1.5 as the target's did. Gold is the particle's Color and the
+    picture a multiplier, so a Hard Shade's Tint (Shades.Hard.Burst, AR46; Faber's d4541d18) keeps the band."""
+    keys = (0, 0.05, 0.12, 0.2, 0.3, 0.42, 0.56, 0.72, 0.86, 1)
     return {
         "Kind": "Emitter",
         "From": "Burst",
         "Image": "fx_halo_Flame",
         "Tint": True,  # a typed Shade's colour in place of its own (the Hard Shade's Shades.Hard.Burst), the fire untinted
         "Emitter": {
-            "Lifetime": [life / 60, life / 60],
+            "Lifetime": [RING_LIFE / 60, RING_LIFE / 60],
             "Speed": [0.01, 0.01],
             "EmissionDirection": "Top",
             "Orientation": "VelocityPerpendicular",  # flat on the floor
             "LockedToPart": True,
             "Rotation": [0, 0],
             "RotSpeed": [0, 0],
-            "Size": size,
-            "Transparency": [[0, 0], [round(10 / life, 3), 0.35], [1, 1]],
-            "Color": [[0, c3(GOLD)], [1, c3(tuple(g * c / 255 for g, c in zip(GOLD, (255, 214, 176))))]],
-            "LightEmission": 0.3,  # held low: added gold washes to white on a light floor by day (round 0's streak)
+            "FlipbookLayout": f"Grid{RING_GRID}x{RING_GRID}",
+            "FlipbookMode": "OneShot",  # its frames spread over its life
+            "Size": [[u, round(ring_radius(u) / RING_EDGE, 3)] for u in keys],
+            "Transparency": [[u, round(u ** 1.5, 3)] for u in (0, 0.3, 0.5, 0.7, 0.85, 1)],
+            "Color": [[0, c3(GOLD)], [1, c3(GOLD)]],  # one gold, the target's (its orange end read pink over the floor)
+            "LightEmission": 0.6,  # a thin line holds its gold by day where a wide band washed to white
             "LightInfluence": 0,
             "Brightness": 1.1,  # past it the gold clips toward yellow, round 1's lime
             "ZOffset": 0,
         },
         "Emit": [[1, 1]],
         "Tracks": {"At": [[1, v3(0, 0.06, 0)]]},
-        "Why": "a ring of light running out over the floor, soft-edged, gold at its front to orange behind",
+        "Why": "a ring of light running out over the floor: a thin warm gold band, soft at both edges, clear inside and out",
     }
 
 
@@ -358,20 +413,30 @@ def fall():
             "Area": 1, "Grey": False, "Rows": rows}
 
 
-def halo_picture(n=256, ss=4):
-    """fx_halo_Flame: the ring's band, clear inside and out, a multiplier for the particle's Color: white at its leading
-    (outer) edge, soft over its last fifth, falling back to HALO_BACK (gold to a light orange) and soft over the rest
-    toward its inner edge."""
-    c = (np.arange(n * ss) + 0.5) / (n * ss) * 2 - 1
+def halo_picture(cell=256, ss=2):
+    """fx_halo_Flame: the ring's flipbook, Grid4x4, frames left to right and down. Frame k shows the band at the middle of
+    its share of the life: from RING_EDGE inward by ring_band(u) / ring_radius(u) of it, soft at both edges (as
+    the target's: bright a quarter of the way in from its inner edge, soft over its inner quarter and its outer half),
+    clear inside and out; a multiplier for the particle's Color, white, warming to HALO_TAIL along its outer tail."""
+    n = cell * ss
+    c = (np.arange(n) + 0.5) / n * 2 - 1
     x, y = np.meshgrid(c, c)
     r = np.hypot(x, y)
-    inner = RING_EDGE * (1 - RING_BAND)
-    a = np.clip((r - inner) / (RING_EDGE - inner), -1, 2)  # 0 at the inner edge, 1 at the outer
-    alpha = smooth(0, 0.72, a) * (1 - smooth(0.8, 1.0, a))
-    k = smooth(0.15, 0.75, a)[..., None] * (1 - 0.45 * smooth(0.85, 1.0, a))[..., None]
-    rgb = np.array(HALO_BACK) * (1 - k) + k
-    img = np.concatenate([rgb, alpha[..., None]], -1).astype(np.float32)
-    return img.reshape(n, ss, n, ss, 4).mean(axis=(1, 3))
+    rows = []
+    for row in range(RING_GRID):
+        cells = []
+        for col in range(RING_GRID):
+            u = (row * RING_GRID + col + 0.5) / RING_GRID ** 2
+            inner = RING_EDGE * (1 - ring_band(u) / ring_radius(u))
+            a = np.clip((r - inner) / (RING_EDGE - inner), -1, 2)  # 0 at the inner edge, 1 at the outer
+            alpha = smooth(0, 0.26, a) * (1 - smooth(0.42, 1.0, a))
+            k = smooth(0.4, 1.0, a)[..., None]
+            rgb = (1 - k) + np.array(HALO_TAIL) * k
+            cells.append(np.concatenate([rgb, alpha[..., None]], -1))
+        rows.append(np.concatenate(cells, 1))
+    img = np.concatenate(rows, 0).astype(np.float32)
+    h, w = img.shape[0] // ss, img.shape[1] // ss
+    return img.reshape(h, ss, w, ss, 4).mean(axis=(1, 3))
 
 
 def main():

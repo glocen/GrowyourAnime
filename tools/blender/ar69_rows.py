@@ -218,8 +218,9 @@ def beam(name, low, high, width, image, tint, strength, opacity, col, taper=1.0,
     T.mesh_object(name, bm, col, picture_mat(name, image, tint, strength, opacity, added=added, foot=foot))
 
 
-def flat(name, centre, normal, size, image, tint, strength, opacity, col, added=0.0):
-    """A particle lying across its flight (VelocityPerpendicular): a square quad, `size` its half width, its picture's."""
+def flat(name, centre, normal, size, image, tint, strength, opacity, col, added=0.0, cell=(0, 0, 1, 1)):
+    """A particle lying across its flight (VelocityPerpendicular): a square quad, `size` its half width, its picture's
+    (or one flipbook frame of it: `cell` its UV box, u0, v0, u1, v1, Blender's v up)."""
     if size <= 0 or opacity <= 0.002:
         return
     c, n = T.to_bl(centre), (T.to_bl(centre + normal) - T.to_bl(centre)).normalized()
@@ -229,7 +230,8 @@ def flat(name, centre, normal, size, image, tint, strength, opacity, col, added=
     uv = bm.loops.layers.uv.new("UVMap")
     vs = [bm.verts.new(c + x * a + y * b) for x, y in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
     f = bm.faces.new(vs)
-    for loop, co in zip(f.loops, ((0, 0), (1, 0), (1, 1), (0, 1))):
+    u0, v0, u1, v1 = cell
+    for loop, co in zip(f.loops, ((u0, v0), (u1, v0), (u1, v1), (u0, v1))):
         loop[uv].uv = co
     T.mesh_object(name, bm, col, picture_mat(name, image, tint, strength, opacity, added=added))
 
@@ -389,8 +391,14 @@ def draw_rows(rows, anchor, t, scale, col, lights, light_scale=180.0, night=Fals
                         tones = tuple(tuple(c * shade for c in tone) for tone in tones)
                         particle(f"{name}_{frame0}_{k}", centre, size, colour, opacity, 0, True, col, tones)
                     elif em.get("Orientation") == "VelocityPerpendicular":  # a flat quad across its flight
+                        cell = (0, 0, 1, 1)
+                        if em.get("FlipbookMode") == "OneShot":  # its frames over its life, left to right and down
+                            g = int(em["FlipbookLayout"].removeprefix("Grid").split("x")[0])
+                            i = min(int(u * g * g), g * g - 1)
+                            c, r = i % g, i // g
+                            cell = (c / g, 1 - (r + 1) / g, (c + 1) / g, 1 - r / g)
                         flat(f"{name}_{frame0}_{k}", centre, way, size, row["Image"], tuple(colour),
-                             em.get("Brightness", 1), opacity, col, added=em.get("LightEmission", 0))
+                             em.get("Brightness", 1), opacity, col, added=em.get("LightEmission", 0), cell=cell)
                     elif em.get("Orientation") == "VelocityParallel":  # a needle along its flight
                         flight = way * speed * math.exp(-drag * s) + pull * s
                         if flight.length > 1e-3:

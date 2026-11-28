@@ -83,28 +83,26 @@
    "Tracks": {"At": [[0, {"Vector3": [0.0, 3.36, 0.0]}]]},
    "Why": "one flash as the body goes"
   },
-  "Lick1Guide": {
+  "Plume1Guide": {
    "Kind": "Beam",
    "Image": "fx_beam",
    "Beam": {"Segments": 1},
    "Tracks": {
-    "At": [[6, {"Vector3": [0.047, 4.814, -0.996]}, "Quad Out"], [28, {"Vector3": [0.056, 6.204, -1.195]}]],
-    "Tilt": [[6, {"Vector3": [-34.41, 0, -1.52]}]],
-    "Top": [[6, 0.05, "Quad Out"], [11, 2.366107437797953], [29, 3.075939669137339]],
+    "At": [[6, {"Vector3": [0.047, 4.814, -0.996]}, "Quad Out"], [30, {"Vector3": [0.056, 6.204, -1.195]}]],
+    "Tilt": [[6, {"Vector3": [-19.17, 0, -0.88]}]],
+    "Top": [[6, 0.2, "Quad Out"], [11, 5.5], [30, 7.14]],
     "Width": [[6, 0]],
     "Transparency": [[6, 1]],
     "Foot": [[6, 0]]
    },
-   "Why": "Lick1's guide, unseen: its foot on the ball and its tip"
+   "Why": "Plume1's guide, unseen: its foot in the ball and its tip, rising"
   },
-  "Lick1": {
+  "Plume1": {
    "Kind": "Beam",
-   "On": "Lick1Guide",
-   "Low": "Lick1Guide.Low",
-   "High": "Lick1Guide.High",
-   "Image": "fx_beam",
-   "FootFade": 0.677,
-   "Taper": 0.06,
+   "On": "Plume1Guide",
+   "Low": "Plume1Guide.High",
+   "High": "Plume1Guide.Low",
+   "Image": "fx_lick_Soft",
    "Color": {"Color3": [244, 108, 36]},
    "Beam": {
     "FaceCamera": true,
@@ -112,24 +110,21 @@
     "TextureMode": "Stretch",
     "TextureLength": 1,
     "TextureSpeed": 0,
-    "Segments": 1,
     "LightEmission": 0.15,
-    "Brightness": 1.2
+    "Brightness": 1.1
    },
    "Tracks": {
-    "Width": [[6, 1.0, "Quad Out"], [11, 2.499], [29, 1.5]],
-    "Transparency": [[10, 0], [20, 0, "Quad In"], [33, 1]]
+    "Width": [[10, 0.864, "Quad Out"], [15, 2.881], [17, 2.881], [31, 1.729]],
+    "Transparency": [[10, 1, "Quad Out"], [12, 0], [20, 0, "Quad In"], [33, 1]]
    },
-   "Why": "a flame lick off the ball's top, rising"
+   "Why": "the plume: a broad soft flame tongue off the ball, rising as it cools"
   },
-  "Lick1Core": {
+  "Plume1Core": {
    "Kind": "Beam",
-   "On": "Lick1Guide",
-   "Low": "Lick1Guide.Low",
-   "High": "Lick1Guide.High",
-   "Image": "fx_beam",
-   "FootFade": 0.677,
-   "Taper": 0.12,
+   "On": "Plume1Guide",
+   "Low": "Plume1Guide.High",
+   "High": "Plume1Guide.Low",
+   "Image": "fx_lick_Core",
    "Color": {"Color3": [255, 224, 150]},
    "Beam": {
     "FaceCamera": true,
@@ -137,40 +132,36 @@
     "TextureMode": "Stretch",
     "TextureLength": 1,
     "TextureSpeed": 0,
-    "Segments": 1,
     "LightEmission": 1,
-    "Brightness": 2.16,
+    "Brightness": 1.98,
     "ZOffset": 0.05
    },
    "Tracks": {
-    "Width": [[6, 0.4, "Quad Out"], [11, 1.0], [29, 0.6]],
-    "Transparency": [[10, 0], [20, 0, "Quad In"], [33, 1]],
-    "Reach": [[6, 0.72]]
+    "Width": [[10, 0.864, "Quad Out"], [15, 2.881], [17, 2.881], [31, 1.729]],
+    "Transparency": [[10, 1, "Quad Out"], [12, 0], [20, 0, "Quad In"], [33, 1]]
    },
-   "Why": "Lick1's core: added white-gold heat down its middle, short of its tip"
+   "Why": "Plume1's core: added white-gold heat up its lower part, the tip left orange (its picture's)"
   },
-  "Lick2Guide": {
+  "Plume2Guide": {
    "Kind": "Beam",
    "Image": "fx_beam",
    "Beam": {"Segments": 1},
    "Tracks": {
-    "At": [[6, {"Vector3": [-1.105, 4.646, 0.48]}, "Quad Out"], [28, {"Vector3": [-1.326, 6.004, 0.575]}]],
-    "Tilt": [[6, {"Vector3": [20.44, 0, 38.84]}]],
-    "Top": [[6, 0.05, "Quad Out"], [11, 1.852383767513222], [29, 2.4080988977671884]],
+    "At": [[6, {"Vector3": [-1.105, 4.646, 0.48]}, "Quad Out"], [30, {"Vector3": [-1.326, 6.004, 0.575]}]],
+    "Tilt": [[6, {"Vector3": [10.08, 0, 21.98]}]],
+    "Top": [[6, 0.2, "Quad Out"], [11, 4.19], [30, 5.45]],
     "Width": [[6, 0]],
     "Transparency": [[6, 1]],
     "Foot": [[6, 0]]
    },
-   "Why": "Lick2's guide, unseen: its foot on the ball and its tip"
+   "Why": "Plume2's guide, unseen: its foot in the ball and its tip, rising"
   },
-  "Lick2": {
+  "Plume2": {
    "Kind": "Beam",
-   "On": "Lick2Guide",
-   "Low": "Lick2Guide.Low",
-   "High": "Lick2Guide.High",
-   "Image": "fx_beam",
-   "FootFade": 0.53,
-   "Taper": 0.06,
+   "On": "Plume2Guide",
+   "Low": "Plume2Guide.High",
+   "High": "Plume2Guide.Low",
+   "Image": "fx_lick_Soft",
    "Color": {"Color3": [244, 108, 36]},
    "Beam": {
     "FaceCamera": true,
@@ -178,24 +169,21 @@
     "TextureMode": "Stretch",
     "TextureLength": 1,
     "TextureSpeed": 0,
-    "Segments": 1,
     "LightEmission": 0.15,
-    "Brightness": 1.2
+    "Brightness": 1.1
    },
    "Tracks": {
-    "Width": [[6, 0.937, "Quad Out"], [11, 2.341], [29, 1.405]],
-    "Transparency": [[10, 0], [20, 0, "Quad In"], [33, 1]]
+    "Width": [[10, 0.81, "Quad Out"], [15, 2.699], [17, 2.699], [31, 1.619]],
+    "Transparency": [[10, 1, "Quad Out"], [12, 0], [20, 0, "Quad In"], [33, 1]]
    },
-   "Why": "a flame lick off the ball's top, rising"
+   "Why": "the plume: a broad soft flame tongue off the ball, rising as it cools"
   },
-  "Lick2Core": {
+  "Plume2Core": {
    "Kind": "Beam",
-   "On": "Lick2Guide",
-   "Low": "Lick2Guide.Low",
-   "High": "Lick2Guide.High",
-   "Image": "fx_beam",
-   "FootFade": 0.53,
-   "Taper": 0.12,
+   "On": "Plume2Guide",
+   "Low": "Plume2Guide.High",
+   "High": "Plume2Guide.Low",
+   "Image": "fx_lick_Core",
    "Color": {"Color3": [255, 224, 150]},
    "Beam": {
     "FaceCamera": true,
@@ -203,40 +191,36 @@
     "TextureMode": "Stretch",
     "TextureLength": 1,
     "TextureSpeed": 0,
-    "Segments": 1,
     "LightEmission": 1,
-    "Brightness": 2.16,
+    "Brightness": 1.98,
     "ZOffset": 0.05
    },
    "Tracks": {
-    "Width": [[6, 0.375, "Quad Out"], [11, 0.936], [29, 0.562]],
-    "Transparency": [[10, 0], [20, 0, "Quad In"], [33, 1]],
-    "Reach": [[6, 0.72]]
+    "Width": [[10, 0.81, "Quad Out"], [15, 2.699], [17, 2.699], [31, 1.619]],
+    "Transparency": [[10, 1, "Quad Out"], [12, 0], [20, 0, "Quad In"], [33, 1]]
    },
-   "Why": "Lick2's core: added white-gold heat down its middle, short of its tip"
+   "Why": "Plume2's core: added white-gold heat up its lower part, the tip left orange (its picture's)"
   },
-  "Lick3Guide": {
+  "Plume3Guide": {
    "Kind": "Beam",
    "Image": "fx_beam",
    "Beam": {"Segments": 1},
    "Tracks": {
-    "At": [[7, {"Vector3": [0.615, 4.177, -1.435]}, "Quad Out"], [28, {"Vector3": [0.738, 5.441, -1.723]}]],
-    "Tilt": [[7, {"Vector3": [-60.34, 0, -20.41]}]],
-    "Top": [[7, 0.05, "Quad Out"], [12, 1.6621927912524468], [30, 2.160850628628181]],
+    "At": [[7, {"Vector3": [0.615, 4.177, -1.435]}, "Quad Out"], [30, {"Vector3": [0.738, 5.441, -1.723]}]],
+    "Tilt": [[7, {"Vector3": [-32.8, 0, -13.06]}]],
+    "Top": [[7, 0.2, "Quad Out"], [12, 3.46], [30, 4.5]],
     "Width": [[7, 0]],
     "Transparency": [[7, 1]],
     "Foot": [[7, 0]]
    },
-   "Why": "Lick3's guide, unseen: its foot on the ball and its tip"
+   "Why": "Plume3's guide, unseen: its foot in the ball and its tip, rising"
   },
-  "Lick3": {
+  "Plume3": {
    "Kind": "Beam",
-   "On": "Lick3Guide",
-   "Low": "Lick3Guide.Low",
-   "High": "Lick3Guide.High",
-   "Image": "fx_beam",
-   "FootFade": 0.475,
-   "Taper": 0.06,
+   "On": "Plume3Guide",
+   "Low": "Plume3Guide.High",
+   "High": "Plume3Guide.Low",
+   "Image": "fx_lick_Soft",
    "Color": {"Color3": [244, 108, 36]},
    "Beam": {
     "FaceCamera": true,
@@ -244,24 +228,21 @@
     "TextureMode": "Stretch",
     "TextureLength": 1,
     "TextureSpeed": 0,
-    "Segments": 1,
     "LightEmission": 0.15,
-    "Brightness": 1.2
+    "Brightness": 1.1
    },
    "Tracks": {
-    "Width": [[7, 1.034, "Quad Out"], [12, 2.584], [30, 1.55]],
-    "Transparency": [[11, 0], [21, 0, "Quad In"], [34, 1]]
+    "Width": [[11, 0.894, "Quad Out"], [16, 2.979], [17, 2.979], [31, 1.787]],
+    "Transparency": [[11, 1, "Quad Out"], [13, 0], [21, 0, "Quad In"], [34, 1]]
    },
-   "Why": "a flame lick off the ball's top, rising"
+   "Why": "the plume: a broad soft flame tongue off the ball, rising as it cools"
   },
-  "Lick3Core": {
+  "Plume3Core": {
    "Kind": "Beam",
-   "On": "Lick3Guide",
-   "Low": "Lick3Guide.Low",
-   "High": "Lick3Guide.High",
-   "Image": "fx_beam",
-   "FootFade": 0.475,
-   "Taper": 0.12,
+   "On": "Plume3Guide",
+   "Low": "Plume3Guide.High",
+   "High": "Plume3Guide.Low",
+   "Image": "fx_lick_Core",
    "Color": {"Color3": [255, 224, 150]},
    "Beam": {
     "FaceCamera": true,
@@ -269,40 +250,36 @@
     "TextureMode": "Stretch",
     "TextureLength": 1,
     "TextureSpeed": 0,
-    "Segments": 1,
     "LightEmission": 1,
-    "Brightness": 2.16,
+    "Brightness": 1.98,
     "ZOffset": 0.05
    },
    "Tracks": {
-    "Width": [[7, 0.414, "Quad Out"], [12, 1.034], [30, 0.62]],
-    "Transparency": [[11, 0], [21, 0, "Quad In"], [34, 1]],
-    "Reach": [[7, 0.72]]
+    "Width": [[11, 0.894, "Quad Out"], [16, 2.979], [17, 2.979], [31, 1.787]],
+    "Transparency": [[11, 1, "Quad Out"], [13, 0], [21, 0, "Quad In"], [34, 1]]
    },
-   "Why": "Lick3's core: added white-gold heat down its middle, short of its tip"
+   "Why": "Plume3's core: added white-gold heat up its lower part, the tip left orange (its picture's)"
   },
-  "Lick4Guide": {
+  "Plume4Guide": {
    "Kind": "Beam",
    "Image": "fx_beam",
    "Beam": {"Segments": 1},
    "Tracks": {
-    "At": [[7, {"Vector3": [-0.751, 4.486, -1.129]}, "Quad Out"], [28, {"Vector3": [-0.901, 5.812, -1.354]}]],
-    "Tilt": [[7, {"Vector3": [-45.06, 0, 25.22]}]],
-    "Top": [[7, 0.05, "Quad Out"], [12, 1.8100100094902225], [30, 2.353013012337289]],
+    "At": [[7, {"Vector3": [-0.751, 4.486, -1.129]}, "Quad Out"], [30, {"Vector3": [-0.901, 5.812, -1.354]}]],
+    "Tilt": [[7, {"Vector3": [-23.99, 0, 15.14]}]],
+    "Top": [[7, 0.2, "Quad Out"], [12, 3.99], [30, 5.18]],
     "Width": [[7, 0]],
     "Transparency": [[7, 1]],
     "Foot": [[7, 0]]
    },
-   "Why": "Lick4's guide, unseen: its foot on the ball and its tip"
+   "Why": "Plume4's guide, unseen: its foot in the ball and its tip, rising"
   },
-  "Lick4": {
+  "Plume4": {
    "Kind": "Beam",
-   "On": "Lick4Guide",
-   "Low": "Lick4Guide.Low",
-   "High": "Lick4Guide.High",
-   "Image": "fx_beam",
-   "FootFade": 0.518,
-   "Taper": 0.06,
+   "On": "Plume4Guide",
+   "Low": "Plume4Guide.High",
+   "High": "Plume4Guide.Low",
+   "Image": "fx_lick_Soft",
    "Color": {"Color3": [244, 108, 36]},
    "Beam": {
     "FaceCamera": true,
@@ -310,24 +287,21 @@
     "TextureMode": "Stretch",
     "TextureLength": 1,
     "TextureSpeed": 0,
-    "Segments": 1,
     "LightEmission": 0.15,
-    "Brightness": 1.2
+    "Brightness": 1.1
    },
    "Tracks": {
-    "Width": [[7, 0.948, "Quad Out"], [12, 2.371], [30, 1.423]],
-    "Transparency": [[11, 0], [21, 0, "Quad In"], [34, 1]]
+    "Width": [[11, 0.82, "Quad Out"], [16, 2.733], [17, 2.733], [31, 1.64]],
+    "Transparency": [[11, 1, "Quad Out"], [13, 0], [21, 0, "Quad In"], [34, 1]]
    },
-   "Why": "a flame lick off the ball's top, rising"
+   "Why": "the plume: a broad soft flame tongue off the ball, rising as it cools"
   },
-  "Lick4Core": {
+  "Plume4Core": {
    "Kind": "Beam",
-   "On": "Lick4Guide",
-   "Low": "Lick4Guide.Low",
-   "High": "Lick4Guide.High",
-   "Image": "fx_beam",
-   "FootFade": 0.518,
-   "Taper": 0.12,
+   "On": "Plume4Guide",
+   "Low": "Plume4Guide.High",
+   "High": "Plume4Guide.Low",
+   "Image": "fx_lick_Core",
    "Color": {"Color3": [255, 224, 150]},
    "Beam": {
     "FaceCamera": true,
@@ -335,40 +309,36 @@
     "TextureMode": "Stretch",
     "TextureLength": 1,
     "TextureSpeed": 0,
-    "Segments": 1,
     "LightEmission": 1,
-    "Brightness": 2.16,
+    "Brightness": 1.98,
     "ZOffset": 0.05
    },
    "Tracks": {
-    "Width": [[7, 0.379, "Quad Out"], [12, 0.948], [30, 0.569]],
-    "Transparency": [[11, 0], [21, 0, "Quad In"], [34, 1]],
-    "Reach": [[7, 0.72]]
+    "Width": [[11, 0.82, "Quad Out"], [16, 2.733], [17, 2.733], [31, 1.64]],
+    "Transparency": [[11, 1, "Quad Out"], [13, 0], [21, 0, "Quad In"], [34, 1]]
    },
-   "Why": "Lick4's core: added white-gold heat down its middle, short of its tip"
+   "Why": "Plume4's core: added white-gold heat up its lower part, the tip left orange (its picture's)"
   },
-  "Lick5Guide": {
+  "Plume5Guide": {
    "Kind": "Beam",
    "Image": "fx_beam",
    "Beam": {"Segments": 1},
    "Tracks": {
-    "At": [[5, {"Vector3": [0.678, 4.987, -0.016]}, "Quad Out"], [28, {"Vector3": [0.814, 6.412, -0.019]}]],
-    "Tilt": [[5, {"Vector3": [-0.57, 0, -22.64]}]],
-    "Top": [[5, 0.05, "Quad Out"], [10, 2.0740984711064057], [28, 2.6963280124383275]],
+    "At": [[5, {"Vector3": [0.678, 4.987, -0.016]}, "Quad Out"], [30, {"Vector3": [0.814, 6.412, -0.019]}]],
+    "Tilt": [[5, {"Vector3": [-0.31, 0, -12.59]}]],
+    "Top": [[5, 0.2, "Quad Out"], [10, 4.94], [30, 6.43]],
     "Width": [[5, 0]],
     "Transparency": [[5, 1]],
     "Foot": [[5, 0]]
    },
-   "Why": "Lick5's guide, unseen: its foot on the ball and its tip"
+   "Why": "Plume5's guide, unseen: its foot in the ball and its tip, rising"
   },
-  "Lick5": {
+  "Plume5": {
    "Kind": "Beam",
-   "On": "Lick5Guide",
-   "Low": "Lick5Guide.Low",
-   "High": "Lick5Guide.High",
-   "Image": "fx_beam",
-   "FootFade": 0.593,
-   "Taper": 0.06,
+   "On": "Plume5Guide",
+   "Low": "Plume5Guide.High",
+   "High": "Plume5Guide.Low",
+   "Image": "fx_lick_Soft",
    "Color": {"Color3": [244, 108, 36]},
    "Beam": {
     "FaceCamera": true,
@@ -376,24 +346,21 @@
     "TextureMode": "Stretch",
     "TextureLength": 1,
     "TextureSpeed": 0,
-    "Segments": 1,
     "LightEmission": 0.15,
-    "Brightness": 1.2
+    "Brightness": 1.1
    },
    "Tracks": {
-    "Width": [[5, 1.091, "Quad Out"], [10, 2.727], [28, 1.636]],
-    "Transparency": [[9, 0], [19, 0, "Quad In"], [32, 1]]
+    "Width": [[9, 0.943, "Quad Out"], [14, 3.144], [17, 3.144], [31, 1.886]],
+    "Transparency": [[9, 1, "Quad Out"], [11, 0], [19, 0, "Quad In"], [32, 1]]
    },
-   "Why": "a flame lick off the ball's top, rising"
+   "Why": "the plume: a broad soft flame tongue off the ball, rising as it cools"
   },
-  "Lick5Core": {
+  "Plume5Core": {
    "Kind": "Beam",
-   "On": "Lick5Guide",
-   "Low": "Lick5Guide.Low",
-   "High": "Lick5Guide.High",
-   "Image": "fx_beam",
-   "FootFade": 0.593,
-   "Taper": 0.12,
+   "On": "Plume5Guide",
+   "Low": "Plume5Guide.High",
+   "High": "Plume5Guide.Low",
+   "Image": "fx_lick_Core",
    "Color": {"Color3": [255, 224, 150]},
    "Beam": {
     "FaceCamera": true,
@@ -401,40 +368,36 @@
     "TextureMode": "Stretch",
     "TextureLength": 1,
     "TextureSpeed": 0,
-    "Segments": 1,
     "LightEmission": 1,
-    "Brightness": 2.16,
+    "Brightness": 1.98,
     "ZOffset": 0.05
    },
    "Tracks": {
-    "Width": [[5, 0.436, "Quad Out"], [10, 1.091], [28, 0.654]],
-    "Transparency": [[9, 0], [19, 0, "Quad In"], [32, 1]],
-    "Reach": [[5, 0.72]]
+    "Width": [[9, 0.943, "Quad Out"], [14, 3.144], [17, 3.144], [31, 1.886]],
+    "Transparency": [[9, 1, "Quad Out"], [11, 0], [19, 0, "Quad In"], [32, 1]]
    },
-   "Why": "Lick5's core: added white-gold heat down its middle, short of its tip"
+   "Why": "Plume5's core: added white-gold heat up its lower part, the tip left orange (its picture's)"
   },
-  "Lick6Guide": {
+  "Plume6Guide": {
    "Kind": "Beam",
    "Image": "fx_beam",
    "Beam": {"Segments": 1},
    "Tracks": {
-    "At": [[7, {"Vector3": [0.656, 4.764, -0.839]}, "Quad Out"], [28, {"Vector3": [0.788, 6.145, -1.007]}]],
-    "Tilt": [[7, {"Vector3": [-30.86, 0, -21.86]}]],
-    "Top": [[7, 0.05, "Quad Out"], [12, 1.972192841557435], [30, 2.5638506940246657]],
+    "At": [[7, {"Vector3": [0.656, 4.764, -0.839]}, "Quad Out"], [30, {"Vector3": [0.788, 6.145, -1.007]}]],
+    "Tilt": [[7, {"Vector3": [-16.6, 0, -12.6]}]],
+    "Top": [[7, 0.2, "Quad Out"], [12, 4.55], [30, 5.91]],
     "Width": [[7, 0]],
     "Transparency": [[7, 1]],
     "Foot": [[7, 0]]
    },
-   "Why": "Lick6's guide, unseen: its foot on the ball and its tip"
+   "Why": "Plume6's guide, unseen: its foot in the ball and its tip, rising"
   },
-  "Lick6": {
+  "Plume6": {
    "Kind": "Beam",
-   "On": "Lick6Guide",
-   "Low": "Lick6Guide.Low",
-   "High": "Lick6Guide.High",
-   "Image": "fx_beam",
-   "FootFade": 0.564,
-   "Taper": 0.06,
+   "On": "Plume6Guide",
+   "Low": "Plume6Guide.High",
+   "High": "Plume6Guide.Low",
+   "Image": "fx_lick_Soft",
    "Color": {"Color3": [244, 108, 36]},
    "Beam": {
     "FaceCamera": true,
@@ -442,24 +405,21 @@
     "TextureMode": "Stretch",
     "TextureLength": 1,
     "TextureSpeed": 0,
-    "Segments": 1,
     "LightEmission": 0.15,
-    "Brightness": 1.2
+    "Brightness": 1.1
    },
    "Tracks": {
-    "Width": [[7, 0.796, "Quad Out"], [12, 1.99], [30, 1.194]],
-    "Transparency": [[11, 0], [21, 0, "Quad In"], [34, 1]]
+    "Width": [[11, 0.688, "Quad Out"], [16, 2.294], [17, 2.294], [31, 1.377]],
+    "Transparency": [[11, 1, "Quad Out"], [13, 0], [21, 0, "Quad In"], [34, 1]]
    },
-   "Why": "a flame lick off the ball's top, rising"
+   "Why": "the plume: a broad soft flame tongue off the ball, rising as it cools"
   },
-  "Lick6Core": {
+  "Plume6Core": {
    "Kind": "Beam",
-   "On": "Lick6Guide",
-   "Low": "Lick6Guide.Low",
-   "High": "Lick6Guide.High",
-   "Image": "fx_beam",
-   "FootFade": 0.564,
-   "Taper": 0.12,
+   "On": "Plume6Guide",
+   "Low": "Plume6Guide.High",
+   "High": "Plume6Guide.Low",
+   "Image": "fx_lick_Core",
    "Color": {"Color3": [255, 224, 150]},
    "Beam": {
     "FaceCamera": true,
@@ -467,26 +427,24 @@
     "TextureMode": "Stretch",
     "TextureLength": 1,
     "TextureSpeed": 0,
-    "Segments": 1,
     "LightEmission": 1,
-    "Brightness": 2.16,
+    "Brightness": 1.98,
     "ZOffset": 0.05
    },
    "Tracks": {
-    "Width": [[7, 0.318, "Quad Out"], [12, 0.796], [30, 0.478]],
-    "Transparency": [[11, 0], [21, 0, "Quad In"], [34, 1]],
-    "Reach": [[7, 0.72]]
+    "Width": [[11, 0.688, "Quad Out"], [16, 2.294], [17, 2.294], [31, 1.377]],
+    "Transparency": [[11, 1, "Quad Out"], [13, 0], [21, 0, "Quad In"], [34, 1]]
    },
-   "Why": "Lick6's core: added white-gold heat down its middle, short of its tip"
+   "Why": "Plume6's core: added white-gold heat up its lower part, the tip left orange (its picture's)"
   },
   "Spike1Guide": {
    "Kind": "Beam",
    "Image": "fx_beam",
    "Beam": {"Segments": 1},
    "Tracks": {
-    "At": [[5, {"Vector3": [-0.128, 3.923, -1.492]}, "Quad Out"], [16, {"Vector3": [-0.288, 4.627, -3.357]}]],
+    "At": [[5, {"Vector3": [-0.128, 3.923, -1.492]}, "Quad Out"], [16, {"Vector3": [-0.208, 4.275, -2.425]}]],
     "Tilt": [[5, {"Vector3": [-69.32, 0, 4.6]}]],
-    "Top": [[5, 0.05, "Quad Out"], [9, 3.693894817633221], [16, 3.693894817633221]],
+    "Top": [[5, 0.05, "Quad Out"], [9, 1.6622526679349494], [16, 1.6622526679349494]],
     "Width": [[5, 0]],
     "Transparency": [[5, 1]],
     "Foot": [[5, 0]]
@@ -499,7 +457,7 @@
    "Low": "Spike1Guide.Low",
    "High": "Spike1Guide.High",
    "Image": "fx_beam",
-   "FootFade": 0.813,
+   "FootFade": 0.366,
    "Taper": 0.06,
    "Color": {"Color3": [244, 108, 36]},
    "Beam": {
@@ -510,49 +468,22 @@
     "TextureSpeed": 0,
     "Segments": 1,
     "LightEmission": 0.15,
-    "Brightness": 1.3
+    "Brightness": 1.2
    },
    "Tracks": {
     "Width": [[5, 0.261, "Quad Out"], [9, 0.652], [16, 0.391]],
-    "Transparency": [[9, 0], [13, 0, "Quad In"], [20, 1]]
+    "Transparency": [[5, 0], [9, 0, "Quad In"], [16, 1]]
    },
-   "Why": "a thin spike of flame thrown along the blow, quick"
-  },
-  "Spike1Core": {
-   "Kind": "Beam",
-   "On": "Spike1Guide",
-   "Low": "Spike1Guide.Low",
-   "High": "Spike1Guide.High",
-   "Image": "fx_beam",
-   "FootFade": 0.813,
-   "Taper": 0.12,
-   "Color": {"Color3": [255, 224, 150]},
-   "Beam": {
-    "FaceCamera": true,
-    "LightInfluence": 0,
-    "TextureMode": "Stretch",
-    "TextureLength": 1,
-    "TextureSpeed": 0,
-    "Segments": 1,
-    "LightEmission": 1,
-    "Brightness": 2.34,
-    "ZOffset": 0.05
-   },
-   "Tracks": {
-    "Width": [[5, 0.104, "Quad Out"], [9, 0.261], [16, 0.156]],
-    "Transparency": [[9, 0], [13, 0, "Quad In"], [20, 1]],
-    "Reach": [[5, 0.72]]
-   },
-   "Why": "Spike1's core: added white-gold heat down its middle, short of its tip"
+   "Why": "a short spike of flame thrown along the blow, orange, quick"
   },
   "Spike2Guide": {
    "Kind": "Beam",
    "Image": "fx_beam",
    "Beam": {"Segments": 1},
    "Tracks": {
-    "At": [[5, {"Vector3": [0.251, 3.335, -1.58]}, "Quad Out"], [16, {"Vector3": [0.564, 3.305, -3.555]}]],
+    "At": [[5, {"Vector3": [0.251, 3.335, -1.58]}, "Quad Out"], [16, {"Vector3": [0.407, 3.32, -2.568]}]],
     "Tilt": [[5, {"Vector3": [-90.89, 0, -9.01]}]],
-    "Top": [[5, 0.05, "Quad Out"], [9, 3.1166720946585276], [16, 3.1166720946585276]],
+    "Top": [[5, 0.05, "Quad Out"], [9, 1.4025024425963375], [16, 1.4025024425963375]],
     "Width": [[5, 0]],
     "Transparency": [[5, 1]],
     "Foot": [[5, 0]]
@@ -565,7 +496,7 @@
    "Low": "Spike2Guide.Low",
    "High": "Spike2Guide.High",
    "Image": "fx_beam",
-   "FootFade": 0.686,
+   "FootFade": 0.309,
    "Taper": 0.06,
    "Color": {"Color3": [244, 108, 36]},
    "Beam": {
@@ -576,49 +507,22 @@
     "TextureSpeed": 0,
     "Segments": 1,
     "LightEmission": 0.15,
-    "Brightness": 1.3
+    "Brightness": 1.2
    },
    "Tracks": {
     "Width": [[5, 0.29, "Quad Out"], [9, 0.726], [16, 0.436]],
-    "Transparency": [[9, 0], [13, 0, "Quad In"], [20, 1]]
+    "Transparency": [[5, 0], [9, 0, "Quad In"], [16, 1]]
    },
-   "Why": "a thin spike of flame thrown along the blow, quick"
-  },
-  "Spike2Core": {
-   "Kind": "Beam",
-   "On": "Spike2Guide",
-   "Low": "Spike2Guide.Low",
-   "High": "Spike2Guide.High",
-   "Image": "fx_beam",
-   "FootFade": 0.686,
-   "Taper": 0.12,
-   "Color": {"Color3": [255, 224, 150]},
-   "Beam": {
-    "FaceCamera": true,
-    "LightInfluence": 0,
-    "TextureMode": "Stretch",
-    "TextureLength": 1,
-    "TextureSpeed": 0,
-    "Segments": 1,
-    "LightEmission": 1,
-    "Brightness": 2.34,
-    "ZOffset": 0.05
-   },
-   "Tracks": {
-    "Width": [[5, 0.116, "Quad Out"], [9, 0.29], [16, 0.174]],
-    "Transparency": [[9, 0], [13, 0, "Quad In"], [20, 1]],
-    "Reach": [[5, 0.72]]
-   },
-   "Why": "Spike2's core: added white-gold heat down its middle, short of its tip"
+   "Why": "a short spike of flame thrown along the blow, orange, quick"
   },
   "Spike3Guide": {
    "Kind": "Beam",
    "Image": "fx_beam",
    "Beam": {"Segments": 1},
    "Tracks": {
-    "At": [[5, {"Vector3": [-1.062, 3.525, -1.185]}, "Quad Out"], [16, {"Vector3": [-2.389, 3.732, -2.667]}]],
+    "At": [[5, {"Vector3": [-1.062, 3.525, -1.185]}, "Quad Out"], [16, {"Vector3": [-1.726, 3.628, -1.926]}]],
     "Tilt": [[5, {"Vector3": [-82.07, 0, 41.59]}]],
-    "Top": [[5, 0.05, "Quad Out"], [9, 2.526938752488575], [16, 2.526938752488575]],
+    "Top": [[5, 0.05, "Quad Out"], [9, 1.1371224386198588], [16, 1.1371224386198588]],
     "Width": [[5, 0]],
     "Transparency": [[5, 1]],
     "Foot": [[5, 0]]
@@ -631,7 +535,7 @@
    "Low": "Spike3Guide.Low",
    "High": "Spike3Guide.High",
    "Image": "fx_beam",
-   "FootFade": 0.556,
+   "FootFade": 0.25,
    "Taper": 0.06,
    "Color": {"Color3": [244, 108, 36]},
    "Beam": {
@@ -642,238 +546,13 @@
     "TextureSpeed": 0,
     "Segments": 1,
     "LightEmission": 0.15,
-    "Brightness": 1.3
+    "Brightness": 1.2
    },
    "Tracks": {
     "Width": [[5, 0.28, "Quad Out"], [9, 0.7], [16, 0.42]],
-    "Transparency": [[9, 0], [13, 0, "Quad In"], [20, 1]]
+    "Transparency": [[5, 0], [9, 0, "Quad In"], [16, 1]]
    },
-   "Why": "a thin spike of flame thrown along the blow, quick"
-  },
-  "Spike3Core": {
-   "Kind": "Beam",
-   "On": "Spike3Guide",
-   "Low": "Spike3Guide.Low",
-   "High": "Spike3Guide.High",
-   "Image": "fx_beam",
-   "FootFade": 0.556,
-   "Taper": 0.12,
-   "Color": {"Color3": [255, 224, 150]},
-   "Beam": {
-    "FaceCamera": true,
-    "LightInfluence": 0,
-    "TextureMode": "Stretch",
-    "TextureLength": 1,
-    "TextureSpeed": 0,
-    "Segments": 1,
-    "LightEmission": 1,
-    "Brightness": 2.34,
-    "ZOffset": 0.05
-   },
-   "Tracks": {
-    "Width": [[5, 0.112, "Quad Out"], [9, 0.28], [16, 0.168]],
-    "Transparency": [[9, 0], [13, 0, "Quad In"], [20, 1]],
-    "Reach": [[5, 0.72]]
-   },
-   "Why": "Spike3's core: added white-gold heat down its middle, short of its tip"
-  },
-  "Spike4Guide": {
-   "Kind": "Beam",
-   "Image": "fx_beam",
-   "Beam": {"Segments": 1},
-   "Tracks": {
-    "At": [[5, {"Vector3": [-0.833, 4.488, -0.77]}, "Quad Out"], [16, {"Vector3": [-1.875, 5.897, -1.734]}]],
-    "Tilt": [[5, {"Vector3": [-34.34, 0, 31.39]}]],
-    "Top": [[5, 0.05, "Quad Out"], [9, 3.7506608935757932], [16, 3.7506608935757932]],
-    "Width": [[5, 0]],
-    "Transparency": [[5, 1]],
-    "Foot": [[5, 0]]
-   },
-   "Why": "Spike4's guide, unseen: its foot on the ball and its tip"
-  },
-  "Spike4": {
-   "Kind": "Beam",
-   "On": "Spike4Guide",
-   "Low": "Spike4Guide.Low",
-   "High": "Spike4Guide.High",
-   "Image": "fx_beam",
-   "FootFade": 0.825,
-   "Taper": 0.06,
-   "Color": {"Color3": [244, 108, 36]},
-   "Beam": {
-    "FaceCamera": true,
-    "LightInfluence": 0,
-    "TextureMode": "Stretch",
-    "TextureLength": 1,
-    "TextureSpeed": 0,
-    "Segments": 1,
-    "LightEmission": 0.15,
-    "Brightness": 1.3
-   },
-   "Tracks": {
-    "Width": [[5, 0.272, "Quad Out"], [9, 0.68], [16, 0.408]],
-    "Transparency": [[9, 0], [13, 0, "Quad In"], [20, 1]]
-   },
-   "Why": "a thin spike of flame thrown along the blow, quick"
-  },
-  "Spike4Core": {
-   "Kind": "Beam",
-   "On": "Spike4Guide",
-   "Low": "Spike4Guide.Low",
-   "High": "Spike4Guide.High",
-   "Image": "fx_beam",
-   "FootFade": 0.825,
-   "Taper": 0.12,
-   "Color": {"Color3": [255, 224, 150]},
-   "Beam": {
-    "FaceCamera": true,
-    "LightInfluence": 0,
-    "TextureMode": "Stretch",
-    "TextureLength": 1,
-    "TextureSpeed": 0,
-    "Segments": 1,
-    "LightEmission": 1,
-    "Brightness": 2.34,
-    "ZOffset": 0.05
-   },
-   "Tracks": {
-    "Width": [[5, 0.109, "Quad Out"], [9, 0.272], [16, 0.163]],
-    "Transparency": [[9, 0], [13, 0, "Quad In"], [20, 1]],
-    "Reach": [[5, 0.72]]
-   },
-   "Why": "Spike4's core: added white-gold heat down its middle, short of its tip"
-  },
-  "Spike5Guide": {
-   "Kind": "Beam",
-   "Image": "fx_beam",
-   "Beam": {"Segments": 1},
-   "Tracks": {
-    "At": [[4, {"Vector3": [-0.909, 3.066, -1.283]}, "Quad Out"], [16, {"Vector3": [-2.046, 2.698, -2.887]}]],
-    "Tilt": [[4, {"Vector3": [-102.92, 0, 34.63]}]],
-    "Top": [[4, 0.05, "Quad Out"], [8, 3.13973377263867], [15, 3.13973377263867]],
-    "Width": [[4, 0]],
-    "Transparency": [[4, 1]],
-    "Foot": [[4, 0]]
-   },
-   "Why": "Spike5's guide, unseen: its foot on the ball and its tip"
-  },
-  "Spike5": {
-   "Kind": "Beam",
-   "On": "Spike5Guide",
-   "Low": "Spike5Guide.Low",
-   "High": "Spike5Guide.High",
-   "Image": "fx_beam",
-   "FootFade": 0.691,
-   "Taper": 0.06,
-   "Color": {"Color3": [244, 108, 36]},
-   "Beam": {
-    "FaceCamera": true,
-    "LightInfluence": 0,
-    "TextureMode": "Stretch",
-    "TextureLength": 1,
-    "TextureSpeed": 0,
-    "Segments": 1,
-    "LightEmission": 0.15,
-    "Brightness": 1.3
-   },
-   "Tracks": {
-    "Width": [[4, 0.228, "Quad Out"], [8, 0.569], [15, 0.342]],
-    "Transparency": [[8, 0], [12, 0, "Quad In"], [19, 1]]
-   },
-   "Why": "a thin spike of flame thrown along the blow, quick"
-  },
-  "Spike5Core": {
-   "Kind": "Beam",
-   "On": "Spike5Guide",
-   "Low": "Spike5Guide.Low",
-   "High": "Spike5Guide.High",
-   "Image": "fx_beam",
-   "FootFade": 0.691,
-   "Taper": 0.12,
-   "Color": {"Color3": [255, 224, 150]},
-   "Beam": {
-    "FaceCamera": true,
-    "LightInfluence": 0,
-    "TextureMode": "Stretch",
-    "TextureLength": 1,
-    "TextureSpeed": 0,
-    "Segments": 1,
-    "LightEmission": 1,
-    "Brightness": 2.34,
-    "ZOffset": 0.05
-   },
-   "Tracks": {
-    "Width": [[4, 0.091, "Quad Out"], [8, 0.228], [15, 0.137]],
-    "Transparency": [[8, 0], [12, 0, "Quad In"], [19, 1]],
-    "Reach": [[4, 0.72]]
-   },
-   "Why": "Spike5's core: added white-gold heat down its middle, short of its tip"
-  },
-  "Spike6Guide": {
-   "Kind": "Beam",
-   "Image": "fx_beam",
-   "Beam": {"Segments": 1},
-   "Tracks": {
-    "At": [[5, {"Vector3": [-0.706, 3.089, -1.41]}, "Quad Out"], [16, {"Vector3": [-1.589, 2.751, -3.172]}]],
-    "Tilt": [[5, {"Vector3": [-100.86, 0, 26.2]}]],
-    "Top": [[5, 0.05, "Quad Out"], [9, 3.049508245712598], [16, 3.049508245712598]],
-    "Width": [[5, 0]],
-    "Transparency": [[5, 1]],
-    "Foot": [[5, 0]]
-   },
-   "Why": "Spike6's guide, unseen: its foot on the ball and its tip"
-  },
-  "Spike6": {
-   "Kind": "Beam",
-   "On": "Spike6Guide",
-   "Low": "Spike6Guide.Low",
-   "High": "Spike6Guide.High",
-   "Image": "fx_beam",
-   "FootFade": 0.671,
-   "Taper": 0.06,
-   "Color": {"Color3": [244, 108, 36]},
-   "Beam": {
-    "FaceCamera": true,
-    "LightInfluence": 0,
-    "TextureMode": "Stretch",
-    "TextureLength": 1,
-    "TextureSpeed": 0,
-    "Segments": 1,
-    "LightEmission": 0.15,
-    "Brightness": 1.3
-   },
-   "Tracks": {
-    "Width": [[5, 0.296, "Quad Out"], [9, 0.739], [16, 0.443]],
-    "Transparency": [[9, 0], [13, 0, "Quad In"], [20, 1]]
-   },
-   "Why": "a thin spike of flame thrown along the blow, quick"
-  },
-  "Spike6Core": {
-   "Kind": "Beam",
-   "On": "Spike6Guide",
-   "Low": "Spike6Guide.Low",
-   "High": "Spike6Guide.High",
-   "Image": "fx_beam",
-   "FootFade": 0.671,
-   "Taper": 0.12,
-   "Color": {"Color3": [255, 224, 150]},
-   "Beam": {
-    "FaceCamera": true,
-    "LightInfluence": 0,
-    "TextureMode": "Stretch",
-    "TextureLength": 1,
-    "TextureSpeed": 0,
-    "Segments": 1,
-    "LightEmission": 1,
-    "Brightness": 2.34,
-    "ZOffset": 0.05
-   },
-   "Tracks": {
-    "Width": [[5, 0.118, "Quad Out"], [9, 0.296], [16, 0.177]],
-    "Transparency": [[9, 0], [13, 0, "Quad In"], [20, 1]],
-    "Reach": [[5, 0.72]]
-   },
-   "Why": "Spike6's core: added white-gold heat down its middle, short of its tip"
+   "Why": "a short spike of flame thrown along the blow, orange, quick"
   },
   "Chip1": {
    "Kind": "Mesh",
@@ -1345,17 +1024,22 @@
     "LockedToPart": true,
     "Rotation": [0, 0],
     "RotSpeed": [0, 0],
-    "Size": [[0, 1.087], [0.08, 2.41], [0.18, 3.769], [0.3, 5.015], [0.45, 6.071], [0.65, 6.809], [1, 7.065]],
-    "Transparency": [[0, 0], [0.476, 0.35], [1, 1]],
-    "Color": [[0, {"Color3": [255, 197, 84]}], [1, {"Color3": [255.0, 165.32549019607842, 57.976470588235294]}]],
-    "LightEmission": 0.3,
+    "FlipbookLayout": "Grid4x4",
+    "FlipbookMode": "OneShot",
+    "Size": [
+     [0, 1.087], [0.05, 1.833], [0.12, 2.777], [0.2, 3.719], [0.3, 4.7], [0.42, 5.615], [0.56, 6.358], [0.72, 6.847],
+     [0.86, 7.029], [1, 7.065]
+    ],
+    "Transparency": [[0, 0.0], [0.3, 0.164], [0.5, 0.354], [0.7, 0.586], [0.85, 0.784], [1, 1.0]],
+    "Color": [[0, {"Color3": [255, 197, 84]}], [1, {"Color3": [255, 197, 84]}]],
+    "LightEmission": 0.6,
     "LightInfluence": 0,
     "Brightness": 1.1,
     "ZOffset": 0
    },
    "Emit": [[5, 1]],
    "Tracks": {"At": [[5, {"Vector3": [0, 0.06, 0]}]]},
-   "Why": "a ring of light running out over the floor, soft-edged, gold at its front to orange behind"
+   "Why": "a ring of light running out over the floor: a thin warm gold band, soft at both edges, clear inside and out"
   },
   "Sparks": {
    "Kind": "Emitter",

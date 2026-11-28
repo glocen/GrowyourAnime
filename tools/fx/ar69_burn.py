@@ -69,6 +69,16 @@ TONGUES = [
     ("Hips", (0.0, -1.3, 0.7), (0.0, 1.0, 0.5), 2.2, 1.2, 0.41, 0.55),
     ("NearHip", (1.2, -1.6, 0.2), (0.25, 1.0, 0.2), 1.8, 1.0, 0.33, 0.9),
 ]
+# Round 2 (research, 2026-11-28, 01:2x): the target's eight read as five or six a side, each its three crossed ribbons;
+# one camera-facing tongue reads as one. Five shorter ones layered between the long ones, on their own beats, bring
+# each side to six: between the shoulder and the back, between the shoulder and the arm, and the far hip.
+LAYERED = [
+    ("FarBlade", (-1.25, 0.75, 0.55), (-0.25, 1.0, 0.4), 2.0, 1.15, 0.31, 0.25),
+    ("NearBlade", (1.25, 0.7, 0.55), (0.25, 1.0, 0.4), 1.9, 1.1, 0.29, 0.7),
+    ("FarSide", (-1.85, 0.35, 0.25), (-0.4, 1.0, 0.15), 1.7, 1.0, 0.34, 0.5),
+    ("NearSide", (1.85, 0.3, 0.3), (0.4, 1.0, 0.15), 1.6, 1.0, 0.27, 0.05),
+    ("FarHip", (-1.2, -1.5, 0.25), (-0.25, 1.0, 0.2), 1.5, 0.95, 0.38, 0.6),
+]
 DRAWN = 0.72  # the picture's tongue at its widest, a share of the beam's width (HALF below, twice)
 SHOWN = 0.83  # the target's tongue at its widest, a share of its `width` (tongue_width at a quarter up)
 LICK = (0.66, 1.12)  # a lick's height, low and high, a share of the tongue's length (the target's 0.79 to 1.09, wider:
@@ -152,11 +162,11 @@ def streak(name, guide, widths, fades, length, why, bright=1.1, taper=TAPER):
 # a tapered tip, with no outline; the body and its core are as wide as each other, the core's own picture narrower and
 # shorter inside the body's. Each is drawn from its guide's tip down to its foot, its picture stored tip-up (the
 # content check of 2026-11-27, 17:00). Each tongue's own curve waits on Faber's turn of the beam's ends (AR69).
-CURL = 0.24  # each tongue's CurveSize0, a share of its length: its arc and its tip's curl
+TONGUE_CURL = 0.24  # each tongue's CurveSize0, a share of its length: its arc and its tip's curl
 # which way each tongue curls: 1 out the way it leans, -1 back over the body. Never a matching pair on the shoulders:
 # curled out alike, the two read as horns from the front at 64 px (the offline model, 2026-11-28, 00:5x)
 CURLS = {"FarShoulder": 1, "NearShoulder": -1, "FarArm": -1, "NearArm": 1, "Back": 1, "BackLow": -1, "Hips": 1,
-         "NearHip": -1}
+         "NearHip": -1, "FarBlade": -1, "NearBlade": 1, "FarSide": 1, "NearSide": -1, "FarHip": 1}
 SOFT_WIDE = 1.3 * SHOWN / DRAWN  # the beam's width over the flame's `width`; its soft edge eats about a third of it  # the beam's width over the flame's `width`: the pictures' tongue is DRAWN of it at its widest
 
 
@@ -202,7 +212,7 @@ def tongue(name, at, lean, length, width, beat, phase, seed):
     # end (its Low, the guide's tip), so it rises straight off its foot, arcs out the way it leans and curls at its tip.
     # A CurveSize1 would leave the foot sideways too, a zigzag with a bar at its foot (the offline model, 00:5x).
     out = (-1 if lean[0] < 0 else 1) * CURLS[name]
-    bend = (round(out * CURL * length * rng.uniform(0.85, 1.15), 2), 0)
+    bend = (round(out * TONGUE_CURL * length * rng.uniform(0.85, 1.15), 2), 0)
     flame = soft_streak(name, f"{name}Guide", wide, [[0, 1, "Quad Out"], [6, 0], [FAR, 0]],
                         f"the hero: a flame tongue, {name}, licking up from a round foot, curling; taller is thinner",
                         curve=bend)
@@ -260,11 +270,12 @@ def light():
 
 def burn():
     rows = {}
-    for n, (name, at, lean, length, width, beat, phase) in enumerate(TONGUES):
+    for n, (name, at, lean, length, width, beat, phase) in enumerate(TONGUES + LAYERED):
         guide, flame = tongue(name, at, lean, length, width, beat, phase, 70 + n)
         rows[f"{name}Guide"] = guide
         rows.update(flame)
-        rows[f"{name}Embers"] = embers(f"{name}Guide", length)
+        if n < len(TONGUES):  # embers off the long ones only
+            rows[f"{name}Embers"] = embers(f"{name}Guide", length)
     rows["Light"] = light()
     return {"Schema": "rows/1", "Effect": "StateBurn",
             "Why": "Burn (Fire), worn while it holds: flame tongues licking off the shoulders, the arms, the back and the "

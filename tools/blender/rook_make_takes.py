@@ -197,11 +197,12 @@ def take_a(joints, folder):
     t = b["torso"]
     w, f, back = t.wrap, t.faces["front"], t.faces["back"]
     # the T-shirt in the jacket's opening, hanging loose: its folds fall from the collar and gather at the waist
-    f.lay(f.poly([(-0.3, 2.0), (0.3, 2.0), (0.46, 0.0), (-0.46, 0.0)]), tee)
+    shirt = f.poly([(-0.3, 2.0), (0.3, 2.0), (0.46, 0.0), (-0.46, 0.0)])
+    f.lay(shirt, tee)
     f.lay(f.ellipse(0.0, 2.02, 0.21, 0.17), skin)
     line(f, [(-0.21, 2.0), (-0.13, 1.89), (0.0, 1.85), (0.13, 1.89), (0.21, 2.0)], 0.03, tone(tee, 0.62))
     for pts, wide in ROOK_TEE:
-        am.pull(f, pts, wide, tee)
+        am.pull(f, pts, wide, tee, clip=shirt)   # inside the T-shirt: none of its red on the jacket
     # the jacket's two front edges, their facing a tone lighter, and its buttons
     for s in (-1, 1):
         f.lay(f.poly([(s * 0.3, 2.0), (s * 0.4, 2.0), (s * 0.56, 0.0), (s * 0.46, 0.0)]), trim)

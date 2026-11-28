@@ -374,24 +374,26 @@ def cel_sides(block, folds, cloth, depth=0.78, edge=0.52, scale=1.0, rim=0.16):
             cel(block.faces[names[side]], [(-x if left else x, y) for x, y in pts], wide * scale, cloth, depth, edge, rim)
 
 
-def pull(p, pts, width, cloth, depth=0.72, steps=3, crease=0.45, lift=1.16):
+def pull(p, pts, width, cloth, depth=0.72, steps=3, crease=0.45, lift=1.16, clip=None):
     """A fold as cloth pulled from a seam: a band at its widest where it leaves the seam (`pts[0]`, past the face's
     edge, so it is open there), narrowing to a blunt end and fading out in `steps` cel steps, the darkest at the seam.
     Its crease line runs along one edge for half its length and a lit step along the other for less, so it reads as
-    cloth turning; never a closed mark pointed at both ends, which reads as a cut (2026-11-28)."""
+    cloth turning; never a closed mark pointed at both ends, which reads as a cut (2026-11-28). `clip`: a cover the fold
+    stays inside, the garment's own shape, where its seam meets another cloth (a red mark on the blue reads as a stain)."""
+    inside = (lambda c: c) if clip is None else (lambda c: c * clip)
     P = smooth2(pts, 30)
     n = len(P)
     half = width * (1.0 - 0.6 * np.linspace(0, 1, n))
     for k in range(steps):
         m = max(3, int(round(n * (1 - k / steps))))
-        p.lay(p.stroke(P[:m], half[:m], n=m), tone(cloth, depth), 0.45)
+        p.lay(inside(p.stroke(P[:m], half[:m], n=m)), tone(cloth, depth), 0.45)
     d = np.gradient(P, axis=0)
     nrm = np.stack([-d[:, 1], d[:, 0]], axis=1)
     nrm /= np.maximum(np.linalg.norm(nrm, axis=1, keepdims=True), 1e-6)
     m = n // 2
-    p.lay(p.stroke(P[:m] + nrm[:m] * half[:m, None] * 0.5, width * np.linspace(0.08, 0.03, m), n=m), tone(cloth, crease), 0.85)
+    p.lay(inside(p.stroke(P[:m] + nrm[:m] * half[:m, None] * 0.5, width * np.linspace(0.08, 0.03, m), n=m)), tone(cloth, crease), 0.85)
     m = int(n * 0.4)
-    p.lay(p.stroke(P[:m] - nrm[:m] * (half[:m, None] * 0.5 + width * 0.08), width * np.linspace(0.12, 0.04, m), n=m),
+    p.lay(inside(p.stroke(P[:m] - nrm[:m] * (half[:m, None] * 0.5 + width * 0.08), width * np.linspace(0.12, 0.04, m), n=m)),
           tone(cloth, lift), 0.7)
 
 

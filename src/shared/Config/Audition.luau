@@ -92,6 +92,12 @@ return {
 		{ Name = "ChestOpen", Label = "Chest open", Max = 1.5, Beat = true, Words = { "chest open", "treasure open", "loot box open", "lid open", "reward reveal" } },
 		{ Name = "BayOn", Label = "Bay powers on", Max = 1.5, Beat = true, Words = { "power on", "machine start", "generator start", "electric hum start", "energy activate" } },
 		{ Name = "Equip", Label = "Equip", Max = 0.6, Beat = true, Words = { "equip", "armor equip", "gear equip", "sword sheath", "item equip" } },
+		-- TR69 A's (docs/test-requests.md, TR69, "A's two sounds, the cue rows"; research, 2026-11-28): the pack's last
+		-- fall, at the end of Hitstop.Kill's hold, as the drops leave. Never a glass or bell ding (ShardDrop's), a gong
+		-- (KeeperFall's), a tune, coins, a voice, or two or more notes; silent when a shard drops on that fall.
+		-- Research's words ("soft shimmer", "magic whoosh short", "airy swell", "release shimmer", "light sparkle") kept
+		-- 14 of 242 on 2026-11-28 and 13 were voices, ripped game files or titles that say nothing, so effect words
+		{ Name = "PackClear", Label = "Pack cleared", Max = 0.8, Beat = true, Words = { "magic shimmer", "shimmer sfx", "sparkle sfx", "magic dissipate", "airy whoosh", "magic dust", "soft whoosh", "energy fade" } },
 	} :: { Spec },
 	Pages = 2, -- the library's pages of 25 read a word
 	Keep = 20, -- candidates kept a cue, in the library's order (the panel shows ten at a time); 20 since 2026-11-25, Sonus
@@ -140,6 +146,7 @@ return {
 		ChestOpen = -6,
 		BayOn = -6,
 		Equip = -12,
+		PackClear = -6, -- TR69 A: under the last hit's loudness, a reward's level (Sonus's seed)
 	},
 	Ceiling = -1, -- dBTP: a candidate's top at its matched level stays under it, so the bus's limiter takes 0 dB
 

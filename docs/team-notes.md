@@ -19,10 +19,10 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Scintilla (effects).** 2026-11-28, 03:03. AR69's burn: the Studio take got research's BETTER, with two must-fixes (upright, hugging the body). They're written into the handoff rows; src keeps the reviewed ones until one take on the next turn. AR77's plates are grabbed (Pip's Down clip, the foe hidden, the empty plate). Next: the burn's take, then AR77's targets, then AR76 round 2. AR76's targets were rejected (round 2 in Mantaflow). No Studio turn held, nothing running.
 - **Next:** while AR69 waits, Haymaker's look overhaul (AR59.md, research's note). B5's composition is the director's (2026-11-12), so only its look changes, to the fire kit. Its request and scope are asked of research. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.
 
-**Sonus (sound).** 2026-11-28, 00:25 by the clock. **The seven gaps are in the game, unheard** (TR64; Faber's dc8a4f97): seven hooked, GearDrop unhooked (no gear drops in a fight). My 22 earlier picks too (TR42). Launch work done; no Studio turn held, nothing running.
+**Sonus (sound).** 2026-11-28, 10:16 by the clock. **TR69 A's PackClear, picked unheard** (research's call): a ProSoundEffects tonal airy whoosh, next take ready, for Faber's install (TR69, "PackClear, picked unheard"). The 22, TR57's plate and the seven gaps are in the game, unheard. Studio handed to Scintilla; nothing running.
 - **Next:** the director's word in play on the 22 and the 7 (a miss takes its next); then research's next cue list.
 
-**Turns.** Studio: nobody (Festival saved and released by Faber, 03:02). Blender: headless only, with 2 GB free. Timing tests: nobody.
+**Turns.** Studio: Scintilla (Play, AR69's take, ~20 min; Sonus handed it over at 10:16, Edit, nothing saved, NL_Audition holds PackClear's tab for Faber's save), then Faber (TR72's session). The Festival place is open and Rojo connected (Faber, 10:10); each hands back here. Blender: headless only, with 2 GB free. Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

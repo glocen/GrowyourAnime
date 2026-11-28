@@ -15,7 +15,7 @@ Marks: **[D]** the director's: their own words, or a choice the package records 
 | Void Breaker | the machine in the base that breaks shards [D] |
 | Lead | the one Voidkin that fights beside the player |
 | Worker | a Voidkin placed in an extraction bay |
-| Champion | the one Voidkin sent to the Clash Grounds |
+| Colosseum | the Void Colosseum, the Strip's arena of ranked bouts and live spars |
 | Extraction bay | a work station in the base. Six at most [D] |
 | Electricity | what bays make and the Breaker uses [D] |
 | Regalia | the account's gear: fourteen slots, worn by whichever Voidkin fights; worn in its numbers only, a picture in its slot and nothing on the model (the director, 2026-11-15) |
@@ -23,7 +23,7 @@ Marks: **[D]** the director's: their own words, or a choice the package records 
 | Ground | one of the Festival's places (Lantern Row is the first). Players read it as "Arc" (the director, 2026-11-19); the docs and the code say ground |
 | Keeper | the boss at the end of a ground |
 | Shade | the enemies (`docs/roster.md`) |
-| The Strip | the shared space between the eight bases: the Void Shop, the Clash Grounds, the Calamity [D] |
+| The Strip | the shared space between the eight bases: the Void Shop, the Void Colosseum, the Calamity [D] |
 
 ## The loop
 
@@ -261,30 +261,51 @@ One number for how strong the lead is with its preset, made to be watched rising
 
 ## The Festival of Battles
 
-Six grounds in all (`docs/roster.md`), and Lantern Row alone at launch (`docs/production-plan.md`, "The cut line"), each a recolour and rearrangement of one festival kit. Each ground is a place of its own in the experience, its Normal and Hard played on its one map [D, 2026-11-19]. A ground has ordinary Shades, elites, one keeper, and a gate. Beating the keeper opens the next ground for good, and a shortcut gate back to the base [D].
+Six grounds in all (`docs/roster.md`), and Lantern Row alone at launch (`docs/production-plan.md`, "The cut line"), each a recolour and rearrangement of one festival kit. Each ground is a place of its own in the experience [D, 2026-11-19]. Beating its Lamplighter opens the next ground for good.
 
-- **One mission per Arc, played on Normal or Hard** [D, 2026-11-19, 23:19, replacing D2's four stages]. Lantern Row is one run of four stretches, ending at the Lamplighter, and a Normal clear takes 10 to 15 minutes. A fall ends the run (the lead goes home, "A fall sends it home"), and the next run on that difficulty starts at the last stretch reached, until the keeper falls; after that a run starts at the first. Hard opens for the ground when the Lamplighter falls on Normal, and is much harder. Play opens a panel of game modes, the Festival and the Tower a card each [D, 2026-11-24], and the Festival's card opens the Arc panel; each difficulty's tile shows its recommended Combat Power and, if locked, its condition. Each stretch and difficulty rolls gear on its own budget: the first stretch's first reward is sure to be an item the chosen fighter can use, and Hard's Keeper shows its Rare chance [D, D7]. The loot's pace is fitted to this length ("Chests", below).
-- **The Keeper alone** [research, 2026-11-27, on the director's word of 12:41, "you decide the overhaul"; `docs/test-requests.md`, TR74]: once a difficulty's Lamplighter has fallen, its tile also offers the Keeper alone. That run starts at the keeper's stretch and pays as a run's end does. The keeper's rest still applies. The full run stays the way in, and the way to earn on the street.
-- **Each stretch is played in waves** [research, 2026-11-26, tier 2, on the director's word of 14:06; `docs/test-requests.md`, TR69]. A pack's stop sends short waves in place of one pack on a respawn timer, the next 2.5 s after the last Shade falls, each new Shade met alone first. The waves fill the stretch's quota, and nobody waits longer than the gap. Each elite is its stretch's role with one move of its own. The Lamplighter fights in three phases. Hard changes how Shades behave, not only their numbers.
-- **A party plays in a reserved server** [D, 2026-11-18, D1], if parties come at launch ("Out of launch"). Its rules are pure Luau, blind to the transport, and progress travels in the save.
-- **Keepers are fought alone.** Everyone gets their own fight, so nobody is carried and nobody waits.
-- **Fighting together** happens at elites, which anyone near may join, and at the Calamity.
+**Lantern Row is the Lantern District** [D, 2026-11-28, by 11:05: the run "fully reimagined", research's creative freedom; the yes to TR76, by 11:32; research's design with Gemini, `docs/requests/TR76.md`]. It replaces the run, its four stretches, its checkpoints and the Keeper alone. Gemini's numbers below are seeds until the grey block is played.
+
+- **An open district, shared by everyone in its server.** Walk in through the Festival Door: no run, no start button, no menu between the player and a fight. The first fight is 4 s from the gate.
+- **The plan** (research's draft, about 320 by 300 studs; the layout gets its top-down plan beside a shipped map before Modulo's targets):
+  - the Arrival Court at the south, safe, with the door home and a sign showing what each wing pays;
+  - the Festival Plaza at the centre, an octagon about 96 studs across, with the Brazier in its middle;
+  - four streets out of the plaza to four wings, each with its own Shades and its own pay (below);
+  - the Belfry Stairs at the north, up to the gate of the player's own Lamplighter.
+- **The wings, each paying one kind of upgrade:**
+  - **Brawler Alley** (west): two Brawler camps. Credits, experience and Mastery experience.
+  - **Guard Bastion** (east): two Guard and Support camps. Forge stones and Shade chests.
+  - **Dasher Canal** (north-west): a wide quay with two Dasher camps. Jewel pouches and more Credits.
+  - **Spirit Court** (north-east, raised): one District Elite, its role turning every 60 s. Emblem cases and a chance at an Enriched shard.
+- **A camp** is a troupe of three Shades fought in waves, as TR69's Shades are (their roles, the elites' moves). It comes back 18 s after a clear with one or two players in the server, down to 10 s with four or more, so nobody waits and nobody is starved. Loot rolls per fall and is tuned to the hour ("Chests").
+- **The Flame, the player's own:** every camp the player clears fills it by a third. A full Flame opens the Belfry gate for that player's own Lamplighter, Normal or Hard chosen at the gate. It's fought alone, in a copy of the Belfry set far from the map as the Tower's room is (keepers are fought alone [D]). Its three phases are TR69's. Hard opens when Normal has fallen once, and is much harder.
+- **The Brazier, the server's:** every camp anyone clears feeds it, and it fills at twelve clears per player online (about 5 to 7 minutes). Full, it sets off a **Festival Surge** of 90 s: the district's light changes, camps pay more inside the earning bucket ("The one rule"), and a Festival Envoy lands in the plaza. Everyone who deals at least 5% of its health wins a Festival chest, a Standard shard and a third of a Flame.
+- **Fighting together** happens at camps, the Elite and the Envoy, open to anyone near. Festival parties stop being a feature of their own: friends play in one server.
 - **Each ground leans on two types,** so a second and a third lead are worth raising.
 
 ## The Strip
 
-- **The Void Shop** [D]: stock changes every five minutes, the same in every server, with a limit per player. It sells for Credits: at launch, shards and a featured gear piece (D6, below). A featured stock is the reason to look up at the clock. How it works [research, 2026-11-17, 21:10, tier 2; its look: `docs/asset-requests.md`, AR38]:
-  - **The clock.** A new stock every five minutes on world time, drawn from a seed that never reaches a client. Nobody sees a stock before it lands.
-  - **The shelf at launch** [D, 2026-11-18, D6, replacing the six lines of 2026-11-17]: two Standard shards a player each stock, and on featured stocks one gear piece the player can preview before buying, for Credits only. The stock's index is the Unix time divided by 300, floored, and the shelf is a seeded draw on it, as `Tower.Draw` does, salted on the server so no client sees a stock early; every server shows the same shelf with no messaging. The rule is pure Luau, with offline cases (the shelf for an index, a buy, a refusal at the limit, a repeated request).
-  - **Waiting for the roster:** the Enriched and Prismatic shard lines, and the rare offer (a Named shard of an Epic or rarer Voidkin, never a roll), come back when the roster holds what they sell. Lantern Row has no Epic.
-  - **A limit per player, never a race.** Each line has its own count per player per stock, so one player's buy never empties another's. What's bought is saved against the stock's number, so a server hop never refills a line (`docs/engineering-plan.md`, the profile's `Shop`).
-  - **Every chance shown.** The screen says how often a featured stock comes up, and every shard on the shelf shows its odds per Voidkin before it's bought, as every shard does.
-  - **Bought at the counter.** The Shop stands on the Strip, south of the crossing, a short walk from every plot. In the last minute before a stock, the countdown chip shows under the pills (`docs/ui.md`). While a featured stock is in, the Shop's crown is lit for its five minutes.
-  - **Never for Robux:** no paid restock and no bigger limit. No Credits are sold at launch [D, 2026-11-24, 10:50]. If they are later, a shard bought with them is a paid random item, its odds shown before the buy (`docs/roblox-rules.md`, "What we do").
-  - **Prices,** in Credits, are set in `tools/balance/seeds.json` from the simulation, so the shop takes about a quarter of income after five hours (`docs/balance.md`, "Earning").
+- **The Void Shop** [D: every five minutes, the same in every server, a limit per player; reworked whole, the yes to TR76, 2026-11-28, by 11:32, replacing D6's shelf; research's design with Gemini, the numbers seeds in `tools/balance/seeds.json`; its screen, `docs/ui.md`; its look, `docs/asset-requests.md`, AR38]. Two tabs.
+  - **Rotating stock:** six slots, a new stock every five minutes on world time, drawn from a seed salted on the server so nobody sees a stock early (the stock's index is the Unix time divided by 300, floored, as `Tower.Draw` does). Each slot has its own limit per player, never a race.
+    1. Always: two Standard shards, for Credits, priced so a new player buys them by minute 10.
+    2. Always: a forge stone bundle, or now and then a Skill Manual, for Credits.
+    3. Always: the Power Deal, for the battery's kWh: a Jewel Pouch, an Emblem Case or a Voltage cell. Electricity buys something every five minutes.
+    4. Often: a gear piece, previewed whole before buying, with its Combat Power change on the lead.
+    5. Sometimes: an Enriched shard, or an emblem or jewel of a stated grade. It lights the Shop's crown on the Strip.
+    6. Rarely (about once in four hours): a Legendary or Dawn gear piece, previewed, or a Named shard of a launch Voidkin. It goes out on the Broadcast ("Being seen").
+  - **The Exchange,** reset every Monday at 00:00 UTC, nothing random: Arena Seals (the Colosseum) and Tower Crests (the Tower) buy a Named copy of a Voidkin the player picks (two a week), an emblem of a chosen kind, Skill Manuals, and trims for the base and the plinth.
+  - **Every chance shown:** each shard shows its odds per Voidkin, each case and pouch its rolls, before the buy (`docs/roblox-rules.md`).
+  - **Never for Robux:** no paid restock and no bigger limit. No Credits are sold at launch [D, 2026-11-24, 10:50].
+  - **The Credits it takes:** about a quarter of a player's spending from the first hour on, instead of none before 5 hours (`docs/balance.md`, "Earning", refit with the simulation).
+  - **Why a player looks up:** the countdown chip in the last minute (`docs/ui.md`), the lit crown, the Broadcast, and the Power Deal that's always worth the walk.
+  - **Bought at the counter** on the Strip, a short walk from every plot. The rules are pure Luau, with offline cases (a stock for an index, a buy, a refusal at the limit, a repeated request, the week's Exchange).
 - **The Void Rift** [D], after launch [D, 2026-11-17, 02:40], in one of the named updates (`docs/production-plan.md`, "The cut line"): a short burst on a schedule, the same everywhere. While it's open, the Breakers of everyone online run many times faster. Speed only, never luck [D].
 - **The Calamity** [D], after launch (the director, 2026-11-15): a great boss that arrives on a schedule in each server. Everyone who does a minimum share of the damage is rewarded, the top three most [D]. One claim per arrival per account.
-- **The Clash Grounds** (the director's Void Clash [D]): an arena where every player may station one champion. Champions fight each other on their own, all day, in the open, and the players watch. Beating another champion pays the winner's owner: Credits and progress on a daily track [D: rewards when their Voidkin beats another]. A stronger champion beating a far weaker one earns little, and the same pair pays only so often. A beaten champion goes home and can be sent again after a short wait. Echoes, server-run stand-ins, keep the arena busy when few players have a champion out. The server's best champion wears a crown.
+- **The Void Colosseum** [D, 2026-11-28, by 11:10: "add a colleuseum arena design it however you want"; the yes to TR76, by 11:32, replacing the Clash Grounds; research's design with Gemini, the numbers seeds]. A sunken round arena about 120 studs across at the Strip's east end, with tiered stands, in the main place, no teleport. It's where a build is tested against other players' builds, and where Voidkin past the lead get a fight of their own.
+  - **Ranked bouts:** the player picks one of three opponents, other players' saved builds within about 12% of their Combat Power (authored Echoes fill the first days), and sees each one's Voidkin, type, element and Combat Power before choosing. They fight with their lead alone, or a relay of three that sends the next on a fall. Five bouts a day are rewarded; more climb the rating without pay.
+  - **Live spars:** two plinths in the arena, or a challenge to anyone in the server, watched from the stands. Even builds for a friendly test, or open Combat Power.
+  - **Its rules:** the game's own hit (`Rules.Hit`) with arena health 2.5 times a lead's, and a Sudden Surge from 60 s that adds to the damage bucket every 10 s, so a fight lasts 25 to 45 s and never stalls. The lead and its Regalia are frozen on entry.
+  - **Its pay:** Credits, Mastery experience and Arena Seals (a bag item, spent at the Exchange). Each Monday the week's tiers, Bronze to Sovereign, pay forge crates, cases and pouches, and the top tier crowns the player's gate for the week.
+  - **How it differs from the Tower:** the Tower is a climb against the game, one lead's health carried across floors. The Colosseum is a fresh, full-health matchup against a real player's build at the player's own level, where type and class choices win.
 
 ## The Tower
 
@@ -301,7 +322,14 @@ Its entrance stands behind each base [D], and the fight is in a room of its own 
 - **Interruptions:** the HUD's Leave, asked first [D, 2026-11-26, about 13:25], going home, a disconnect or a shutdown end the run at its last floor won, and nothing won is lost. The results open once at the next join. A run never resumes.
 - **The order** [D, 2026-11-19]: the room is built after the main game's open pieces. Until then the grey Tower, its platforms included, runs as it is. Its look is drawn ahead by Modulo [D, 2026-11-23, by 20:01: AR56]; the build keeps this order.
 - **The week** [the builder's, TR46; written here 2026-11-26]: past the five opening floors, the enemies come from the week, the same on every server, so the week's board is one race. The week turns on Monday, 00:00 UTC. The board holds each account's best floor this week. The week's first place goes out on the Broadcast ("Being seen").
-- **Not at launch** [D]: milestone bosses, cash-outs, branches, extra currencies.
+- **The upgrade** [D, the yes to TR76, 2026-11-28, by 11:32, replacing "Not at launch: milestone bosses" and a currency's ban for Tower Crests; research's design with Gemini, the numbers seeds]:
+  - **A start near the record:** a run may begin at floor 1, or at the record minus 5 rounded down to a five (record 23: floor 15), at full health.
+  - **A Warden every fifth floor:** a Voidkin a quarter bigger, crowned, with a Poise bar and one telegraphed slam, no new model. Winning it heals a quarter of the lead's health and gives a sure chest: floor 5 gear, 10 an Emblem Case, 15 a Jewel Pouch, 20 a Skill Manual, 25 a chest with a chance at Dawn, then the cycle again.
+  - **Four skies in one room:** every ten floors the room's sky, its rim light and its runes change (1 to 10 sunlit clouds, 11 to 20 amber dusk, 21 to 30 an aurora of the void, 31 and up a gold eclipse). The look is Modulo's, through targets.
+  - **The week's rule:** past floor 5, the week's seed adds one rule shown at the door, always a number in a bucket (more elemental damage, more Warden Poise, a shorter signature cooldown).
+  - **Tower Crests:** a bag item, paid every five floors, with a weekly cap, spent at the Void Shop's Exchange. Credits and electricity stay the only currencies [D].
+  - **The record shows:** the marker behind the base turns stone, bronze, gold and void crystal at floors 10, 20, 30 and 40. The results show the world's share beaten ("Top 8%") and a one-tap retry from the run's start floor.
+- **Not at launch** [D]: cash-outs and branches.
 
 ## The world, in grey
 
@@ -310,15 +338,15 @@ Research's layout for TR2, 2026-11-12. The builder installs it in grey; how it l
 ```
               [Tower][Tower]    gate    [Tower][Tower]
               [ P1 ] [ P2 ]      ||      [ P3 ] [ P4 ]
-   Calamity ═══════════════ the Strip ═══╬═══════════════ Clash Grounds
+   Calamity ═══════════════ the Strip ═══╬═══════════════ Colosseum
               [ P5 ] [ P6 ]     Shop     [ P7 ] [ P8 ]
               [Tower][Tower]            [Tower][Tower]
 ```
 
 - **Eight plots, two rows of four, facing each other across the Strip** [D: eight bases, a Tower behind each]. A plot is 128 studs square ("The base", its size, above) and opens onto the Strip; the Festival Door takes its walk to the grounds. The Breaker stands at its front, so a passer-by sees the shards cracking. The bays line its sides, and the battery sits between them. Its back is kept for the Forge, the Lab and the Condenser, with the Tower behind that (phase 3; TR2 leaves the space). Neighbours stand 48 studs apart (TR2's verdict).
-- **The Strip** is 3 s wide (48 studs). It breaks at its middle into a crossing one plot wide. North of the crossing a side street runs out between the Towers to the **festival gate**. South of it stands **the Shop**: every trip out and back passes the clock. The Strip's two ends are kept for the Calamity and the Clash Grounds (phase 5).
+- **The Strip** is 3 s wide (48 studs). It breaks at its middle into a crossing one plot wide. North of the crossing a side street runs out between the Towers to the **festival gate**. South of it stands **the Shop**: every trip out and back passes the clock. The Strip's two ends are kept for the Calamity and the Void Colosseum ("The Strip").
 - **From the front of any plot to the first Shade: 20 s at most,** about 14 s from the nearest. That's 10 s at most to the crossing, 8 s up the side street past the plots and Towers to the gate, and 2 s past it to the first pack, which can be seen from the gate.
-- **Lantern Row** is one street, 44 studs wide between the stall fronts (TR2's verdict, on the director's word), in one rhythm: three packs, the elite's square, three packs, the keeper's gate, one pack spacing apart each. Its length follows the spacing: about 37 s on foot at 80 studs (about 590 studs), so tuning one number keeps the rhythm (the builder's read, 2026-11-12).
+- **Lantern Row** (the old run's street, standing in the build until the Lantern District replaces it, "The Festival of Battles") is one street, 44 studs wide between the stall fronts (TR2's verdict, on the director's word), in one rhythm: three packs, the elite's square, three packs, the keeper's gate, one pack spacing apart each. Its length follows the spacing: about 37 s on foot at 80 studs (about 590 studs), so tuning one number keeps the rhythm (the builder's read, 2026-11-12).
   - **Six packs** of three Brawler Shades, 80 studs apart, past the lead's 30-stud leash, so the lead takes one pack at a time and the player chooses when to step on.
   - **A pack belongs to everyone.** Every player whose lead hit one of its Shades gets that Shade's drop in full, as at the elite. Nobody walks past a fight they can't join, and nobody steals a kill. A pack comes back a set time after its last Shade falls (Config). That wait is also what limits how much faster a group earns than a player alone.
   - **The elite** stands in a square at the street's middle, 4 s across (64 studs), so anyone near can join (design, "The Festival of Battles").
@@ -333,14 +361,12 @@ Research's layout for TR2, 2026-11-12. The builder installs it in grey; how it l
 
 **Two layers and the next step, each something the player does anyway, made sharper** [D, 2026-11-23, 15:23, the director's yes to research's design, `docs/research/design-holes.md`, F5; the third layer, the Mask Ledger, cut by the director by 18:38]. The bar is the director's: cool, never corny, weird or "AI slop". **Basic at launch** [D, 2026-11-23, 15:24: "quest wont be too advanced tho js basic at launch"]: each layer launches in its plainest form, below, and grows with the updates.
 
-- **A dare on each stretch** of the run (research, 17:49: the run has four stretches and no start card, so "stage" read wrong).
-  - One line that unfolds under the run's line as the stretch starts, then folds to a small mark in the kit's own make (AR53). It's about how the stretch is played, never which Voidkin leads it.
-  - Each stretch asks its own question (F2), so its dare does too. At launch, one fixed dare per stretch:
-    - Stretch 1, the Brawlers: finish with your lead above half;
-    - Stretch 2, the Guards: break a raised shield with your signature;
-    - Stretch 3, the Dashers: let no Dasher's line touch you;
-    - Stretch 4, the Lamplighter: stand outside every slam.
-  - Kept, it pays a forge stone when its stretch is cleared, and the run's card shows them all ("Dare kept", "+N"). A later fall takes nothing back. Missed, nothing is said.
+- **A dare in each wing** of the Lantern District [research, 2026-11-28, on the yes to TR76: the stretches are gone, the dares move to the wings]. One line that unfolds as the player enters a camp's fight, then folds to a small mark in the kit's own make (AR53). It's about how the fight is played, never which Voidkin leads it. At launch, one fixed dare a wing:
+    - Brawler Alley: clear a camp with your lead above half;
+    - Guard Bastion: break a raised shield with your signature;
+    - Dasher Canal: clear a camp with no Dasher's line touching you;
+    - the Belfry: stand outside every slam.
+  - Kept, it pays a forge stone, each dare once per Flame. Missed, nothing is said.
   - Seeds, tuned by playing.
 - **Today's three, on Home's panel.**
   - One fight, one base and one roster goal, each paying a shard, so each pays a reveal. They're drawn from a short list of simple goals, for example:
@@ -359,7 +385,7 @@ Research's layout for TR2, 2026-11-12. The builder installs it in grey; how it l
   - These hold for every line players read, not only the goals' [research, 2026-11-24, after the director called the run card's "Hard is open" band corny AI slop]. No line framed as a banner with ornaments on both sides: news is shown by the thing that changed.
   - Research writes them; the content check reads them before they're built.
 - **Rewards** are forge stones and shards only: never Robux, and never anything sold.
-- **Not at launch:** a pool of dares per stretch, weekly goals, a pass, titles.
+- **Not at launch:** a pool of dares per wing, weekly goals, a pass, titles.
 
 ## Being seen
 
@@ -408,6 +434,21 @@ Research's layout for TR2, 2026-11-12. The builder installs it in grey; how it l
     - names are display names, never a nickname or anything a player typed.
   - **Roblox's banner** at the top of the invite menu, set in the director's Creator Dashboard (Engagement, Referral Rewards), says only what's true for every inviter: the reward's name "A Forge Crate after their first clear", and its description "A friend new to the game who beats the Lamplighter gets a Forge Crate, and so do you, for your first five." Whether the field takes that length, and what the banner shows past its limit, are checked when the director enters it (UNVERIFIED).
 
+## The Index
+
+[D, 2026-11-28, by 11:10: "an index page"; the yes to TR76, by 11:32; research's design with Gemini, the numbers seeds.] The collection book, opened from Home beside Voidkin and Equipment (`docs/ui.md`). Every drop and every kill moves a bar in it.
+
+- **Four tabs:**
+  - **Voidkin:** each one with four stamps: found, three stars, seven stars and Mastery rank 5. Its number and how many exist ("How many exist").
+  - **Shades:** each foe found on its first kill, with stamps at 10, 100 and 500 kills, its type, a hint of its Poise, and its drops with their odds.
+  - **Regalia:** each gear design by slot and rarity, found when one is first held, auto-salvaged or not.
+  - **Emblems and jewels:** each set and rarity, each colour and tier.
+- **What it pays,** claimed from the page ("Claim all"):
+  - each find, once: Credits, and for a Voidkin a forge crate, for a Shade a few stones, for the Lamplighter an Enriched shard;
+  - Index points to milestones (25, 50, 100, 175, 250 and 400): cases, pouches, Skill Manuals and flat points to all five Basic Attributes, about 2.5% of a level-60 build in all, an authored row ("The one rule");
+  - a tab done whole: a title and a plinth frame, no stats.
+- **A locked entry** shows its silhouette and where it's found.
+
 ## The welcome week and codes
 
 [Research, 2026-11-24, tier 2, from launch-design, section 8.] A reason to come back on day 2 to day 7, and on each update. The numbers: `tools/balance/seeds.json`, "welcomeWeek" and "codes". The build: TR59.
@@ -430,7 +471,7 @@ Research's layout for TR2, 2026-11-12. The builder installs it in grey; how it l
 
 | Currency | Comes from | Goes to |
 |---|---|---|
-| Credits | fights, Tower floors, salvage, overflow electricity, copies past seven stars, the Clash | the Void Shop, Reinforce, the base's and machines' upgrades |
+| Credits | fights, Tower floors, salvage, overflow electricity, copies past seven stars, the Colosseum | the Void Shop, Reinforce, the base's and machines' upgrades |
 | Electricity | workers | breaking shards, infusion, the Condenser, the Training machine |
 | Research Points | after launch, with the Lab: first clears, Tower floors, the daily track, the Calamity | the Research Lab |
 | Forge stones, three grades | enemies by ground, keepers, the Tower, the Condenser; the shop after launch (D6) | Reinforce |

@@ -20,7 +20,7 @@ The decisions in force: what binds the work today, grouped, one line each. A sta
 ## The rules of work
 
 - Shorten AGENTS.md with the supreme rules word for word and Codex's lost-rule check. Split decisions.md into the decisions in force and the words kept whole in a monthly log. One file per open piece, with the request files as indexes, after a pilot. Then the game first. L14 [2026-11-27, by 13:39]
-- Codex finishes the lean audit and checks Turing. Research applies the fixes and focuses on shipping. Gemini resumes at reset. L21,25 [2026-11-27, by 12:41] [2026-11-27, by 12:24]
+- Codex is off and can't be used (log, "Words after the split" [2026-11-28, by 10:12]); its open asks go to Gemini or wait. Codex finishes the lean audit and checks Turing. Research applies the fixes and focuses on shipping. Gemini resumes at reset. L21,25 [2026-11-27, by 12:41] [2026-11-27, by 12:24]
 - Keep verdicts under eight lines. Use a fresh reader to check specs for signature pieces only. L74 [2026-11-24, by 14:05]
 - Use one playtest take and one lighting state for review. Run affected and offline cases at finish, and the full suite at phase close and after shared-code changes. L332,334,336 [2026-11-15, night]
 - Research chooses system reworks and overhauls. Polish before speed and new content. L53,54 [2026-11-26, by 14:06] [2026-11-26, about 13:25 to 13:28]
@@ -100,7 +100,7 @@ The decisions in force: what binds the work today, grouped, one line each. A sta
 - Build shared combat effects before individual ones. Redo the thick, glass-like Guard shield after vault study. L100,57 [2026-11-23, about 14:20 to 14:50] [2026-11-26, 12:57]
 - The outlined 2D fire is redone from the director's open-source packs as a new direction, among Pip's own effects after her redesign (Scintilla's). Haymaker's B5 is a planned rework, built in 3D, and not queued: its timing is the director's or the plan's. L273,100,92,213,224 [2026-11-17, 13:59] [2026-11-23, about 14:20 to 14:50] [2026-11-23, by 22:52] [2026-11-12] [2026-11-13]
 - Use "one m1 sfx per type of class" and one finished sound per signature. L73 [2026-11-24, by 15:46]
-- The director auditions cues. For the 22 named cues, Sonus picks unheard, the director judges in play and rejected cues take the next sound on their tab. L141,48 [2026-11-17, 23:24] [2026-11-26, 20:48]
+- The director auditions cues. For the 22 named cues, Sonus picks unheard, the director judges in play and rejected cues take the next sound on their tab. L141,48 [2026-11-17, 23:24] [2026-11-26, 20:48 Research's call on a new list ("sure whatever best"): TR69 A's PackClear goes the same way. Log, "Words after the split" [2026-11-28, by 10:12]
 - Music in a fight belongs to a mode, never to a fight alone. The director's own tracks in `Config.Music` stay, and the director removes one. Sonus offers a track only if it is genuinely good beside them; otherwise the director handles the music and Sonus works on SFX. This word doesn't change rule 3: research flagged the tracks once (TR35) and doesn't raise them again. L80,12 [2026-11-24, by 13:35] [2026-11-27, by 14:15]
 
 ## Economy, shop and monetization

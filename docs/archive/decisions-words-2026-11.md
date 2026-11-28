@@ -440,6 +440,7 @@ The director's words from 2026-11-27, 14:30 on, newest on top, in the table's ow
 
 | Date | The words | They cover |
 |---|---|---|
+| 2026-11-28, by 10:12 | "sure whatever best and i havent seen the new icon also codex is off now we cant use him" (to research, answering: a new cue list, TR69 A's two, picked blind and judged in play or heard in the panel) | 1: research's call on the route for TR69 A's cues (blind, judged in play). 2: the icon's AI concepts after S2 weren't seen; research shows them (AR70). 3: Codex is unavailable from now; nothing is asked of it |
 | 2026-11-28, by 02:40 | "kirra swords model on her back is horrible still look like toys" (typed in Faber's tab, relayed by Faber) | Kirra's blades and their carry, overhauled in AR78 |
 | 2026-11-28, by 02:40 | "upload dont need my okay btw" (typed in Faber's tab) | Content-checked uploads under the group need no director's OK (said directly to the builder) |
 | 2026-11-28, 02:34 | "that explosion effect when any enemy or voidkin or anything die is horrible." | AR69's fall (ShadeFall, the fireball every body plays when it goes down) rejected; overhauled in AR77. Not the burn, not the keeper's lantern fall |

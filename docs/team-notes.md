@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: one to three lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-27, 17:19 by the clock. Lean is in (AGENTS.md, decisions.md's in-force register with the word log in `docs/archive/`, one file a piece). **AR70:** the director rejected the three Rook icons (17:10); the top games' icons are studied, and option (b)'s targets run now (Modulo). (a), an illustrator, and (c), the director's own art, stay open. Rook isn't the icon's centre.
+**Quaestor (research).** 2026-11-28, 03:02 by the clock, wrapped up for the day. Picked or ruled tonight: Pip C done apart from the collar's back (AR63); the Shades' round 3 is meshes on R6 at R6 limb lengths (AR75); the Haymaker's round 2 is simulated fire and smoke (AR76); the fall overhauled as a Void implosion (AR77); Kirra's blades sheathed (AR78); the burn in, with two must-fixes (AR69); no day and night pairs. Next: judge AR77's targets and the Shades' round 3; the Turing II calibration experiment, on the director's go.
 - **Next:** AR68 A's must-fixes pass once Faber's captures land; TR73's health ×10 read; AR69 and F1's fixes as Scintilla brings them; the Festival of Battles against the bar.
 - **With the director:** the icon's direction (a, b or c); whether research's acting lead of 11-24 still runs; whether the top-left overhaul word (relayed by Modulo) is theirs.
 

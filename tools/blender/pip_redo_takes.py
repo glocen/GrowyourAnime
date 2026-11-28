@@ -187,14 +187,18 @@ def wide_hat(base, r_in, brim, crown, height, colour, band_, pitch=-5.0, roll=7.
 
 def standing_collar(colour, inside, edge):
     """A tall collar standing round his jaw from the jacket's neck, open at the front: low there, highest at the back.
-    On the torso: it does not turn with his head."""
+    On the torso: it does not turn with his head.
+    It is round and clears the head all the way round, so the head turns inside it: squashed front to back (0.86),
+    its front wall stood on the head's own surface (0.625), and the head showed through it under his mouth (the
+    director, 2026-11-28). Its inside is now 0.69 from his middle and the lining's 0.665, the head 0.625. Its front is
+    lower, 0.06 where it was 0.16, so the rounder ring, further out, still leaves his mouth clear."""
     b = am.Built("Collar")
-    b.loop((0.0, -0.02, 3.98), 0.7, 0.5, colour, thick=0.1, segments=24, squash=0.86,
-           lean=lambda deg: 0.16 + 0.42 * min(1.0, abs(deg) / 130) ** 1.4,
+    b.loop((0.0, 0.0, 3.98), 0.74, 0.5, colour, thick=0.1, segments=24, squash=1.0,
+           lean=lambda deg: 0.06 + 0.52 * min(1.0, abs(deg) / 130) ** 1.2,
            shades=(1.25, 1.0, 0.7, 0.5))
     # its inside, ivory: a thin ring just within it, as tall
-    b.loop((0.0, -0.02, 3.99), 0.64, 0.5, inside, thick=0.03, segments=24, squash=0.86,
-           lean=lambda deg: 0.12 + 0.42 * min(1.0, abs(deg) / 130) ** 1.4, shades=(1.0, 0.92, 0.9, 0.8))
+    b.loop((0.0, 0.0, 3.99), 0.68, 0.5, inside, thick=0.03, segments=24, squash=1.0,
+           lean=lambda deg: 0.02 + 0.52 * min(1.0, abs(deg) / 130) ** 1.2, shades=(1.0, 0.92, 0.9, 0.8))
     return b
 
 

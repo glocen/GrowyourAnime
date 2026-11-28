@@ -1,21 +1,23 @@
 Skip: 33 frames, 0.53 s
-  the lantern's nearest, in studs: Torso 0.79 at 9; Head 1.64 at 5; over the floor 3.18 at 25
+  the lantern's nearest, in studs: Torso 0.79 at 9; Head 1.64 at 9; over the floor 3.18 at 25
+  faces through the collar (0: clear): head 0 at 32 (his head's pitch, tilt, turn (2.4, -0.4, 10.0); 0 frames), out past its inside -0.065 at 2; hair 0 at 32 (his head's pitch, tilt, turn (2.4, -0.4, 10.0); 0 frames), out past its inside +0.175 at 21
+  his head against his torso, degrees (pitch + chin up, tilt, turn + to his left): pitch -2 at 9 to +3 at 26; tilt -0 at 2 to +0 at 9; turn +10 at 4 to +10 at 32
   a leg's widest swing: 8 of 25 degrees, at 15
   the longest an arm is nearly still at 20 to 70 degrees up, of 6 frames: right 0 (to 32), left 0 (to 32)
 [audit] Pip_Skip.json (export, 33 poses)
-  Legs cross            0.000 studs at 0.1333 (the legs)
+  Legs cross            0.000 studs
   Arm through body      0.002 studs at 0.1333 (Left Arm into Torso)
-  Leg out of hip        0.001 studs at 0.2333 (Right Leg)
+  Leg out of hip        0.001 studs at 0.2667 (Right Leg)
   Weapon through body   0.000 studs
-  Under the floor       0.000 studs at 0.0333 (Right Leg)
-  Pop                   2.092x at 0.15 (Right Leg turns 5.3 deg in one frame)
+  Under the floor       0.000 studs at 0.4 (Right Leg)
+  Pop                   1.947x at 0.15 (Torso turns 4.3 deg in one frame)
   Seam                  0.000 deg
-  Limb flip             7.228 deg at 0.15 (Right Arm turns about its own length in one frame)
+  Limb flip             6.584 deg at 0.15 (Right Arm turns about its own length in one frame)
   Wrist flip            0.000 deg
   Salute held           0.000 s
-  Neck offset           0.000 studs at 0.2333 (the head off its neck)
+  Neck offset           0.000 studs at 0.3 (the head off its neck)
   Nod                   1.800 deg at 0.15 (the head against the torso)
   Beat                  1.484x at 0.35 (Left Arm turns 11.8 deg in one frame, on the marker Land; the clip's own beat, for information)
   Shoulder cap          0.155 studs at 0.25 (Right Arm; inherent to R6, for information)
-  Eyes                 +4.2 to +5.2 deg (at 0.15 and 0.35; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
+  Eyes                 +1.2 to +4.4 deg (at 0.35 and 0.5333; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
 AUDIT PASS

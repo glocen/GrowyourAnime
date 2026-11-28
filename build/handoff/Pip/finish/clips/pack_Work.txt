@@ -1,21 +1,23 @@
 Work: 121 frames, 2.00 s
-  the lantern's nearest, in studs: Torso 0.47 at 26; Head 1.08 at 52; over the floor 2.16 at 27
-  a leg's widest swing: 14 of 25 degrees, at 27
+  the lantern's nearest, in studs: Torso 0.45 at 26; Head 1.06 at 53; over the floor 2.16 at 27
+  faces through the collar (0: clear): head 0 at 120 (his head's pitch, tilt, turn (-16.6, -7.2, -22.8); 0 frames), out past its inside -0.065 at 82; hair 0 at 120 (his head's pitch, tilt, turn (-16.6, -7.2, -22.8); 0 frames), out past its inside +0.114 at 63
+  his head against his torso, degrees (pitch + chin up, tilt, turn + to his left): pitch -18 at 66 to +3 at 80; tilt -8 at 27 to +1 at 92; turn -26 at 27 to +0 at 76
+  a leg's widest swing: 16 of 25 degrees, at 27
   the longest an arm is nearly still at 20 to 70 degrees up, of 6 frames: right 0 (to 120), left 0 (to 120)
 [audit] Pip_Work.json (export, 121 poses)
   Legs cross            0.009 studs at 0.45 (the legs)
-  Arm through body      0.039 studs at 0.3333 (Right Arm into Torso)
-  Leg out of hip        0.006 studs at 0.45 (Right Leg)
+  Arm through body      0.041 studs at 0.3333 (Right Arm into Torso)
+  Leg out of hip        0.008 studs at 0.45 (Right Leg)
   Weapon through body   0.000 studs
-  Under the floor       0.000 studs at 0.3667 (Left Leg)
-  Pop                   1.230x at 1.2667 (Right Leg turns 2.1 deg in one frame)
+  Under the floor       0.000 studs at 0.6167 (Right Leg)
+  Pop                   1.227x at 1.2667 (Right Leg turns 4.6 deg in one frame)
   Seam                  0.000 deg
-  Limb flip             2.872 deg at 0.45 (Right Leg turns about its own length in one frame)
+  Limb flip             2.926 deg at 0.45 (Right Leg turns about its own length in one frame)
   Wrist flip            0.000 deg
   Salute held           0.000 s
-  Neck offset           0.000 studs at 0.6333 (the head off its neck)
-  Nod                  26.800 deg at 0.3333 (the head against the torso)
-  Beat                  1.394x at 0.45 (Torso turns 3.9 deg in one frame, on the marker Pump; the clip's own beat, for information)
+  Neck offset           0.000 studs at 0.45 (the head off its neck)
+  Nod                  18.002 deg at 0.5333 (the head against the torso)
+  Beat                  1.395x at 0.45 (Right Arm turns 2.1 deg in one frame, on the marker Pump; the clip's own beat, for information)
   Shoulder cap          0.087 studs at 1.2667 (Left Arm; inherent to R6, for information)
-  Eyes                 -28.7 to +23.7 deg (at 0.9667 and 1.3667; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
+  Eyes                 -27.4 to +13.2 deg (at 0.45 and 1.5333; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
 AUDIT PASS

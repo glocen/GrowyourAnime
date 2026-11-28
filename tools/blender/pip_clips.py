@@ -53,6 +53,15 @@ W = rc.W
 LAMP = "Pip_Lamp"
 FLIGHT = 12.0  # studs the sent lantern flies before it bursts: the clip's own distance, the builder's to scale
 EYES = (0.0, FLIGHT, 5.4)  # where he looks: at you, the chin a little up, over his collar
+# How far his head goes against his torso in his collar (AR63, 2026-11-28). The collar stands 0.58 studs at his back
+# and his neck turns at its foot, so a chin up by u pushes the back of his head and hair out through it by
+# 0.56 sin u: the clips had it to 25 degrees (the back of his head through the collar, the hair over its roll on every
+# frame of Skip). CHIN: degrees up the collar takes. BOW: degrees down: past 18 his face goes through the collar's low
+# front (Reveal's bow was 28). Past either, LEAN of the rest leans his body back or bows it, and the rest is let go.
+# TILT: degrees his head cocks either way (the collar's sides stand 0.4).
+CHIN, BOW, TILT, LEAN = 3.0, 18.0, 6.0, 0.5
+STRIDE = json.loads((MODEL / "Pip.recipe.json").read_text())["stride"]["degrees"] if (MODEL / "Pip.recipe.json").exists() else 25
+HEAD_POSES = Path(__file__).resolve().parent / "pip_head_poses.json"
 HOME = (2.75, 0.3, 4.3)  # the lantern at rest: the recipe's pivot, as a stage place
 BOB = 96  # frames the lantern takes to bob once; a loop's length is a whole number of them
 RISE, SWAY = 0.07, 5.0  # studs it bobs each way, and degrees it turns as it does
@@ -167,15 +176,32 @@ class Take(rc.Take):
         s.update(changes)
         interp = rc.EASE[ease]
         bpy.context.scene.frame_set(frame)
-        torso = list(s["T"]) + [0.0] * (6 - len(s["T"]))
-        torso[5] = -torso[5]  # forward, as a Roblox move
         planted = {leg: W(*at) for leg, at in s["feet"].items() if at is not None}
         loose = {leg: (*s["RL" if leg == "Right Leg" else "LL"][:3], 0.0, 0.0, 0.0) for leg in r6.LEGS if leg not in planted}
-        torso, legs, sink = rc.stand_legs(rig, torso, planted, s["crouch"], loose)
+        lean, base, tries = 0.0, None, 0
+        while True:   # the body, then the head on it; a head past CHIN or BOW leans the body by LEAN of the rest, once
+            torso = list(s["T"]) + [0.0] * (6 - len(s["T"]))
+            torso[0] += lean
+            torso[5] = -torso[5]  # forward, as a Roblox move
+            torso, legs, sink = rc.stand_legs(rig, torso, planted, s["crouch"], loose)
+            r6._key_parts(rig, frame, {"Torso": torso, **legs}, *interp)
+            r6._refresh()
+            swing = max(max(abs(p[0]), abs(p[2])) for p in (r6.pose_of(rig, leg) for leg in r6.LEGS))
+            if base is not None and swing > max(STRIDE, base) and lean:
+                # his feet stay planted, so the lean opens his hips: past the stride (Burst 61 went to 29, Reveal 20
+                # to 28), half as much, and none at the fourth try
+                lean, tries = (lean * 0.5 if tries < 3 else 0.0), tries + 1
+                continue
+            if s.get("look") is not None:
+                pitch, turn, tilt = r6.look(rig, W(*s["look"]), s["H"])
+            else:
+                pitch, turn, tilt = s["H"]
+            up, down = -pitch - CHIN, pitch - BOW
+            if base is not None or max(up, down) < 0.5:
+                break
+            base, lean = swing, (down if down > 0 else -up) * LEAN
         if sink > rc.SINK:
             self.warned.append(f"{self.name} {f}: a leg sinks {sink:.2f} into the hip")
-        r6._key_parts(rig, frame, {"Torso": torso, **legs}, *interp)
-        r6._refresh()
         for leg, empty in self.feet.items():  # where each foot stands and how low he sits, for the pass between keys
             at = s["feet"][leg]
             if at is not None:
@@ -185,12 +211,7 @@ class Take(rc.Take):
             r6._set_interpolation(empty, frame, *interp)
         self._hold(f, ease, {"lift": (0, 0, s["lift"])})
         self.keys.append((f, frozenset(planted)))
-        rest = {}
-        if s.get("look") is not None:
-            pitch, turn, tilt = r6.look(rig, W(*s["look"]), s["H"])
-            rest["Head"] = (max(-rc.NOD, min(rc.NOD, pitch)), turn, tilt)
-        else:
-            rest["Head"] = s["H"]
+        rest = {"Head": (max(-CHIN, min(BOW, pitch)), turn, max(-TILT, min(TILT, tilt)))}
         for arm in ("RA", "LA"):
             a = s[arm]
             rest[rc.SHORT[arm]] = r6.reach(rig, rc.SHORT[arm], rc.HAND, W(*a[1]), a[2]) if a[0] == "reach" else a
@@ -236,6 +257,59 @@ def props(rig, ctl, motors, takes) -> dict:
                     near[part] = min(near[part], (clear(point, part, bodies[f][part]) - FAT, f))
         facts[take.name] = {"near": near, "low": low}
     return facts
+
+
+def collar_clear(rig, costume, take, rest) -> dict:
+    """His head and hair against his collar, on every frame (AR63: the collar stands on his torso and his head turns
+    inside it), read in the torso's own frame at rest, where the collar was made.
+    - crossing: the piece's faces that cut the collar's (through the roll or the wall, the defect);
+    - past: how far any point stands out past the collar's inside below its roll's top. That's the hair through the
+      roll, or a lock's point lying outside over the collar as his chin comes up, which is cloth over cloth and fine
+      while nothing crosses. For information.
+    Returns, a piece, ((the most faces crossing, its frame), the frames with any, (the most past, its frame))."""
+    from mathutils.bvhtree import BVHTree
+    import pip_redo_takes as pr
+    degs = np.arange(-180.0, 180.5, 0.5)
+    tops, insides = np.array([pr.collar_mouth(d) for d in degs]).T
+    scene, torso, found = bpy.context.scene, rig.parts["Torso"], {}
+
+    def faces(obj):
+        co = np.empty(len(obj.data.vertices) * 3)
+        obj.data.vertices.foreach_get("co", co)
+        return co.reshape(-1, 3), [tuple(p.vertices) for p in obj.data.polygons]
+
+    def placed(obj, co):
+        m = np.array(rest @ torso.matrix_world.inverted() @ obj.matrix_world)
+        return co @ m[:3, :3].T + m[:3, 3]
+
+    def head_at(f):   # his head against his torso, in degrees: pitch (+ chin up), tilt, turn (+ to his left)
+        scene.frame_set(take.start + f)
+        e = (rest @ torso.matrix_world.inverted() @ costume["Pip_Head"].matrix_world @ head_built.inverted()).to_euler()
+        return tuple(round(math.degrees(a), 1) for a in e)
+
+    head_built = costume["Pip_Head"].matrix_basis.copy()   # where it was built: its parent's inverse cancels the head's
+    scene.frame_set(take.start)
+    collar = costume["Pip_Collar"]
+    co, polys = faces(collar)
+    wall = BVHTree.FromPolygons([tuple(p) for p in placed(collar, co)], polys)
+    for name in ("Pip_Head", "Pip_Hair"):
+        obj = costume[name]
+        co, polys = faces(obj)
+        cut, frames, past = (0, 0), 0, (-9.0, 0)
+        for f in range(take.end + 1):
+            scene.frame_set(take.start + f)
+            p = placed(obj, co)
+            n = len({a for a, _ in BVHTree.FromPolygons([tuple(q) for q in p], polys).overlap(wall)})
+            cut, frames = max(cut, (n, f)), frames + (n > 0)
+            deg = np.degrees(np.arctan2(p[:, 0], p[:, 1]))
+            out = np.where(p[:, 2] < np.interp(deg, degs, tops), np.hypot(p[:, 0], p[:, 1]) - np.interp(deg, degs, insides), -9.0)
+            past = max(past, (float(out.max()), f))
+        found[name] = (cut, frames, past, head_at(cut[1]))
+    poses = [head_at(f) for f in range(take.end + 1)]
+    found["poses"] = poses
+    found["range"] = {what: (min((p[i], f) for f, p in enumerate(poses)), max((p[i], f) for f, p in enumerate(poses)))
+                      for i, what in enumerate(("pitch", "tilt", "turn"))}
+    return found
 
 
 def audit(rig, take) -> dict:
@@ -619,6 +693,7 @@ def main():
     mode = args[0] if args and args[0] in ("poses", "export", "audit") else "poses"
     wanted = [a for a in args if a in CLIPS] or list(CLIPS)
     scene, rig, costume, undress, feet, ctl, motors = build()
+    rest = rig.parts["Torso"].matrix_world.copy()   # before any key: the model's own frame, where the collar was made
     recipe = json.loads((MODEL / "Pip.recipe.json").read_text())
     takes = {}
     for i, name in enumerate(CLIPS):
@@ -631,13 +706,22 @@ def main():
     rc.lift(rig, ctl["lift"], list(takes.values()))
     numbers = props(rig, ctl, motors, list(takes.values()))
     cams = cameras(scene, rig)
-    facts = {}
+    facts, poses = {}, set()
     for name, take in takes.items():
         n, checks = numbers[name], audit(rig, take)
         near = "; ".join(f"{part} {d:.2f} at {f}" for part, (d, f) in n["near"].items())
+        clear = collar_clear(rig, costume, take, rest)
+        span = clear.pop("range")
+        poses |= set(clear.pop("poses"))
+        collar = "; ".join(f"{piece[4:].lower()} {cut} at {f} (his head's pitch, tilt, turn {pose}; {frames} frames), "
+                           f"out past its inside {most:+.3f} at {g}"
+                           for piece, ((cut, f), frames, (most, g), pose) in clear.items())
+        collar += "\n  his head against his torso, degrees (pitch + chin up, tilt, turn + to his left): " + "; ".join(
+            f"{what} {lo:+.0f} at {f} to {hi:+.0f} at {g}" for what, ((lo, f), (hi, g)) in span.items())
         notes = (f"{name}: {take.end + 1} frames, {take.end / FPS:.2f} s\n"
                  f"  the lantern's nearest, in studs: {near}; over the floor {n['low'][0]:.2f} at {n['low'][1]}\n"
-                 f"  a leg's widest swing: {checks['swing'][0]:.0f} of {recipe['stride']['degrees']} degrees, at {checks['swing'][1]}\n"
+                 f"  faces through the collar (0: clear): {collar}\n"
+                 f"  a leg's widest swing: {checks['swing'][0]:.1f} of {recipe['stride']['degrees']} degrees, at {checks['swing'][1]}\n"
                  f"  the longest an arm is nearly still at 20 to 70 degrees up, of {HELD} frames: right {checks['held']['Right Arm'][0]} "
                  f"(to {checks['held']['Right Arm'][1]}), left {checks['held']['Left Arm'][0]} (to {checks['held']['Left Arm'][1]})\n")
         print(notes, end="")
@@ -665,6 +749,10 @@ def main():
         facts["LanternBurst"]["Flight"] = FLIGHT
         (out / "Pip.clips.json").write_text(json.dumps({"Fps": FPS, "Clips": facts}, indent=2) + "\n", encoding="utf-8")
         print(f"wrote {out / 'Pip.clips.json'}")
+        # every head pose the clips hold against his torso: pip_redo_takes.py fits his hair inside his collar to them
+        HEAD_POSES.write_text(json.dumps({"source": "tools/blender/pip_clips.py audit", "pitch tilt turn": sorted(poses)})
+                              .replace("], [", "],\n  [") + "\n", encoding="utf-8")
+        print(f"wrote {HEAD_POSES} ({len(poses)} poses)")
 
 
 if __name__ == "__main__":

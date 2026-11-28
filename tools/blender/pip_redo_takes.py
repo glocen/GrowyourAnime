@@ -26,12 +26,13 @@ on between the same two Anime Vanguards units (internal: build/reference/takes/p
 its install's files to <out_dir>/handoff (pip_make.finish: no hat, the collar welded to the torso), and the model
 pip_clips.py reads (PIP_MODEL=<out_dir>/handoff/model); `modelsheet` lays pip_make_sheet.png from them.
 """
+import json
 import math
 import sys
 from pathlib import Path
 
 import numpy as np
-from mathutils import Matrix, Vector
+from mathutils import Euler, Matrix, Vector
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import anime_make as am  # noqa: E402
@@ -185,6 +186,100 @@ def wide_hat(base, r_in, brim, crown, height, colour, band_, pitch=-5.0, roll=7.
     return b
 
 
+COLLAR_FOOT, COLLAR_INSIDE = 3.98, 0.69   # the collar's foot, and its inside's distance from his middle
+COLLAR_FOLD = 157.5   # its one fold: degrees round from his front, on his right
+
+
+def collar_height(deg):
+    """How far the collar stands over its foot, `deg` round from his front: 0.06 there, 0.58 at his back."""
+    return 0.06 + 0.52 * min(1.0, abs(deg) / 130) ** 1.2
+
+
+def collar_crease(deg):
+    """1 on the fold, 0 from 12 degrees either side."""
+    off = abs(deg - COLLAR_FOLD)
+    return 0.5 + 0.5 * math.cos(math.pi * off / 12) if off < 12 else 0.0
+
+
+def collar_section(deg):
+    """The profile at `deg`, as (out from its inside, up from its foot): from the inside's foot up the inside, round the
+    roll, down the outside to its foot."""
+    h = collar_height(deg)
+    roll = min(0.055, 0.3 * h)
+    cx, cz = 0.01 + roll, h - roll
+    arc = [(cx + roll * math.cos(math.radians(t)), cz + roll * math.sin(math.radians(t)))
+           for t in (135, 90, 45, 0, -45, -85)]
+    wall = cx + 0.4 * roll   # under the roll: it stands 0.6 of the roll's size out past this
+    # the foot flares on a curve (one bend at 0.42 showed as a step in his outline from the game's camera)
+    flare = [(wall + 0.07 * (1 - u / 0.75) ** 2, u * cz) for u in (0.52, 0.32, 0.14, 0.0)]
+    return [(0.0, 0.0), (0.004, 0.55 * cz), (0.01, cz), *arc, (wall, 0.75 * cz), *flare]
+
+
+def collar_pull(deg, up, k):
+    """How far the fold draws the profile's `k`th point in toward him, `up` over the foot: deepest at the top. Only the
+    outside and the roll's top fold in: the inside stays round, so his head turns in it (it drew the inside in by 0.05
+    too, and his head touched it at rest, his hair crossed it as he turned)."""
+    h, w = collar_height(deg), collar_crease(deg)
+    t = min(1.0, max(0.0, (up / h - 0.15) / 0.65))
+    return w * (0.03 + 0.05 * t * t * (3 - 2 * t)) * (0.0 if k < 4 else 0.5 if k == 4 else 1.0)
+
+
+def collar_mouth(deg):
+    """Where hair may stand at `deg`: (the roll's top over the ground, the inside's least distance from his middle
+    below it), the fold's pull included."""
+    h, w = collar_height(deg), collar_crease(deg)
+    section = collar_section(deg)
+    inside = min(COLLAR_INSIDE + dr - collar_pull(deg, up, k) for k, (dr, up) in enumerate(section[:4]))
+    return COLLAR_FOOT + h * (1 - 0.05 * w), inside
+
+
+HEAD_POSES = Path(__file__).resolve().parent / "pip_head_poses.json"   # pip_clips.py's audit writes it
+NECK = 4.0   # his neck turns at his torso's top, the collar's foot
+
+
+def head_turns():
+    """His head's turns against his torso in every frame of his clips, as rotations about his neck: (pitch, chin up;
+    tilt; turn, to his left) in degrees, from pip_clips.py's audit, and his head at rest."""
+    rows = json.loads(HEAD_POSES.read_text(encoding="utf-8"))["pitch tilt turn"] if HEAD_POSES.exists() else []
+    return np.array([np.array(Euler([math.radians(a) for a in row]).to_matrix()) for row in [(0, 0, 0), *rows]])
+
+
+def tuck_into_collar(hair, verts, clear=0.016, knee=0.07, rise=0.2, flare=0.3):
+    """The hair under the locks, tucked inside the collar: `verts`, the dark mass and the tier at the nape (AR63,
+    research's must-fix of 2026-11-28: the back locks passed through the roll and hung over its wall, pinching it into
+    red diamonds between them). The locks over them end over the roll, their points turned out; drawn in with the
+    rest, they lost their points in it, crumpled, and the back read as a bowl pressed into a cup.
+    Each point below the roll's top is drawn in toward his middle to `clear` inside the collar's inside, and over the
+    top the limit opens out over `rise` studs by `flare`, so what goes in bends in over the roll's lip. That holds
+    wherever his head goes in his clips (head_turns): fitted to his head at rest, the hair crossed the collar on every
+    frame of Idle, where his head turns 10 to 14 degrees from his torso. The draw is soft and keeps the order out from
+    him: a point `knee` inside the limit or nearer stays, one past it comes in to it, so the tier still lies on the
+    mass, thinner. pip_clips.py's audit counts the hair's faces through the collar, frame by frame."""
+    verts = list(verts)
+    degs = np.arange(-180.0, 180.5, 0.5)
+    tops, insides = np.array([collar_mouth(d) for d in degs]).T
+    co = np.array([tuple(v.co) for v in verts])
+    neck = np.array((0.0, 0.0, NECK))
+    p = np.einsum("pij,nj->pni", head_turns(), co - neck) + neck   # each point, each pose
+    deg = np.degrees(np.arctan2(p[..., 0], p[..., 1]))
+    top, z = np.interp(deg, degs, tops), p[..., 2]
+    limit = np.interp(deg, degs, insides) - clear + flare * (np.clip(z - top, 0.0, None) / rise) ** 2
+    over = np.where(z <= top + rise, np.hypot(p[..., 0], p[..., 1]) - limit, -np.inf).max(axis=0)
+    moved = 0
+    for v, (x, y, _), worst in zip(verts, co, over):
+        r = math.hypot(x, y)
+        if r < 1e-6 or not np.isfinite(worst):
+            continue
+        start = r - worst - knee   # its limit at rest, the push of the pose that takes it furthest out counted
+        if r <= start:
+            continue
+        drawn = start + knee * (1 - math.exp(-(r - start) / knee))
+        v.co.x, v.co.y = x * drawn / r, y * drawn / r
+        moved += 1
+    hair.bm.normal_update()
+    return moved
+
+
 def standing_collar(colour, inside, edge):
     """A tall collar standing round his jaw from the jacket's neck, open at the front: low there, highest at the back.
     On the torso: it does not turn with his head.
@@ -201,41 +296,18 @@ def standing_collar(colour, inside, edge):
       - where it stands out past his back, its foot settles down onto the back and never floats over it.
     Its inside is `inside`, its outside `colour`: six tones, painted as the light falls."""
     b = am.Built("Collar")
-    z0, r0 = 3.98, 0.69
-    fold = 157.5   # degrees round from his front, on his right
+    z0, r0 = COLLAR_FOOT, COLLAR_INSIDE
     angles = sorted({i * 7.5 for i in range(48)} | {135 + j * 2.5 for j in range(18)})
     segments = len(angles)
-
-    def height(deg):
-        return 0.06 + 0.52 * min(1.0, abs(deg) / 130) ** 1.2
-
-    def crease(deg):   # 1 on the fold, 0 from 12 degrees either side
-        off = abs(deg - fold)
-        return 0.5 + 0.5 * math.cos(math.pi * off / 12) if off < 12 else 0.0
-
-    def section(deg):
-        """The profile at `deg`, as (out from r0, up from z0): from the inside's foot up the inside, round the roll, down
-        the outside to its foot."""
-        h = height(deg)
-        roll = min(0.055, 0.3 * h)
-        cx, cz = 0.01 + roll, h - roll
-        arc = [(cx + roll * math.cos(math.radians(t)), cz + roll * math.sin(math.radians(t)))
-               for t in (135, 90, 45, 0, -45, -85)]
-        wall = cx + 0.4 * roll   # under the roll: it stands 0.6 of the roll's size out past this
-        return [(0.0, 0.0), (0.004, 0.55 * cz), (0.01, cz), *arc, (wall, 0.75 * cz), (wall + 0.014, 0.42 * cz),
-                (wall + 0.07, 0.0)]
-
     rings = []
     for i in range(segments):
         ang = math.radians(angles[i])
         deg = math.degrees(ang) if ang <= math.pi else math.degrees(ang) - 360
-        h, w = height(deg), crease(deg)
+        h, w = collar_height(deg), collar_crease(deg)
         out = Vector((math.sin(ang), math.cos(ang), 0.0))
         ring = []
-        for k, (dr, up) in enumerate(section(deg)):
-            t = min(1.0, max(0.0, (up / h - 0.15) / 0.65))
-            pull = w * (0.03 + 0.05 * t * t * (3 - 2 * t)) * (0.6 if k < 3 else 1.0)
-            ring.append(Vector((0, 0, z0 + up * (1 - 0.05 * w))) + out * (r0 + dr - pull))
+        for k, (dr, up) in enumerate(collar_section(deg)):
+            ring.append(Vector((0, 0, z0 + up * (1 - 0.05 * w))) + out * (r0 + dr - collar_pull(deg, up, k)))
         # the foot's last point: tucked into the jacket, or, where the foot stands out past his back, settled down onto it
         foot = ring[-1]
         excess = max(0.0, -foot.y - 0.5)
@@ -245,7 +317,7 @@ def standing_collar(colour, inside, edge):
     t_in, t_top, t_out, t_under, t_wall, t_close = (
         tone(inside, 0.9), tone(colour, 1.24), tone(colour, 1.08), tone(colour, 0.66), tone(colour, 0.95),
         tone(colour, 0.55))
-    parts = [t_in, t_in, t_in, t_top, t_top, t_out, t_out, t_under, t_wall, t_wall, t_wall]
+    parts = [t_in, t_in, t_in, t_top, t_top, t_out, t_out, t_under] + [t_wall] * 5
     for i in range(segments):
         a_, b_ = rings[i], rings[(i + 1) % segments]
         for k, c in enumerate(parts):
@@ -645,6 +717,7 @@ def finish_c(joints, folder):
               # the three at his back end inside the collar: at 12 degrees down they hung below his torso's top, behind
               # his back, under it
               lift=0.06, off=(0.0, 0.11), ease=2.0, tuck=0.09)
+    inside = set(hair.bm.verts)   # what the collar holds: the dark mass and the tier at the nape (tuck_into_collar)
     # the crown: seven locks, narrower than the take's five, flicked up and back, each lying a little over the next
     for i, (a, ph, length, width, heading) in enumerate(((-84, 16, 0.8, 0.38, 22), (-56, 11, 0.9, 0.4, 14), (-28, 8, 0.96, 0.42, 6),
                                                          (0, 6, 1.0, 0.44, 0), (28, 8, 0.94, 0.42, -6), (56, 11, 0.88, 0.4, -14),
@@ -652,20 +725,28 @@ def finish_c(joints, folder):
         hair.clump(a, ph, length, width, heading=heading, off=0.1 + 0.03 * (i % 2), flick=44, hold=0.5, comb=(0, -1, 0.3),
                    thick=width * 0.3, taper=2.2, split=1 if i in (2, 4) else 0)
     # the back in two tiers, never rows of short points (the first finish's read as scales): four long locks from the crown
-    # down past the nape, of unlike lengths, and under them three at the nape turned down and out
-    for a, length, width in ((138, 1.02, 0.5), (164, 1.16, 0.54), (194, 1.1, 0.54), (222, 0.96, 0.5)):
+    # down to just over the collar's roll, of unlike lengths, their points turned out over it, and under them three at the
+    # nape, tucked inside it. The four went on down past the roll (1.02, 1.16, 1.1, 0.96 long) and through it: their
+    # points over its wall pinched it into red diamonds between them (research, 2026-11-28); drawn in with the rest,
+    # they lost their points in it and the back read as a bowl in a cup
+    for a, length, width in ((138, 0.78, 0.5), (164, 0.82, 0.54), (194, 0.79, 0.54), (222, 0.74, 0.5)):
         hair.clump(a, 26, length, width, heading=0, off=0.08, flick=22, hold=0.66, comb=(0, -0.3, -1), thick=0.13, taper=2.2)
+    # at his sides, their points over the collar's side as his head turns in it: the collar climbs to his back, and his
+    # clips turn his head 10 to 33 degrees, so at 0.62, 0.6 and 0.5 long they turned into its higher side, tips first
     for s in (-1, 1):
-        for a, length in ((s * 72, 0.62), (s * 92, 0.66), (s * 112, 0.58)):
+        for a, length in ((s * 72, 0.6), (s * 92, 0.46), (s * 112, 0.42)):
             hair.clump(a, 52, length, 0.34, heading=-s * 10, off=0.06, flick=32, hold=0.6, comb=(0, -0.2, -1), thick=0.1, taper=2.2)
+    nape = set(hair.bm.verts)
     for a, length in ((156, 0.5), (180, 0.54), (204, 0.5)):   # their ends inside the collar (the middle one hung
         # below his torso's top, behind his back: 0.6, 0.7, 0.6 before)
         hair.clump(a, 76, length, 0.42, heading=0, off=0.05, flick=14, hold=0.7, comb=(0, -0.2, -1), thick=0.1, taper=2.2)
+    inside |= set(hair.bm.verts) - nape
     # the fringe over his right eye: five locks, parted, the longest down past the eye
     for a, ph, length, width, comb in ((-36, 28, 1.04, 0.4, (0.25, 0.7, -1.2)), (-18, 26, 0.96, 0.4, (0.15, 0.7, -1.1)),
                                        (0, 27, 0.84, 0.38, (0.0, 0.7, -1.05)), (20, 30, 0.7, 0.36, (-0.2, 0.7, -1.0)),
                                        (42, 38, 0.56, 0.32, (-0.45, 0.5, -1.0))):
         hair.clump(a, ph, length, width, heading=0, off=0.05, flick=12, hold=0.8, comb=comb, thick=width * 0.28, taper=2.0)
+    tuck_into_collar(hair, inside)
     collar = standing_collar(brick, lining, edge)
     return figure(joints, folder, b, head, hair, [collar, *pm.lamp()], skin, cast=mix(skin, "#5A1E18", 0.7), drop=0.11,
                   cast_alpha=1.0)

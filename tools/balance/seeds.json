@@ -1,605 +1,116 @@
 {
   "_about": "Seed numbers for the balance model in docs/balance.md. Every value is a starting guess, tuned by play. tools/balance/sim.py reads this file. When the game has its own Definitions, they become the home and this file goes.",
-  "growth": {
-    "a": 0.12,
-    "b": 0.004,
-    "maxLevel": 60
-  },
+
+  "growth": { "a": 0.12, "b": 0.004, "maxLevel": 60 },
+
   "grounds": [
-    {
-      "id": 1,
-      "name": "Lantern Row",
-      "from": 1,
-      "to": 9,
-      "paceHours": 1
-    },
-    {
-      "id": 2,
-      "name": "Drum Court",
-      "from": 10,
-      "to": 19,
-      "paceHours": 3
-    },
-    {
-      "id": 3,
-      "name": "Mask Parade",
-      "from": 20,
-      "to": 29,
-      "paceHours": 6
-    },
-    {
-      "id": 4,
-      "name": "Kite Heights",
-      "from": 30,
-      "to": 39,
-      "paceHours": 10
-    },
-    {
-      "id": 5,
-      "name": "Ember Stalls",
-      "from": 40,
-      "to": 49,
-      "paceHours": 15
-    },
-    {
-      "id": 6,
-      "name": "Mirror Pavilion",
-      "from": 50,
-      "to": 60,
-      "paceHours": 22
-    }
+    { "id": 1, "name": "Lantern Row",     "from": 1,  "to": 9,  "paceHours": 1 },
+    { "id": 2, "name": "Drum Court",      "from": 10, "to": 19, "paceHours": 3 },
+    { "id": 3, "name": "Mask Parade",     "from": 20, "to": 29, "paceHours": 6 },
+    { "id": 4, "name": "Kite Heights",    "from": 30, "to": 39, "paceHours": 10 },
+    { "id": 5, "name": "Ember Stalls",    "from": 40, "to": 49, "paceHours": 15 },
+    { "id": 6, "name": "Mirror Pavilion", "from": 50, "to": 60, "paceHours": 22 }
   ],
-  "base": {
-    "hp": 800,
-    "atk": 100,
-    "def": 50
-  },
-  "rarityBase": {
-    "Common": 1.0,
-    "Uncommon": 1.08,
-    "Rare": 1.16,
-    "Epic": 1.26,
-    "Legendary": 1.38,
-    "Mythical": 1.5
-  },
+
+  "base": { "hp": 800, "atk": 100, "def": 50 },
+  "rarityBase": { "Common": 1.00, "Uncommon": 1.08, "Rare": 1.16, "Epic": 1.26, "Legendary": 1.38, "Mythical": 1.50 },
   "classMult": {
-    "Warrior": {
-      "hp": 1.0,
-      "atk": 1.0,
-      "def": 1.0
-    },
-    "Tank": {
-      "hp": 1.3,
-      "atk": 0.8,
-      "def": 1.25
-    },
-    "Assassin": {
-      "hp": 0.85,
-      "atk": 1.2,
-      "def": 0.85
-    },
-    "Mage": {
-      "hp": 0.9,
-      "atk": 1.15,
-      "def": 0.85
-    },
-    "Healer": {
-      "hp": 1.0,
-      "atk": 0.8,
-      "def": 0.95
-    }
+    "Warrior":  { "hp": 1.00, "atk": 1.00, "def": 1.00 },
+    "Tank":     { "hp": 1.30, "atk": 0.80, "def": 1.25 },
+    "Assassin": { "hp": 0.85, "atk": 1.20, "def": 0.85 },
+    "Mage":     { "hp": 0.90, "atk": 1.15, "def": 0.85 },
+    "Healer":   { "hp": 1.00, "atk": 0.80, "def": 0.95 }
   },
   "healerSelfHealPer10s": 0.04,
-  "shares": {
-    "base": 35,
-    "stars": 3.5,
-    "gear": 23,
-    "mastery": 6,
-    "forge": 13.5,
-    "emblems": 8.5,
-    "index": 2.5,
-    "jewels": 7,
-    "research": 3
-  },
+
+  "shares": {"base": 35, "stars": 3.5, "gear": 23, "mastery": 6, "forge": 13.5, "emblems": 8.5, "index": 2.5, "jewels": 7, "research": 3},
   "starPctOfBase": 0.0143,
   "maxStars": 7,
-  "gearRarity": {
-    "Common": 0.55,
-    "Uncommon": 0.65,
-    "Rare": 0.76,
-    "Epic": 0.88,
-    "Legendary": 1.0
-  },
-  "forge": {
-    "maxRank": 30,
-    "ranksPerGround": 5,
-    "fullBonusOfGearBase": 0.5
-  },
-  "choosable": {
-    "singleStatFactor": 3,
-    "defFactor": 2.3,
-    "elemFactor": 0.8
-  },
+  "gearRarity": { "Common": 0.55, "Uncommon": 0.65, "Rare": 0.76, "Epic": 0.88, "Legendary": 1.00 },
+  "forge": { "maxRank": 30, "ranksPerGround": 5, "fullBonusOfGearBase": 0.50 },
+  "choosable": { "singleStatFactor": 3, "defFactor": 2.3, "elemFactor": 0.8 },
+
   "available": [
-    {
-      "gear": "Uncommon",
-      "forge": 5,
-      "emblems": 0.1,
-      "jewels": 0.0,
-      "research": 0.1,
-      "stars": 1
-    },
-    {
-      "gear": "Rare",
-      "forge": 10,
-      "emblems": 0.3,
-      "jewels": 0.1,
-      "research": 0.25,
-      "stars": 2
-    },
-    {
-      "gear": "Rare",
-      "forge": 15,
-      "emblems": 0.5,
-      "jewels": 0.3,
-      "research": 0.45,
-      "stars": 2
-    },
-    {
-      "gear": "Epic",
-      "forge": 20,
-      "emblems": 0.7,
-      "jewels": 0.5,
-      "research": 0.65,
-      "stars": 3
-    },
-    {
-      "gear": "Epic",
-      "forge": 25,
-      "emblems": 0.85,
-      "jewels": 0.75,
-      "research": 0.85,
-      "stars": 4
-    },
-    {
-      "gear": "Legendary",
-      "forge": 30,
-      "emblems": 1.0,
-      "jewels": 1.0,
-      "research": 1.0,
-      "stars": 5
-    }
+    { "gear": "Uncommon",  "forge": 5,  "emblems": 0.10, "jewels": 0.00, "research": 0.10, "stars": 1 },
+    { "gear": "Rare",      "forge": 10, "emblems": 0.30, "jewels": 0.10, "research": 0.25, "stars": 2 },
+    { "gear": "Rare",      "forge": 15, "emblems": 0.50, "jewels": 0.30, "research": 0.45, "stars": 2 },
+    { "gear": "Epic",      "forge": 20, "emblems": 0.70, "jewels": 0.50, "research": 0.65, "stars": 3 },
+    { "gear": "Epic",      "forge": 25, "emblems": 0.85, "jewels": 0.75, "research": 0.85, "stars": 4 },
+    { "gear": "Legendary", "forge": 30, "emblems": 1.00, "jewels": 1.00, "research": 1.00, "stars": 5 }
   ],
-  "onBudget": 0.7,
+  "onBudget": 0.70,
+
   "ratings": {
-    "list": [
-      "hit",
-      "dodge",
-      "crit",
-      "critres",
-      "block",
-      "pen",
-      "eres"
-    ],
+    "list": ["hit", "dodge", "crit", "critres", "block", "pen", "eres"],
     "fullBuildPointsPerG": 350,
     "K": 100,
-    "caps": {
-      "dodge": 0.4,
-      "crit": 0.6,
-      "critFloor": 0.05,
-      "critSpan": 0.55,
-      "block": 0.5,
-      "pen": 0.4,
-      "eres": 0.75
-    }
+    "caps": { "dodge": 0.40, "crit": 0.60, "critFloor": 0.05, "critSpan": 0.55, "block": 0.50, "pen": 0.40, "eres": 0.75 }
   },
-  "defense": {
-    "K": 150,
-    "cap": 0.75
-  },
-  "crit": {
-    "baseDamage": 0.5,
-    "maxFromItems": 0.5,
-    "guardMaxFromItems": 0.5
-  },
-  "buckets": {
-    "bonusCap": 2.0,
-    "reduceCap": 0.7,
-    "typeAdvantage": 0.25,
-    "typeDisadvantage": 0.15,
-    "blockReduce": 0.5
-  },
-  "lifesteal": {
-    "typical": 0.03,
-    "cap": 0.1,
-    "perSecondCapOfMaxHp": 0.008
-  },
-  "attack": {
-    "comboCoefs": [
-      0.9,
-      0.9,
-      1.4
-    ],
-    "comboSeconds": 1.8,
-    "signatureCoef": 4.0,
-    "signatureEvery": 10
-  },
+  "defense": { "K": 150, "cap": 0.75 },
+  "crit": { "baseDamage": 0.50, "maxFromItems": 0.50, "guardMaxFromItems": 0.50 },
+  "buckets": { "bonusCap": 2.00, "reduceCap": 0.70, "typeAdvantage": 0.25, "typeDisadvantage": 0.15, "blockReduce": 0.50 },
+  "lifesteal": { "typical": 0.03, "cap": 0.10, "perSecondCapOfMaxHp": 0.008 },
+
+  "attack": { "comboCoefs": [0.9, 0.9, 1.4], "comboSeconds": 1.8, "signatureCoef": 4.0, "signatureEvery": 10 },
+
   "enemy": {
-    "ttk": {
-      "ordinary": 5,
-      "elite": 18,
-      "keeperByGround": [
-        45,
-        50,
-        60,
-        65,
-        70,
-        75
-      ]
-    },
+    "ttk": { "ordinary": 5, "elite": 18, "keeperByGround": [45, 50, 60, 65, 70, 75] },
     "def": 40,
     "ordinaryHpLossPerKill": 0.12,
     "eliteHpLoss": 0.35,
-    "keeperHpLoss": 0.7,
-    "keeperRatingsPerG": {
-      "dodge": 20,
-      "critres": 30,
-      "block": 30,
-      "eres": 30
-    }
+    "keeperHpLoss": 0.70,
+    "keeperRatingsPerG": { "dodge": 20, "critres": 30, "block": 30, "eres": 30 }
   },
-  "clash": {
-    "hpFactor": 3.0,
-    "ratioMin": 0.2,
-    "ratioMax": 2.0
-  },
-  "earnBucketCaps": {
-    "credits": 1.5,
-    "xp": 1.5,
-    "electricity": 1.0
-  },
-  "pace": {
-    "killsPerHour": 601,
-    "creditsPerKillPerG": 10,
-    "forgeShareOfIncome": 0.45
-  },
-  "chestFamily": {
-    "_": "A chest for each launch item (launch-design.md, section 5; tier 2, research, 2026-11-24). leastRare: every chest gives a Rare at least this percent, taken from Common like TR48's Epic and Legendary, so a Rare is always likelier than an Epic. An Emblem Case replaces each loose emblem drop one for one and rolls its rarity as its kind and stage's gear chest does, every least included, Common read as Uncommon (the Hard keeper's Rare rises to hardKeeperLeastRare, over its 1.6% Epic); the Tower gives one sure case at each tenth floor the account first clears. Three emblems of one stat and rarity make one of the next. A Hard keeper's win gives a Jewel Pouch for sure and a Forge Crate at crateChance. MODEL (a simulation of 4,000 players, 5 to 7 cases an hour, six stats even): first Rare by combine 0.9 to 1.3 h, Epic 4.4 to 6.2 h, Legendary 16.7 to 23.4 h (medians). Research, 2026-11-24.",
-    "leastRare": 1.0,
-    "hardKeeperLeastRare": 3.0,
-    "towerCase": {
-      "10": "Rare",
-      "20": "Rare",
-      "30": "Epic",
-      "40": "Epic",
-      "50": "Legendary",
-      "past50Every10": "Epic",
-      "past50Every50": "Legendary"
-    },
-    "combine": {
-      "take": 3,
-      "give": 1,
-      "sameStat": true
-    },
-    "pouch": {
-      "tier1": 0.8,
-      "tier2": 0.2,
-      "hardKeeperWin": 1.0
-    },
-    "crate": {
-      "low": [
-        4,
-        8
-      ],
-      "midChance": 0.25,
-      "mid": [
-        1,
-        2
-      ],
-      "highChance": 0.02,
-      "high": 1,
-      "hardKeeperWin": 0.5
-    },
-    "condenserHigh": {
-      "from": "Mid",
-      "take": 5,
-      "to": "High",
-      "give": 1,
-      "seconds": 3600,
-      "fromLevel": 10
-    },
-    "presetsAtBaseLevel": [
-      1,
-      2,
-      3
-    ]
-  },
-  "jewels": {
-    "_": "A jewel's points (the director, 2026-11-19, 03:10: flat points of its colour's Basic Attribute): round(topUnits x tierWorth / Chests.Price of the attribute), at least 1, so every colour is worth the same Combat Power, as a gear line is. topUnits is the jewels' share against the emblems' (7 over 70 sockets against 11 over 56) of a Legendary emblem's 200 weight units. Tier 1 reads Strength +2, Agility +6, Intelligence +4, Endurance +2, Spirit +3; tier 5 +11, +38, +25, +11, +17. Three of one colour and tier make one of the next. By hand from balance.md's 6 to 12% for an emblem a socket: 70 tier-1 jewels give about 5 to 7% of a Lantern Row build. The Condenser makes one jewel per condenserEveryHours of work into its tray, colours even, tier 2 from its level tier2FromLevel. Research, 2026-11-24.",
-    "topUnits": 102,
-    "tierWorth": [
-      0.15,
-      0.3,
-      0.5,
-      0.75,
-      1.0
-    ],
-    "condenserEveryHours": 4,
-    "tier2FromLevel": 8,
-    "tier3FromLevel": 16
-  },
-  "forgeHeat": {
-    "_": "Forge heat replaces no pity (the director, 2026-11-24, 10:50). Heat is whole points, 0 to 100, on the item. A failed try adds round(perChance x the try's chance) points; at 100 or more the next try succeeds; a success sets it to 0; it moves with the level. With 50: at most 3 failures in a row at 80%, 10 at the 20% floor. Expected Credits to +30 fall from 7,282 to 6,722 x G, so the try's Credits base rises from 30 to 32.5 to hold the sink; the stones stay, about 8% fewer to +30. Research, 2026-11-24.",
-    "perChance": 50,
-    "full": 100,
-    "creditsBase": 32.5
-  },
-  "broadcast": {
-    "_": "The Broadcast (design.md, \"Being seen\"; TR57; tier 2, research, 2026-11-24). everyServer and thisServer name the events told at each reach; a throttled every-server line is told to this server instead, never dropped. A server publishes at most one bundle every bundleSeconds, so at most 12 a minute: under MessagingService's 600 + 240 x players sent per server and 40 + 80 x servers received per topic for any number of servers (SOURCED, Roblox creator-docs, MessagingService.yaml, Limitations; COMPUTED: 12 S < 40 + 80 S). Delivery is best effort, which suits news. A client shows one plate at a time, at most one every plateGapSeconds, holds a line while a card, ring, reveal or screen covers the place, and sends a line older than staleSeconds to the chat only. Research, 2026-11-24.",
-    "everyServer": [
-      "itemLegendary",
-      "itemDawn",
-      "reinforceAtLeast20",
-      "sevenStars",
-      "towerWeekFirst"
-    ],
-    "thisServer": [
-      "itemEpic",
-      "firstVoidkinOfRarityFromRare",
-      "lamplighterHardFirst",
-      "reinforceAtLeast15",
-      "towerServerBestToday"
-    ],
-    "everyServerPerPlayerMinutes": 10,
-    "bundleSeconds": 5,
-    "plateSeconds": 4,
-    "plateGapSeconds": 20,
-    "staleSeconds": 60,
-    "chatKeeps": true,
-    "newsBoardLines": 8
-  },
-  "boards": {
-    "_": "The boards on the Strip (design.md, \"Being seen\"; TR58; tier 2, research, 2026-11-24). Each board is an OrderedDataStore of whole numbers by UserId, posted by the server only, only ever raised (UpdateAsync), at most once every postSeconds a player a board and on leaving. Each server reads each board once every readSeconds, top page. The Tower week keeps Config.Tower.Board. Budgets (SOURCED, creator-docs, data stores' error codes and limits): GetSortedAsync 5 + 2 x players a server a minute, writes 30 + 5 x players. COMPUTED at 8 players: 3 reads against 21, at most 8 posts against 70, beside the saves. Research, 2026-11-24.",
-    "list": [
-      "bestLeadCR",
-      "towerWeek",
-      "totalStars"
-    ],
-    "shown": 10,
-    "page": 100,
-    "readSeconds": 60,
-    "postSeconds": 120,
-    "ownRankUnder": true
-  },
-  "welcomeWeek": {
-    "_": "The welcome week (design.md, \"The welcome week and codes\"; TR59; tier 2, research, 2026-11-24). One gift a UTC day the account plays, never lost, no streak; shown from the end of the first run. Day 7 is Lyric's Named shard for everyone, a copy toward its next star when Lyric is owned: at Lantern Row's Standard odds (Common 60, Rare 9 among the ground's own) about 13% of shards hold Lyric, so nearly every account owns all five before day 7 (COMPUTED). The cases roll as Lantern Row's elite chest. Research, 2026-11-24.",
-    "days": [
-      {
-        "kind": "forgeCrate",
-        "count": 1
-      },
-      {
-        "kind": "emblemCase",
-        "count": 1,
-        "rollsAs": "lanternrow_elite"
-      },
-      {
-        "kind": "shard",
-        "id": "lanternrow_standard",
-        "count": 2
-      },
-      {
-        "kind": "jewelPouch",
-        "count": 1
-      },
-      {
-        "kind": "forgeCrate",
-        "count": 1
-      },
-      {
-        "kind": "emblemCase",
-        "count": 1,
-        "rollsAs": "lanternrow_elite"
-      },
-      {
-        "kind": "namedShard",
-        "holds": "lyric",
-        "count": 1
-      }
-    ],
-    "showsAfter": "firstRunEnd"
-  },
-  "codes": {
-    "_": "Codes (design.md, \"The welcome week and codes\"; TR59). Once per account, each with an end date; pays a crate, case, pouch or Standard shards, never Credits or anything the store sells for Robux; the list ships in Config with its update. Research, 2026-11-24.",
-    "wrongTriesPerMinute": 5,
-    "waitSeconds": 60,
-    "caseInsensitive": true,
-    "pays": [
-      "forgeCrate",
-      "emblemCase",
-      "jewelPouch",
-      "lanternrow_standard"
-    ]
-  },
-  "referral": {
-    "_": "Bringing a friend (design.md, \"Being seen\"; TR62). Roblox's referral join data; a friend new to the game who beats the Lamplighter on Normal pays both sides one Forge Crate, at most five friends an inviter for good. Research, 2026-11-24.",
-    "pays": "forgeCrate",
-    "both": true,
-    "earnedAt": "firstNormalClear",
-    "perInviter": 5,
-    "newAccountsOnly": true
-  },
+
+  "clash": { "hpFactor": 3.0, "ratioMin": 0.2, "ratioMax": 2.0 },
+
+  "earnBucketCaps": { "credits": 1.50, "xp": 1.50, "electricity": 1.00 },
+
+  "pace": { "killsPerHour": 601, "creditsPerKillPerG": 10, "forgeShareOfIncome": 0.45 },
+  "chestFamily": { "_": "A chest for each launch item (launch-design.md, section 5; tier 2, research, 2026-11-24). leastRare: every chest gives a Rare at least this percent, taken from Common like TR48's Epic and Legendary, so a Rare is always likelier than an Epic. An Emblem Case replaces each loose emblem drop one for one and rolls its rarity as its kind and stage's gear chest does, every least included, Common read as Uncommon (the Hard keeper's Rare rises to hardKeeperLeastRare, over its 1.6% Epic); the Tower gives one sure case at each tenth floor the account first clears. Three emblems of one stat and rarity make one of the next. A Hard keeper's win gives a Jewel Pouch for sure and a Forge Crate at crateChance. MODEL (a simulation of 4,000 players, 5 to 7 cases an hour, six stats even): first Rare by combine 0.9 to 1.3 h, Epic 4.4 to 6.2 h, Legendary 16.7 to 23.4 h (medians). Research, 2026-11-24.", "leastRare": 1.0, "hardKeeperLeastRare": 3.0, "towerCase": { "10": "Rare", "20": "Rare", "30": "Epic", "40": "Epic", "50": "Legendary", "past50Every10": "Epic", "past50Every50": "Legendary" }, "combine": { "take": 3, "give": 1, "sameStat": true }, "pouch": { "tier1": 0.8, "tier2": 0.2, "hardKeeperWin": 1.0 }, "crate": { "low": [4, 8], "midChance": 0.25, "mid": [1, 2], "highChance": 0.02, "high": 1, "hardKeeperWin": 0.5 }, "condenserHigh": { "from": "Mid", "take": 5, "to": "High", "give": 1, "seconds": 3600, "fromLevel": 10 }, "presetsAtBaseLevel": [1, 2, 3] },
+  "jewels": { "_": "A jewel's points (the director, 2026-11-19, 03:10: flat points of its colour's Basic Attribute): round(topUnits x tierWorth / Chests.Price of the attribute), at least 1, so every colour is worth the same Combat Power, as a gear line is. topUnits is the jewels' share against the emblems' (7 over 70 sockets against 11 over 56) of a Legendary emblem's 200 weight units. Tier 1 reads Strength +2, Agility +6, Intelligence +4, Endurance +2, Spirit +3; tier 5 +11, +38, +25, +11, +17. Three of one colour and tier make one of the next. By hand from balance.md's 6 to 12% for an emblem a socket: 70 tier-1 jewels give about 5 to 7% of a Lantern Row build. The Condenser makes one jewel per condenserEveryHours of work into its tray, colours even, tier 2 from its level tier2FromLevel. Research, 2026-11-24.", "topUnits": 102, "tierWorth": [0.15, 0.3, 0.5, 0.75, 1.0], "condenserEveryHours": 4, "tier2FromLevel": 8, "tier3FromLevel": 16 },
+  "forgeHeat": { "_": "Forge heat replaces no pity (the director, 2026-11-24, 10:50). Heat is whole points, 0 to 100, on the item. A failed try adds round(perChance x the try's chance) points; at 100 or more the next try succeeds; a success sets it to 0; it moves with the level. With 50: at most 3 failures in a row at 80%, 10 at the 20% floor. Expected Credits to +30 fall from 7,282 to 6,722 x G, so the try's Credits base rises from 30 to 32.5 to hold the sink; the stones stay, about 8% fewer to +30. Research, 2026-11-24.", "perChance": 50, "full": 100, "creditsBase": 32.5 },
+  "broadcast": { "_": "The Broadcast (design.md, \"Being seen\"; TR57; tier 2, research, 2026-11-24). everyServer and thisServer name the events told at each reach; a throttled every-server line is told to this server instead, never dropped. A server publishes at most one bundle every bundleSeconds, so at most 12 a minute: under MessagingService's 600 + 240 x players sent per server and 40 + 80 x servers received per topic for any number of servers (SOURCED, Roblox creator-docs, MessagingService.yaml, Limitations; COMPUTED: 12 S < 40 + 80 S). Delivery is best effort, which suits news. A client shows one plate at a time, at most one every plateGapSeconds, holds a line while a card, ring, reveal or screen covers the place, and sends a line older than staleSeconds to the chat only. Research, 2026-11-24.", "everyServer": ["itemLegendary", "itemDawn", "reinforceAtLeast20", "sevenStars", "towerWeekFirst"], "thisServer": ["itemEpic", "firstVoidkinOfRarityFromRare", "lamplighterHardFirst", "reinforceAtLeast15", "towerServerBestToday"], "everyServerPerPlayerMinutes": 10, "bundleSeconds": 5, "plateSeconds": 4, "plateGapSeconds": 20, "staleSeconds": 60, "chatKeeps": true, "newsBoardLines": 8 },
+  "boards": { "_": "The boards on the Strip (design.md, \"Being seen\"; TR58; tier 2, research, 2026-11-24). Each board is an OrderedDataStore of whole numbers by UserId, posted by the server only, only ever raised (UpdateAsync), at most once every postSeconds a player a board and on leaving. Each server reads each board once every readSeconds, top page. The Tower week keeps Config.Tower.Board. Budgets (SOURCED, creator-docs, data stores' error codes and limits): GetSortedAsync 5 + 2 x players a server a minute, writes 30 + 5 x players. COMPUTED at 8 players: 3 reads against 21, at most 8 posts against 70, beside the saves. Research, 2026-11-24.", "list": ["bestLeadCR", "towerWeek", "totalStars"], "shown": 10, "page": 100, "readSeconds": 60, "postSeconds": 120, "ownRankUnder": true },
+  "welcomeWeek": { "_": "The welcome week (design.md, \"The welcome week and codes\"; TR59; tier 2, research, 2026-11-24). One gift a UTC day the account plays, never lost, no streak; shown from the end of the first run. Day 7 is Lyric's Named shard for everyone, a copy toward its next star when Lyric is owned: at Lantern Row's Standard odds (Common 60, Rare 9 among the ground's own) about 13% of shards hold Lyric, so nearly every account owns all five before day 7 (COMPUTED). The cases roll as Lantern Row's elite chest. Research, 2026-11-24.", "days": [ { "kind": "forgeCrate", "count": 1 }, { "kind": "emblemCase", "count": 1, "rollsAs": "lanternrow_elite" }, { "kind": "shard", "id": "lanternrow_standard", "count": 2 }, { "kind": "jewelPouch", "count": 1 }, { "kind": "forgeCrate", "count": 1 }, { "kind": "emblemCase", "count": 1, "rollsAs": "lanternrow_elite" }, { "kind": "namedShard", "holds": "lyric", "count": 1 } ], "showsAfter": "firstRunEnd" },
+  "codes": { "_": "Codes (design.md, \"The welcome week and codes\"; TR59). Once per account, each with an end date; pays a crate, case, pouch or Standard shards, never Credits or anything the store sells for Robux; the list ships in Config with its update. Research, 2026-11-24.", "wrongTriesPerMinute": 5, "waitSeconds": 60, "caseInsensitive": true, "pays": ["forgeCrate", "emblemCase", "jewelPouch", "lanternrow_standard"] },
+  "referral": { "_": "Bringing a friend (design.md, \"Being seen\"; TR62). Roblox's referral join data; a friend new to the game who beats the Lamplighter on Normal pays both sides one Forge Crate, at most five friends an inviter for good. Research, 2026-11-24.", "pays": "forgeCrate", "both": true, "earnedAt": "firstNormalClear", "perInviter": 5, "newAccountsOnly": true },
+
   "profiles": {
-    "casual": {
-      "hoursPerDay": 0.5,
-      "sessions": 1,
-      "prismaticPerDay": 0.5
-    },
-    "active": {
-      "hoursPerDay": 1.5,
-      "sessions": 2,
-      "prismaticPerDay": 1.0
-    },
-    "heavy": {
-      "hoursPerDay": 4.0,
-      "sessions": 3,
-      "prismaticPerDay": 2.0
-    }
+    "casual": { "hoursPerDay": 0.5, "sessions": 1, "prismaticPerDay": 0.5 },
+    "active": { "hoursPerDay": 1.5, "sessions": 2, "prismaticPerDay": 1.0 },
+    "heavy":  { "hoursPerDay": 4.0, "sessions": 3, "prismaticPerDay": 2.0 }
   },
+
   "shards": {
-    "perHour": {
-      "Standard": 18,
-      "Enriched": 3
-    },
+    "perHour": { "Standard": 18, "Enriched": 3 },
     "enrichedFromGround": 2,
     "prismaticFromGround": 3,
     "pools": {
-      "Standard": {
-        "Common": 60,
-        "Uncommon": 30,
-        "Rare": 9,
-        "Epic": 1,
-        "Legendary": 0,
-        "Mythical": 0
-      },
-      "Enriched": {
-        "Common": 0,
-        "Uncommon": 45,
-        "Rare": 35,
-        "Epic": 16,
-        "Legendary": 4,
-        "Mythical": 0
-      },
-      "Prismatic": {
-        "Common": 0,
-        "Uncommon": 0,
-        "Rare": 40,
-        "Epic": 38,
-        "Legendary": 18,
-        "Mythical": 4
-      }
+      "Standard":  { "Common": 60, "Uncommon": 30, "Rare": 9,  "Epic": 1,  "Legendary": 0,  "Mythical": 0 },
+      "Enriched":  { "Common": 0,  "Uncommon": 45, "Rare": 35, "Epic": 16, "Legendary": 4,  "Mythical": 0 },
+      "Prismatic": { "Common": 0,  "Uncommon": 0,  "Rare": 40, "Epic": 38, "Legendary": 18, "Mythical": 4 }
     },
     "featuredWeight": 3,
-    "breakSeconds": {
-      "Standard": 30,
-      "Enriched": 900,
-      "Prismatic": 10800
-    },
-    "energy": {
-      "Standard": 20,
-      "Enriched": 200,
-      "Prismatic": 1500
-    },
-    "regionFactor": [
-      1,
-      1.5,
-      2,
-      4,
-      6,
-      7
-    ],
-    "starCopies": {
-      "Common": [
-        1,
-        2,
-        4,
-        8,
-        16,
-        32,
-        64
-      ],
-      "Uncommon": [
-        1,
-        2,
-        4,
-        8,
-        16,
-        32,
-        64
-      ],
-      "Rare": [
-        1,
-        2,
-        4,
-        8,
-        16,
-        32,
-        64
-      ],
-      "Epic": [
-        1,
-        2,
-        4,
-        8,
-        16,
-        32,
-        64
-      ],
-      "Legendary": [
-        1,
-        2,
-        4,
-        8,
-        16,
-        32,
-        64
-      ],
-      "Mythical": [
-        1,
-        2,
-        4,
-        8,
-        16,
-        32,
-        64
-      ]
-    },
-    "value": {
-      "Common": 1,
-      "Uncommon": 3,
-      "Rare": 10,
-      "Epic": 40,
-      "Legendary": 200,
-      "Mythical": 1000
-    }
+    "breakSeconds": { "Standard": 30, "Enriched": 900, "Prismatic": 10800 },
+    "energy": { "Standard": 20, "Enriched": 200, "Prismatic": 1500 },
+    "regionFactor": [1, 1.5, 2, 4, 6, 7],
+    "starCopies": { "Common": [1, 2, 4, 8, 16, 32, 64], "Uncommon": [1, 2, 4, 8, 16, 32, 64], "Rare": [1, 2, 4, 8, 16, 32, 64], "Epic": [1, 2, 4, 8, 16, 32, 64], "Legendary": [1, 2, 4, 8, 16, 32, 64], "Mythical": [1, 2, 4, 8, 16, 32, 64] },
+    "value": { "Common": 1, "Uncommon": 3, "Rare": 10, "Epic": 40, "Legendary": 200, "Mythical": 1000 }
   },
-  "luck": {
-    "cap": 0.4,
-    "breakerTuningMax": 0.15
-  },
-  "rift": {
-    "everyMinutes": 30,
-    "seconds": 60,
-    "speed": 20
-  },
+
+  "luck": { "cap": 0.40, "breakerTuningMax": 0.15 },
+
+  "rift": { "everyMinutes": 30, "seconds": 60, "speed": 20 },
+
   "bays": {
-    "workersByGround": [
-      2,
-      3,
-      4,
-      5,
-      6,
-      6
-    ],
+    "workersByGround": [2, 3, 4, 5, 6, 6],
     "perMinutePerAptitude": 1.0,
     "perLevel": 0.02,
-    "batteryHoursByGround": [
-      2,
-      3,
-      4,
-      6,
-      8,
-      8
-    ],
-    "chambersByGround": [
-      2,
-      2,
-      3,
-      3,
-      4,
-      4
-    ]
+    "batteryHoursByGround": [2, 3, 4, 6, 8, 8],
+    "chambersByGround": [2, 2, 3, 3, 4, 4]
   },
+
   "power": {
     "_": "TR18, the base as a power plant (docs/design.md, 'Power'). Research's seeds, 2026-11-15. Each machine draws its rating while it works; a shard costs its chamber's rating times its break time, times its ground's factor.",
     "kwPerAptitude": 6,
@@ -609,86 +120,32 @@
     "batteryKwh": 60,
     "startKwh": 2,
     "creditsPerKwh": 0.5,
-    "workXp": {
-      "_": "A worker earns experience by the kWh it makes (the director, 2026-11-24, 10:50). Per kWh it earns what the Training machine gives in perKwhTrainingSeconds; an 18 kW worker (aptitude 3 at level 1) earns half the Training rate, a 12 kW worker a third, a 6 kW worker a sixth. Never more a second than the Training rate. Research, 2026-11-24.",
-      "perKwhTrainingSeconds": 100,
-      "capShareOfTraining": 1.0
-    },
-    "voltage": {
-      "_": "Infusion is voltage (the director, 2026-11-15, 'Faster break'): Low halves a shard's time left, High breaks it at once; once per shard; odds untouched. Research's price: the energy its chamber would still draw over the time saved, times the premium, times the ground's factor; rounded up to a whole kWh; not offered when it saves under minSavedSeconds.",
-      "lowTimeLeft": 0.5,
-      "highTimeLeft": 0,
-      "premium": 1.3333,
-      "minSavedSeconds": 60
-    }
+    "workXp": { "_": "A worker earns experience by the kWh it makes (the director, 2026-11-24, 10:50). Per kWh it earns what the Training machine gives in perKwhTrainingSeconds; an 18 kW worker (aptitude 3 at level 1) earns half the Training rate, a 12 kW worker a third, a 6 kW worker a sixth. Never more a second than the Training rate. Research, 2026-11-24.", "perKwhTrainingSeconds": 100, "capShareOfTraining": 1.0 },
+    "voltage": { "_": "Infusion is voltage (the director, 2026-11-15, 'Faster break'): Low halves a shard's time left, High breaks it at once; once per shard; odds untouched. Research's price: the energy its chamber would still draw over the time saved, times the premium, times the ground's factor; rounded up to a whole kWh; not offered when it saves under minSavedSeconds.", "lowTimeLeft": 0.5, "highTimeLeft": 0, "premium": 1.3333, "minSavedSeconds": 60 }
   },
+
   "baseLevels": {
     "_": "TR21, the base's levels at launch and its machines' (docs/design.md, 'The base'). Research's seeds, 2026-11-15, night. A base level costs a share of the Credits earned since the last; a machine level costs the machines' share of what its slice of time earns, split across the machines.",
     "launchCap": 3,
-    "atHours": {
-      "2": 0.33,
-      "3": 5
-    },
-    "shareOfWindow": {
-      "2": 0.5,
-      "3": 0.25
-    },
-    "bays": {
-      "1": 2,
-      "2": 4,
-      "3": 6
-    },
-    "machineCeiling": {
-      "1": 2,
-      "2": 6,
-      "3": 15
-    },
-    "machines": {
-      "1": 3,
-      "2": 5,
-      "3": 8
-    },
-    "machineShareOfIncome": 0.3,
-    "batteryKwh": {
-      "1": 60,
-      "2": 150,
-      "3": 400
-    },
-    "gains": {
-      "_": "What one machine level gives. The Training machine has none: its rate is fixed (the director, 2026-11-14).",
-      "bayOutputPerLevel": 0.04,
-      "breakerSpeedPerLevel": 0.02,
-      "breakerChambersAt": {
-        "3": 8,
-        "4": 20
-      }
-    }
+    "atHours": { "2": 0.33, "3": 5 },
+    "shareOfWindow": { "2": 0.5, "3": 0.25 },
+    "bays": { "1": 2, "2": 4, "3": 6 },
+    "machineCeiling": { "1": 2, "2": 6, "3": 15 },
+    "machines": { "1": 3, "2": 5, "3": 8 },
+    "machineShareOfIncome": 0.30,
+    "batteryKwh": { "1": 60, "2": 150, "3": 400 },
+    "gains": { "_": "What one machine level gives. The Training machine has none: its rate is fixed (the director, 2026-11-14).", "bayOutputPerLevel": 0.04, "breakerSpeedPerLevel": 0.02, "breakerChambersAt": { "3": 8, "4": 20 } }
   },
   "combatPower": {
     "_": "TR17, fix 10: Config.Stats.Power. Refit 2026-11-16 on the attribute builds by tools/balance/attributes.py, report A8 (sim.py section 16's method). A weight a point, Attack's held at 4; a percent's (Critical Damage above its base, Critical Guard, Lifesteal) is its weight at level 1, and Power multiplies it by G(level). Refit when a source lands past launch's ranges (Critical Damage far past +100%, a new stat).",
     "scale": 10,
-    "weights": {
-      "Health": 0.62,
-      "Attack": 4,
-      "Defence": 2.9,
-      "Regen": 1.6,
-      "Hit": 0.45,
-      "Dodge": 1.4,
-      "Critical": 0.57,
-      "CriticalResist": 0.17,
-      "Block": 0.91,
-      "Penetration": 0.44,
-      "ElementalAttack": 3.6,
-      "ElementalResist": 0.18,
-      "CriticalDamage": 130,
-      "CriticalGuard": 130,
-      "Lifesteal": 630
-    }
+    "weights": { "Health": 0.62, "Attack": 4, "Defence": 2.9, "Regen": 1.6, "Hit": 0.45, "Dodge": 1.4, "Critical": 0.57, "CriticalResist": 0.17, "Block": 0.91, "Penetration": 0.44, "ElementalAttack": 3.6, "ElementalResist": 0.18, "CriticalDamage": 130, "CriticalGuard": 130, "Lifesteal": 630 }
   },
   "tower": {
     "_": "The foe's build share in the Tower: its numbers stand on enemyFrac of its level's build (docs/balance.md, The Tower). Config.Tower.Lift is read from it, so a new enemyFrac means a new reading. Every other Tower number lives in src/shared/Config/Tower.luau (TR29), which tools/balance/tower.py reads.",
     "enemyFrac": 0.45
   },
+
   "spine": {
     "_about": "TR76, research 2026-11-28: growing a Voidkin (docs/design.md, 'Growing a Voidkin'), the Index and the shop's share. Mastery's 6 share points replace gear's 4 and the Reinforce they carried, and the Index's 2.5 replace 2.5 of emblems', so a full level-60 build keeps its size (checked: 49793 health, 6224 attack, as before).",
     "mastery": {

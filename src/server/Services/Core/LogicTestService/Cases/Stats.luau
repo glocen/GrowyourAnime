@@ -105,7 +105,7 @@ return {
 		Name = "Stats: experience follows the pace table",
 		Run = function(t: any)
 			local early = #GrowthConfig.Early
-			t.Equal("ground 1 is about 66 kills a level, past the first fights (596 an hour, TR72)", math.floor(Growth.KillsPerLevel(early + 1) + 0.5), 66)
+			t.Equal("ground 1 is about 43 kills a level, past the first fights (386 an hour, TR72's session)", math.floor(Growth.KillsPerLevel(early + 1) + 0.5), 43)
 			for level, kills in GrowthConfig.Early do
 				t.Equal(`a new account's level {level} takes its early kills`, Growth.KillsPerLevel(level), kills)
 			end

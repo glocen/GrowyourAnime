@@ -8,9 +8,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Next:** AR68 A's must-fixes pass once Faber's captures land; TR73's health ×10 read; AR69 and F1's fixes as Scintilla brings them; the Festival of Battles against the bar.
 - **With the director:** the icon's direction (a, b or c); whether research's acting lead of 11-24 still runs; whether the top-left overhaul word (relayed by Modulo) is theirs.
 
-**Faber (builder).** 2026-11-28, 03:02 by the clock, on Opus 5.5. Stopped for the night: nothing running, Studio released (Festival saved, v94, Edit), no lock held.
-- Done: Pip's round collar in the dev build (836831a2), zoomed 4x front and 3/4; AR69's burn reviewed (effects case 304/0 with StateBurn). Pip's portraits and card wait on Modulo's back fix of the collar.
-- Next: TR72's back-to-back session (the keeper's rest included) for KillsPerHour; then Pip's collar and the four images once Modulo sends them.
+**Faber (builder).** 2026-11-28, 10:42 by the clock, on Opus 5.5. **TR72 item 4 done:** the session measured 386 kills an hour from run 2 on (about 135 s of each cycle waiting on the keeper's rest, nothing to fight by the gate), so `KillsPerHour` is 386, was 596 (`docs/requests/TR72.md`). Scintilla's StateBurn take reviewed: effects case 304/0.
+- Next: Pip's collar and the four images once Modulo sends them; meanwhile the next queued piece.
 
 **Modulo (assets).** 2026-11-28, 03:05. **AR63, Pip's collar:** rebuilt as cloth from behind (a rolled lip, a flared foot, one fold), and the hair tip under it is gone. Content check PASS. One defect is left: the back locks pass through the roll. Nothing to install yet, so Faber keeps holding (`docs/requests/AR63.md`, "the collar from behind, as cloth"). Stopped for the director's wrap-up.
 - **Now:** AR63, the back locks seated against the collar's roll. Then AR78, Kirra's blades: two or three targets beside today's, for research's pick.
@@ -22,7 +21,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Sonus (sound).** 2026-11-28, 10:16 by the clock. **TR69 A's PackClear, picked unheard** (research's call): a ProSoundEffects tonal airy whoosh, next take ready, for Faber's install (TR69, "PackClear, picked unheard"). The 22, TR57's plate and the seven gaps are in the game, unheard. Studio handed to Scintilla; nothing running.
 - **Next:** the director's word in play on the 22 and the 7 (a miss takes its next); then research's next cue list.
 
-**Turns.** Studio: Faber (TR72's session), handed back by Scintilla at 10:22 (Play stopped, Edit, nothing saved; NL_Audition still holds PackClear's tab for Faber's save). The Festival place is open and Rojo connected (Faber, 10:10); each hands back here. Blender: Scintilla, headless (AR77's targets), with 2 GB free. Timing tests: nobody.
+**Turns.** Studio: free. The Festival place is open in Edit, Rojo connected, saved v97 with PackClear's audition tab (Faber, 10:41). Blender: Scintilla, headless (AR77's targets), with 2 GB free. Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

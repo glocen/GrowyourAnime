@@ -15,10 +15,12 @@ return {
 	-- PaceHours x KillsPerHour spread over the ground's levels (Definitions.Grounds), so ground 1 is about 66 kills a level.
 	-- The derivation is the builder's, 2026-11-12, from the seeds' pace table ("Everything else is derived from that table").
 	XpPerKillPerG = 10,
-	-- Measured (TR72 item 4, 2026-11-27): three clean Normal runs of Lantern Row, stretch 1 to the keeper's fall, the lead
-	-- on the level-9 on-budget sheet, the waves on and the keeper's phases off: 35, 36 and 35 kills in 211, 234 and 211 s,
-	-- the median 596 an hour. The keeper's rest after a win (Config.World.Row.Back) isn't in it. Seeds "pace.killsPerHour".
-	KillsPerHour = 596,
+	-- Measured (TR72 item 4, 2026-11-28): a player's hour, three Normal runs of Lantern Row back to back (the self-test's
+	-- "Session (TR72 item 4)"), the lead on the level-9 on-budget sheet, the waves on and the keeper's phases off. Each run
+	-- after the first waits about 135 s at the gate on the keeper's rest from the last win (Config.World.Row.Back), with
+	-- nothing standing near it: 36 and 37 kills in 339 and 341 s, 386 an hour. A clean run alone was 596 (2026-11-27).
+	-- Seeds "pace.killsPerHour".
+	KillsPerHour = 386,
 	PaceHours = { 1, 3, 6, 10, 15, 22 }, -- by ground order; seeds "grounds[].paceHours"
 	-- Catch-up (docs/balance.md, "Catch-up"; TR72, item 3): a lead more than Below levels under the account's highest
 	-- Voidkin earns its fights' experience x (1 + Bonus), a fixed bonus in the experience bucket, whose sum stops at

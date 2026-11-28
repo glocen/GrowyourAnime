@@ -440,6 +440,8 @@ The director's words from 2026-11-27, 14:30 on, newest on top, in the table's ow
 
 | Date | The words | They cover |
 |---|---|---|
+| 2026-11-28, by 02:40 | "kirra swords model on her back is horrible still look like toys" (typed in Faber's tab, relayed by Faber) | Kirra's blades and their carry, overhauled in AR78 |
+| 2026-11-28, by 02:40 | "upload dont need my okay btw" (typed in Faber's tab) | Content-checked uploads under the group need no director's OK (said directly to the builder) |
 | 2026-11-28, 02:34 | "that explosion effect when any enemy or voidkin or anything die is horrible." | AR69's fall (ShadeFall, the fireball every body plays when it goes down) rejected; overhauled in AR77. Not the burn, not the keeper's lantern fall |
 | 2026-11-28, 02:31 | "1) yes and 2) no manual." (to research, answering: 1, uploads need no OK, said to Faber; 2, the eye on by default or kept manual) | 1: content-checked uploads under the group need no director's OK (restates 2026-11-28 "sure dont need for my ok to upload"). 2: the eye stays manual, off by default (AR75) |
 | 2026-11-28, by 01:24 | "go open studio now"; then "sure dont need for my ok to upload go ahead" | Studio reopened after the director's game; uploads need no director's OK. Standing: an asset that passed the content check goes up under the group, by the builder's upload as before, starting with AR69's three pictures |

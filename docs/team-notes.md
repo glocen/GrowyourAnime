@@ -8,8 +8,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Next:** AR68 A's must-fixes pass once Faber's captures land; TR73's health ×10 read; AR69 and F1's fixes as Scintilla brings them; the Festival of Battles against the bar.
 - **With the director:** the icon's direction (a, b or c); whether research's acting lead of 11-24 still runs; whether the top-left overhaul word (relayed by Modulo) is theirs.
 
-**Faber (builder).** 2026-11-28, 11:13 by the clock, on Opus 5.5. **AR63, Pip's collar in** (482ce78f): the two meshes, the map and seven clips published under the group, Approved; the template rebuilt; in a Run NOT VERIFIED yet. **TR72's two asks held** (research, 11:05, the run reimagined in TR75): the rest rule and the drop counts were built and passing (22 logic checks), kept as a patch, not in `src/` (`docs/requests/TR72.md`).
-- In a Run (11:18): every model 38/0, the Reveal strikes 17/0, StateBurn round 4's effects 304/0; Pip's collar from behind at the game's camera in `build/captures/ar63/`. Next: Pip's portraits when Blender's lock is free.
+**Faber (builder).** 2026-11-28, 11:29 by the clock, on Opus 5.5. **AR63, Pip's collar kept clear, in the game with his four portraits** (all Approved; in a Run every model 38/0, the Reveal strikes 17/0; `docs/requests/AR63.md`): research's pass in motion waits. **TR72's two asks held** until TR75's pick, kept as a patch (`docs/requests/TR72.md`).
+- Next: the next piece on the plan; StateBurn round 4 reviewed (effects 304/0), Scintilla's to commit.
 
 **Modulo (assets).** 2026-11-28, 11:25 by the clock. **AR78, Kirra's blades: round 3, the technique changed.** The director (11:12): "2.8 but they look like toys...". Swept arched scabbards, a wrapped grip, a flat guard, a lacquer streak; a blind reader: bold reads as real swords up close and from the game's camera. Its toy cues are fixed in code (glints, a lashing, silver caps): the render waits on Scintilla's render lock (`docs/requests/AR78.md`). Content check PASS. AR63 waits on Faber's install.
 - **Now:** AR78's second pass, rendered when the lock is free, then the sheet to the director.

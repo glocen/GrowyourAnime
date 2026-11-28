@@ -11,9 +11,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Faber (builder).** 2026-11-28, 10:58 by the clock, on Opus 5.5. **TR72 item 4 done:** research's seed is in, the keeper's rest 165 s (was 300), and the session run again: no run waits at the gate, 601 kills an hour, so `KillsPerHour` is 601 (`docs/requests/TR72.md`). Scintilla's StateBurn round 3 reviewed (effects case 304/0).
 - Next: AR69 round 4's rows when Scintilla's take is done; Pip's collar and the four images once Modulo sends them.
 
-**Modulo (assets).** 2026-11-28, 11:02 by the clock. **AR63, Pip's collar: ready to install.** The back hair sits inside the roll, his head stays inside the collar in every pose his clips hold (0 of 573 cross; the clips keep his head within 3 degrees up and 18 down and lean his body for the rest), and the collar's foot flares on a curve. Content check PASS. Faber: four files in `build/handoff/Pip/` and eight clips in `finish/clips/` (`docs/requests/AR63.md`, "ready to install").
-- **Now:** AR78, Kirra's blades: the three carries are drawn beside today's; the sheet for research's pick next.
-- **Next:** AR75's Shades, round 3 (designed in `build/scratch/modulo/shade_mesh/design.md`).
+**Modulo (assets).** 2026-11-28, 11:11 by the clock. **AR78, Kirra's blades: round 2 for the size pick.** The director (11:04): "way to small", and B, the belt pair. So B at 2.2, 2.5 and 2.8 studs beside today's pair, research's proportions scaled whole (`build/handoff/Kirra/blades/kirra_blades_r2.png`; `docs/requests/AR78.md`). Content check PASS. AR63, Pip's collar, waits on Faber's install (`docs/requests/AR63.md`).
+- **Now:** AR75's Shades, round 3 (designed in `build/scratch/modulo/shade_mesh/design.md`), while the size is picked.
+- **Next:** AR78's build at the picked size, its drawn steel for Scarf Step with its own check.
 
 **Scintilla (effects).** 2026-11-28, 10:59 by the clock. **AR69's burn:** round 4 (four roots, mixed lengths, tips that split and shed) is taken in Studio (`checkpoint/ar69_take_burn_r4.png`) and sits in src for Faber's review; research's pass waits. Maker's read: the shoulders read as one body, the arm and the hem still as spots. **AR77's targets:** the three foe takes are drawn; our fighter's two sheets were stopped for low memory and wait on the director's go to run again.
 - **Now:** Faber's review and research's pass on AR69 round 4; meanwhile AR76 round 2 (Mantaflow), the next free piece.

@@ -505,6 +505,11 @@ local Effects = {
 		-- flame tongue, its colours baked in, stored tip-up, so its beam runs from the tongue's tip down to its foot (a
 		-- beam lays the picture's top row at its first end); its TextureSpeed stays 0.
 		fx_lick_Flame = "rbxassetid://75951793042168",
+		-- AR69's round 2 (the content check of 2026-11-28, 00:3x; its conditions in docs/asset-log.md): the tongue's soft
+		-- silhouette and its core, white, stored tip-up, tinted by their rows (light tints only, never a Shade's type
+		-- tint).
+		fx_lick_Soft = "rbxassetid://98559484863649",
+		fx_lick_Core = "rbxassetid://109205484774854",
 	} :: { [string]: string },
 
 	-- The effects as rows (the header), and those in a rows file (Config.EffectRows), merged below. Tuned live:

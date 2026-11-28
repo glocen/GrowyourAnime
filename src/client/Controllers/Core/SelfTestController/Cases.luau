@@ -625,7 +625,7 @@ local cases = {
 			local want = (anchor * CFrame.Angles(0, math.rad(90), 0)).RightVector
 			local ok, problem = pcall(function()
 				local player = Rows.Play(NAME, anchor, 1)
-				player.Step(1)
+				player.Step(math.floor(player.End / 2)) -- inside its span: the copied row's keys may all be on its frame 0
 				local function axis(rowName: string): Vector3?
 					for _, made in player.Parts(rowName) do
 						local low = made:FindFirstChild("Low")
@@ -4669,7 +4669,7 @@ local cases = {
 			t.Check("eased, not snapped: part way at a tenth of a second", early > 0.2 and early < 0.9, string.format("%.2f", early))
 			t.Wait(look.Ease + 0.2)
 			t.Check("on the lead by its ease", SpectateController.Share() >= 0.95, string.format("%.3f", SpectateController.Share()))
-			local want = leadRoot.Position + Vector3.new(0, look.Height, 0)
+			local want = leadRoot.Position + Vector3.new(0, look.Height, 0) -- no foe: Rules.Hud.FightFocus is the lead's own
 			local at = SpectateController.Point()
 			t.Check("its point at the lead's focus", at ~= nil and (at.Position - want).Magnitude < 1, if at then string.format("%.2f studs off", (at.Position - want).Magnitude) else "none")
 			t.Check("the zoom is the player's", math.abs(distance() - before) < 1, string.format("%.2f, was %.2f", distance(), before))
@@ -4688,6 +4688,34 @@ local cases = {
 			end), string.format("%.3f", SpectateController.Share()))
 			t.Check("unlit", eye:GetAttribute("On") == false and Button.State(eye) ~= "Selected", Button.State(eye))
 			t.Check("at the distance it had", math.abs(distance() - before) < 1, string.format("%.2f, was %.2f", distance(), before))
+			-- AR75 (a), research's version (2026-11-28): in a fight it frames the fight, its point Toward of the way from the
+			-- lead's focus to its target's (Rules.Hud.FightFocus), eased there; the camera still the player's.
+			local fight = HudConfig.SpectateFight
+			local level = lead:GetAttribute("Level")
+			local spawned = t.Server("FightSpawn", "brawler", if type(level) == "number" then level else 1, 12)
+			t.Check("a foe spawns beside the lead", type(spawned) == "table" and spawned.Ok == true)
+			if type(spawned) == "table" and spawned.Ok == true then
+				local engaged = waitFor(t, 5, function(): boolean
+					return lead:GetAttribute("Target") == spawned.Id and fighterModel(spawned.Id) ~= nil
+				end)
+				t.Check("the lead takes it for its target", engaged, tostring(lead:GetAttribute("Target")))
+				SpectateController.Set(true)
+				t.Wait(look.Ease + fight.Ease + 0.3)
+				local foe = fighterModel(spawned.Id)
+				local foeRoot = if foe then foe:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
+				local lift = Vector3.new(0, look.Height, 0)
+				local framed = Hud.FightFocus(leadRoot.Position + lift, if foeRoot then foeRoot.Position + lift else nil, fight.Toward, fight.Reach)
+				local on = SpectateController.Point()
+				t.Check("in a fight, its point between the lead and its foe (studs off; both move)", on ~= nil and foeRoot ~= nil and (on.Position - framed).Magnitude < 2,
+					if on then string.format("%.2f studs off, %.2f from the lead", (on.Position - framed).Magnitude, (on.Position - leadRoot.Position - lift).Magnitude) else "none")
+				t.Check("nearer the lead than the foe", on ~= nil and foeRoot ~= nil and (on.Position - leadRoot.Position).Magnitude < (on.Position - foeRoot.Position).Magnitude)
+				SpectateController.Set(false)
+				waitFor(t, look.Ease + 0.5, function(): boolean
+					return camera.CameraSubject == humanoid
+				end)
+				t.Server("FightSpawn") -- clears it
+				t.Server("LeadHeal")
+			end
 			-- The lead's fall: off, the eye says why, and it can't be turned on while the lead is down.
 			SpectateController.Set(true)
 			t.Wait(look.Ease + 0.1)

@@ -114,8 +114,8 @@
     "Brightness": 1.1
    },
    "Tracks": {
-    "Width": [[10, 0.864, "Quad Out"], [15, 2.881], [17, 2.881], [31, 1.729]],
-    "Transparency": [[10, 1, "Quad Out"], [12, 0], [20, 0, "Quad In"], [33, 1]]
+    "Width": [[6, 0.864, "Quad Out"], [11, 2.881], [13, 2.881], [27, 1.729]],
+    "Transparency": [[6, 1, "Quad Out"], [8, 0], [16, 0, "Quad In"], [29, 1]]
    },
    "Why": "the plume: a broad soft flame tongue off the ball, rising as it cools"
   },
@@ -137,8 +137,8 @@
     "ZOffset": 0.05
    },
    "Tracks": {
-    "Width": [[10, 0.864, "Quad Out"], [15, 2.881], [17, 2.881], [31, 1.729]],
-    "Transparency": [[10, 1, "Quad Out"], [12, 0], [20, 0, "Quad In"], [33, 1]]
+    "Width": [[6, 0.864, "Quad Out"], [11, 2.881], [13, 2.881], [27, 1.729]],
+    "Transparency": [[6, 1, "Quad Out"], [8, 0], [16, 0, "Quad In"], [29, 1]]
    },
    "Why": "Plume1's core: added white-gold heat up its lower part, the tip left orange (its picture's)"
   },
@@ -173,8 +173,8 @@
     "Brightness": 1.1
    },
    "Tracks": {
-    "Width": [[10, 0.81, "Quad Out"], [15, 2.699], [17, 2.699], [31, 1.619]],
-    "Transparency": [[10, 1, "Quad Out"], [12, 0], [20, 0, "Quad In"], [33, 1]]
+    "Width": [[6, 0.81, "Quad Out"], [11, 2.699], [13, 2.699], [27, 1.619]],
+    "Transparency": [[6, 1, "Quad Out"], [8, 0], [16, 0, "Quad In"], [29, 1]]
    },
    "Why": "the plume: a broad soft flame tongue off the ball, rising as it cools"
   },
@@ -196,8 +196,8 @@
     "ZOffset": 0.05
    },
    "Tracks": {
-    "Width": [[10, 0.81, "Quad Out"], [15, 2.699], [17, 2.699], [31, 1.619]],
-    "Transparency": [[10, 1, "Quad Out"], [12, 0], [20, 0, "Quad In"], [33, 1]]
+    "Width": [[6, 0.81, "Quad Out"], [11, 2.699], [13, 2.699], [27, 1.619]],
+    "Transparency": [[6, 1, "Quad Out"], [8, 0], [16, 0, "Quad In"], [29, 1]]
    },
    "Why": "Plume2's core: added white-gold heat up its lower part, the tip left orange (its picture's)"
   },
@@ -232,8 +232,8 @@
     "Brightness": 1.1
    },
    "Tracks": {
-    "Width": [[11, 0.894, "Quad Out"], [16, 2.979], [17, 2.979], [31, 1.787]],
-    "Transparency": [[11, 1, "Quad Out"], [13, 0], [21, 0, "Quad In"], [34, 1]]
+    "Width": [[7, 0.894, "Quad Out"], [12, 2.979], [13, 2.979], [27, 1.787]],
+    "Transparency": [[7, 1, "Quad Out"], [9, 0], [17, 0, "Quad In"], [30, 1]]
    },
    "Why": "the plume: a broad soft flame tongue off the ball, rising as it cools"
   },
@@ -255,8 +255,8 @@
     "ZOffset": 0.05
    },
    "Tracks": {
-    "Width": [[11, 0.894, "Quad Out"], [16, 2.979], [17, 2.979], [31, 1.787]],
-    "Transparency": [[11, 1, "Quad Out"], [13, 0], [21, 0, "Quad In"], [34, 1]]
+    "Width": [[7, 0.894, "Quad Out"], [12, 2.979], [13, 2.979], [27, 1.787]],
+    "Transparency": [[7, 1, "Quad Out"], [9, 0], [17, 0, "Quad In"], [30, 1]]
    },
    "Why": "Plume3's core: added white-gold heat up its lower part, the tip left orange (its picture's)"
   },
@@ -291,8 +291,8 @@
     "Brightness": 1.1
    },
    "Tracks": {
-    "Width": [[11, 0.82, "Quad Out"], [16, 2.733], [17, 2.733], [31, 1.64]],
-    "Transparency": [[11, 1, "Quad Out"], [13, 0], [21, 0, "Quad In"], [34, 1]]
+    "Width": [[7, 0.82, "Quad Out"], [12, 2.733], [13, 2.733], [27, 1.64]],
+    "Transparency": [[7, 1, "Quad Out"], [9, 0], [17, 0, "Quad In"], [30, 1]]
    },
    "Why": "the plume: a broad soft flame tongue off the ball, rising as it cools"
   },
@@ -314,8 +314,8 @@
     "ZOffset": 0.05
    },
    "Tracks": {
-    "Width": [[11, 0.82, "Quad Out"], [16, 2.733], [17, 2.733], [31, 1.64]],
-    "Transparency": [[11, 1, "Quad Out"], [13, 0], [21, 0, "Quad In"], [34, 1]]
+    "Width": [[7, 0.82, "Quad Out"], [12, 2.733], [13, 2.733], [27, 1.64]],
+    "Transparency": [[7, 1, "Quad Out"], [9, 0], [17, 0, "Quad In"], [30, 1]]
    },
    "Why": "Plume4's core: added white-gold heat up its lower part, the tip left orange (its picture's)"
   },
@@ -350,8 +350,8 @@
     "Brightness": 1.1
    },
    "Tracks": {
-    "Width": [[9, 0.943, "Quad Out"], [14, 3.144], [17, 3.144], [31, 1.886]],
-    "Transparency": [[9, 1, "Quad Out"], [11, 0], [19, 0, "Quad In"], [32, 1]]
+    "Width": [[5, 0.943, "Quad Out"], [10, 3.144], [13, 3.144], [27, 1.886]],
+    "Transparency": [[5, 1, "Quad Out"], [7, 0], [15, 0, "Quad In"], [28, 1]]
    },
    "Why": "the plume: a broad soft flame tongue off the ball, rising as it cools"
   },
@@ -373,8 +373,8 @@
     "ZOffset": 0.05
    },
    "Tracks": {
-    "Width": [[9, 0.943, "Quad Out"], [14, 3.144], [17, 3.144], [31, 1.886]],
-    "Transparency": [[9, 1, "Quad Out"], [11, 0], [19, 0, "Quad In"], [32, 1]]
+    "Width": [[5, 0.943, "Quad Out"], [10, 3.144], [13, 3.144], [27, 1.886]],
+    "Transparency": [[5, 1, "Quad Out"], [7, 0], [15, 0, "Quad In"], [28, 1]]
    },
    "Why": "Plume5's core: added white-gold heat up its lower part, the tip left orange (its picture's)"
   },
@@ -409,8 +409,8 @@
     "Brightness": 1.1
    },
    "Tracks": {
-    "Width": [[11, 0.688, "Quad Out"], [16, 2.294], [17, 2.294], [31, 1.377]],
-    "Transparency": [[11, 1, "Quad Out"], [13, 0], [21, 0, "Quad In"], [34, 1]]
+    "Width": [[7, 0.688, "Quad Out"], [12, 2.294], [13, 2.294], [27, 1.377]],
+    "Transparency": [[7, 1, "Quad Out"], [9, 0], [17, 0, "Quad In"], [30, 1]]
    },
    "Why": "the plume: a broad soft flame tongue off the ball, rising as it cools"
   },
@@ -432,8 +432,8 @@
     "ZOffset": 0.05
    },
    "Tracks": {
-    "Width": [[11, 0.688, "Quad Out"], [16, 2.294], [17, 2.294], [31, 1.377]],
-    "Transparency": [[11, 1, "Quad Out"], [13, 0], [21, 0, "Quad In"], [34, 1]]
+    "Width": [[7, 0.688, "Quad Out"], [12, 2.294], [13, 2.294], [27, 1.377]],
+    "Transparency": [[7, 1, "Quad Out"], [9, 0], [17, 0, "Quad In"], [30, 1]]
    },
    "Why": "Plume6's core: added white-gold heat up its lower part, the tip left orange (its picture's)"
   },

@@ -31,6 +31,7 @@ the floor, its band in its flipbook's alpha (round 2).
 
 Written at a body of scale 1 (R6, 5 studs, the root 3 over the foot): Area 1, so a Shade's scale scales it.
 """
+import copy
 import math
 import random
 import sys
@@ -394,7 +395,10 @@ def fall():
     rows["Ring"] = ring()
     rows["Sparks"] = sparks()
     rows["Light"] = light()
-    for name, row in rows.items():
+    for name in rows:
+        # its own copy: a soft tongue's body and core share their key lists, which the shift below moved twice, so each
+        # flame grew 4 frames behind its guide, long and thin in its first frames (research's "laser", 01:5x)
+        row = rows[name] = copy.deepcopy(rows[name])
         del row["From"]  # no action: its frames count from the effect's start, LEAD before the body goes
         if name.endswith("Guide"):
             row["Tracks"]["Foot"] = [[row["Tracks"]["At"][0][0], 0]]  # its foot at its At

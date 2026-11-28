@@ -37,7 +37,7 @@ import pip_make_takes as pt  # noqa: E402
 import rook_make_takes as rt  # noqa: E402
 import rook_sheet as rs  # noqa: E402
 import watt_takes as wt  # noqa: E402
-from anime_make import mix, rgb, tone  # noqa: E402
+from anime_make import cel, mix, rgb, tone  # noqa: E402
 from rook_make_takes import band, blocks_of, creases, dark, grain, line, lit, neck, shadow, shoe  # noqa: E402
 
 BESIDE = kt.BESIDE
@@ -49,6 +49,8 @@ SAID = {
                                "a cream capelet over a wine tunic", "wine sleeves past his hands")),
     "C": ("C, the high collar", ("pale gold hair, a long fringe over one eye", "a cropped brick jacket, its collar standing",
                                  "round his jaw, over a black fitted top", "black trousers, ivory shin wraps")),
+    "F": ("C, the finish", ("a deeper gold, dark at the roots; a warmer skin", "the fringe cast on his face, the collar dark inside",
+                            "more locks, narrower and sharper, parted", "folds painted per garment, a wider range")),
 }
 WORDS = dict(
     stem="pip_redo",
@@ -67,9 +69,10 @@ WORDS = dict(
 
 # --- the finish every take shares --------------------------------------------------------------------------------------
 
-def figure(joints, folder, b, head, hair, built, skin, extra_hair=()):
+def figure(joints, folder, b, head, hair, built, skin, extra_hair=(), cast=None, drop=0.045, cast_alpha=0.8):
     """The blocks, head and hair (rook_make_takes.figure), the built pieces on their joints (a hat, a tie or a
-    collar's part that turns with the head on the neck), the hair cast on his head, and the lantern lit."""
+    collar's part that turns with the head on the neck), the hair cast on his head (`cast`, `drop` under it), and
+    the lantern lit."""
     made = rt.figure(joints, folder, b, head, hair)
     for h in extra_hair:
         obj = h.build(folder, name="Hair2")
@@ -79,7 +82,7 @@ def figure(joints, folder, b, head, hair, built, skin, extra_hair=()):
         made[piece.name] = piece.build(folder)
         wt.on(joints, "neck" if piece.name in ("Hat", "Tie") else "root", made[piece.name])
     pt.outward(made.get("Hat"))
-    pm.hair_shadow(made, mix(skin, "#8C4A3C", 0.45), alpha=0.8)
+    pm.hair_shadow(made, mix(skin, "#8C4A3C", 0.45) if cast is None else cast, drop=drop, alpha=cast_alpha)
     obj = made["Lamp"]
     path = folder / "Lamp_glow.png"
     mask = am.GLOWS[obj.name]
@@ -464,12 +467,123 @@ def take_c(joints, folder):
     return figure(joints, folder, b, head, hair, [collar, *pm.lamp()], skin)
 
 
+# --- C, the finish: research's pick and its four must-fixes ------------------------------------------------------------
+
+def cel_sleeve(a, cloth, cuff, piping=None, seed=1, depth=0.72, edge=0.4):
+    """`sleeves` with its folds painted per side (am.cel_sides, the kit's sleeve), never one curve on all four."""
+    w = a.wrap
+    w.lay(w.rect(-9, 0.0, 9, 2.0), cloth)
+    band(w, 0.0, 0.26, cuff, tone(cuff, 0.5))
+    am.cel_sides(a, am.SLEEVE_CEL, cloth, depth, edge)
+    for q in a.sides:
+        dark(q, q.soft(q.rect(-9, 0.26, 9, 0.3), 0.02), 0.3)
+    if piping is not None:
+        w.lay(w.rect(-9, 0.26, 9, 0.3), piping)
+    w.lay(w.rect(-9, 1.8, 9, 1.815), tone(cloth, 0.45), 0.85)
+    shadow(a, 0.38, low=0.0)
+    lit(a, 0.24, 0.1)
+    a.faces["bottom"].px[:] = rgb(tone(cloth, 0.25))
+    a.faces["top"].px[:] = rgb(cloth)
+    grain(a, seed=seed)
+
+
+def finish_c(joints, folder):
+    """C as research picked it (AR63, "the redo's pick", 2026-11-28), with its must-fixes:
+    1. the head: a deeper gold, dark at the roots; a warmer skin; the fringe cast on his face; the collar dark inside,
+       so at 64 px the head reads gold over skin over a dark ring, never one light blob;
+    2. more locks, narrower and sharper, parted from each other;
+    3. folds painted per garment (am.cel): hard-edged, in each cloth's own shade with a dark crease edge, as lit ridges
+       on the black; deeper shade at the edges and more light at the top.
+    The fourth, the Shades off red and black, is AR75's (shade_redo_takes.py)."""
+    skin, brick, black, ivory, ember, boot = "#EFC09E", "#A8381F", "#1E1F25", "#EFE9DE", "#F07A34", "#4A3328"
+    edge, facing, lining = tone(brick, 0.42), mix(brick, "#F2B08A", 0.35), "#2A2026"
+    crop = 0.82
+    b = blocks_of({"torso": black, "rs": brick, "ls": brick, "rh": black, "lh": black})
+
+    t = b["torso"]
+    w, f, back = t.wrap, t.faces["front"], t.faces["back"]
+    # the black top: its seams, its folds as lit ridges pulled to the waist
+    for s in (-1, 1):
+        line(f, [(s * 0.3, 1.8), (s * 0.26, 1.1), (s * 0.3, 0.2)], 0.012, tone(black, 2.2), 0.6)
+    cel(f, [(-0.28, 0.72), (-0.06, 0.58), (0.18, 0.62)], 0.1, black, 2.0, 0.5)
+    cel(f, [(0.3, 0.46), (0.1, 0.32), (-0.12, 0.36)], 0.08, black, 2.0, 0.5)
+    # the cropped jacket, open at the front, its facing lit, its hem a band at the ribs
+    w.lay(w.rect(-9, crop, 9, 2.0), brick)
+    f.lay(f.poly([(-0.28, 2.0), (0.28, 2.0), (0.36, crop), (-0.36, crop)]), black)
+    for s in (-1, 1):
+        cel(f, [(s * 0.98, 1.94), (s * 0.8, 1.6), (s * 0.58, 1.26)], 0.2, brick, 0.7, 0.4)   # pulled from the shoulder
+        cel(f, [(s * 0.98, 1.22), (s * 0.82, 1.06), (s * 0.62, 1.0)], 0.12, brick, 0.7, 0.4)  # gathered over the hem
+        f.lay(f.poly([(s * 0.28, 2.0), (s * 0.4, 2.0), (s * 0.48, crop), (s * 0.36, crop)]), facing)
+        line(f, [(s * 0.28, 2.0), (s * 0.36, crop)], 0.026, edge)
+        line(f, [(s * 0.4, 2.0), (s * 0.48, crop)], 0.018, edge, 0.85)
+    band(w, crop, crop + 0.12, tone(brick, 0.8), edge)
+    f.lay(f.poly([(-0.36, crop), (0.36, crop), (0.36, crop + 0.12), (-0.36, crop + 0.12)]), black)
+    w.lay(w.rect(-9, crop + 0.12, 9, crop + 0.14), ember)
+    f.lay(f.rect(-0.36, crop + 0.12, 0.36, crop + 0.14), black)
+    f.lay(f.poly([(0.66, 1.56), (0.72, 1.44), (0.7, 1.36), (0.62, 1.38), (0.6, 1.48)]), ember)
+    # the back: its yoke, its seam, its folds from the shoulder blades to the hem, unlike the front's
+    line(back, [(-1.0, 1.6), (0.0, 1.66), (1.0, 1.6)], 0.016, edge, 0.75)
+    line(back, [(0.0, 1.62), (0.0, crop + 0.12)], 0.016, edge, 0.65)
+    for s in (-1, 1):
+        cel(back, [(s * 0.96, 1.52), (s * 0.72, 1.22), (s * 0.5, 1.0)], 0.2, brick, 0.7, 0.4)
+        cel(back, [(s * 0.3, 1.56), (s * 0.24, 1.26), (s * 0.28, 1.0)], 0.1, brick, 0.74, 0.42)
+    band(w, 0.12, 0.26, ivory, tone(ivory, 0.6))
+    f.lay(f.rect(-0.1, 0.12, 0.1, 0.26), "#3A3B44")
+    shadow(t, 0.4)
+    lit(t, 0.24, 0.1)
+    grain(t, seed=101)
+    neck(t, skin)
+
+    for i, key in enumerate(("rs", "ls")):
+        a = b[key]
+        cel_sleeve(a, brick, black, piping=ember, seed=102 + i)
+        band(a.wrap, 1.02, 1.08, tone(brick, 0.66), None)
+    tops(b, brick)
+
+    for i, (key, s) in enumerate((("rh", -1), ("lh", 1))):
+        g = b[key]
+        am.cel_sides(g, am.LEG_CEL, black, 2.0, 0.5, scale=0.86)   # on the black, lit ridges
+        kt.shin_wraps(g, ivory, 0.44, 0.92, 0.1)
+        boots(g, boot, 0.44)
+        shadow(g, 0.34, low=0.0)
+        lit(g, 0.14)
+        grain(g, seed=104 + i)
+
+    head = am.Head(skin)
+    face(head, skin, "#E5542A", "#6A4A26")
+    hair = am.Hair("#4E3216", "#F0BE56", seed=107, band=(0.52, 0.1, 0.42), scalp=am.HEAD_EGG)
+    hair.mass(am.hairline(front=4.98, temple=4.5, nape=4.0), (180, 10), opening=0.1, seed=107,
+              tips=((180, 18, 12), (148, 12, 12), (212, 12, 12), (120, 12, 10), (240, 12, 10), (82, 18, 18), (-82, 18, 18)),
+              lift=0.06, off=(0.0, 0.11), ease=2.0, tuck=0.09)
+    # the crown: seven locks, narrower than the take's five, flicked up and back, each lying a little over the next
+    for i, (a, ph, length, width, heading) in enumerate(((-84, 16, 0.8, 0.38, 22), (-56, 11, 0.9, 0.4, 14), (-28, 8, 0.96, 0.42, 6),
+                                                         (0, 6, 1.0, 0.44, 0), (28, 8, 0.94, 0.42, -6), (56, 11, 0.88, 0.4, -14),
+                                                         (84, 16, 0.78, 0.38, -22))):
+        hair.clump(a, ph, length, width, heading=heading, off=0.1 + 0.03 * (i % 2), flick=44, hold=0.5, comb=(0, -1, 0.3),
+                   thick=width * 0.3, taper=2.2, split=1 if i in (2, 4) else 0)
+    for a, length in ((130, 0.7), (155, 0.78), (180, 0.82), (205, 0.78), (230, 0.7)):
+        hair.clump(a, 30, length, 0.4, heading=0, off=0.08, flick=38, hold=0.55, comb=(0, -0.5, -1), thick=0.12, taper=2.2)
+    for s in (-1, 1):
+        for a, length in ((s * 72, 0.62), (s * 92, 0.66), (s * 112, 0.58)):
+            hair.clump(a, 52, length, 0.34, heading=-s * 10, off=0.06, flick=32, hold=0.6, comb=(0, -0.2, -1), thick=0.1, taper=2.2)
+    for a in (150, 170, 190, 210):
+        hair.clump(a, 72, 0.52, 0.32, heading=0, off=0.06, flick=28, hold=0.6, comb=(0, -0.3, -1), thick=0.1, taper=2.2)
+    # the fringe over his right eye: five locks, parted, the longest down past the eye
+    for a, ph, length, width, comb in ((-36, 28, 1.04, 0.4, (0.25, 0.7, -1.2)), (-18, 26, 0.96, 0.4, (0.15, 0.7, -1.1)),
+                                       (0, 27, 0.84, 0.38, (0.0, 0.7, -1.05)), (20, 30, 0.7, 0.36, (-0.2, 0.7, -1.0)),
+                                       (42, 38, 0.56, 0.32, (-0.45, 0.5, -1.0))):
+        hair.clump(a, ph, length, width, heading=0, off=0.05, flick=12, hold=0.8, comb=comb, thick=width * 0.28, taper=2.0)
+    collar = standing_collar(brick, lining, edge)
+    return figure(joints, folder, b, head, hair, [collar, *pm.lamp()], skin, cast=mix(skin, "#5A1E18", 0.7), drop=0.11,
+                  cast_alpha=1.0)
+
+
 def today(joints, folder):
     """Today's Pip, as pip_make.py's finish makes him."""
     return pm.take(pm.FACES[pm.PICK["face"]][1])(joints, folder)
 
 
-TAKES = {"Pip": today, "A": take_a, "B": take_b, "C": take_c}
+TAKES = {"Pip": today, "A": take_a, "B": take_b, "C": take_c, "F": finish_c}
 
 
 if __name__ == "__main__":

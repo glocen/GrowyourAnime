@@ -335,6 +335,45 @@ def creases(p, lines, amount=0.4, wide=0.03):
 FOLD = 1.2   # the folds' depth over AR59's (polish-later's "one step deeper", pulled forward by AR60)
 
 
+def cel(p, pts, width, cloth, depth=0.78, edge=0.52):
+    """A fold as anime cloth is painted (AR63's must-fix 3, 2026-11-28: `creases`' one soft crescent, tiled over
+    every garment, read as a print): a broad shade shape with a hard edge, swelling from where the cloth pulls and
+    running out, in the cloth's own shade (`depth` of its colour), its crease line along one edge only (`edge`).
+    No blur and no lit crescent. Drawn per garment, where that cloth pulls; a narrow wedge with a line down its
+    middle reads as a slash."""
+    p.lay(p.stroke(pts, (width * 0.3, width, width * 0.86, 0.0), n=24), tone(cloth, depth))
+    P = smooth2(pts, 24)
+    d = np.gradient(P, axis=0)
+    n = np.stack([-d[:, 1], d[:, 0]], axis=1)
+    n /= np.maximum(np.linalg.norm(n, axis=1, keepdims=True), 1e-6)
+    p.lay(p.stroke(P + n * width * 0.34, (width * 0.1, width * 0.16, width * 0.1, 0.0), n=24), tone(cloth, edge), 0.9)
+
+
+SLEEVE_CEL = {   # a sleeve's folds, side by side (cel_sides): pulled from the shoulder and gathered at the cuff outside,
+                 # bunched at the elbow in front, one long behind, one short inside toward the body
+    "out": [([(-0.46, 1.92), (-0.18, 1.56), (0.1, 1.38)], 0.2), ([(0.4, 0.62), (0.12, 0.46), (-0.16, 0.5)], 0.12)],
+    "front": [([(0.44, 1.14), (0.16, 0.94), (-0.16, 0.98)], 0.16), ([(-0.38, 1.7), (-0.2, 1.5), (-0.02, 1.44)], 0.1)],
+    "back": [([(0.4, 1.86), (0.14, 1.4), (-0.06, 1.06)], 0.18)],
+    "in": [([(-0.36, 1.12), (-0.08, 0.98), (0.2, 1.02)], 0.12)],
+}
+LEG_CEL = {      # a trouser leg's: from the hip across the thigh and at the knee in front, one down the outside, one behind
+    "front": [([(-0.42, 1.94), (-0.14, 1.66), (0.08, 1.5)], 0.14), ([(0.36, 1.24), (0.1, 1.08), (-0.12, 1.08)], 0.1)],
+    "out": [([(0.4, 1.9), (0.2, 1.5), (0.16, 1.16)], 0.14)],
+    "back": [([(0.4, 1.9), (0.18, 1.52), (0.12, 1.2)], 0.12)],
+}
+
+
+def cel_sides(block, folds, cloth, depth=0.78, edge=0.52, scale=1.0):
+    """`cel` round a limb, each side its own folds, so no one curve is stamped on all four (AR63's must-fix 3):
+    `folds` maps "out" (away from the body), "in", "front" and "back" to [(points, width)] as the right side's limb
+    has them; the left side's are mirrored. `scale` widens or narrows every fold."""
+    left = block.centre[0] < 0
+    names = {"out": "left" if left else "right", "in": "right" if left else "left", "front": "front", "back": "back"}
+    for side, lines in folds.items():
+        for pts, wide in lines:
+            cel(block.faces[names[side]], [(-x if left else x, y) for x, y in pts], wide * scale, cloth, depth, edge)
+
+
 def grain(block, amount=0.06, seed=1):
     """The cloth's grain over a block's sides: soft clouds of lighter and darker, and a fine tooth."""
     rng = np.random.default_rng(seed)

@@ -84,3 +84,4 @@ These pieces are closed. Their whole entries are in `docs/archive/test-requests-
 - [TR73](requests/TR73.md) · Ranged against melee, measured in real fights: the duel matrix (research, 2026-11-27, 12:38; for Faber) · 25 lines · requested, 2026-11-27, 12:38. Queued after Faber's Turing tools.
 - [TR74](requests/TR74.md) · The Keeper alone, on the Arc's tile (research, 2026-11-27, 12:50; for Faber, before early access) · 19 lines · see the piece
 - [TR75](requests/TR75.md) · The Festival of Battles, reimagined: how it works, and Lantern Row's map (research, 2026-11-28, 11:05; for the director's pick, then Faber and Modulo) · 38 lines · three directions, for the director's pick
+- [TR76](requests/TR76.md) · The game's shape for launch: the spine, the Lantern District, the Colosseum, the Void Shop, the Index, the Tower (research with Gemini, 2026-11-28; for the director's yes) · 30 lines · restated, waiting on the director's yes

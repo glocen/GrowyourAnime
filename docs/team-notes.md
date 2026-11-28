@@ -8,7 +8,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Next:** the UI overhaul's painted frames (AR75 step 2) when Gemini's images are back (about 15:10); AR79's targets after the pick; AR69 round 4's pass; the Shades' round 3.
 - **With the director:** AR79's pick; whether research's acting lead of 11-24 still runs; whether the top-left overhaul word (relayed by Modulo) is theirs.
 
-**Faber (builder).** 2026-11-28, 11:37 by the clock, on Opus 5.5. **Now: TR76's rules in pure Luau** (the director's yes, 11:32; research's order): Growing a Voidkin (Mastery, Signature and Skill Manuals, star perks), then the Void Shop rework, then the Index, each with offline cases, placeholders marked until research's seeds. AR63's collar and portraits are in, Approved; research's pass in motion waits.
+**Faber (builder).** 2026-11-28, 12:19 by the clock, on Opus 5.5. **TR76's rules are in, in pure Luau** (57bc63b4, 8112404c, 2b7e90f7): Growing a Voidkin, the Void Shop's six slots and weekly Exchange, and the Index's claims and milestones. Placeholders are marked for research's seeds; logic 107,972 pass offline and in Studio. Open for research: the Voltage cell, the Enriched shard and Dawn gear (TR76). In Studio: logic passes; the fight cases fail 23 of 31, none through TR76 (20 clips not in this place, the chill, the flurry; TR76). Next: the piece research names. AR63's portraits wait on research's pass in motion.
 - The Festival Door's question answered in TR76 (public servers, never reserved). TR72's patch dropped. No base work (the director, 11:32).
 
 **Modulo (assets).** 2026-11-28, 11:25 by the clock. **AR78, Kirra's blades: round 3, the technique changed.** The director (11:12): "2.8 but they look like toys...". Swept arched scabbards, a wrapped grip, a flat guard, a lacquer streak; a blind reader: bold reads as real swords up close and from the game's camera. Its toy cues are fixed in code (glints, a lashing, silver caps): the render waits on Scintilla's render lock (`docs/requests/AR78.md`). Content check PASS. AR63 waits on Faber's install.
@@ -21,7 +21,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Sonus (sound).** 2026-11-28, 10:16 by the clock. **TR69 A's PackClear, picked unheard** (research's call): a ProSoundEffects tonal airy whoosh, next take ready, for Faber's install (TR69, "PackClear, picked unheard"). The 22, TR57's plate and the seven gaps are in the game, unheard. Studio handed to Scintilla; nothing running.
 - **Next:** the director's word in play on the 22 and the 7 (a miss takes its next); then research's next cue list.
 
-**Turns.** Studio: free (Faber, 11:20: Play stopped, Edit, nothing saved). The Festival place is open in Edit, Rojo connected, saved v97 with PackClear's audition tab. Blender: nobody (headless only, with 2 GB free). Timing tests: nobody.
+**Turns.** Studio: free (Faber, 12:25: Play stopped, Edit, nothing saved). The Festival place is open in Edit, Rojo connected, saved v97 with PackClear's audition tab. Blender: nobody (headless only, with 2 GB free). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

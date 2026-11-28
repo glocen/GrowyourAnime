@@ -312,3 +312,4 @@ Written by `tools/fx/shade_tells.py`, from the kit's uploaded meshes and images 
 - [AR76](requests/AR76.md) · Rook's Haymaker, its look overhauled · Scintilla, the target first
 - [AR77](requests/AR77.md) · The fall, overhauled: a foe implodes into the Void, our fighter goes back to its shard · Scintilla, the targets first
 - [AR78](requests/AR78.md) · Kirra's blades, overhauled: sheathed, thin dark steel · Modulo, the targets first
+- [AR79](requests/AR79.md) · The base, overhauled whole: its concept, its look, the Strip · research's three directions for the director's pick

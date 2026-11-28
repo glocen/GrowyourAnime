@@ -19,7 +19,8 @@ The technique (round 2, 2026-11-28): each tongue is two Beams facing the camera 
 along an unseen guide that carries its lick and its sway, drawn from the guide's tip down to its foot. The tongue's shape
 is in their pictures' alpha: fx_lick_Soft, a round foot, widest a quarter up, a tapered tip, soft-edged with no outline,
 for an opaque orange body (laid over, so it holds by day); fx_lick_Core, narrower and shorter inside it, for an added
-white-gold core, the tip left orange. Each tongue's own curve waits on Faber's turn of the beam's ends. Round 0's
+white-gold core, the tip left orange. Each tongue arcs along its guide's X (the ends take the guide's turn since
+Faber's aa6b147f): straight off its foot, its tip curling out the way it leans or back over the body (CURLS). Round 0's
 fx_lick_Flame (the target's fire drawn with its outline) read as flat cut-outs, and round 1's fx_beam streaks (the
 shape from a straight taper) as rigid spikes, a cone round a white needle; the fall's licks and spikes keep round 1's
 streak (streak(), below), which suits their thin rays. A row of embers rides each tongue's tip (On its guide: they lean
@@ -151,15 +152,22 @@ def streak(name, guide, widths, fades, length, why, bright=1.1, taper=TAPER):
 # a tapered tip, with no outline; the body and its core are as wide as each other, the core's own picture narrower and
 # shorter inside the body's. Each is drawn from its guide's tip down to its foot, its picture stored tip-up (the
 # content check of 2026-11-27, 17:00). Each tongue's own curve waits on Faber's turn of the beam's ends (AR69).
-SOFT_WIDE = SHOWN / DRAWN  # the beam's width over the flame's `width`: the pictures' tongue is DRAWN of it at its widest
+CURL = 0.24  # each tongue's CurveSize0, a share of its length: its arc and its tip's curl
+# which way each tongue curls: 1 out the way it leans, -1 back over the body. Never a matching pair on the shoulders:
+# curled out alike, the two read as horns from the front at 64 px (the offline model, 2026-11-28, 00:5x)
+CURLS = {"FarShoulder": 1, "NearShoulder": -1, "FarArm": -1, "NearArm": 1, "Back": 1, "BackLow": -1, "Hips": 1,
+         "NearHip": -1}
+SOFT_WIDE = 1.3 * SHOWN / DRAWN  # the beam's width over the flame's `width`; its soft edge eats about a third of it  # the beam's width over the flame's `width`: the pictures' tongue is DRAWN of it at its widest
 
 
-def soft_streak(name, guide, widths, fades, why, bright=1.1):
+def soft_streak(name, guide, widths, fades, why, bright=1.1, curve=None):
     """Two rows on `guide` (a beam row, unseen, whose ends are the flame's foot and tip), from its tip down to its
     foot: the body and its core, their shapes their pictures'."""
     base = {"Kind": "Beam", "On": guide,  # it rides the body through its guide: its scale, and gone with it
             "Low": f"{guide}.High", "High": f"{guide}.Low"}  # the picture's top row, its tip, at the guide's tip
     look = {"FaceCamera": True, "LightInfluence": 0, "TextureMode": "Stretch", "TextureLength": 1, "TextureSpeed": 0}
+    if curve:  # along the guide's own X: its ends take its turn (Rows.luau, Faber's aa6b147f)
+        look["CurveSize0"], look["CurveSize1"] = curve
     body = dict(base, Image="fx_lick_Soft", Color=c3(BODY), Beam=dict(look, LightEmission=0.15, Brightness=bright),
                 Tracks={"Width": widths, "Transparency": fades}, Why=why)
     core = dict(base, Image="fx_lick_Core", Color=c3(HEAT),
@@ -190,8 +198,14 @@ def tongue(name, at, lean, length, width, beat, phase, seed):
         "Why": f"{name}'s guide, unseen: the tongue's foot on the body and its tip, licking on its own beat ({beat} s), "
                "its lean swaying on a slower one",
     }
+    # its curve along the guide's X (about the body's side), the ends square to the tongue: CurveSize0 alone, at the tip's
+    # end (its Low, the guide's tip), so it rises straight off its foot, arcs out the way it leans and curls at its tip.
+    # A CurveSize1 would leave the foot sideways too, a zigzag with a bar at its foot (the offline model, 00:5x).
+    out = (-1 if lean[0] < 0 else 1) * CURLS[name]
+    bend = (round(out * CURL * length * rng.uniform(0.85, 1.15), 2), 0)
     flame = soft_streak(name, f"{name}Guide", wide, [[0, 1, "Quad Out"], [6, 0], [FAR, 0]],
-                        f"the hero: a flame tongue, {name}, licking up from a round foot; taller is thinner")
+                        f"the hero: a flame tongue, {name}, licking up from a round foot, curling; taller is thinner",
+                        curve=bend)
     return guide, flame
 
 

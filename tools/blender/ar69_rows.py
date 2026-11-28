@@ -15,7 +15,8 @@ look's picture tinted by Color and lit by Glow; an emitter's particles from its 
 Size, Transparency, Acceleration; EmissionDirection Top or Front; a VelocityParallel needle as a streak along its
 flight, its Squash's stretch approximate; a VelocityPerpendicular one a flat quad across its flight, its picture's).
 Round 1 (2026-11-27): a beam's Taper, FootFade, Reach and Color, and its
-LightEmission as a share of added light over laid-over (Roblox's own blend, approximated). A Ground row at the foot,
+LightEmission as a share of added light over laid-over (Roblox's own blend, approximated). Round 2 (2026-11-28): a
+beam's CurveSize0 and CurveSize1, its ends turned as the guide its Low names (Faber's aa6b147f), and a flat particle. A Ground row at the foot,
 lifted by its At's Y, as Rows.luau does since Faber's fix (2026-11-27, 23:5x; before it, the engine dropped the lift). Not
 modelled: bloom, which ar69_sheets.py approximates for every layer alike.
 """
@@ -182,23 +183,33 @@ def picture_mat(name, image, tint, strength, opacity, cull=False, added=0.0, foo
     return m
 
 
-def beam(name, low, high, width, image, tint, strength, opacity, col, taper=1.0, foot=0.0, added=0.0, n=8):
+def beam(name, low, high, width, image, tint, strength, opacity, col, taper=1.0, foot=0.0, added=0.0, n=8, curve=None):
     """A camera-facing ribbon from low (its picture's top row) to high, `width` studs across at low, `width * taper` at
-    high, in n pieces along (so a tapered picture isn't sheared)."""
+    high, in n pieces along (so a tapered picture isn't sheared). With `curve` (the ends' X axis in Roblox's frame,
+    CurveSize0, CurveSize1), its middle line is the engine's cubic Bezier: the second point CurveSize0 along low's +X, the
+    third CurveSize1 along high's -X (the handbook's engine facts); its pieces then follow it, as Segments do."""
     a, b = T.to_bl(low), T.to_bl(high)
-    axis = b - a
-    if axis.length < 1e-4 or width <= 0 or opacity <= 0.002:
+    if (b - a).length < 1e-4 or width <= 0 or opacity <= 0.002:
         return
-    side = axis.cross(T.EYE - (a + b) / 2)
-    if side.length < 1e-6:
-        return
-    side = side.normalized() * (width / 2)
+    if curve:
+        x, c0, c1 = curve
+        p = [low, low + x * c0, high - x * c1, high]
+        n = max(n, 10)
+        line = [T.to_bl(p[0] * (1 - u) ** 3 + p[1] * 3 * (1 - u) ** 2 * u + p[2] * 3 * (1 - u) * u * u + p[3] * u ** 3)
+                for u in (i / n for i in range(n + 1))]
+    else:
+        line = [a + (b - a) * (i / n) for i in range(n + 1)]
     bm = bmesh.new()
     uv = bm.loops.layers.uv.new("UVMap")
     strip = []
-    for i in range(n + 1):
+    for i, c in enumerate(line):
         u = i / n
-        c, w = a + axis * u, 1 + (taper - 1) * u
+        along = line[min(i + 1, n)] - line[max(i - 1, 0)]
+        side = along.cross(T.EYE - c)
+        if side.length < 1e-6:
+            return
+        side = side.normalized() * (width / 2)
+        w = 1 + (taper - 1) * u
         strip.append((bm.verts.new(c - side * w), bm.verts.new(c + side * w), 1 - u))
     for (l0, r0, v0), (l1, r1, v1) in zip(strip, strip[1:]):
         f = bm.faces.new((l0, r0, r1, l1))
@@ -300,7 +311,7 @@ def draw_rows(rows, anchor, t, scale, col, lights, light_scale=180.0, night=Fals
             if t < first:
                 continue
             fr = frame_of(anchor, row, t, scale)
-            points[name] = ends(fr, row, t, scale)
+            points[name] = (*ends(fr, row, t, scale), (fr.to_3x3() @ Vector((1, 0, 0))).normalized())
     for name, row in rows.items():
         tr = row["Tracks"]
         first = min(k[0][0] for k in tr.values()) if tr else 0
@@ -318,8 +329,11 @@ def draw_rows(rows, anchor, t, scale, col, lights, light_scale=180.0, night=Fals
             length = (high - low).length
             foot = min(0.998, row.get("FootFade", 0) * scale / length) if length > 1e-3 else 0
             tint = decode(row["Color"]) if "Color" in row else Vector((1, 1, 1))
+            # the ends turned as the guide its Low names (Rows.luau since Faber's aa6b147f): CurveSize along its X
+            c0, c1 = row["Beam"].get("CurveSize0", 0), row["Beam"].get("CurveSize1", 0)
+            curve = (points[row["Low"].split(".")[0]][2], c0, c1) if c0 or c1 else None
             beam(name, low, high, width, row["Image"], tuple(tint), row["Beam"].get("Brightness", 1), 1 - fade, col,
-                 taper=row.get("Taper", 1), foot=foot, added=row["Beam"].get("LightEmission", 0))
+                 taper=row.get("Taper", 1), foot=foot, added=row["Beam"].get("LightEmission", 0), curve=curve)
         elif kind == "Mesh":
             if t < first:
                 continue

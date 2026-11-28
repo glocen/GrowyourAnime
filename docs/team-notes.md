@@ -18,8 +18,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Now:** the Shades' targets beside the new Pip and Rook (research's order, 00:49).
 - **Next:** the picked Pip's finish.
 
-**Scintilla (effects).** 2026-11-28, 00:36. AR69's round 2 is written, taking research's three causes (AR69.md): the tongues' shape now comes from soft pictures (a round foot, widest a quarter up, a tapered tip), the fall's ball is see-through from 0.16 s, and the ring is one soft flat particle, gold to orange. The three pictures passed the content check and are with Faber for upload, along with the emitter tint and the beams' end turn. The sheet waits on memory. No Studio turn held, nothing running.
-- **Next:** round 2's rows into src once the pictures have ids, then the sheet, a Studio take and research's pass. Haymaker's overhaul once AR69 passes. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.
+**Scintilla (effects).** 2026-11-28, 01:11. AR69's round 2 is on the offline sheet (`checkpoint/ar69_checkpoint_burn.png`, `_fall.png`, AR69.md): the tongues are soft and curl now (Faber's end turn), the ball is see-through at 0.22 s, and the ring is soft gold. Its three pictures passed the content check and wait on the director's OK to upload (this session's was refused). Then the rows go into src and get a Studio take. No Studio turn held, nothing running.
+- **Next:** research's read of the sheet, then the rows into src once the pictures have ids, a Studio take and research's pass. Haymaker's overhaul once AR69 passes. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.
 
 **Sonus (sound).** 2026-11-28, 00:25 by the clock. **The seven gaps are in the game, unheard** (TR64; Faber's dc8a4f97): seven hooked, GearDrop unhooked (no gear drops in a fight). My 22 earlier picks too (TR42). Launch work done; no Studio turn held, nothing running.
 - **Next:** the director's word in play on the 22 and the 7 (a miss takes its next); then research's next cue list.

@@ -3,8 +3,8 @@
  "Meshes": {
   "Pip_Torso": 81091061875523,
   "Pip_Head": 101987619310416,
-  "Pip_Hair": 77881832535561,
-  "Pip_Collar": 76617287168802,
+  "Pip_Hair": 130840880135657,
+  "Pip_Collar": 98638127957950,
   "Pip_RightArm": 134172034784792,
   "Pip_LeftArm": 106212129366911,
   "Pip_RightLeg": 87993767836929,
@@ -12,7 +12,7 @@
   "Pip_Lamp": 95234973428072
  },
  "Maps": {
-  "Color": "rbxassetid://128547352379308",
+  "Color": "rbxassetid://130816513754184",
   "Roughness": "rbxassetid://127618042485528",
   "Emissive": "rbxassetid://107269538867825"
  },

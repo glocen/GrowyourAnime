@@ -374,6 +374,36 @@ def cel_sides(block, folds, cloth, depth=0.78, edge=0.52, scale=1.0, rim=0.16):
             cel(block.faces[names[side]], [(-x if left else x, y) for x, y in pts], wide * scale, cloth, depth, edge, rim)
 
 
+def pull(p, pts, width, cloth, depth=0.72, steps=3, crease=0.45, lift=1.16):
+    """A fold as cloth pulled from a seam: a band at its widest where it leaves the seam (`pts[0]`, past the face's
+    edge, so it is open there), narrowing to a blunt end and fading out in `steps` cel steps, the darkest at the seam.
+    Its crease line runs along one edge for half its length and a lit step along the other for less, so it reads as
+    cloth turning; never a closed mark pointed at both ends, which reads as a cut (2026-11-28)."""
+    P = smooth2(pts, 30)
+    n = len(P)
+    half = width * (1.0 - 0.6 * np.linspace(0, 1, n))
+    for k in range(steps):
+        m = max(3, int(round(n * (1 - k / steps))))
+        p.lay(p.stroke(P[:m], half[:m], n=m), tone(cloth, depth), 0.45)
+    d = np.gradient(P, axis=0)
+    nrm = np.stack([-d[:, 1], d[:, 0]], axis=1)
+    nrm /= np.maximum(np.linalg.norm(nrm, axis=1, keepdims=True), 1e-6)
+    m = n // 2
+    p.lay(p.stroke(P[:m] + nrm[:m] * half[:m, None] * 0.5, width * np.linspace(0.08, 0.03, m), n=m), tone(cloth, crease), 0.85)
+    m = int(n * 0.4)
+    p.lay(p.stroke(P[:m] - nrm[:m] * (half[:m, None] * 0.5 + width * 0.08), width * np.linspace(0.12, 0.04, m), n=m),
+          tone(cloth, lift), 0.7)
+
+
+def pull_sides(block, folds, cloth, **kw):
+    """`pull` round a limb, as `cel_sides` lays `cel`: the right side's limb as given, the left's mirrored."""
+    left = block.centre[0] < 0
+    names = {"out": "left" if left else "right", "in": "right" if left else "left", "front": "front", "back": "back"}
+    for side, lines in folds.items():
+        for pts, wide in lines:
+            pull(block.faces[names[side]], [(-x if left else x, y) for x, y in pts], wide, cloth, **kw)
+
+
 def grain(block, amount=0.06, seed=1):
     """The cloth's grain over a block's sides: soft clouds of lighter and darker, and a fine tooth."""
     rng = np.random.default_rng(seed)

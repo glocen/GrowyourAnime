@@ -13,9 +13,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - AR69's engine cases pass (38a70389). AR75 (a) in game, research PASS. Answering research's Shades-mesh question (AR75).
 - Waiting on the director: Scintilla's three AR69 uploads (the word came relayed); eight Sounds of other works' music in the Festival place's workspace (folders C and M), not ours: remove?
 
-**Modulo (assets).** 2026-11-28, 02:22. **AR75's Shades, round 2, to research for the pick:** three Void creatures from B (Hem, the fraying hem; Hunch, the hunched mass; Horns, the mask grown into horns), in `build/handoff/Shade/void/` (`docs/requests/AR75.md`, "Modulo: the Shades as Void creatures, round 2"). Content check PASS. **AR63:** Pip's portraits framed for C (9f7d994b); his jacket's folds redrawn as pulls from a seam (88e97e3c), the map to Faber.
-- **Now:** Rook's and Kirra's folds, each beside its current self, by the seam pull (`cel`'s crescent read as claw marks on Pip).
-- **Next:** the picked Shade, its make and the other three types' masks.
+**Modulo (assets).** 2026-11-28, 02:28. **AR63, the folds:** Rook's take A by the kit's seam pull, BETTER at the phone's size, to research for the verdict; Kirra's pulls WORSE on her pale trousers, not put in (`docs/requests/AR63.md`, "Rook's and Kirra's folds by the seam pull"). Pip's soft folds are installed (Faber, 3cedfb1e). **AR75's round 2:** not picked; round 3 changes the technique.
+- **Now:** AR75's Shades, round 3: the body itself built from meshes on the R6 joints, two or three targets differing in body shape, the mask redrawn with no grin.
+- **Next:** Rook's map and install, on research's verdict.
 
 **Scintilla (effects).** 2026-11-28, 02:00. AR69's offline checkpoint passed (research, 01:5x), and the stray streak is fixed (029c63f8). The three pictures are in `build/upload/`, content check PASS. Faber uploads them on the director's own word (asked), and then the rows go into src for Faber's review and get a Studio take, day and night. No Studio turn held, nothing running.
 - **Next:** while AR69 waits, Haymaker's look overhaul (AR59.md, research's note). B5's composition is the director's (2026-11-12), so only its look changes, to the fire kit. Its request and scope are asked of research. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.

@@ -509,34 +509,7 @@ BRICK_FRONT = {1: ([(1.08, 1.62), (0.84, 1.36), (0.6, 1.18)], 0.34), -1: ([(-1.0
 BRICK_BACK = [([(1.08, 1.02), (0.7, 1.18), (0.36, 1.3)], 0.32), ([(-1.08, 1.56), (-0.88, 1.32), (-0.76, 1.12)], 0.22)]
 
 
-def pull(p, pts, width, cloth, depth=0.72, steps=3, crease=0.45, lift=1.16):
-    """A fold as cloth pulled from a seam: a band at its widest where it leaves the seam (`pts[0]`, past the face's
-    edge, so it is open there), narrowing to a blunt end and fading out in `steps` cel steps, the darkest at the seam.
-    Its crease line runs along one edge for half its length and a lit step along the other for less, so it reads as
-    cloth turning; never a closed mark pointed at both ends, which reads as a cut (2026-11-28)."""
-    P = am.smooth2(pts, 30)
-    n = len(P)
-    half = width * (1.0 - 0.6 * np.linspace(0, 1, n))
-    for k in range(steps):
-        m = max(3, int(round(n * (1 - k / steps))))
-        p.lay(p.stroke(P[:m], half[:m], n=m), tone(cloth, depth), 0.45)
-    d = np.gradient(P, axis=0)
-    nrm = np.stack([-d[:, 1], d[:, 0]], axis=1)
-    nrm /= np.maximum(np.linalg.norm(nrm, axis=1, keepdims=True), 1e-6)
-    m = n // 2
-    p.lay(p.stroke(P[:m] + nrm[:m] * half[:m, None] * 0.5, width * np.linspace(0.08, 0.03, m), n=m), tone(cloth, crease), 0.85)
-    m = int(n * 0.4)
-    p.lay(p.stroke(P[:m] - nrm[:m] * (half[:m, None] * 0.5 + width * 0.08), width * np.linspace(0.12, 0.04, m), n=m),
-          tone(cloth, lift), 0.7)
-
-
-def pull_sides(block, folds, cloth):
-    """`pull` round a limb, as am.cel_sides lays `cel`: the right side's limb as given, the left's mirrored."""
-    left = block.centre[0] < 0
-    names = {"out": "left" if left else "right", "in": "right" if left else "left", "front": "front", "back": "back"}
-    for side, lines in folds.items():
-        for pts, wide in lines:
-            pull(block.faces[names[side]], [(-x if left else x, y) for x, y in pts], wide, cloth)
+pull, pull_sides = am.pull, am.pull_sides   # the kit's own since Rook and Kirra take it (2026-11-28)
 BLACK_TOP = [([(-0.12, 1.72), (-0.08, 1.3), (-0.12, 0.98)], 0.035), ([(-0.24, 0.8), (-0.1, 0.5), (0.0, 0.3)], 0.04),
              ([(0.26, 0.78), (0.2, 0.5), (0.24, 0.3)], 0.035)]
 BLACK_LEG = {"front": [([(-0.3, 1.96), (-0.12, 1.4), (-0.04, 0.96)], 0.05), ([(0.32, 1.3), (0.24, 1.08), (0.26, 0.94)], 0.035)],

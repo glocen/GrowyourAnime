@@ -171,6 +171,23 @@ def strip(p, x, y, long_, tall, turn, colour, pad=None):
 
 # --- A, the school tough -----------------------------------------------------------------------------------------------
 
+# A's folds, the kit's seam pulls (2026-11-28): one from each seam where the cloth pulls, no two alike and no mirrored
+# pairs; `creases`' small pointed folds in parallel sets on every face read as a print, and on Pip's brick as cuts.
+# the T-shirt's from under the jacket's edges, where it presses, at two heights; on the navy, deeper, its lit step brighter
+ROOK_TEE = [([(0.4, 1.52), (0.18, 1.38), (0.02, 1.34)], 0.16), ([(-0.48, 0.56), (-0.26, 0.42), (-0.08, 0.4)], 0.18)]
+NAVY = dict(depth=0.62, lift=1.3)
+ROOK_FRONT = {1: [([(1.08, 1.36), (0.86, 1.2), (0.66, 1.16)], 0.3), ([(0.9, 2.06), (0.78, 1.86), (0.7, 1.72)], 0.2)],
+              -1: [([(-1.08, 1.6), (-0.86, 1.34), (-0.7, 1.2)], 0.26)]}
+ROOK_BACK = [([(1.08, 1.3), (0.8, 1.0), (0.62, 0.66)], 0.32), ([(-0.6, -0.06), (-0.7, 0.24), (-0.86, 0.42)], 0.2)]
+ROOK_SLEEVE = {"rs": {"out": [([(-0.36, 2.08), (-0.14, 1.8), (0.02, 1.6)], 0.3)],      # rolled to the elbow
+                      "front": [([(0.56, 1.44), (0.26, 1.34), (-0.04, 1.36)], 0.2)]},
+               "ls": {"out": [([(-0.36, 2.08), (-0.1, 1.7), (0.08, 1.42)], 0.32)],
+                      "front": [([(0.56, 1.0), (0.24, 0.86), (-0.06, 0.82)], 0.26)]}}
+ROOK_LEG = {"front": [([(-0.28, 1.46), (-0.12, 1.1), (-0.06, 0.8)], 0.05), ([(0.3, 1.2), (0.22, 1.0), (0.24, 0.86)], 0.035)],
+            "out": [([(0.3, 1.46), (0.2, 1.1), (0.18, 0.8)], 0.05)],
+            "back": [([(0.3, 1.46), (0.16, 1.1), (0.1, 0.84)], 0.045)]}
+
+
 def take_a(joints, folder):
     skin, coat, tee, trouser = "#EFC3A2", "#3D4764", RED, "#202229"
     edge, trim = tone(coat, 0.45), mix(coat, "#A9B1CC", 0.45)
@@ -183,16 +200,15 @@ def take_a(joints, folder):
     f.lay(f.poly([(-0.3, 2.0), (0.3, 2.0), (0.46, 0.0), (-0.46, 0.0)]), tee)
     f.lay(f.ellipse(0.0, 2.02, 0.21, 0.17), skin)
     line(f, [(-0.21, 2.0), (-0.13, 1.89), (0.0, 1.85), (0.13, 1.89), (0.21, 2.0)], 0.03, tone(tee, 0.62))
-    creases(f, [[(-0.1, 1.72), (-0.17, 1.46), (-0.13, 1.18)], [(0.15, 1.62), (0.22, 1.3), (0.17, 1.02)],
-                [(-0.3, 0.64), (-0.06, 0.52), (0.2, 0.6)], [(0.34, 0.4), (0.1, 0.3), (-0.16, 0.36)]], 0.34)
+    for pts, wide in ROOK_TEE:
+        am.pull(f, pts, wide, tee)
     # the jacket's two front edges, their facing a tone lighter, and its buttons
     for s in (-1, 1):
         f.lay(f.poly([(s * 0.3, 2.0), (s * 0.4, 2.0), (s * 0.56, 0.0), (s * 0.46, 0.0)]), trim)
         line(f, [(s * 0.3, 2.0), (s * 0.46, 0.0)], 0.022, edge)
         line(f, [(s * 0.4, 2.0), (s * 0.56, 0.0)], 0.016, edge, 0.8)
-        # pulled from the shoulder to the opening, from the arm's pit, and hanging at the waist
-        creases(f, [[(s * 0.98, 1.84), (s * 0.82, 1.66), (s * 0.62, 1.56)], [(s * 1.0, 1.26), (s * 0.84, 1.16), (s * 0.7, 1.2)],
-                    [(s * 0.98, 0.72), (s * 0.84, 0.52), (s * 0.74, 0.28)], [(s * 0.66, 0.34), (s * 0.64, 0.16), (s * 0.66, 0.0)]], 0.46)
+        for pts, wide in ROOK_FRONT[s]:   # pulled from the arm's pit, each side at its own angle; the right's shoulder
+            am.pull(f, pts, wide, coat, **NAVY)
     for y in (1.58, 1.2, 0.82, 0.44):
         x = 0.35 + (2.0 - y) * 0.08 + 0.1
         f.lay(f.ellipse(x, y, 0.045, 0.045), tone(coat, 0.5))
@@ -205,9 +221,8 @@ def take_a(joints, folder):
     # the back, plain: its middle seam, its yoke, and the cloth pulled from each arm's pit down to the waist
     line(back, [(0.0, 1.62), (0.008, 0.9), (0.0, 0.0)], 0.016, edge, 0.7)
     line(back, [(-1.0, 1.6), (0.0, 1.64), (1.0, 1.6)], 0.014, edge, 0.6)
-    creases(back, [[(-0.98, 1.24), (-0.74, 0.98), (-0.58, 0.6)], [(0.98, 1.24), (0.74, 0.98), (0.58, 0.6)],
-                   [(-0.9, 0.5), (-0.7, 0.32), (-0.62, 0.08)], [(0.9, 0.5), (0.7, 0.32), (0.62, 0.08)],
-                   [(-0.3, 0.44), (-0.05, 0.36), (0.24, 0.42)]], 0.46)
+    for pts, wide in ROOK_BACK:
+        am.pull(back, pts, wide, coat, **NAVY)
     shadow(t, 0.3)
     lit(t)
     grain(t, seed=1)
@@ -221,15 +236,13 @@ def take_a(joints, folder):
             wrapped_fist(a, CLOTH)
             band(w, 1.0, 1.22, trim, edge)
             w.lay(w.rect(-9, 1.1, 9, 1.116), edge, 0.7)
-            folds = [[(-0.42, 1.62), (-0.05, 1.5), (0.34, 1.58)], [(-0.3, 1.4), (0.08, 1.32), (0.42, 1.4)]]
+            folds = ROOK_SLEEVE["rs"]
         else:
             w.lay(w.rect(-9, 0.0, 9, 0.46), skin)
             wrapped_fist(a, CLOTH, wrist=0.46)
             band(w, 0.46, 0.6, trim, edge)
-            folds = [[(-0.42, 1.5), (-0.05, 1.38), (0.34, 1.46)], [(-0.3, 1.1), (0.08, 1.0), (0.42, 1.08)],
-                     [(-0.4, 0.84), (0.0, 0.76), (0.3, 0.8)]]
-        for p in a.sides:
-            creases(p, folds, 0.46)
+            folds = ROOK_SLEEVE["ls"]
+        am.pull_sides(a, folds, coat, **NAVY)
         shadow(a, 0.3, low=0.0)
         lit(a)
         grain(a, seed=2 + i)
@@ -240,14 +253,11 @@ def take_a(joints, folder):
     for i, (key, s) in enumerate((("rh", -1), ("lh", 1))):   # s: the outer side on the leg's front picture
         g = b[key]
         w, f = g.wrap, g.faces["front"]
-        for p in g.sides:
-            creases(p, [[(-0.4, 1.2), (-0.05, 1.08), (0.36, 1.16)], [(-0.3, 0.66), (0.0, 0.52), (0.34, 0.56)]], 0.45)
+        am.cel_sides(g, ROOK_LEG, trouser, 2.6, 0.5)
         line(f, [(0.0, tail), (0.012, 1.0), (0.0, 0.34)], 0.014, tone(trouser, 0.5), 0.5)
         # the T-shirt's hem below the jacket's, right round: his red from every side
         w.lay(w.rect(-9, tail, 9, 2.0), tee)
         w.lay(w.rect(-9, tail - 0.012, 9, tail + 0.012), tone(tee, 0.5))
-        for p in g.sides:
-            creases(p, [[(-0.4, 1.66), (-0.1, 1.59), (0.3, 1.63)]], 0.3, 0.022)
         # the jacket over it to its own hem, open at the front
         w.lay(w.rect(-9, hem, 9, 2.0), coat)
         w.lay(w.rect(-9, hem - 0.012, 9, hem + 0.012), edge)

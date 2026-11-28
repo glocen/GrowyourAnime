@@ -474,13 +474,16 @@ def take_c(joints, folder):
 
 # --- C, the finish: research's pick and its four must-fixes ------------------------------------------------------------
 
-def cel_sleeve(a, cloth, cuff, piping=None, seed=1, depth=0.72, edge=0.4, folds=None, rim=0.16):
+def cel_sleeve(a, cloth, cuff, piping=None, seed=1, depth=0.72, edge=0.4, folds=None, rim=0.16, pulled=False):
     """`sleeves` with its folds painted per side (am.cel_sides; `folds` the kit's sleeve when None), never one curve
-    on all four."""
+    on all four. `pulled`: the folds are `pull`s, `folds` then mapping a side to [(points, width)]."""
     w = a.wrap
     w.lay(w.rect(-9, 0.0, 9, 2.0), cloth)
     band(w, 0.0, 0.26, cuff, tone(cuff, 0.5))
-    am.cel_sides(a, folds or am.SLEEVE_CEL, cloth, depth, edge, rim=rim)
+    if pulled:
+        pull_sides(a, folds, cloth)
+    else:
+        am.cel_sides(a, folds or am.SLEEVE_CEL, cloth, depth, edge, rim=rim)
     for q in a.sides:
         dark(q, q.soft(q.rect(-9, 0.26, 9, 0.3), 0.02), 0.3)
     if piping is not None:
@@ -495,12 +498,45 @@ def cel_sleeve(a, cloth, cuff, piping=None, seed=1, depth=0.72, edge=0.4, folds=
 
 # On the black, a fold is its lit ridge, long and thin, as AV's black cloth has them (the first finish's short leaves
 # read as grey commas, 2026-11-28): the top's in its opening and under the jacket, the trousers' from the hip to the knee.
-# On the brick, fewer folds and larger, deep with a wide dark edge (research's checkpoint, 2026-11-28: "faint on one
-# bright red"): one on each face of a sleeve, one each side of the jacket's front and back.
-BRICK_SLEEVE = {"out": [([(-0.5, 1.94), (-0.12, 1.5), (0.2, 1.22)], 0.36)],
-                "front": [([(0.46, 1.2), (0.12, 0.96), (-0.24, 1.0)], 0.3)],
-                "back": [([(0.42, 1.9), (0.12, 1.4), (-0.08, 0.98)], 0.32)]}
-BRICK = dict(depth=0.5, edge=0.26, rim=0.26)
+# On the brick, fewer folds and larger (research's checkpoint, 2026-11-28: "faint on one bright red"), each a `pull`:
+# a closed crescent, pointed at both ends and set in pairs, read at the phone's size as a slash, a stain or a claw
+# mark, filled dark or not (research and the content check, in the game, 2026-11-28). One pull per seam, no two alike:
+# the sleeve's from the shoulder outside and from the elbow in front; the jacket's from each armpit in front, at its
+# own angle, and behind, one long from the hem's side and one short and steep from the yoke.
+BRICK_SLEEVE = {"out": [([(-0.36, 2.08), (-0.12, 1.66), (0.06, 1.36)], 0.32)],
+                "front": [([(0.56, 0.98), (0.24, 0.84), (-0.06, 0.8)], 0.26)]}
+BRICK_FRONT = {1: ([(1.08, 1.62), (0.84, 1.36), (0.6, 1.18)], 0.34), -1: ([(-1.08, 1.4), (-0.82, 1.2), (-0.62, 1.1)], 0.28)}
+BRICK_BACK = [([(1.08, 1.02), (0.7, 1.18), (0.36, 1.3)], 0.32), ([(-1.08, 1.56), (-0.88, 1.32), (-0.76, 1.12)], 0.22)]
+
+
+def pull(p, pts, width, cloth, depth=0.72, steps=3, crease=0.45, lift=1.16):
+    """A fold as cloth pulled from a seam: a band at its widest where it leaves the seam (`pts[0]`, past the face's
+    edge, so it is open there), narrowing to a blunt end and fading out in `steps` cel steps, the darkest at the seam.
+    Its crease line runs along one edge for half its length and a lit step along the other for less, so it reads as
+    cloth turning; never a closed mark pointed at both ends, which reads as a cut (2026-11-28)."""
+    P = am.smooth2(pts, 30)
+    n = len(P)
+    half = width * (1.0 - 0.6 * np.linspace(0, 1, n))
+    for k in range(steps):
+        m = max(3, int(round(n * (1 - k / steps))))
+        p.lay(p.stroke(P[:m], half[:m], n=m), tone(cloth, depth), 0.45)
+    d = np.gradient(P, axis=0)
+    nrm = np.stack([-d[:, 1], d[:, 0]], axis=1)
+    nrm /= np.maximum(np.linalg.norm(nrm, axis=1, keepdims=True), 1e-6)
+    m = n // 2
+    p.lay(p.stroke(P[:m] + nrm[:m] * half[:m, None] * 0.5, width * np.linspace(0.08, 0.03, m), n=m), tone(cloth, crease), 0.85)
+    m = int(n * 0.4)
+    p.lay(p.stroke(P[:m] - nrm[:m] * (half[:m, None] * 0.5 + width * 0.08), width * np.linspace(0.12, 0.04, m), n=m),
+          tone(cloth, lift), 0.7)
+
+
+def pull_sides(block, folds, cloth):
+    """`pull` round a limb, as am.cel_sides lays `cel`: the right side's limb as given, the left's mirrored."""
+    left = block.centre[0] < 0
+    names = {"out": "left" if left else "right", "in": "right" if left else "left", "front": "front", "back": "back"}
+    for side, lines in folds.items():
+        for pts, wide in lines:
+            pull(block.faces[names[side]], [(-x if left else x, y) for x, y in pts], wide, cloth)
 BLACK_TOP = [([(-0.12, 1.72), (-0.08, 1.3), (-0.12, 0.98)], 0.035), ([(-0.24, 0.8), (-0.1, 0.5), (0.0, 0.3)], 0.04),
              ([(0.26, 0.78), (0.2, 0.5), (0.24, 0.3)], 0.035)]
 BLACK_LEG = {"front": [([(-0.3, 1.96), (-0.12, 1.4), (-0.04, 0.96)], 0.05), ([(0.32, 1.3), (0.24, 1.08), (0.26, 0.94)], 0.035)],
@@ -532,7 +568,7 @@ def finish_c(joints, folder):
     w.lay(w.rect(-9, crop, 9, 2.0), brick)
     f.lay(f.poly([(-0.28, 2.0), (0.28, 2.0), (0.36, crop), (-0.36, crop)]), black)
     for s in (-1, 1):
-        cel(f, [(s * 1.0, 1.96), (s * 0.82, 1.5), (s * 0.56, 1.06)], 0.34, brick, **BRICK)   # pulled from the shoulder
+        pull(f, *BRICK_FRONT[s], brick)   # pulled from the armpit
         f.lay(f.poly([(s * 0.28, 2.0), (s * 0.4, 2.0), (s * 0.48, crop), (s * 0.36, crop)]), facing)
         line(f, [(s * 0.28, 2.0), (s * 0.36, crop)], 0.026, edge)
         line(f, [(s * 0.4, 2.0), (s * 0.48, crop)], 0.018, edge, 0.85)
@@ -544,8 +580,8 @@ def finish_c(joints, folder):
     # the back: its yoke, its seam, its folds from the shoulder blades to the hem, unlike the front's
     line(back, [(-1.0, 1.6), (0.0, 1.66), (1.0, 1.6)], 0.016, edge, 0.75)
     line(back, [(0.0, 1.62), (0.0, crop + 0.12)], 0.016, edge, 0.65)
-    for s in (-1, 1):
-        cel(back, [(s * 0.96, 1.56), (s * 0.68, 1.22), (s * 0.42, 1.02)], 0.34, brick, **BRICK)
+    for pts, wide in BRICK_BACK:
+        pull(back, pts, wide, brick)
     band(w, 0.12, 0.26, ivory, tone(ivory, 0.6))
     f.lay(f.rect(-0.1, 0.12, 0.1, 0.26), "#3A3B44")
     shadow(t, 0.4)
@@ -555,7 +591,7 @@ def finish_c(joints, folder):
 
     for i, key in enumerate(("rs", "ls")):
         a = b[key]
-        cel_sleeve(a, brick, black, piping=ember, seed=102 + i, folds=BRICK_SLEEVE, **BRICK)
+        cel_sleeve(a, brick, black, piping=ember, seed=102 + i, folds=BRICK_SLEEVE, pulled=True)
         band(a.wrap, 1.02, 1.08, tone(brick, 0.66), None)
     tops(b, brick)
 

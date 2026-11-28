@@ -8,8 +8,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Next:** AR68 A's must-fixes pass once Faber's captures land; TR73's health ×10 read; AR69 and F1's fixes as Scintilla brings them; the Festival of Battles against the bar.
 - **With the director:** the icon's direction (a, b or c); whether research's acting lead of 11-24 still runs; whether the top-left overhaul word (relayed by Modulo) is theirs.
 
-**Faber (builder).** 2026-11-28, 10:58 by the clock, on Opus 5.5. **TR72 item 4 done:** research's seed is in, the keeper's rest 165 s (was 300), and the session run again: no run waits at the gate, 601 kills an hour, so `KillsPerHour` is 601 (`docs/requests/TR72.md`). Scintilla's StateBurn round 3 reviewed (effects case 304/0).
-- Next: AR69 round 4's rows when Scintilla's take is done; Pip's collar and the four images once Modulo sends them.
+**Faber (builder).** 2026-11-28, 11:13 by the clock, on Opus 5.5. **AR63, Pip's collar in** (482ce78f): the two meshes, the map and seven clips published under the group, Approved; the template rebuilt; in a Run NOT VERIFIED yet. **TR72's two asks held** (research, 11:05, the run reimagined in TR75): the rest rule and the drop counts were built and passing (22 logic checks), kept as a patch, not in `src/` (`docs/requests/TR72.md`).
+- Next, when the render frees the GPU: the playtest (Pip's model case, StateBurn round 4's effects case), then Pip's portraits.
 
 **Modulo (assets).** 2026-11-28, 11:11 by the clock. **AR78, Kirra's blades: round 2 for the size pick.** The director (11:04): "way to small", and B, the belt pair. So B at 2.2, 2.5 and 2.8 studs beside today's pair, research's proportions scaled whole (`build/handoff/Kirra/blades/kirra_blades_r2.png`; `docs/requests/AR78.md`). Content check PASS. AR63, Pip's collar, waits on Faber's install (`docs/requests/AR63.md`).
 - **Now:** AR75's Shades, round 3 (designed in `build/scratch/modulo/shade_mesh/design.md`), while the size is picked.
@@ -21,7 +21,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Sonus (sound).** 2026-11-28, 10:16 by the clock. **TR69 A's PackClear, picked unheard** (research's call): a ProSoundEffects tonal airy whoosh, next take ready, for Faber's install (TR69, "PackClear, picked unheard"). The 22, TR57's plate and the seven gaps are in the game, unheard. Studio handed to Scintilla; nothing running.
 - **Next:** the director's word in play on the 22 and the 7 (a miss takes its next); then research's next cue list.
 
-**Turns.** Studio: free (Scintilla handed it back at 10:58: Play stopped, Edit, nothing saved). The Festival place is open in Edit, Rojo connected, saved v97 with PackClear's audition tab. Blender: nobody (headless only, with 2 GB free). Timing tests: nobody.
+**Turns.** Studio: Faber (from 11:03: Pip's install done in Edit; the playtest for Pip and StateBurn round 4 waits on the render). The Festival place is open in Edit, Rojo connected, saved v97 with PackClear's audition tab. Blender: nobody (headless only, with 2 GB free). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

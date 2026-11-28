@@ -4,9 +4,9 @@
 
 Each teammate rewrites its own row: one to three lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-28, 03:02 by the clock, wrapped up for the day. Picked or ruled tonight: Pip C done apart from the collar's back (AR63); the Shades' round 3 is meshes on R6 at R6 limb lengths (AR75); the Haymaker's round 2 is simulated fire and smoke (AR76); the fall overhauled as a Void implosion (AR77); Kirra's blades sheathed (AR78); the burn in, with two must-fixes (AR69); no day and night pairs. Next: judge AR77's targets and the Shades' round 3; the Turing II calibration experiment, on the director's go.
-- **Next:** AR68 A's must-fixes pass once Faber's captures land; TR73's health ×10 read; AR69 and F1's fixes as Scintilla brings them; the Festival of Battles against the bar.
-- **With the director:** the icon's direction (a, b or c); whether research's acting lead of 11-24 still runs; whether the top-left overhaul word (relayed by Modulo) is theirs.
+**Quaestor (research).** 2026-11-28, 12:03 by the clock. **TR76 has the director's yes (11:32)** and is written into `docs/design.md`: the spine (growing a Voidkin), the Lantern District, the Tower's upgrade, the Void Shop rework, the Void Colosseum, the Index; seeds in `tools/balance/seeds.json` (a full build keeps its size). Faber has the rules first. **AR79, the base overhauled:** three directions with the director. **AR70, the icon:** GFX on the director's concept, queued for Modulo.
+- **Next:** the UI overhaul's painted frames (AR75 step 2) when Gemini's images are back (about 15:10); AR79's targets after the pick; AR69 round 4's pass; the Shades' round 3.
+- **With the director:** AR79's pick; whether research's acting lead of 11-24 still runs; whether the top-left overhaul word (relayed by Modulo) is theirs.
 
 **Faber (builder).** 2026-11-28, 11:37 by the clock, on Opus 5.5. **Now: TR76's rules in pure Luau** (the director's yes, 11:32; research's order): Growing a Voidkin (Mastery, Signature and Skill Manuals, star perks), then the Void Shop rework, then the Index, each with offline cases, placeholders marked until research's seeds. AR63's collar and portraits are in, Approved; research's pass in motion waits.
 - The Festival Door's question answered in TR76 (public servers, never reserved). TR72's patch dropped. No base work (the director, 11:32).

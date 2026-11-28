@@ -173,8 +173,10 @@ return {
 		-- TR10 (the director, 2026-11-14: "mini boss/boss need a server cooldown", the keeper's "Per player"): seconds before
 		-- the elite and the keeper are back (Rules.Cooldown). The elite's is the server's, from its fall, since its fight is
 		-- shared; the keeper's is each player's own, from their win, kept with their save (a lost try may try again at
-		-- once). Research's seeds (tier 2), tuned by playing.
-		Back = { Elite = 120, Keeper = 300 },
+		-- once). Research's seeds (tier 2), tuned by playing. The keeper's is a full run's street from the menu to the gate
+		-- (research, TR72, 2026-11-28: 300 made each full run after the first wait about 135 s at the gate), so a full run
+		-- never waits and only the Keeper alone does.
+		Back = { Elite = 120, Keeper = 165 },
 	},
 
 	-- How the grey build stands up: studs, not times.

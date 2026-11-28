@@ -26,7 +26,7 @@ return {
 		Name = "Cooldown: TR10, the elite is back on the server's own timer, 2 minutes; the packs keep theirs",
 		Run = function(t: any)
 			t.Equal("the elite's wait: research's seed", Cooldown.Wait("Elite"), 120)
-			t.Equal("the keeper's: research's seed", Cooldown.Wait("Keeper"), 300)
+			t.Equal("the keeper's: research's seed", Cooldown.Wait("Keeper"), WorldConfig.Row.Back.Keeper)
 			t.Equal("a pack's is still Respawn", Cooldown.Wait("Pack"), WorldConfig.Row.Respawn)
 			t.Check("a pack is back sooner than the elite", Cooldown.Wait("Pack") < Cooldown.Wait("Elite"))
 			t.Equal("no timer: it's up", Cooldown.Left(nil, NOW, "Elite"), 0)
@@ -43,23 +43,24 @@ return {
 		end,
 	},
 	{
-		Name = "Cooldown: TR10, each player's keeper rests 5 minutes from their own win; a loss rests nothing",
+		Name = "Cooldown: TR10, each player's keeper rests its seed from their own win; a loss rests nothing",
 		Run = function(t: any)
+			local rest = WorldConfig.Row.Back.Keeper
 			local first, second = Grounds.List[1], Grounds.List[2]
 			local data = fresh()
 			t.Equal("a new player's keeper is up", Progress.Resting(data, first.Id, NOW), 0)
 			-- A lost try writes nothing to the save, so it rests nothing: the same fresh save is up.
 			local won = Progress.KeeperWon(data, first.Id, NOW)
-			t.Equal("the win says when it's back", won.Back, NOW + 300)
-			t.Equal("resting from the win", Progress.Resting(data, first.Id, NOW), 300)
-			t.Equal("two minutes on", Progress.Resting(data, first.Id, NOW + 120), 180)
-			t.Equal("back after five", Progress.Resting(data, first.Id, NOW + 300), 0)
-			t.Equal("and stays back", Progress.Resting(data, first.Id, NOW + 301), 0)
+			t.Equal("the win says when it's back", won.Back, NOW + rest)
+			t.Equal("resting from the win", Progress.Resting(data, first.Id, NOW), rest)
+			t.Equal("two minutes on", Progress.Resting(data, first.Id, NOW + 120), rest - 120)
+			t.Equal("back after its rest", Progress.Resting(data, first.Id, NOW + rest), 0)
+			t.Equal("and stays back", Progress.Resting(data, first.Id, NOW + rest + 1), 0)
 			t.Equal("another player's keeper is their own: up", Progress.Resting(fresh(), first.Id, NOW + 10), 0)
 			t.Equal("the ground the win opened rests nothing", Progress.Resting(data, second.Id, NOW), 0)
-			t.Check("a clock behind never makes it longer", Progress.Resting(data, first.Id, NOW - 1000) <= 300)
+			t.Check("a clock behind never makes it longer", Progress.Resting(data, first.Id, NOW - 1000) <= rest)
 			Progress.KeeperWon(data, first.Id, NOW + 400)
-			t.Equal("the next win rests it again, from that win", Progress.Resting(data, first.Id, NOW + 400), 300)
+			t.Equal("the next win rests it again, from that win", Progress.Resting(data, first.Id, NOW + 400), rest)
 			t.Equal("its record keeps both wins", data.Progress.Grounds[first.Id].KeeperWins.Normal, 2)
 			t.Equal("an unknown ground rests nothing", Progress.Resting(data, "nowhere", NOW), 0)
 		end,
@@ -74,10 +75,10 @@ return {
 			-- The save as another server loads it: a copy, its migrations run again (none left), a moment later.
 			local loaded = Profile.View(data) :: Profile.Data
 			Migrations.Run(loaded)
-			t.Equal("the rest is in the copy", loaded.Progress.Grounds[first.Id].Back, NOW + 300)
-			t.Equal("100 s later on the new server: 200 s left", Progress.Resting(loaded, first.Id, NOW + 100), 200)
-			t.Equal("the client reads the same from its copy", Progress.Resting(Profile.View(data), first.Id, NOW + 100), 200)
-			t.Equal("a hop past its end: up", Progress.Resting(loaded, first.Id, NOW + 300), 0)
+			t.Equal("the rest is in the copy", loaded.Progress.Grounds[first.Id].Back, NOW + WorldConfig.Row.Back.Keeper)
+			t.Equal("100 s later on the new server: 100 s less left", Progress.Resting(loaded, first.Id, NOW + 100), WorldConfig.Row.Back.Keeper - 100)
+			t.Equal("the client reads the same from its copy", Progress.Resting(Profile.View(data), first.Id, NOW + 100), WorldConfig.Row.Back.Keeper - 100)
+			t.Equal("a hop past its end: up", Progress.Resting(loaded, first.Id, NOW + WorldConfig.Row.Back.Keeper), 0)
 		end,
 	},
 }

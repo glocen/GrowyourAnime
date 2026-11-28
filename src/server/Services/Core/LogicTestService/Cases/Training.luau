@@ -125,7 +125,7 @@ return {
 			end
 			local fight = GrowthConfig.KillsPerHour / 3600 * xp / kills
 			t.Check("a third of what fighting earns in Lantern Row", near(Training.Rate(), share * fight), string.format("%.4f a second, fighting %.4f", Training.Rate(), fight))
-			t.Check("about 37 a minute on the stages' seeds at the measured 386 kills an hour (TR72's session)", Training.Rate() * 60 > 32 and Training.Rate() * 60 < 42, string.format("%.1f", Training.Rate() * 60))
+			t.Check("about 58 a minute on the stages' seeds at the measured 601 kills an hour (TR72's session)", Training.Rate() * 60 > 50 and Training.Rate() * 60 < 64, string.format("%.1f", Training.Rate() * 60))
 			local one = owned(5)
 			local gained, left = Training.Gain(one, levelSeconds(5) / 2)
 			t.Check("half a level's time: half its experience", gained == 0 and math.abs(one.Xp - (Growth.XpToNext(5) :: number) / 2) <= 1, `{one.Xp}`)

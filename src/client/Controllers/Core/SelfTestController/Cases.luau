@@ -1514,7 +1514,7 @@ local cases = {
 				t.Near("a kit's piece lands 10 studs toward the gate, 2 up (studs off)", arena.PieceOff, 0, 0.01)
 				t.Check("and is anchored", arena.PieceAnchored == true)
 			end
-			t.Server("KeeperRest", 0) -- TR10: a win earlier in the run rests the keeper five minutes; this case tries it now.
+			t.Server("KeeperRest", 0) -- TR10: a win earlier in the run rests the keeper (Config.World.Row.Back); this case tries it now.
 			local before = t.Server("Keeper")
 			t.Check("no try yet", before.Ok == true and before.InTry == false)
 			local start = t.Server("KeeperTry")
@@ -6001,7 +6001,7 @@ local cases = {
 					end
 				end
 			end
-			t.Server("KeeperRest", 0) -- TR10: a win earlier in the run rests the keeper five minutes; this case tries it now.
+			t.Server("KeeperRest", 0) -- TR10: a win earlier in the run rests the keeper (Config.World.Row.Back); this case tries it now.
 			local start = t.Server("KeeperTry")
 			t.Check("a try starts", start.Ok == true, tostring(start.Error))
 			if start.Ok ~= true then
@@ -6518,7 +6518,7 @@ local cases = {
 				local at = World.Where(keeper) :: Vector3
 				local foot = Markers.At(gate).Position
 				t.Near("over the gate (studs off, flat)", Vector3.new(at.X - foot.X, 0, at.Z - foot.Z).Magnitude, 0, 0.01)
-				t.Check("five minutes left", (keeper:GetAttribute("Left") :: number) > WorldConfig.Row.Back.Keeper - 5)
+				t.Check("its whole rest left", (keeper:GetAttribute("Left") :: number) > WorldConfig.Row.Back.Keeper - 5)
 				t.Equal("its card", keeper:GetAttribute("Lines"), 3)
 			end
 			local prompt = DownController.Challenge()

@@ -2093,7 +2093,7 @@ return function(given: Given): { any }
 					local camera = workspace.CurrentCamera
 					camera.CFrame = CFrame.lookAt(start - along * TAKE_ZOOM + Vector3.new(0, TAKE_ZOOM / 3, 0), start)
 					local prompt: ProximityPrompt? = nil
-					t.Server("KeeperRest", 0) -- TR10: a win earlier in the run hides the Challenge five minutes
+					t.Server("KeeperRest", 0) -- TR10: a win earlier in the run hides the Challenge for its rest (Config.World.Row.Back)
 					t.Check("the keeper's gate streams in", waitFor(t, ARRIVE_TIMEOUT, function(): boolean
 						for _, item in workspace:GetDescendants() do
 							if item:IsA("ProximityPrompt") and item.ActionText == "Challenge" then

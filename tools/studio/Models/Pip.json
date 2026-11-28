@@ -1,23 +1,22 @@
 {
- "Why": "Pip's finish (AR63, research's pass for the install, 2026-11-28): his nine meshes and three maps, published under the group on 2026-11-28 (docs/asset-log.md). The hair is a piece of its own; no Metalness. Neither the hat nor the lamp casts a shadow: the brim would put his face in the dark, and the lamp is a light (the recipe's motors). The first Pip's ids (AR4) are in git before this commit.",
+ "Why": "Pip's C finish (AR63, 2026-11-28, Modulo's eebec6c4): no hat; a collar welded to the torso; the hair and lamp re-exported, the six body pieces as before; three new maps, no Metalness; all published under the group on 2026-11-28 (docs/asset-log.md). The lamp casts no shadow: it's a light. Earlier ids are in git before this commit.",
  "Meshes": {
   "Pip_Torso": 81091061875523,
   "Pip_Head": 101987619310416,
-  "Pip_Hair": 119773739371977,
+  "Pip_Hair": 77881832535561,
+  "Pip_Collar": 139024897249060,
   "Pip_RightArm": 134172034784792,
   "Pip_LeftArm": 106212129366911,
   "Pip_RightLeg": 87993767836929,
   "Pip_LeftLeg": 106112745851463,
-  "Pip_Hat": 109073699447857,
-  "Pip_Lamp": 87394795703632
+  "Pip_Lamp": 95234973428072
  },
  "Maps": {
-  "Color": "rbxassetid://100108520560780",
-  "Roughness": "rbxassetid://84023465000723",
-  "Emissive": "rbxassetid://118578717911561"
+  "Color": "rbxassetid://135762621332235",
+  "Roughness": "rbxassetid://127618042485528",
+  "Emissive": "rbxassetid://107269538867825"
  },
  "NoShadow": [
-  "Pip_Hat",
   "Pip_Lamp"
  ]
 }

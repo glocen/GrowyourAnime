@@ -4156,7 +4156,7 @@ local cases = {
 			-- AR8 C, part 4 (rule 3): the main shape stands up out of the feet past the head, brightest in the first quarter
 			-- of its life; its foot then leaves the ground and climbs after its top; the sleeve comes a breath later, wider and
 			-- fainter, over the body. Solid light: one part each, nothing falls (the
-			-- content check's condition 2). Sized by the lead: a stand-in body whose hat stands as tall as Pip's, sampled
+			-- content check's condition 2). Sized by the lead: a stand-in body whose top stands as tall as Pip's, sampled
 			-- every frame.
 			local body = Instance.new("Model")
 			body.Name = "SelfTestLead"
@@ -4166,7 +4166,7 @@ local cases = {
 			root.CFrame = CFrame.new(0, 600, 0)
 			root.Parent = body
 			local feet = 600 - 3 + 0.1 -- R6: the root stands 3 studs over the feet
-			local tall = 7.5 -- Pip, hat and all
+			local tall = 5.43 -- Pip to the top of his hair (AR63's C, no hat; measured in a Run, 2026-11-28)
 			local hat = Instance.new("Part")
 			hat.Name = "Hat"
 			hat.Anchored, hat.CanCollide, hat.CanQuery, hat.Transparency = true, false, false, 1

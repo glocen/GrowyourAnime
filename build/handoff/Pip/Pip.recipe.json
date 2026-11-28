@@ -2,7 +2,7 @@
  "name": "Pip",
  "frame": "Roblox studs: Y up, the model on y = 0 facing -Z, HumanoidRootPart at (0, 3, 0)",
  "rig": "R6. Every piece carries the body's own surface: the six rig parts are hidden (Transparency 1).",
- "make": "tools/blender/anime_make.py and pip_make.py: R6's own blocks and round head with the clothes and the face drawn on them, the hair one mesh; built pieces: the hat and the lantern, each on a joint of its own (the first Pip's).",
+ "make": "tools/blender/anime_make.py, pip_make.py and pip_redo_takes.py (finish_c): R6's own blocks and round head with the clothes and the face drawn on them, the hair one mesh; built pieces: the standing collar, welded to the torso, and the lantern on a joint of its own (the first Pip's).",
  "maps": {
   "Color": "Pip_Color.png",
   "Roughness": "Pip_Roughness.png",
@@ -112,37 +112,31 @@
    "on": "Head",
    "centre": [
     0.0,
-    4.59577,
-    0.0213
+    4.64275,
+    0.07022
    ],
    "size": [
-    1.471,
-    1.348,
-    1.448
+    1.631,
+    1.566,
+    1.708
    ],
-   "tris": 2736
+   "tris": 4005
   },
   {
-   "name": "Pip_Hat",
-   "mesh": "Pip_Hat.json",
-   "on": "Head",
+   "name": "Pip_Collar",
+   "mesh": "Pip_Collar.json",
+   "on": "Torso",
    "centre": [
-    -0.0483,
-    5.30706,
-    0.01814
+    0.0,
+    4.27,
+    0.02
    ],
    "size": [
-    2.435,
-    1.297,
-    2.418
+    1.5,
+    0.58,
+    1.29
    ],
-   "tris": 668,
-   "motor": "Hat",
-   "pivot": [
-    0.0,
-    4.95,
-    -0.0
-   ]
+   "tris": 384
   },
   {
    "name": "Pip_Lamp",
@@ -199,7 +193,7 @@
    "note": "where a hit lands"
   }
  ],
- "tris": 4660,
+ "tris": 5645,
  "emissive": {
   "tint": "#FFFFFF",
   "cold": 1.2,
@@ -210,9 +204,6 @@
   "note": "The mask covers the lantern's panes, the flame seen through them, and nothing else. It burns at cold as it floats and goes to hot through Lantern Burst's send. The face and the eyes take no glow, ever. The tint is white because Roblox multiplies the glow by the colour map, which already holds the flame's orange."
  },
  "motors": {
-  "Hat": {
-   "note": "Turns about its pivot on the head: it lags every move and lifts on the send. Its rest tilt is in the mesh. CastShadow off on this piece, or the brim puts his face in the dark."
-  },
   "Lamp": {
    "note": "Floats beside his right shoulder, held by nothing. Its joint is on the Torso, and the clips move and turn it; Lantern Burst sends it. CastShadow off: it's a light. A light in the tint around it is the builder's call, tuned in the engine."
   }

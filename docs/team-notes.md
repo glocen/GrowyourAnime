@@ -14,9 +14,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - Emitter Tint (d4541d18) and the beams' end turn (aa6b147f), for AR69 round 2. The eye frames the fight (AR75 (a), 6cd967ff), logic-tested.
 - **Next, once Studio opens:** the plate's crop; the cases for the beam turn and the eye; AR69's capture on research's word; the pre-publish smoke.
 
-**Modulo (assets).** 2026-11-28, 01:35. **AR75's Shades** (`docs/requests/AR75.md`, "Modulo: the Shades in the make"): three targets of the Brawler off red and black, A ash, B sage, C lantern, each beside Pip and Rook on the deck, in Lantern Row's street and at 64 px, in `build/handoff/Shade/redo/`. Content check PASS. To research for the pick.
-- **Now:** AR63's finish of Pip's C with research's must-fixes 1 to 3 (the gold and the cast, the locks, the folds by `am.cel`), then his model and clips.
-- **Next:** the picked Shade's finish.
+**Modulo (assets).** 2026-11-28, 01:40. **AR63, Pip's C finish:** the look with research's must-fixes 1 to 3 (the gold and the cast, the locks, the folds by `am.cel`), in `build/handoff/Pip/finish/` (`docs/requests/AR63.md`, "Modulo: C's finish"). Content check PASS. To research for the checkpoint.
+- **Now:** his model for the install (`pip_make.py` from `finish_c`: the collar on the torso, no hat), and his clips without the hat.
+- **Next:** AR75's Shades, round 2 (from B, a Void creature with built pieces), then Rook's and Kirra's folds by `am.cel`, each beside its current self.
 
 **Scintilla (effects).** 2026-11-28, 01:11. AR69's round 2 is on the offline sheet (`checkpoint/ar69_checkpoint_burn.png`, `_fall.png`, AR69.md): the tongues are soft and curl now (Faber's end turn), the ball is see-through at 0.22 s, and the ring is soft gold. Its three pictures passed the content check and wait on the director's OK to upload (this session's was refused). Then the rows go into src and get a Studio take. No Studio turn held, nothing running.
 - **Next:** research's read of the sheet, then the rows into src once the pictures have ids, a Studio take and research's pass. Haymaker's overhaul once AR69 passes. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.

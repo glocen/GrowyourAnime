@@ -19,7 +19,9 @@ Each is drawn by rook_make_takes.py's pictures and sheet, today's Pip (pip_make.
 on between the same two Anime Vanguards units (internal: build/reference/takes/pip_redo_beside.png).
 
     blender.exe -b --factory-startup --python tools/blender/pip_redo_takes.py -- <out_dir> takes [Pip A B C]
-    blender.exe -b --factory-startup --python tools/blender/pip_redo_takes.py -- <out_dir> shade|sheet
+    blender.exe -b --factory-startup --python tools/blender/pip_redo_takes.py -- <out_dir> shade|sheet|proof
+
+`F` is C's finish (finish_c), with research's must-fixes; `proof` lays it alone as a finish is judged.
 """
 import math
 import sys
@@ -487,6 +489,15 @@ def cel_sleeve(a, cloth, cuff, piping=None, seed=1, depth=0.72, edge=0.4):
     grain(a, seed=seed)
 
 
+# On the black, a fold is its lit ridge, long and thin, as AV's black cloth has them (the first finish's short leaves
+# read as grey commas, 2026-11-28): the top's in its opening and under the jacket, the trousers' from the hip to the knee.
+BLACK_TOP = [([(-0.12, 1.72), (-0.08, 1.3), (-0.12, 0.98)], 0.035), ([(-0.24, 0.8), (-0.1, 0.5), (0.0, 0.3)], 0.04),
+             ([(0.26, 0.78), (0.2, 0.5), (0.24, 0.3)], 0.035)]
+BLACK_LEG = {"front": [([(-0.3, 1.96), (-0.12, 1.4), (-0.04, 0.96)], 0.05), ([(0.32, 1.3), (0.24, 1.08), (0.26, 0.94)], 0.035)],
+             "out": [([(0.3, 1.9), (0.2, 1.3), (0.18, 0.94)], 0.05)],
+             "back": [([(0.3, 1.9), (0.16, 1.4), (0.1, 0.96)], 0.045)]}
+
+
 def finish_c(joints, folder):
     """C as research picked it (AR63, "the redo's pick", 2026-11-28), with its must-fixes:
     1. the head: a deeper gold, dark at the roots; a warmer skin; the fringe cast on his face; the collar dark inside,
@@ -505,8 +516,8 @@ def finish_c(joints, folder):
     # the black top: its seams, its folds as lit ridges pulled to the waist
     for s in (-1, 1):
         line(f, [(s * 0.3, 1.8), (s * 0.26, 1.1), (s * 0.3, 0.2)], 0.012, tone(black, 2.2), 0.6)
-    cel(f, [(-0.28, 0.72), (-0.06, 0.58), (0.18, 0.62)], 0.1, black, 2.0, 0.5)
-    cel(f, [(0.3, 0.46), (0.1, 0.32), (-0.12, 0.36)], 0.08, black, 2.0, 0.5)
+    for pts, wide in BLACK_TOP:
+        cel(f, pts, wide, black, 2.6, 0.5)
     # the cropped jacket, open at the front, its facing lit, its hem a band at the ribs
     w.lay(w.rect(-9, crop, 9, 2.0), brick)
     f.lay(f.poly([(-0.28, 2.0), (0.28, 2.0), (0.36, crop), (-0.36, crop)]), black)
@@ -542,7 +553,7 @@ def finish_c(joints, folder):
 
     for i, (key, s) in enumerate((("rh", -1), ("lh", 1))):
         g = b[key]
-        am.cel_sides(g, am.LEG_CEL, black, 2.0, 0.5, scale=0.86)   # on the black, lit ridges
+        am.cel_sides(g, BLACK_LEG, black, 2.6, 0.5)
         kt.shin_wraps(g, ivory, 0.44, 0.92, 0.1)
         boots(g, boot, 0.44)
         shadow(g, 0.34, low=0.0)
@@ -561,13 +572,15 @@ def finish_c(joints, folder):
                                                          (84, 16, 0.78, 0.38, -22))):
         hair.clump(a, ph, length, width, heading=heading, off=0.1 + 0.03 * (i % 2), flick=44, hold=0.5, comb=(0, -1, 0.3),
                    thick=width * 0.3, taper=2.2, split=1 if i in (2, 4) else 0)
-    for a, length in ((130, 0.7), (155, 0.78), (180, 0.82), (205, 0.78), (230, 0.7)):
-        hair.clump(a, 30, length, 0.4, heading=0, off=0.08, flick=38, hold=0.55, comb=(0, -0.5, -1), thick=0.12, taper=2.2)
+    # the back in two tiers, never rows of short points (the first finish's read as scales): four long locks from the crown
+    # down past the nape, of unlike lengths, and under them three at the nape turned down and out
+    for a, length, width in ((138, 1.02, 0.5), (164, 1.16, 0.54), (194, 1.1, 0.54), (222, 0.96, 0.5)):
+        hair.clump(a, 26, length, width, heading=0, off=0.08, flick=22, hold=0.66, comb=(0, -0.3, -1), thick=0.13, taper=2.2)
     for s in (-1, 1):
         for a, length in ((s * 72, 0.62), (s * 92, 0.66), (s * 112, 0.58)):
             hair.clump(a, 52, length, 0.34, heading=-s * 10, off=0.06, flick=32, hold=0.6, comb=(0, -0.2, -1), thick=0.1, taper=2.2)
-    for a in (150, 170, 190, 210):
-        hair.clump(a, 72, 0.52, 0.32, heading=0, off=0.06, flick=28, hold=0.6, comb=(0, -0.3, -1), thick=0.1, taper=2.2)
+    for a, length in ((156, 0.6), (180, 0.7), (204, 0.6)):
+        hair.clump(a, 76, length, 0.42, heading=0, off=0.05, flick=14, hold=0.7, comb=(0, -0.2, -1), thick=0.1, taper=2.2)
     # the fringe over his right eye: five locks, parted, the longest down past the eye
     for a, ph, length, width, comb in ((-36, 28, 1.04, 0.4, (0.25, 0.7, -1.2)), (-18, 26, 0.96, 0.4, (0.15, 0.7, -1.1)),
                                        (0, 27, 0.84, 0.38, (0.0, 0.7, -1.05)), (20, 30, 0.7, 0.36, (-0.2, 0.7, -1.0)),
@@ -597,3 +610,6 @@ if __name__ == "__main__":
         rt.shade_run(OUT)
     elif mode == "sheet":
         rt.sheet_run(OUT, WORDS, BESIDE)
+    elif mode == "proof":   # C's finish alone, as a finish is judged (rook_make_takes.proof_run)
+        rt.proof_run(OUT, "F", title="AR63: PIP, C'S FINISH", about="Common / Purple / Mage / Fire.", whose="his",
+                     stem="pip_finish", beside=list(BESIDE), tag="AR63: C's finish")

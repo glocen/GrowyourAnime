@@ -59,7 +59,7 @@ The decisions in force: what binds the work today, grouped, one line each. A sta
 
 - Use eight plots in two rows around the Void Shop, Void Clash and Calamity sites. Save bases to accounts. Vacant plots stay bare. L167,392,324 [2026-11-09] [2026-11-11] [2026-11-15, night]
 - Give each Arc one place for both difficulties. The Festival Door connects base and Arc. L118,209 [2026-11-19, by 11:16] [2026-11-12]
-- One Normal or Hard mission per Arc. Lantern Row has four distinct stretches, 10–15 minutes on Normal, checkpoints and a keeper-only fight after first clear. Review separate modes after early access. L106,102,19 [2026-11-19, 23:19] [2026-11-23, 03:25] [2026-11-27, 12:50]
+- The Festival of Battles is reimagined, with research's creative freedom: how it works and Lantern Row's map. The four stretches and the checkpoints are dropped ("didnt made any sense"). The new direction is the director's pick (TR75). Until the pick, the old run stands in the build. Log, "Words after the split" [2026-11-28, by 11:05]. Replaces: one Normal or Hard mission per Arc, four stretches, 10–15 minutes, checkpoints, the keeper-only fight. L106,102,19
 - Use a server timer for elites and "Per player" for keepers. While down, show timer, loot and drop rates. L232 [2026-11-14]
 - Festival parties wait until other work is done. Use reserved servers, carry saved health and progress, and return players home whole on transfer failure. L132,130 [2026-11-18, about 22:10] [2026-11-18, about 22:20]
 - Tower uses one Voidkin in a temporary circular room away from the map. Carry health, reset on death and seed weekly after floor five. Keep the entrance and record marker by the plot. L119,299,300,386 [2026-11-19, by 11:12] [2026-11-16, 16:50] [2026-11-16, 13:41] [2026-11-11]

@@ -74,6 +74,15 @@ LEADS = ("Pip", "Rook")
 ROW = ("Rook", "Pip", "Shade", "A", "B", "C")
 ROW_X = (-10.0, -6.0, -2.0, 2.0, 6.0, 10.0)
 STREET = (("near", -7.0, -3.0, (0.0, 8.0)), ("far", -7.0, -12.0, (0.0, 8.0)), ("side", 12.5, -5.0, (3.5, -0.5)))
+# the sheet's own words and files: round 1's here; a later round's script sets its own (shade_void_takes.py)
+STEM, BESIDE = "shade_redo_takes", "shade_redo_beside.png"
+TITLE = "AR75: THE SHADES IN THE MAKE, THREE TAKES"
+ABOUT = ("The Brawler, a festival-goer the Void has filled, in the Voidkin's make: R6's blocks with the clothes painted "
+         "on, the mask drawn on the round head, the Void in its cuts lit cyan. Off red and black so Pip and Rook stand clear "
+         "(research, 2026-11-28): the body's mass is off red, black, navy and brick, and the type's colour (Red, the Brawler's) "
+         "keeps one place of its own. Folds are hard-edged shade shapes in each cloth's own shade. Research picks one; the "
+         "Guard's, the Dasher's and the Support's masks follow the pick.")
+ROW_SAID = "Rook, Pip, today's Brawler, A, B, C"
 
 
 def tint():
@@ -449,12 +458,8 @@ def sheet_run(out):
     # 1. each take from the front and from the game's camera
     col = (W - 2 * gap) // 3
     page, text = part(1150, "full")
-    text.append((gap, 20, 30, "AR75: THE SHADES IN THE MAKE, THREE TAKES", ink))
-    text += hc.wrapped(gap, 60, 16, "The Brawler, a festival-goer the Void has filled, in the Voidkin's make: R6's blocks with the clothes painted "
-                       "on, the mask drawn on the round head, the Void in its cuts lit cyan. Off red and black so Pip and Rook stand clear "
-                       "(research, 2026-11-28): the body's mass is off red, black, navy and brick, and the type's colour (Red, the Brawler's) "
-                       "keeps one place of its own. Folds are hard-edged shade shapes in each cloth's own shade. Research picks one; the "
-                       "Guard's, the Dasher's and the Support's masks follow the pick.", soft, W - 2 * gap)
+    text.append((gap, 20, 30, TITLE, ink))
+    text += hc.wrapped(gap, 60, 16, ABOUT, soft, W - 2 * gap)
     for i, key in enumerate(WHO):
         x0 = gap + i * col
         title, lines = SAID[key]
@@ -467,7 +472,7 @@ def sheet_run(out):
 
     # 2. the head from six sides
     turn = {key: rs.shrink(rs.load(shots / f"{key}_turn.png"), (W - 4 * gap) / 3 / 1260) for key in WHO}
-    th = turn["A"].shape[0]
+    th = turn[WHO[0]].shape[0]
     page, text = part(46 + th + 40, "heads")
     text.append((gap, 14, 18, "The head from six sides: face on, each three-quarter, a side, the back, and the game's camera.", ink))
     for i, key in enumerate(WHO):
@@ -480,7 +485,7 @@ def sheet_run(out):
     cell = (W - 5 * gap) // 4
     fights = {(lead, key): rs.shrink(he.crop(laid([(f"{lead}_fight", *rt.LEAD), (f"{key}_foe", *rt.FOE)]), *fight_box), phone)
               for lead in LEADS for key in FOES}
-    fw, fh = fights["Pip", "A"].shape[1], fights["Pip", "A"].shape[0]
+    fw, fh = fights["Pip", WHO[0]].shape[1], fights["Pip", WHO[0]].shape[0]
     k = max(1, min(3, cell // fw))
     page, text = part(60 + 2 * (fh * k + 40), "fight")
     text.append((gap, 14, 18, f"Fighting Pip (C, the finish), then Rook, on the deck from the player's camera: the smallest phone ({el.PHONE_H} "
@@ -494,7 +499,7 @@ def sheet_run(out):
     # 4. each as a pack in Lantern Row's street
     frames = {key: street(key) for key in FOES}
     small = {key: rs.shrink(frames[key], 0.42) for key in FOES}
-    sw_, sh_ = small["A"].shape[1], small["A"].shape[0]
+    sw_, sh_ = small[WHO[0]].shape[1], small[WHO[0]].shape[0]
     page, text = part(60 + 2 * (sh_ + 34), "street")
     text.append((gap, 14, 18, "A pack of three in Lantern Row's street by day, from the game's camera (TR24's still: its HUD, its avatar and "
                               "its Rook are the old ones).", ink))
@@ -509,7 +514,7 @@ def sheet_run(out):
     rw, rh = row.shape[1], row.shape[0]
     kr = max(1, min(4, (W - 3 * gap - rw) // rw))
     page, text = part(60 + rh * kr + 20, "row")
-    text.append((gap, 14, 18, f"At the lead's distance, turned to the player: Rook, Pip, today's Brawler, A, B, C. At the smallest phone, then "
+    text.append((gap, 14, 18, f"At the lead's distance, turned to the player: {ROW_SAID}. At the smallest phone, then "
                               f"{kr} times.", ink))
     rs.paste(page, row, gap, 46)
     rs.paste(page, bm.zoomed(row, kr), gap + rw + gap, 46)
@@ -535,10 +540,10 @@ def sheet_run(out):
     y = 0
     for (name, page), text in zip(parts, text_of):
         rs.paste(page, rs.text_layer(W, page.shape[0], text), 0, 0)
-        rs.save(page, out / f"shade_redo_takes_{name}.png")
+        rs.save(page, out / f"{STEM}_{name}.png")
         whole[y:y + page.shape[0]] = page
         y += page.shape[0]
-    rs.save(whole, out / "shade_redo_takes.png")
+    rs.save(whole, out / f"{STEM}.png")
     beside(out, frames, rs, he)
 
 
@@ -563,7 +568,7 @@ def beside(out, frames, rs_, he):
             text.append((x, y + tall + 6, 14, name, "#B4AC9C"))
             x += p.shape[1] + gap
     rs_.paste(page, rs_.text_layer(wide, page.shape[0], text), 0, 0)
-    rs_.save(page, rt.internal("shade_redo_beside.png"))
+    rs_.save(page, rt.internal(BESIDE))
 
 
 if __name__ == "__main__":

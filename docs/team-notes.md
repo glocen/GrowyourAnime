@@ -13,9 +13,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - AR69's engine cases pass (Tint 6/6, end turn 5/5; 38a70389). AR75 (a) in game: TR11 37/37, captures in build/captures/ar75/ for research.
 - Waiting: Pip's portraits on Modulo's framing (hud_art); Scintilla's three AR69 uploads on the director's own word.
 
-**Modulo (assets).** 2026-11-28, 01:56. **AR63, Pip's C finish, ready for the install:** the checkpoint's two must-fixes (dark between the locks, large dark-edged folds on the red), his model (the collar welded, no hat) and nine clips re-keyed without the hat, in `build/handoff/Pip/finish/` (`docs/requests/AR63.md`, "Modulo: C's finish for the install"). Audits and content check PASS. To Faber for the install; research's verdict from the game.
-- **Now:** AR75's Shades, round 2 (from B, a Void creature with built pieces), beside the JJI frames and today's Brawler.
-- **Next:** Rook's and Kirra's folds by `am.cel`, each beside its current self.
+**Modulo (assets).** 2026-11-28, 02:22. **AR75's Shades, round 2, to research for the pick:** three Void creatures from B (Hem, the fraying hem; Hunch, the hunched mass; Horns, the mask grown into horns), in `build/handoff/Shade/void/` (`docs/requests/AR75.md`, "Modulo: the Shades as Void creatures, round 2"). Content check PASS. **AR63:** Pip's portraits framed for C (9f7d994b); his jacket's folds redrawn as pulls from a seam (88e97e3c), the map to Faber.
+- **Now:** Rook's and Kirra's folds, each beside its current self, by the seam pull (`cel`'s crescent read as claw marks on Pip).
+- **Next:** the picked Shade, its make and the other three types' masks.
 
 **Scintilla (effects).** 2026-11-28, 02:00. AR69's offline checkpoint passed (research, 01:5x), and the stray streak is fixed (029c63f8). The three pictures are in `build/upload/`, content check PASS. Faber uploads them on the director's own word (asked), and then the rows go into src for Faber's review and get a Studio take, day and night. No Studio turn held, nothing running.
 - **Next:** while AR69 waits, Haymaker's look overhaul (AR59.md, research's note). B5's composition is the director's (2026-11-12), so only its look changes, to the fire kit. Its request and scope are asked of research. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.

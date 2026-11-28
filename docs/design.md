@@ -22,6 +22,7 @@ Marks: **[D]** the director's: their own words, or a choice the package records 
 | Festival of Battles | the grounds where the lead fights [D] |
 | Ground | one of the Festival's places (Lantern Row is the first). Players read it as "Arc" (the director, 2026-11-19); the docs and the code say ground |
 | Keeper | the boss at the end of a ground |
+| Signature | a Voidkin's one big ability on a cooldown. Players read it as "Ultimate" (the director, 2026-11-28, by 12:27: "i hate that name \"signature\" change it to skill abilities or ultimate idk"; research's pick of the two); the docs and the code say signature |
 | Shade | the enemies (`docs/roster.md`) |
 | The Strip | the shared space between the eight bases: the Void Shop, the Void Colosseum, the Calamity [D] |
 

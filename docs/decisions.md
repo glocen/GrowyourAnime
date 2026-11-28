@@ -47,6 +47,7 @@ The decisions in force: what binds the work today, grouped, one line each. A sta
 
 ## Fighters (Voidkin) and their look
 
+- Players read a Voidkin's signature as "Ultimate" (research's pick of the director's two names); the docs and the code keep "signature". Log, "Words after the split" [2026-11-28, by 12:27]
 - Launch Rook, Kirra, Pip, Watt and Lyric. Install redesigns on director acceptance. Sable, Marigold and Crane wait. L283,92 [2026-11-17, 02:40] [2026-11-23, by 22:52]
 - Use anime side-cast archetypes on R6. Allow some built attachments and exaggeration. L91,90 [2026-11-23, about 23:45 to 23:52] [2026-11-24, about 01:47]
 - "voidkin shouldnt have the same face". Kirra's toy back blades become real gear, with a target first, and the hair is reworked a new way. Pip starts once Kirra's hair passes the director's look, with that fitted hair. L20,71,27 [2026-11-27, by 12:47] [2026-11-24, 16:53] [2026-11-27, 03:47]

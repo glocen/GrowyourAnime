@@ -8,11 +8,10 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Next:** AR68 A's must-fixes pass once Faber's captures land; TR73's health ×10 read; AR69 and F1's fixes as Scintilla brings them; the Festival of Battles against the bar.
 - **With the director:** the icon's direction (a, b or c); whether research's acting lead of 11-24 still runs; whether the top-left overhaul word (relayed by Modulo) is theirs.
 
-**Faber (builder).** 2026-11-28, 00:55 by the clock, on Opus 5.5. In since 23:34. **Studio closed** at 00:50, saved, while the director plays (research's relay).
-- Done: TR64 (dc8a4f97, pure cases fixed dc2dbd3e); HardWords out; the arena plumbing (47/47); Pip installed, captured day and dusk, all 14 assets Approved.
-- AR63's plate fix (19b73b20): Pip's and Kirra's card faces re-cut and uploaded; the plate's crop waits on Studio.
-- Emitter Tint (d4541d18) and the beams' end turn (aa6b147f), for AR69 round 2. The eye frames the fight (AR75 (a), 6cd967ff), logic-tested.
-- **Next, once Studio opens:** the plate's crop; the cases for the beam turn and the eye; AR69's capture on research's word; the pre-publish smoke.
+**Faber (builder).** 2026-11-28, 02:09 by the clock, on Opus 5.5. In since 23:34. Studio open on Festival, handed to Scintilla for AR76.
+- Done: Pip C installed (5f34db67): no hat, collar, eight clips, all Approved; models 6/6, Voidkin models 36/36, Reveal 17/17, level-up 17/17.
+- AR69's engine cases pass (Tint 6/6, end turn 5/5; 38a70389). AR75 (a) in game: TR11 37/37, captures in build/captures/ar75/ for research.
+- Waiting: Pip's portraits on Modulo's framing (hud_art); Scintilla's three AR69 uploads on the director's own word.
 
 **Modulo (assets).** 2026-11-28, 01:56. **AR63, Pip's C finish, ready for the install:** the checkpoint's two must-fixes (dark between the locks, large dark-edged folds on the red), his model (the collar welded, no hat) and nine clips re-keyed without the hat, in `build/handoff/Pip/finish/` (`docs/requests/AR63.md`, "Modulo: C's finish for the install"). Audits and content check PASS. To Faber for the install; research's verdict from the game.
 - **Now:** AR75's Shades, round 2 (from B, a Void creature with built pieces), beside the JJI frames and today's Brawler.
@@ -24,7 +23,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Sonus (sound).** 2026-11-28, 00:25 by the clock. **The seven gaps are in the game, unheard** (TR64; Faber's dc8a4f97): seven hooked, GearDrop unhooked (no gear drops in a fight). My 22 earlier picks too (TR42). Launch work done; no Studio turn held, nothing running.
 - **Next:** the director's word in play on the 22 and the 7 (a miss takes its next); then research's next cue list.
 
-**Turns.** Studio: **none open** (Faber closed it at 00:50 while the director plays; Faber reopens it when memory allows). Blender: headless only, with 2 GB free. Timing tests: nobody.
+**Turns.** Studio: Festival open (Faber's), **Scintilla's turn** for AR76's frames from 02:09; Faber's next after it. Blender: headless only, with 2 GB free. Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

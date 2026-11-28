@@ -539,8 +539,8 @@ local UIKit = {
 		Coin = { Id = "rbxassetid://87213772537842", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 		Bolt = { Id = "rbxassetid://99964133928513", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 		Spark = { Id = "rbxassetid://113544480752400", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
-		PortraitRook = { Id = "rbxassetid://121785250549495", Pixels = Vector2.new(736, 800), Points = Vector2.new(184, 200), Pad = 52 },
-		PortraitRookSmall = { Id = "rbxassetid://105505086235416", Pixels = Vector2.new(368, 400), Points = Vector2.new(92, 100), Pad = 26 },
+		PortraitRook = { Id = "rbxassetid://78487409905837", Pixels = Vector2.new(736, 800), Points = Vector2.new(184, 200), Pad = 52 },
+		PortraitRookSmall = { Id = "rbxassetid://112157770239110", Pixels = Vector2.new(368, 400), Points = Vector2.new(92, 100), Pad = 26 },
 		PortraitPip = { Id = "rbxassetid://106049789205180", Pixels = Vector2.new(736, 800), Points = Vector2.new(184, 200), Pad = 52 },
 		PortraitPipSmall = { Id = "rbxassetid://119411279451933", Pixels = Vector2.new(368, 400), Points = Vector2.new(92, 100), Pad = 26 },
 		PortraitLyric = { Id = "rbxassetid://136782883732757", Pixels = Vector2.new(736, 800), Points = Vector2.new(184, 200), Pad = 52 },
@@ -585,8 +585,8 @@ local UIKit = {
 		-- Its height cut whole (half to each cap): a full-height middle row draws the slanted block upright when smaller
 		-- than its pixels (lead_card_art.level_badge).
 		CardLevelBadge = { Id = "rbxassetid://127943128017931", Pixels = Vector2.new(164, 100), Points = Vector2.new(41, 25), Cut = { 13.65, 12.5, 13.65, 12.5 }, Pad = 4, At = Vector2.new(1, 74) },
-		CardFaceRook = { Id = "rbxassetid://125209521847975", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
-		CardHeadRook = { Id = "rbxassetid://92301370799884", Pixels = Vector2.new(248, 128), Points = Vector2.new(62, 32), Pad = 0, At = Vector2.new(0, -6) },
+		CardFaceRook = { Id = "rbxassetid://110031535743707", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
+		CardHeadRook = { Id = "rbxassetid://112378531594763", Pixels = Vector2.new(248, 128), Points = Vector2.new(62, 32), Pad = 0, At = Vector2.new(0, -6) },
 		CardFaceWatt = { Id = "rbxassetid://80956346574289", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },
 		CardHeadWatt = { Id = "rbxassetid://75440111014138", Pixels = Vector2.new(248, 128), Points = Vector2.new(62, 32), Pad = 0, At = Vector2.new(0, -6) },
 		CardFaceKirra = { Id = "rbxassetid://98608873799663", Pixels = Vector2.new(232, 248), Points = Vector2.new(58, 62), Pad = 0, At = Vector2.new(2, 20) },

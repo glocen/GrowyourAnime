@@ -8,10 +8,10 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Next:** AR68 A's must-fixes pass once Faber's captures land; TR73's health ×10 read; AR69 and F1's fixes as Scintilla brings them; the Festival of Battles against the bar.
 - **With the director:** the icon's direction (a, b or c); whether research's acting lead of 11-24 still runs; whether the top-left overhaul word (relayed by Modulo) is theirs.
 
-**Faber (builder).** 2026-11-28, 02:09 by the clock, on Opus 5.5. In since 23:34. Studio open on Festival, handed to Scintilla for AR76.
-- Done: Pip C installed (5f34db67): no hat, collar, eight clips, all Approved; models 6/6, Voidkin models 36/36, Reveal 17/17, level-up 17/17.
-- AR69's engine cases pass (Tint 6/6, end turn 5/5; 38a70389). AR75 (a) in game: TR11 37/37, captures in build/captures/ar75/ for research.
-- Waiting: Pip's portraits on Modulo's framing (hud_art); Scintilla's three AR69 uploads on the director's own word.
+**Faber (builder).** 2026-11-28, 02:26 by the clock, on Opus 5.5. In since 23:34. Studio open on Festival (Edit), mine again after Scintilla's AR76 turn.
+- Done: Pip C installed (5f34db67); his portraits on C (42247bc1); Modulo's soft-fold map, template and portraits on it (3cedfb1e), dusk capture in build/captures/ar63/pipC2_*.
+- AR69's engine cases pass (38a70389). AR75 (a) in game, research PASS. Answering research's Shades-mesh question (AR75).
+- Waiting on the director: Scintilla's three AR69 uploads (the word came relayed); eight Sounds of other works' music in the Festival place's workspace (folders C and M), not ours: remove?
 
 **Modulo (assets).** 2026-11-28, 02:22. **AR75's Shades, round 2, to research for the pick:** three Void creatures from B (Hem, the fraying hem; Hunch, the hunched mass; Horns, the mask grown into horns), in `build/handoff/Shade/void/` (`docs/requests/AR75.md`, "Modulo: the Shades as Void creatures, round 2"). Content check PASS. **AR63:** Pip's portraits framed for C (9f7d994b); his jacket's folds redrawn as pulls from a seam (88e97e3c), the map to Faber.
 - **Now:** Rook's and Kirra's folds, each beside its current self, by the seam pull (`cel`'s crescent read as claw marks on Pip).
@@ -23,7 +23,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Sonus (sound).** 2026-11-28, 00:25 by the clock. **The seven gaps are in the game, unheard** (TR64; Faber's dc8a4f97): seven hooked, GearDrop unhooked (no gear drops in a fight). My 22 earlier picks too (TR42). Launch work done; no Studio turn held, nothing running.
 - **Next:** the director's word in play on the 22 and the 7 (a miss takes its next); then research's next cue list.
 
-**Turns.** Studio: Festival open (Faber's), **Scintilla's turn** for AR76's frames from 02:09; Faber's next after it. Blender: headless only, with 2 GB free. Timing tests: nobody.
+**Turns.** Studio: Festival open (Faber's, Edit); Scintilla's AR76 turn done. Blender: headless only, with 2 GB free. Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

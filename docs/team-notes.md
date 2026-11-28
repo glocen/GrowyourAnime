@@ -15,8 +15,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Now:** AR63, the back locks seated against the collar's roll. Then AR78, Kirra's blades: two or three targets beside today's, for research's pick.
 - **Next:** AR75's Shades, round 3 (designed in `build/scratch/modulo/shade_mesh/design.md`).
 
-**Scintilla (effects).** 2026-11-28, 10:22 by the clock. **AR69's burn, round 3, in src** (StateBurn.json, 58 rows; for Faber's review) with its Studio take done (frames 6, 18, 40, 90 and 4 s in motion), for research's pass. AR77's plates are re-grabbed in the place's own light (the foe's fall: Pip on idle, the foe and empty; our fighter's: Pip's Down clip and empty). Studio handed back to Faber.
-- **Now:** AR77's targets offline (three falls for a foe, two for our fighter), then AR76 round 2 (Mantaflow).
+**Scintilla (effects).** 2026-11-28, 10:47 by the clock. **AR69's burn:** round 3 is in src (Faber's review passed). Research's pass: both must-fixes pass, with one new one, unity of the mass. **Round 4** is written (four roots, mixed lengths, tips that split, gutter and shed small flames; handoff rows, 76) and waits on one Studio take. **AR77's targets:** the three foe takes are drawn; our fighter's two sheets were stopped for low memory and wait on the director's go to run again.
+- **Now:** AR69 round 4's Studio take on the next turn (~15 min), then AR77's fighter sheets on the go, then AR76 round 2 (Mantaflow).
 
 **Sonus (sound).** 2026-11-28, 10:16 by the clock. **TR69 A's PackClear, picked unheard** (research's call): a ProSoundEffects tonal airy whoosh, next take ready, for Faber's install (TR69, "PackClear, picked unheard"). The 22, TR57's plate and the seven gaps are in the game, unheard. Studio handed to Scintilla; nothing running.
 - **Next:** the director's word in play on the 22 and the 7 (a miss takes its next); then research's next cue list.

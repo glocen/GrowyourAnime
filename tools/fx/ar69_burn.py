@@ -58,33 +58,51 @@ ORANGE = (255, 140, 60)
 RIM = (186, 77, 25)
 
 # Round 3 (research's must-fixes on the Studio take, 2026-11-28, 03:0x): every tongue leaned the same way, up and to the
-# foe's back, the longest a body's height out, so a foe standing still read as jets or a wing. Now each rises straight
-# up, leaning only a little out from the side it stands on, and hugs the body: shorter and more of them, from the
-# shoulders, the arms and the hem, none reaching past half a body's height (2.5 studs at scale 1) at its tallest lick.
+# foe's back, so a foe standing still read as jets or a wing. Each now rises straight up, leaning only a little out
+# from the side it stands on, and hugs the body: none reaches past half a body's height (2.5 studs at scale 1).
+# Round 4 (research's must-fix on round 3's take, 2026-11-28, 10:3x, unity of the mass): 17 teardrops of one shape and
+# size, evenly spaced, read as candles studded on the body. Now they grow from four shared roots (the shoulders and
+# back, each arm, the hem). Each root's base is one bright body: a wide, short, slow flame (MASSES) that the tongues'
+# overlapping feet rise out of. The lengths are mixed, four long among twelve short, and each tip changes over its life:
+# some licks split it in two (a fork on its own guide, shown at the lick's top), some gutter low and swell, and the long
+# ones shed small flames off their tips (wisps).
 # Where each stands in the torso's own space (X its right, Y up, Z its back), its lean there, its length and width
 # (studs at scale 1), its lick's beat (s) and phase. The torso is 2.36 wide and 2.96 tall, the arms' outer faces 2.5
 # out from its middle (round 2's Brawler, AR69's pose).
-TONGUES = [  # the long ones, with embers off their tips
-    ("FarShoulder", (-1.6, 1.3, 0.2), (-0.12, 1.0, 0.0), 1.9, 1.15, 0.47, 0.0),
-    ("NearShoulder", (1.6, 1.3, 0.2), (0.12, 1.0, 0.0), 1.8, 1.1, 0.53, 0.6),
-    ("FarShoulderBack", (-0.9, 1.4, 0.6), (-0.05, 1.0, 0.0), 1.6, 1.0, 0.43, 0.3),
-    ("NearShoulderBack", (0.9, 1.4, 0.6), (0.05, 1.0, 0.0), 1.5, 1.0, 0.39, 0.8),
-    ("Back", (-0.4, 0.5, 0.8), (-0.03, 1.0, 0.0), 1.7, 1.05, 0.58, 0.15),
-    ("HemBack", (0.0, -1.35, 0.75), (0.0, 1.0, 0.0), 1.3, 0.9, 0.41, 0.55),
+MASSES = [  # each root's base: a broad, slow flame where the camera sees it, its tongues' feet crowded into it
+    ("MantleFar", (-1.6, 1.25, 0.2), (-0.1, 1.0, 0.0), 1.3, 1.45, 0.72, 0.1),
+    ("MantleNear", (1.55, 1.25, 0.25), (0.1, 1.0, 0.0), 1.2, 1.4, 0.66, 0.6),
+    ("FarArmMass", (-2.35, -0.3, 0.1), (-0.14, 1.0, 0.0), 1.1, 1.2, 0.61, 0.35),
+    ("NearArmMass", (2.35, -0.4, 0.1), (0.14, 1.0, 0.0), 1.0, 1.15, 0.69, 0.8),
+    ("HemMass", (0.0, -1.3, 0.6), (0.0, 1.0, 0.0), 1.0, 1.7, 0.75, 0.45),
 ]
-LAYERED = [  # the short ones between them, on their own beats
-    ("FarArm", (-2.35, 0.2, 0.2), (-0.15, 1.0, 0.0), 1.4, 0.9, 0.36, 0.45),
-    ("NearArm", (2.35, 0.1, 0.2), (0.15, 1.0, 0.0), 1.3, 0.9, 0.33, 0.9),
-    ("FarForearm", (-2.35, -0.9, 0.0), (-0.15, 1.0, 0.0), 1.1, 0.75, 0.31, 0.25),
-    ("NearForearm", (2.35, -1.0, 0.0), (0.15, 1.0, 0.0), 1.0, 0.75, 0.29, 0.7),
-    ("BackLow", (0.5, -0.4, 0.8), (0.03, 1.0, 0.0), 1.4, 0.95, 0.34, 0.5),
-    ("HemFar", (-1.15, -1.4, 0.1), (-0.1, 1.0, 0.0), 1.2, 0.85, 0.27, 0.05),
-    ("HemNear", (1.15, -1.4, 0.1), (0.1, 1.0, 0.0), 1.1, 0.85, 0.38, 0.6),
-    ("HemFarFront", (-0.7, -1.4, -0.7), (-0.05, 1.0, 0.0), 1.0, 0.8, 0.32, 0.35),
-    ("HemNearFront", (0.7, -1.4, -0.7), (0.05, 1.0, 0.0), 1.0, 0.8, 0.35, 0.85),
-    ("HemFarBack", (-0.8, -1.35, 0.7), (-0.05, 1.0, 0.0), 1.15, 0.85, 0.3, 0.2),
-    ("HemNearBack", (0.8, -1.3, 0.7), (0.05, 1.0, 0.0), 1.05, 0.8, 0.37, 0.75),
+TONGUES = [  # the long ones: a core, embers and wisps off their tips
+    ("FarShoulder", (-1.75, 1.35, 0.15), (-0.1, 1.0, 0.0), 2.05, 1.15, 0.47, 0.0),
+    ("NearShoulderBack", (0.9, 1.4, 0.55), (0.05, 1.0, 0.0), 1.8, 1.1, 0.43, 0.55),
+    ("FarArm", (-2.35, 0.05, 0.2), (-0.14, 1.0, 0.0), 1.6, 1.0, 0.39, 0.3),
+    ("HemBack", (-0.35, -1.3, 0.7), (-0.02, 1.0, 0.0), 1.5, 1.0, 0.41, 0.8),
 ]
+LAYERED = [  # the short ones, crowded round their roots, no core of their own: the root's base is their heat
+    ("NearShoulder", (1.75, 1.3, 0.1), (0.12, 1.0, 0.0), 0.9, 0.85, 0.33, 0.45),
+    ("FarShoulderBack", (-1.2, 1.4, 0.5), (-0.06, 1.0, 0.0), 0.75, 0.8, 0.29, 0.9),
+    ("Back", (0.4, 1.3, 0.65), (0.02, 1.0, 0.0), 1.05, 0.9, 0.36, 0.2),
+    ("BackLow", (-0.6, 1.0, 0.75), (-0.03, 1.0, 0.0), 0.65, 0.8, 0.27, 0.65),
+    ("FarForearm", (-2.35, -0.75, 0.0), (-0.14, 1.0, 0.0), 0.7, 0.75, 0.31, 0.7),
+    ("FarElbow", (-2.3, -0.25, 0.4), (-0.1, 1.0, 0.0), 0.6, 0.75, 0.26, 0.15),
+    ("NearArm", (2.35, 0.0, 0.2), (0.14, 1.0, 0.0), 1.0, 0.85, 0.35, 0.05),
+    ("NearForearm", (2.35, -0.85, 0.0), (0.14, 1.0, 0.0), 0.65, 0.75, 0.28, 0.5),
+    ("NearElbow", (2.3, -0.4, 0.4), (0.1, 1.0, 0.0), 0.8, 0.8, 0.32, 0.85),
+    ("HemFar", (-0.95, -1.35, 0.35), (-0.08, 1.0, 0.0), 0.7, 0.8, 0.3, 0.35),
+    ("HemNear", (0.95, -1.35, 0.35), (0.08, 1.0, 0.0), 0.85, 0.85, 0.34, 0.6),
+    ("HemNearBack", (0.45, -1.3, 0.7), (0.04, 1.0, 0.0), 0.6, 0.75, 0.25, 0.1),
+]
+FORKS = ("FarShoulder", "NearShoulderBack", "FarArm", "HemBack", "Back", "NearArm", "HemNear", "NearElbow")
+FORK_SPLIT = 13  # degrees the fork leans off its tongue, the other way from its curl
+FORK_SHARE = (0.62, 0.55)  # its length and width, shares of its tongue's
+FORK_ODDS = 0.6  # the share of a tongue's licks that split
+GUTTER_ODDS = 0.18  # the share of its lows that gutter: lower and wider, before it swells back
+GUTTER = (0.42, 0.5)
+MASS_LICK = (0.8, 1.05)  # a root's base licks less: it holds as the body the tongues rise from
 DRAWN = 0.72  # the picture's tongue at its widest, a share of the beam's width (HALF below, twice)
 SHOWN = 0.83  # the target's tongue at its widest, a share of its `width` (tongue_width at a quarter up)
 LICK = (0.66, 1.12)  # a lick's height, low and high, a share of the tongue's length (the target's 0.79 to 1.09, wider:
@@ -102,22 +120,29 @@ def angles(d):
     return math.degrees(math.atan2(z, y)), math.degrees(-math.asin(x))
 
 
-def lick_keys(rng, beat, phase, length, width):
-    """Top and Width keys: each lick's bottom and top, with each beat and height a little its own."""
-    top, wide = [], []
+def lick_keys(rng, beat, phase, length, width, lick=LICK, gutters=True):
+    """Top and Width keys: each lick's bottom and top, with each beat and height a little its own; some lows gutter
+    (lower and wider). And the licks' times, (its low, its top, the next low) in frames, for a fork."""
+    top, wide, kind = [], [], []
     t = -phase * beat * 60
     low = True
     while t < FAR:
-        size = rng.uniform(LICK[0], LICK[0] + 0.1) if low else rng.uniform(LICK[1] - 0.12, LICK[1])
+        if low and gutters and rng.random() < GUTTER_ODDS:
+            size = rng.uniform(*GUTTER)
+        else:
+            size = rng.uniform(lick[0], lick[0] + 0.1) if low else rng.uniform(lick[1] - 0.12, lick[1])
         frame = max(0, round(t))
         if not top or frame > top[-1][0]:
             top.append([frame, round(length * size, 3), EASE])
-            # taller is thinner: a lick stretches up and thins, then sinks and swells
-            wide.append([frame, round(width * (1.25 - 0.4 * size), 3), EASE])
+            # taller is thinner: a lick stretches up and thins, then sinks and swells; each a little its own
+            wide.append([frame, round(width * (1.25 - 0.4 * size) * rng.uniform(0.9, 1.1), 3), EASE])
+            kind.append(low)
         span = beat * 60 * rng.uniform(0.85, 1.15)
         t += span * (0.55 if low else 0.45)  # it rises slower than it sinks
         low = not low
-    return top, wide
+    licks = [(top[k - 1][0], top[k][0], top[k + 1][0]) for k in range(1, len(top) - 1) if not kind[k] and kind[k - 1]
+             and kind[k + 1]]
+    return top, wide, licks
 
 
 def sway_keys(rng, beat, base):
@@ -173,11 +198,12 @@ TONGUE_CURL = 0.14  # each tongue's CurveSize0 (round 3: 0.24 swept the tips out
 # curled out alike, the two read as horns from the front at 64 px (the offline model, 2026-11-28, 00:5x)
 CURLS = {"FarShoulder": 1, "NearShoulder": -1, "FarShoulderBack": -1, "NearShoulderBack": 1, "Back": 1, "HemBack": -1,
          "FarArm": -1, "NearArm": 1, "FarForearm": 1, "NearForearm": -1, "BackLow": -1, "HemFar": 1, "HemNear": -1,
-         "HemFarFront": -1, "HemNearFront": 1, "HemFarBack": 1, "HemNearBack": -1}
+         "HemNearBack": -1, "FarElbow": 1, "NearElbow": -1,
+         "MantleFar": 1, "MantleNear": -1, "FarArmMass": -1, "NearArmMass": 1, "HemMass": 1}
 SOFT_WIDE = 1.3 * SHOWN / DRAWN  # the beam's width over the flame's `width`; its soft edge eats about a third of it  # the beam's width over the flame's `width`: the pictures' tongue is DRAWN of it at its widest
 
 
-def soft_streak(name, guide, widths, fades, why, bright=1.1, curve=None):
+def soft_streak(name, guide, widths, fades, why, bright=1.1, curve=None, core=True):
     """Two rows on `guide` (a beam row, unseen, whose ends are the flame's foot and tip), from its tip down to its
     foot: the body and its core, their shapes their pictures'."""
     base = {"Kind": "Beam", "On": guide,  # it rides the body through its guide: its scale, and gone with it
@@ -187,43 +213,69 @@ def soft_streak(name, guide, widths, fades, why, bright=1.1, curve=None):
         look["CurveSize0"], look["CurveSize1"] = curve
     body = dict(base, Image="fx_lick_Soft", Color=c3(BODY), Beam=dict(look, LightEmission=0.15, Brightness=bright),
                 Tracks={"Width": widths, "Transparency": fades}, Why=why)
-    core = dict(base, Image="fx_lick_Core", Color=c3(HEAT),
+    hot = dict(base, Image="fx_lick_Core", Color=c3(HEAT),
                 Beam=dict(look, LightEmission=1, Brightness=round(bright * 1.8, 2), ZOffset=0.05),
                 Tracks={"Width": widths, "Transparency": fades},
                 Why=f"{name}'s core: added white-gold heat up its lower part, the tip left orange (its picture's)")
-    return {name: body, f"{name}Core": core}
+    return {name: body, f"{name}Core": hot} if core else {name: body}
 
 
-def tongue(name, at, lean, length, width, beat, phase, seed):
-    """The guide, unseen, from the foot up to the tip, carrying the lick and the sway; and the flame on it, a soft
-    tongue (its body and core) from the guide's tip down to its foot."""
-    rng = random.Random(seed)
-    foot = v3(at[0], round(at[1] + TORSO_UP, 3), at[2])
-    top, wide = lick_keys(rng, beat, phase, length, width * SOFT_WIDE)
-    guide = {
+def guide_row(name, foot, tilt, top, why):
+    return {
         "Kind": "Beam",
         "Body": "HumanoidRootPart",
         "Image": "fx_beam",
         "Beam": {"Segments": 1},
         "Tracks": {
             "At": [[0, foot], [FAR, foot]],
-            "Tilt": sway_keys(rng, beat, angles(lean)),
+            "Tilt": tilt,
             "Top": top,
             "Width": [[0, 0], [FAR, 0]],  # never drawn (and clear, the content check's condition): its ends are the flame's
             "Transparency": [[0, 1], [FAR, 1]],
         },
-        "Why": f"{name}'s guide, unseen: the tongue's foot on the body and its tip, licking on its own beat ({beat} s), "
-               "its lean swaying on a slower one",
+        "Why": why,
     }
+
+
+def tongue(name, at, lean, length, width, beat, phase, seed, core=True, fork=False, mass=False):
+    """The guide, unseen, from the foot up to the tip, carrying the lick and the sway; the flame on it, a soft tongue
+    (its body, and its core if it has one) from the guide's tip down to its foot; and its fork, if it has one."""
+    rng = random.Random(seed)
+    foot = v3(at[0], round(at[1] + TORSO_UP, 3), at[2])
+    top, wide, licks = lick_keys(rng, beat, phase, length, width * SOFT_WIDE, MASS_LICK if mass else LICK, not mass)
+    tilt = sway_keys(rng, beat, angles(lean))
+    rows = {f"{name}Guide": guide_row(
+        name, foot, tilt, top,
+        f"{name}'s guide, unseen: the {'root' if mass else 'tongue'}'s foot on the body and its tip, licking on its own "
+        f"beat ({beat} s), its lean swaying on a slower one")}
     # its curve along the guide's X (about the body's side), the ends square to the tongue: CurveSize0 alone, at the tip's
     # end (its Low, the guide's tip), so it rises straight off its foot, arcs out the way it leans and curls at its tip.
     # A CurveSize1 would leave the foot sideways too, a zigzag with a bar at its foot (the offline model, 00:5x).
     out = (-1 if lean[0] < 0 else 1) * CURLS[name]
-    bend = (round(out * TONGUE_CURL * length * rng.uniform(0.85, 1.15), 2), 0)
-    flame = soft_streak(name, f"{name}Guide", wide, [[0, 1, "Quad Out"], [6, 0], [FAR, 0]],
-                        f"the hero: a flame tongue, {name}, licking up from a round foot, curling; taller is thinner",
-                        curve=bend)
-    return guide, flame
+    bend = (round(out * TONGUE_CURL * (0.5 if mass else 1) * length * rng.uniform(0.85, 1.15), 2), 0)
+    why = (f"{name}, a root's base: a wide, short, slow flame the tongues there rise out of, one bright body" if mass
+           else f"the hero: a flame tongue, {name}, licking up from a round foot, curling; taller is thinner")
+    rows.update(soft_streak(name, f"{name}Guide", wide, [[0, 1, "Quad Out"], [6, 0], [FAR, 0]], why, curve=bend,
+                            core=core))
+    if fork:
+        # the fork: a second, shorter prong off the same foot, leaning off the other way, shown at some licks' tops, so
+        # the tip splits in two and re-forms as it sinks
+        ftop = [[k[0], round(k[1] * FORK_SHARE[0], 3)] + k[2:] for k in top]
+        fwide = [[k[0], round(k[1] * FORK_SHARE[1], 3)] + k[2:] for k in wide]
+        side = -out if out else 1
+        ftilt = [[k[0], v3(k[1]["Vector3"][0], 0, round(k[1]["Vector3"][2] + side * FORK_SPLIT, 2))] + k[2:]
+                 for k in tilt]
+        shown = [[0, 1]]
+        for low, peak, after in licks:
+            if rng.random() < FORK_ODDS:
+                shown += [[round((low + peak) / 2), 1, EASE], [peak, 0.15, EASE], [after, 1, EASE]]
+        shown.append([FAR, 1])
+        rows[f"{name}ForkGuide"] = guide_row(f"{name}Fork", foot, ftilt, ftop,
+                                             f"{name}'s fork's guide, unseen: the same foot, leaning off the other way")
+        rows.update(soft_streak(f"{name}Fork", f"{name}ForkGuide", fwide, shown,
+                                f"{name}'s fork: its tip split in two at some licks' tops, re-formed as it sinks",
+                                curve=(round(-bend[0] * 0.8, 2), 0), core=False))
+    return rows
 
 
 def embers(name, length):
@@ -259,6 +311,35 @@ def embers(name, length):
     }
 
 
+def wisps(name, length):
+    """Small flames breaking off the tip and rising, gone in a third of a second: the tip's shape always changing."""
+    return {
+        "Kind": "Emitter",
+        "On": name,
+        "Image": "fx_lick_Soft",
+        "Emitter": {
+            "EmissionDirection": "Top",  # off the tip, along the tongue
+            "SpreadAngle": [12, 12],
+            "Lifetime": [0.22, 0.38],
+            "Speed": [1.8, 3.2],
+            "Drag": 2.0,
+            "Acceleration": v3(0, 3.0, 0),
+            "Orientation": "VelocityParallel",  # stored tip-up: its tip along its flight, up
+            "Size": [[0, round(0.32 * length / 1.8, 2)], [0.4, round(0.26 * length / 1.8, 2)], [1, 0]],
+            "Transparency": [[0, 0.25], [0.6, 0.4], [1, 1]],
+            "Color": [[0, c3(GOLD)], [1, c3(ORANGE)]],
+            "LightEmission": 0.3,
+            "LightInfluence": 0,
+            "Brightness": 1.4,
+            "ZOffset": 0.15,
+        },
+        "Emit": [[0, 1]],
+        "Tracks": {"At": [[0, v3(0, round(length * 0.92, 3), 0)], [FAR, v3(0, round(length * 0.92, 3), 0)]],
+                   "Radius": [[0, 0.1], [FAR, 0.1]], "Rate": [[0, 3.0], [FAR, 3.0]]},
+        "Why": f"small flames breaking off {name}'s tip and rising: its tip never holds one shape",
+    }
+
+
 def light():
     rng = random.Random(9)
     keys, t = [], 0
@@ -277,16 +358,21 @@ def light():
 
 def burn():
     rows = {}
-    for n, (name, at, lean, length, width, beat, phase) in enumerate(TONGUES + LAYERED):
-        guide, flame = tongue(name, at, lean, length, width, beat, phase, 70 + n)
-        rows[f"{name}Guide"] = guide
-        rows.update(flame)
-        if n < len(TONGUES):  # embers off the long ones only
-            rows[f"{name}Embers"] = embers(f"{name}Guide", length)
+    n = 0
+    for group, kind in ((MASSES, "mass"), (TONGUES, "long"), (LAYERED, "short")):
+        for name, at, lean, length, width, beat, phase in group:
+            rows.update(tongue(name, at, lean, length, width, beat, phase, 70 + n, core=kind != "short",
+                               fork=name in FORKS, mass=kind == "mass"))
+            if kind == "long":  # embers and wisps off the long ones only
+                rows[f"{name}Embers"] = embers(f"{name}Guide", length)
+                rows[f"{name}Wisps"] = wisps(f"{name}Guide", length)
+            n += 1
     rows["Light"] = light()
     return {"Schema": "rows/1", "Effect": "StateBurn",
-            "Why": "Burn (Fire), worn while it holds: flame tongues licking off the shoulders, the arms, the back and the "
-                   "hips, each on its own beat, their tips breaking into embers (AR69, research's pick A).",
+            "Why": "Burn (Fire), worn while it holds: one fire on the body from four roots (the shoulders and back, each "
+                   "arm, the hem), each a bright base the tongues rise out of, a few long among many short, each on its "
+                   "own beat, their tips splitting, guttering and breaking into small flames and embers (AR69, research's "
+                   "pick A, round 4).",
             "Area": 1, "Grey": False, "Rows": rows}
 
 

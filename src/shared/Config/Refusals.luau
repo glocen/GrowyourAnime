@@ -59,9 +59,19 @@ local Refusals = {
 			Gone = "New stock came in. Pick again.",
 			Limit = "None left for you this stock",
 			Poor = CREDITS,
+			Short = { Words = "Need {Need} more kWh in the battery", Plain = "Not enough charge in the battery" }, -- the Power Deal (TR76)
 			BagFull = FREE_A_SLOT,
 			Unknown = "That isn't on the shelf now",
 			Closed = "The Shop is closed for a moment",
+			NoAnswer = TRY_AGAIN,
+		},
+		-- Rules.Exchange (the Shop's Exchange tab, TR76).
+		Exchange = {
+			Gone = "A new week came in. Pick again.",
+			Limit = "None left for you this week",
+			Short = { Words = "Need {Need} more {Tokens}", Plain = "Not enough to trade" },
+			MaxStars = "Already at its last star",
+			Unknown = "That isn't on the Exchange",
 			NoAnswer = TRY_AGAIN,
 		},
 		-- Rules.Carry, Rules.Collection, VoidkinService (the Voidkin screen): the lead, stars, nicknames, bays.

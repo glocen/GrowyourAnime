@@ -7,7 +7,9 @@
 -- stands in.
 --   Net "Shop"      () -> { Ok, Shelf?, Left?, Error? }: the standing stock's shelf, and its seconds left
 --   Act "ShopBuy"   { Stock, Line, Count } -> Rules.Shop.Buy's answer, in one transaction with its op id
---   workspace's ShopStock and ShopFeatured attributes: the standing stock, and whether it holds a piece (the crown)
+--   Act "ExchangeBuy" { Week, Offer, Count, Voidkin?, Set?, Stat? } -> Rules.Exchange.Buy's answer, the same way
+--   workspace's ShopStock, ShopFeatured, ShopCrown and ShopLegend attributes: the standing stock, and whether slots 4,
+--   5 and 6 hold their lines (the crown reads ShopFeatured until the Shop's screen piece)
 
 local DataStoreService = game:GetService("DataStoreService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -19,6 +21,7 @@ local Net = require(Shared.Net)
 local Profile = require(Shared.Data.Profile)
 local ShopConfig = require(Shared.Config.Shop)
 local Shop = require(Shared.Rules.Shop)
+local Exchange = require(Shared.Rules.Exchange)
 local Core = script.Parent.Parent.Core
 local DataService = require(Core.DataService)
 local DebugService = require(Core.DebugService)
@@ -86,6 +89,8 @@ local function sign()
 	if shelf then
 		workspace:SetAttribute("ShopStock", shelf.Stock)
 		workspace:SetAttribute("ShopFeatured", shelf.Featured)
+		workspace:SetAttribute("ShopCrown", shelf.Crown) -- slot 5 holds its line (TR76): the screens read it in their piece
+		workspace:SetAttribute("ShopLegend", shelf.Legend) -- slot 6 holds its line: the Broadcast reads it in its piece
 	end
 end
 
@@ -95,7 +100,10 @@ function ShopService.Init()
 		if shelf == nil then
 			return { Ok = false, Error = "Closed" }
 		end
-		return Shop.Buy(draft, shelf, args)
+		return Shop.Buy(draft, shelf, args, now()) -- the base's clock, so the battery reads as BaseService's does
+	end)
+	DataService.Action("ExchangeBuy", function(draft: Profile.Data, args: any): { [string]: any }
+		return Exchange.Buy(draft, args, now())
 	end)
 end
 

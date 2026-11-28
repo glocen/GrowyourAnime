@@ -220,7 +220,13 @@ export type Data = {
 	-- line's count, so a server hop never refills a line; a buy on a later stock starts the counts again.
 	Shop: {
 		Stock: number,
-		Bought: { [string]: number }, -- by line name ("Shard", "Featured")
+		Bought: { [string]: number }, -- by line name (Rules.Shop: "Shard", "Supply", "Power", "Featured", "Crown", "Legend")
+	},
+	-- What was bought at the Void Shop's Exchange in its latest week bought in (TR76, Rules.Exchange): the week's number
+	-- and each offer's count, so a server hop never refills one; a buy in a later week starts the counts again.
+	Exchange: {
+		Week: number,
+		Bought: { [string]: number }, -- by offer id (Config.Exchange.Offers)
 	},
 	Roles: {
 		Lead: string, -- the lead's Id, or ""
@@ -288,6 +294,7 @@ function Profile.Template(): Data
 		Settings = { Salvage = "", Music = 1, Sound = 1, Effects = 1, ShareFinds = true, ShowFinds = true },
 		Currency = { Credits = 0, Research = 0 },
 		Shop = { Stock = 0, Bought = {} },
+		Exchange = { Week = 0, Bought = {} },
 		Roles = { Lead = "" },
 		Funnel = {},
 		Base = {

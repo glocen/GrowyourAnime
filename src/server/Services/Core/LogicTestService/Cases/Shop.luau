@@ -60,7 +60,7 @@ local function featuredFrom(from: number, salt: number): number
 end
 
 local function top(): number
-	local row = Grounds.ById[ShopConfig.Featured.Ground]
+	local row = Grounds.ById[ShopConfig.Ground]
 	return Growth.G(if row then row.LevelTo else 1)
 end
 
@@ -169,7 +169,7 @@ return {
 						and row ~= nil
 						and rank ~= nil
 						and (ShopConfig.Featured.Ladder[rank :: number] or 0) > 0
-						and item.Tier == Grounds.ById[ShopConfig.Featured.Ground].Order
+						and item.Tier == Grounds.ById[ShopConfig.Ground].Order
 						and #item.Lines >= 1
 						and line.Price == math.floor((ShopConfig.Featured.PricePerG[item.Rarity] or 0) * top() + 0.5)
 						and line.Price > 0
@@ -210,15 +210,15 @@ return {
 			local shard = line.Shard :: string
 			local data = fresh(line.Price * 10)
 			t.Equal("all left at first", Shop.Left(data, shelf, "Shard"), line.Limit)
-			local first = Shop.Buy(data, shelf, { Stock = stock, Line = "Shard", Count = 1 })
+			local first = Shop.Buy(data, shelf, { Stock = stock, Line = "Shard", Count = 1 }, NOW)
 			t.Check("bought", first.Ok == true and first.Credits == line.Price and first.Shard == shard)
 			t.Equal("the shard in the bag", data.Bag.Shards[shard], 1)
 			t.Equal("its Credits gone", data.Currency.Credits, line.Price * 9)
 			t.Equal("one fewer left", Shop.Left(data, shelf, "Shard"), line.Limit - 1)
-			local rest = Shop.Buy(data, shelf, { Stock = stock, Line = "Shard", Count = line.Limit - 1 })
+			local rest = Shop.Buy(data, shelf, { Stock = stock, Line = "Shard", Count = line.Limit - 1 }, NOW)
 			t.Check("the rest in one", rest.Ok == true and data.Bag.Shards[shard] == line.Limit)
 			local before = Profile.DeepCopy(data)
-			local over = Shop.Buy(data, shelf, { Stock = stock, Line = "Shard", Count = 1 })
+			local over = Shop.Buy(data, shelf, { Stock = stock, Line = "Shard", Count = 1 }, NOW)
 			t.Equal("past the limit: refused", over.Error, Shop.Limit)
 			t.Check("and nothing changed", same(data, before))
 			t.Equal("none left", Shop.Left(data, shelf, "Shard"), 0)
@@ -230,16 +230,16 @@ return {
 			local stock = Shop.Stock(NOW)
 			local line = Shop.Shelf(stock, SALT).Lines.Shard
 			local data = fresh(line.Price * 10)
-			t.Check("bought out", Shop.Buy(data, Shop.Shelf(stock, SALT), { Stock = stock, Line = "Shard", Count = line.Limit }).Ok == true)
+			t.Check("bought out", Shop.Buy(data, Shop.Shelf(stock, SALT), { Stock = stock, Line = "Shard", Count = line.Limit }, NOW).Ok == true)
 			local hop = Shop.Shelf(stock, SALT) -- another server's shelf of the same stock, with the save
 			local before = Profile.DeepCopy(data)
-			t.Equal("another server: still bought out", Shop.Buy(data, hop, { Stock = stock, Line = "Shard", Count = 1 }).Error, Shop.Limit)
+			t.Equal("another server: still bought out", Shop.Buy(data, hop, { Stock = stock, Line = "Shard", Count = 1 }, NOW).Error, Shop.Limit)
 			t.Check("and nothing changed", same(data, before))
 			local other = fresh(line.Price * 10)
 			t.Equal("another player: their own count", Shop.Left(other, hop, "Shard"), line.Limit)
 			local nextShelf = Shop.Shelf(stock + 1, SALT)
 			t.Equal("the next stock: all left", Shop.Left(data, nextShelf, "Shard"), nextShelf.Lines.Shard.Limit)
-			local again = Shop.Buy(data, nextShelf, { Stock = stock + 1, Line = "Shard", Count = 1 })
+			local again = Shop.Buy(data, nextShelf, { Stock = stock + 1, Line = "Shard", Count = 1 }, NOW)
 			t.Check("and bought", again.Ok == true and data.Shop.Stock == stock + 1 and data.Shop.Bought.Shard == 1 and data.Shop.Bought.Featured == nil)
 		end,
 	},
@@ -250,14 +250,14 @@ return {
 			local shelf = Shop.Shelf(stock, SALT)
 			local line = shelf.Lines.Featured
 			local data = fresh(line.Price + 5)
-			local bought = Shop.Buy(data, shelf, { Stock = stock, Line = "Featured", Count = 1 })
+			local bought = Shop.Buy(data, shelf, { Stock = stock, Line = "Featured", Count = 1 }, NOW)
 			t.Check("bought", bought.Ok == true and type(bought.Items) == "table" and #bought.Items == 1)
 			local item = data.Items[bought.Items[1]]
 			local piece = line.Item :: any
 			t.Check("the shelf's piece", item ~= nil and item.Def == piece.Def and item.Rarity == piece.Rarity and item.Tier == piece.Tier and item.Design == piece.Design and same(item.Lines, piece.Lines) and same(item.Sockets, piece.Sockets))
 			t.Check("its own copy: the shelf's piece untouched by a change to it", item.Lines ~= piece.Lines)
 			t.Equal("its Credits gone", data.Currency.Credits, 5)
-			t.Equal("once a stock", Shop.Buy(data, shelf, { Stock = stock, Line = "Featured", Count = 1 }).Error, Shop.Limit)
+			t.Equal("once a stock", Shop.Buy(data, shelf, { Stock = stock, Line = "Featured", Count = 1 }, NOW).Error, Shop.Limit)
 			local problems = Saveable.Problems(data, "profile")
 			t.Check("the save is saveable", #problems == 0, table.concat(problems, "; "))
 		end,
@@ -281,22 +281,22 @@ return {
 			}
 			for _, case in refusals do
 				local before = Profile.DeepCopy(data)
-				local answer = Shop.Buy(data, shelf, case[2])
+				local answer = Shop.Buy(data, shelf, case[2], NOW)
 				t.Check(`{case[1]}: refused, nothing changed`, answer.Ok == false and answer.Error == case[3] and same(data, before), tostring(answer.Error))
 			end
 			local plain = Shop.Shelf(Shop.Stock(NOW), SALT)
 			if not plain.Featured then
 				local rich = fresh(10 ^ 9)
-				t.Equal("no piece on an ordinary stock", Shop.Buy(rich, plain, { Stock = plain.Stock, Line = "Featured", Count = 1 }).Error, Shop.Unknown)
+				t.Equal("no piece on an ordinary stock", Shop.Buy(rich, plain, { Stock = plain.Stock, Line = "Featured", Count = 1 }, NOW).Error, Shop.Unknown)
 			end
 			local full = fresh(10 ^ 9)
 			for i = 1, ChestsConfig.Bag do
 				full.Items[`f{i}`] = { Id = `f{i}`, Def = (shelf.Lines.Featured.Item :: any).Def, Tier = 1, Rarity = "Common", Design = 1, Lines = {}, Sockets = {}, Reinforce = 0, Jewels = {} }
 			end
 			local before = Profile.DeepCopy(full)
-			t.Equal("a full bag: the piece refused", Shop.Buy(full, shelf, { Stock = stock, Line = "Featured", Count = 1 }).Error, Shop.BagFull)
+			t.Equal("a full bag: the piece refused", Shop.Buy(full, shelf, { Stock = stock, Line = "Featured", Count = 1 }, NOW).Error, Shop.BagFull)
 			t.Check("and nothing changed", same(full, before))
-			t.Check("a shard still fits a full bag", Shop.Buy(full, shelf, { Stock = stock, Line = "Shard", Count = 1 }).Ok == true)
+			t.Check("a shard still fits a full bag", Shop.Buy(full, shelf, { Stock = stock, Line = "Shard", Count = 1 }, NOW).Ok == true)
 		end,
 	},
 	{
@@ -307,7 +307,7 @@ return {
 			local line = shelf.Lines.Shard
 			local data = fresh(line.Price * 10)
 			local change = function(draft: Profile.Data): Transaction.Answer
-				return Shop.Buy(draft, shelf, { Stock = stock, Line = "Shard", Count = 1 })
+				return Shop.Buy(draft, shelf, { Stock = stock, Line = "Shard", Count = 1 }, NOW)
 			end
 			local first = Transaction.Run(data, OP, change, 8)
 			t.Check("bought", first.Ok == true and data.Bag.Shards[line.Shard :: string] == 1)
@@ -401,7 +401,7 @@ return {
 				local cut = roll(6) == 1 -- the server falls over after the buy, before its change finishes
 				local before = Profile.DeepCopy(data)
 				local answer, changed = Transaction.Run(data, op, function(draft: Profile.Data): Transaction.Answer
-					local done = Shop.Buy(draft, shelf, ask)
+					local done = Shop.Buy(draft, shelf, ask, NOW)
 					if cut then
 						error("interrupted")
 					end

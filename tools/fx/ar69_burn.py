@@ -57,34 +57,40 @@ GOLD = (255, 197, 84)
 ORANGE = (255, 140, 60)
 RIM = (186, 77, 25)
 
-# The tongues, as the target placed them (ar69_targets.TONGUES): where each stands in the torso's own space (X its
-# right, Y up, Z its back), its lean there, its length and width (studs at scale 1), its lick's beat (s) and phase.
-TONGUES = [
-    ("FarShoulder", (-1.7, 1.0, 0.1), (-0.35, 1.0, 0.25), 3.2, 1.6, 0.47, 0.0),
-    ("NearShoulder", (1.7, 1.0, 0.15), (0.35, 1.0, 0.25), 3.0, 1.55, 0.53, 0.6),
-    ("FarArm", (-1.9, -0.3, 0.4), (-0.3, 1.0, 0.3), 2.5, 1.3, 0.39, 0.3),
-    ("NearArm", (1.9, -0.4, 0.4), (0.3, 1.0, 0.3), 2.4, 1.25, 0.36, 0.45),
-    ("Back", (-0.6, 0.3, 0.85), (-0.05, 1.0, 0.45), 3.1, 1.5, 0.43, 0.8),
-    ("BackLow", (0.6, -0.5, 0.85), (0.05, 1.0, 0.45), 2.6, 1.35, 0.58, 0.15),
-    ("Hips", (0.0, -1.3, 0.7), (0.0, 1.0, 0.5), 2.2, 1.2, 0.41, 0.55),
-    ("NearHip", (1.2, -1.6, 0.2), (0.25, 1.0, 0.2), 1.8, 1.0, 0.33, 0.9),
+# Round 3 (research's must-fixes on the Studio take, 2026-11-28, 03:0x): every tongue leaned the same way, up and to the
+# foe's back, the longest a body's height out, so a foe standing still read as jets or a wing. Now each rises straight
+# up, leaning only a little out from the side it stands on, and hugs the body: shorter and more of them, from the
+# shoulders, the arms and the hem, none reaching past half a body's height (2.5 studs at scale 1) at its tallest lick.
+# Where each stands in the torso's own space (X its right, Y up, Z its back), its lean there, its length and width
+# (studs at scale 1), its lick's beat (s) and phase. The torso is 2.36 wide and 2.96 tall, the arms' outer faces 2.5
+# out from its middle (round 2's Brawler, AR69's pose).
+TONGUES = [  # the long ones, with embers off their tips
+    ("FarShoulder", (-1.6, 1.3, 0.2), (-0.12, 1.0, 0.0), 1.9, 1.15, 0.47, 0.0),
+    ("NearShoulder", (1.6, 1.3, 0.2), (0.12, 1.0, 0.0), 1.8, 1.1, 0.53, 0.6),
+    ("FarShoulderBack", (-0.9, 1.4, 0.6), (-0.05, 1.0, 0.0), 1.6, 1.0, 0.43, 0.3),
+    ("NearShoulderBack", (0.9, 1.4, 0.6), (0.05, 1.0, 0.0), 1.5, 1.0, 0.39, 0.8),
+    ("Back", (-0.4, 0.5, 0.8), (-0.03, 1.0, 0.0), 1.7, 1.05, 0.58, 0.15),
+    ("HemBack", (0.0, -1.35, 0.75), (0.0, 1.0, 0.0), 1.3, 0.9, 0.41, 0.55),
 ]
-# Round 2 (research, 2026-11-28, 01:2x): the target's eight read as five or six a side, each its three crossed ribbons;
-# one camera-facing tongue reads as one. Five shorter ones layered between the long ones, on their own beats, bring
-# each side to six: between the shoulder and the back, between the shoulder and the arm, and the far hip.
-LAYERED = [
-    ("FarBlade", (-1.25, 0.75, 0.55), (-0.25, 1.0, 0.4), 2.0, 1.15, 0.31, 0.25),
-    ("NearBlade", (1.25, 0.7, 0.55), (0.25, 1.0, 0.4), 1.9, 1.1, 0.29, 0.7),
-    ("FarSide", (-1.85, 0.35, 0.25), (-0.4, 1.0, 0.15), 1.7, 1.0, 0.34, 0.5),
-    ("NearSide", (1.85, 0.3, 0.3), (0.4, 1.0, 0.15), 1.6, 1.0, 0.27, 0.05),
-    ("FarHip", (-1.2, -1.5, 0.25), (-0.25, 1.0, 0.2), 1.5, 0.95, 0.38, 0.6),
+LAYERED = [  # the short ones between them, on their own beats
+    ("FarArm", (-2.35, 0.2, 0.2), (-0.15, 1.0, 0.0), 1.4, 0.9, 0.36, 0.45),
+    ("NearArm", (2.35, 0.1, 0.2), (0.15, 1.0, 0.0), 1.3, 0.9, 0.33, 0.9),
+    ("FarForearm", (-2.35, -0.9, 0.0), (-0.15, 1.0, 0.0), 1.1, 0.75, 0.31, 0.25),
+    ("NearForearm", (2.35, -1.0, 0.0), (0.15, 1.0, 0.0), 1.0, 0.75, 0.29, 0.7),
+    ("BackLow", (0.5, -0.4, 0.8), (0.03, 1.0, 0.0), 1.4, 0.95, 0.34, 0.5),
+    ("HemFar", (-1.15, -1.4, 0.1), (-0.1, 1.0, 0.0), 1.2, 0.85, 0.27, 0.05),
+    ("HemNear", (1.15, -1.4, 0.1), (0.1, 1.0, 0.0), 1.1, 0.85, 0.38, 0.6),
+    ("HemFarFront", (-0.7, -1.4, -0.7), (-0.05, 1.0, 0.0), 1.0, 0.8, 0.32, 0.35),
+    ("HemNearFront", (0.7, -1.4, -0.7), (0.05, 1.0, 0.0), 1.0, 0.8, 0.35, 0.85),
+    ("HemFarBack", (-0.8, -1.35, 0.7), (-0.05, 1.0, 0.0), 1.15, 0.85, 0.3, 0.2),
+    ("HemNearBack", (0.8, -1.3, 0.7), (0.05, 1.0, 0.0), 1.05, 0.8, 0.37, 0.75),
 ]
 DRAWN = 0.72  # the picture's tongue at its widest, a share of the beam's width (HALF below, twice)
 SHOWN = 0.83  # the target's tongue at its widest, a share of its `width` (tongue_width at a quarter up)
 LICK = (0.66, 1.12)  # a lick's height, low and high, a share of the tongue's length (the target's 0.79 to 1.09, wider:
 # research's must-fix, the target's barely moved)
-SWAY = (7, 15)  # degrees each way the lean sways sideways, a beat 1.4 times the lick's
-NOD = 6  # degrees back and forth on the sway's beat
+SWAY = (3, 7)  # degrees each way the lean sways sideways (round 3: 7 to 15 read as a lean), a beat 1.4 times the lick's
+NOD = 3  # degrees back and forth on the sway's beat
 EMBERS = 0.8  # where on the tongue its embers start, a share of its length
 
 
@@ -162,11 +168,12 @@ def streak(name, guide, widths, fades, length, why, bright=1.1, taper=TAPER):
 # a tapered tip, with no outline; the body and its core are as wide as each other, the core's own picture narrower and
 # shorter inside the body's. Each is drawn from its guide's tip down to its foot, its picture stored tip-up (the
 # content check of 2026-11-27, 17:00). Each tongue's own curve waits on Faber's turn of the beam's ends (AR69).
-TONGUE_CURL = 0.24  # each tongue's CurveSize0, a share of its length: its arc and its tip's curl
+TONGUE_CURL = 0.14  # each tongue's CurveSize0 (round 3: 0.24 swept the tips out), a share of its length: its arc and its tip's curl
 # which way each tongue curls: 1 out the way it leans, -1 back over the body. Never a matching pair on the shoulders:
 # curled out alike, the two read as horns from the front at 64 px (the offline model, 2026-11-28, 00:5x)
-CURLS = {"FarShoulder": 1, "NearShoulder": -1, "FarArm": -1, "NearArm": 1, "Back": 1, "BackLow": -1, "Hips": 1,
-         "NearHip": -1, "FarBlade": -1, "NearBlade": 1, "FarSide": 1, "NearSide": -1, "FarHip": 1}
+CURLS = {"FarShoulder": 1, "NearShoulder": -1, "FarShoulderBack": -1, "NearShoulderBack": 1, "Back": 1, "HemBack": -1,
+         "FarArm": -1, "NearArm": 1, "FarForearm": 1, "NearForearm": -1, "BackLow": -1, "HemFar": 1, "HemNear": -1,
+         "HemFarFront": -1, "HemNearFront": 1, "HemFarBack": 1, "HemNearBack": -1}
 SOFT_WIDE = 1.3 * SHOWN / DRAWN  # the beam's width over the flame's `width`; its soft edge eats about a third of it  # the beam's width over the flame's `width`: the pictures' tongue is DRAWN of it at its widest
 
 

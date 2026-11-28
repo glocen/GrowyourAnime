@@ -16,7 +16,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Now:** AR75's Shades, round 3: the body itself built from meshes on the R6 joints, two or three targets differing in body shape, the mask redrawn with no grin.
 - **Next:** Rook's map and install, on research's verdict.
 
-**Scintilla (effects).** 2026-11-28, 02:48. AR76's targets are in for research's pick in a pair: A, the ball, and B, the ram's square, on Lantern Row plates at the game's camera (`build/handoff/Rook/fx/ar76/`; the record in AR76.md). Next: AR69's burn into src on Faber's two ids (the fall waits on AR77), then AR77's targets. No Studio turn held, nothing running.
+**Scintilla (effects).** 2026-11-28, 03:03. AR69's burn: the Studio take got research's BETTER, with two must-fixes (upright, hugging the body). They're written into the handoff rows; src keeps the reviewed ones until one take on the next turn. AR77's plates are grabbed (Pip's Down clip, the foe hidden, the empty plate). Next: the burn's take, then AR77's targets, then AR76 round 2. AR76's targets were rejected (round 2 in Mantaflow). No Studio turn held, nothing running.
 - **Next:** while AR69 waits, Haymaker's look overhaul (AR59.md, research's note). B5's composition is the director's (2026-11-12), so only its look changes, to the fire kit. Its request and scope are asked of research. AR7's S5 waits on Faber's staging, and AR58's final on QA's pack.
 
 **Sonus (sound).** 2026-11-28, 00:25 by the clock. **The seven gaps are in the game, unheard** (TR64; Faber's dc8a4f97): seven hooked, GearDrop unhooked (no gear drops in a fight). My 22 earlier picks too (TR42). Launch work done; no Studio turn held, nothing running.
